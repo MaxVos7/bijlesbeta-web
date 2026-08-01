@@ -1,0 +1,25 @@
+{
+  "name": "bijlesbeta-web",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "typecheck": "nuxt typecheck"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "nuxt": "^4.5.1",
+    "tailwindcss": "^4.3.3",
+    "vue": "^3.5.40",
+    "vue-router": "^5.2.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "typescript": "~5.9",
+    "vue-tsc": "^3.3.9"
+  }
+}

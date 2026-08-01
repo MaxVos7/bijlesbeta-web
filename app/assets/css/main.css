@@ -1,0 +1,102 @@
+@import 'tailwindcss';
+
+/*
+  Design tokens.
+
+  These are placeholders. The design session should replace the values here
+  rather than hard-coding colours in components — everything downstream reads
+  from these tokens, so restyling the whole site happens in this one block.
+*/
+@theme {
+  /* Brand */
+  --color-brand-50: oklch(0.97 0.014 254.6);
+  --color-brand-100: oklch(0.93 0.032 255.6);
+  --color-brand-200: oklch(0.88 0.059 254.1);
+  --color-brand-300: oklch(0.81 0.101 251.8);
+  --color-brand-400: oklch(0.71 0.143 254.6);
+  --color-brand-500: oklch(0.62 0.188 259.8);
+  --color-brand-600: oklch(0.55 0.22 262.9);
+  --color-brand-700: oklch(0.49 0.217 264.4);
+  --color-brand-800: oklch(0.42 0.18 265.6);
+  --color-brand-900: oklch(0.38 0.146 265.5);
+
+  /* Accent — used sparingly for highlights and CTAs */
+  --color-accent-400: oklch(0.83 0.16 82.4);
+  --color-accent-500: oklch(0.77 0.17 70.1);
+  --color-accent-600: oklch(0.67 0.16 58.3);
+
+  /* Typography */
+  --font-sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, sans-serif;
+  --font-display: var(--font-sans);
+
+  /* Layout rhythm */
+  --spacing-section: 5rem;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-white text-slate-800 antialiased;
+    font-family: var(--font-sans);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-semibold tracking-tight text-slate-900;
+    font-family: var(--font-display);
+  }
+}
+
+/*
+  Shared primitives, declared with @utility so they can be composed with @apply
+  and overridden inline by ordinary Tailwind classes. The design session is free
+  to rewrite these entirely — no page hard-codes button colours.
+*/
+@utility btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-lg px-5 py-3
+    text-sm font-semibold transition focus:outline-none focus-visible:ring-2
+    focus-visible:ring-brand-500 focus-visible:ring-offset-2
+    disabled:cursor-not-allowed disabled:opacity-60;
+}
+
+@utility btn-primary {
+  @apply btn bg-brand-600 text-white hover:bg-brand-700;
+}
+
+@utility btn-secondary {
+  @apply btn border border-slate-300 bg-white text-slate-800 hover:bg-slate-50;
+}
+
+@utility container-page {
+  @apply mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8;
+}
+
+@utility section {
+  @apply py-16 sm:py-20;
+}
+
+@utility prose-page {
+  & :where(p) {
+    @apply mb-4 leading-relaxed text-slate-600;
+  }
+}
+
+@utility field-label {
+  @apply mb-1.5 block text-sm font-medium text-slate-700;
+}
+
+@utility field-input {
+  @apply block w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm
+    text-slate-900 shadow-sm transition placeholder:text-slate-400
+    focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30;
+}
+
+@utility field-error {
+  @apply mt-1.5 text-sm text-red-600;
+}
