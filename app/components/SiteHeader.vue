@@ -1,81 +1,65 @@
 <script setup lang="ts">
 import { nav } from '~/data/site'
 
-const open = ref(false)
-const route = useRoute()
 const config = useRuntimeConfig()
-
-watch(() => route.fullPath, () => {
-  open.value = false
-})
 </script>
 
 <template>
-  <header class="sticky top-0 z-50 border-b border-slate-200 bg-white/90 backdrop-blur">
-    <div class="container-page flex h-16 items-center justify-between gap-4">
-      <NuxtLink to="/" class="text-lg font-bold tracking-tight text-brand-700">
-        Bijles Bèta
+  <!--
+    The bar floats as a white card on the cream ground. The nav has no mobile
+    menu by design: it stays inline and wraps to a second row on narrow
+    screens, which clears a 360px phone without overflowing.
+  -->
+  <div class="sticky top-0 z-50 bg-cream px-[clamp(12px,3vw,24px)] py-[clamp(10px,1.4vw,18px)]">
+    <header
+      class="mx-auto flex max-w-[1180px] flex-wrap items-center justify-between gap-x-[clamp(16px,2vw,24px)] gap-y-3 rounded-card bg-white px-[clamp(14px,2vw,22px)] py-3 shadow-header"
+    >
+      <NuxtLink to="/" class="flex items-center" aria-label="Bijles Bèta — naar de homepage">
+        <img
+          src="/logo.svg"
+          alt="Bijles Bèta"
+          class="block h-[clamp(34px,3.2vw,44px)] w-auto"
+          width="142"
+          height="56"
+        >
       </NuxtLink>
 
-      <nav class="hidden items-center gap-6 md:flex" aria-label="Hoofdmenu">
+      <nav
+        class="flex min-w-[255px] flex-1 flex-wrap justify-center gap-x-[clamp(16px,2.2vw,28px)] gap-y-2 text-[15px] font-medium"
+        aria-label="Hoofdmenu"
+      >
         <NuxtLink
           v-for="item in nav"
           :key="item.to"
           :to="item.to"
-          class="text-sm font-medium text-slate-600 transition hover:text-brand-700"
+          class="transition hover:text-brand-700"
           active-class="text-brand-700"
         >
           {{ item.label }}
         </NuxtLink>
       </nav>
 
-      <div class="hidden items-center gap-3 md:flex">
-        <a
-          :href="config.public.portalUrl"
-          class="text-sm font-medium text-slate-600 transition hover:text-brand-700"
-        >
-          Inloggen
-        </a>
+      <div class="flex items-center gap-2.5">
         <NuxtLink to="/aanmelden" class="btn-primary">Gratis proefles</NuxtLink>
-      </div>
-
-      <button
-        type="button"
-        class="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-slate-300 md:hidden"
-        :aria-expanded="open"
-        aria-controls="mobile-menu"
-        aria-label="Menu openen"
-        @click="open = !open"
-      >
-        <span class="sr-only">Menu</span>
-        <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            :d="open ? 'M6 18L18 6M6 6l12 12' : 'M4 7h16M4 12h16M4 17h16'"
-          />
-        </svg>
-      </button>
-    </div>
-
-    <div v-if="open" id="mobile-menu" class="border-t border-slate-200 bg-white md:hidden">
-      <nav class="container-page flex flex-col gap-1 py-4" aria-label="Mobiel menu">
-        <NuxtLink
-          v-for="item in nav"
-          :key="item.to"
-          :to="item.to"
-          class="rounded-lg px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
-        >
-          {{ item.label }}
-        </NuxtLink>
         <a
           :href="config.public.portalUrl"
-          class="rounded-lg px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+          class="flex h-[42px] w-[42px] flex-none items-center justify-center rounded-btn border border-line-300 transition hover:bg-cream"
+          aria-label="Inloggen"
         >
-          Inloggen
+          <svg
+            class="h-[18px] w-[18px]"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            aria-hidden="true"
+          >
+            <circle cx="12" cy="8" r="4" />
+            <path d="M4 21c0-4 3.6-6 8-6s8 2 8 6" />
+          </svg>
         </a>
-        <NuxtLink to="/aanmelden" class="btn-primary mt-2">Gratis proefles</NuxtLink>
-      </nav>
-    </div>
-  </header>
+      </div>
+    </header>
+  </div>
 </template>

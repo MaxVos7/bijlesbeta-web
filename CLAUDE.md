@@ -52,12 +52,23 @@ that 503 is intentional. Do not make them silently succeed.
 
 The matching Laravel endpoints have not been built yet.
 
+The signup wizard is data-driven: `app/data/signup.ts` defines the steps and
+returns each step's fields as a function of the answers so far, mirroring the
+Gravity Form's conditional logic. Change questions, options and rules there, not
+in `SignupForm.vue`. `server/api/adres.get.ts` is a read-only PDOK proxy for the
+postcode lookup — it stores nothing and never throws at its caller.
+
 ## Design work
 
-A design session will restyle this site. The structure is deliberately set up so
-that can happen mostly in `app/assets/css/main.css` (tokens + shared utilities)
-plus the components. Page markup and content structure should survive a
-redesign — prefer changing tokens and shared utilities over rewriting every page.
+The design is applied to `/aanmelden`, `SiteHeader` and `SiteFooter`, from a
+Claude Design handoff. `app/assets/css/main.css` now carries the real palette —
+an amber brand on cream and sand grounds, with a warm `ink-*` ramp and Archivo
+as the typeface. The tokens are no longer placeholders.
+
+The remaining pages still use the scaffold's `slate-*` greys. When restyling
+them, replace `slate-*` with `ink-*` / `line-*` and take grounds from
+`cream` / `sand` / `mist` / `ivory` — don't introduce a second neutral scale.
+Keep preferring token and utility changes over rewriting page markup.
 
 ## Deployment
 

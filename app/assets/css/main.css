@@ -3,32 +3,73 @@
 /*
   Design tokens.
 
-  These are placeholders. The design session should replace the values here
-  rather than hard-coding colours in components — everything downstream reads
-  from these tokens, so restyling the whole site happens in this one block.
+  Taken from the Claude Design handoff (`Aanmelden.dc.html`). Components read
+  from these tokens exclusively — restyling the site happens in this block.
+
+  The palette is a warm one: an amber brand on cream and sand grounds, with a
+  warm-grey ink ramp rather than Tailwind's cool slate.
 */
 @theme {
-  /* Brand */
-  --color-brand-50: oklch(0.97 0.014 254.6);
-  --color-brand-100: oklch(0.93 0.032 255.6);
-  --color-brand-200: oklch(0.88 0.059 254.1);
-  --color-brand-300: oklch(0.81 0.101 251.8);
-  --color-brand-400: oklch(0.71 0.143 254.6);
-  --color-brand-500: oklch(0.62 0.188 259.8);
-  --color-brand-600: oklch(0.55 0.22 262.9);
-  --color-brand-700: oklch(0.49 0.217 264.4);
-  --color-brand-800: oklch(0.42 0.18 265.6);
-  --color-brand-900: oklch(0.38 0.146 265.5);
+  /* Brand — amber. 500 is the button fill, 600 its hover, 700 the readable
+     text tone (the lighter steps fail contrast for body copy). */
+  --color-brand-50: #fffdf7;
+  --color-brand-100: #fff3cd;
+  --color-brand-200: #ffe08a;
+  --color-brand-300: #ffd24d;
+  --color-brand-400: #ffcb2b;
+  --color-brand-500: #ffc107;
+  --color-brand-600: #f0b000;
+  --color-brand-700: #c98c00;
+  --color-brand-800: #a06f00;
+  --color-brand-900: #6b4a00;
 
-  /* Accent — used sparingly for highlights and CTAs */
-  --color-accent-400: oklch(0.83 0.16 82.4);
-  --color-accent-500: oklch(0.77 0.17 70.1);
-  --color-accent-600: oklch(0.67 0.16 58.3);
+  /* Accent — the interactive amber used for focus rings, selected controls
+     and the stats heading. Sits a touch deeper than the brand fill. */
+  --color-accent-400: #ffe08a;
+  --color-accent-500: #f5b301;
+  --color-accent-600: #c98c00;
+
+  /* Ink — warm greys for text, darkest first. */
+  --color-ink-900: #1f1d1c;
+  --color-ink-700: #5f5a52;
+  --color-ink-600: #7c766c;
+  --color-ink-500: #8b857c;
+  --color-ink-400: #9b958b;
+  --color-ink-300: #a8a29a;
+
+  /* Lines — borders and dividers, lightest first. */
+  --color-line-100: #eeeae2;
+  --color-line-200: #eae6dd;
+  --color-line-300: #e2ded4;
+  --color-line-400: #d9d4c9;
+
+  /* Grounds */
+  --color-cream: #faf7f0;
+  --color-sand: #f5f1e8;
+  --color-mist: #f8f5ef;
+  --color-ivory: #fffdf7;
+
+  /* Feedback */
+  --color-danger: #d92d20;
+  --color-success-50: #e6f6ec;
+  --color-success-500: #22a45d;
+  --color-success-900: #166534;
 
   /* Typography */
-  --font-sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto,
-    'Helvetica Neue', Arial, sans-serif;
+  --font-sans: 'Archivo', ui-sans-serif, system-ui, -apple-system, 'Segoe UI',
+    Roboto, 'Helvetica Neue', Arial, sans-serif;
   --font-display: var(--font-sans);
+
+  /* Radii */
+  --radius-field: 9px;
+  --radius-btn: 10px;
+  --radius-panel: 12px;
+  --radius-tile: 14px;
+  --radius-card: 16px;
+
+  /* Elevation — tuned to the cream ground, not to white. */
+  --shadow-header: 0 4px 20px rgb(31 29 28 / 0.07);
+  --shadow-card: 0 8px 30px rgb(31 29 28 / 0.07);
 
   /* Layout rhythm */
   --spacing-section: 5rem;
@@ -40,7 +81,7 @@
   }
 
   body {
-    @apply bg-white text-slate-800 antialiased;
+    @apply bg-white text-ink-900 antialiased;
     font-family: var(--font-sans);
   }
 
@@ -48,55 +89,78 @@
   h2,
   h3,
   h4 {
-    @apply font-semibold tracking-tight text-slate-900;
+    @apply font-bold tracking-tight text-ink-900;
     font-family: var(--font-display);
+  }
+
+  ::selection {
+    @apply bg-accent-400;
+  }
+
+  /* Themed keyboard focus everywhere, never the browser default. */
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-accent-500;
   }
 }
 
 /*
   Shared primitives, declared with @utility so they can be composed with @apply
-  and overridden inline by ordinary Tailwind classes. The design session is free
-  to rewrite these entirely — no page hard-codes button colours.
+  and overridden inline by ordinary Tailwind classes.
 */
 @utility btn {
-  @apply inline-flex items-center justify-center gap-2 rounded-lg px-5 py-3
-    text-sm font-semibold transition focus:outline-none focus-visible:ring-2
-    focus-visible:ring-brand-500 focus-visible:ring-offset-2
+  @apply inline-flex items-center justify-center gap-2 whitespace-nowrap
+    rounded-btn px-[18px] py-3 text-sm font-bold transition
     disabled:cursor-not-allowed disabled:opacity-60;
 }
 
 @utility btn-primary {
-  @apply btn bg-brand-600 text-white hover:bg-brand-700;
+  @apply btn bg-brand-500 text-ink-900 hover:bg-brand-600;
 }
 
 @utility btn-secondary {
-  @apply btn border border-slate-300 bg-white text-slate-800 hover:bg-slate-50;
+  @apply btn border border-line-300 bg-white font-semibold text-ink-900
+    hover:bg-cream;
 }
 
 @utility container-page {
-  @apply mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8;
+  @apply mx-auto w-full max-w-[1180px] px-4 sm:px-6;
 }
 
 @utility section {
-  @apply py-16 sm:py-20;
+  @apply py-12 sm:py-16 lg:py-20;
 }
 
 @utility prose-page {
   & :where(p) {
-    @apply mb-4 leading-relaxed text-slate-600;
+    @apply mb-4 leading-relaxed text-ink-700;
   }
 }
 
+/* A small amber lead-in above a heading. Deep enough to read as body text. */
+@utility kicker {
+  @apply text-[15px] font-semibold text-brand-700;
+}
+
 @utility field-label {
-  @apply mb-1.5 block text-sm font-medium text-slate-700;
+  @apply mb-1 block text-[13.5px] font-semibold text-ink-900;
+}
+
+@utility field-hint {
+  @apply mb-2 text-xs leading-relaxed text-ink-500;
 }
 
 @utility field-input {
-  @apply block w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm
-    text-slate-900 shadow-sm transition placeholder:text-slate-400
-    focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30;
+  @apply mt-1.5 block w-full rounded-field border border-line-300 bg-white
+    px-3.5 py-[13px] text-[13.5px] text-ink-900 transition
+    placeholder:text-ink-300 focus:border-accent-500 focus:outline-none
+    focus:ring-2 focus:ring-accent-500/25;
 }
 
 @utility field-error {
-  @apply mt-1.5 text-sm text-red-600;
+  @apply mt-1.5 text-[12.5px] text-danger;
+}
+
+/* Surface used for the form panel and other raised white cards. */
+@utility panel {
+  @apply rounded-card bg-white shadow-card;
 }
