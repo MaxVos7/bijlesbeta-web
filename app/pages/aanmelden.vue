@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { contact, reviews } from '~/data/site'
+import { contact, featuredReview } from '~/data/site'
 
 useSeoMeta({
   title: 'Aanmelden voor een gratis proefles',
@@ -7,7 +7,7 @@ useSeoMeta({
     'Meld je aan voor een gratis en vrijblijvende proefles. Na je aanmelding neemt een van onze docenten contact met je op om de proefles in te plannen.',
 })
 
-const review = reviews[0]
+const review = featuredReview
 </script>
 
 <template>

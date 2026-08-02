@@ -60,15 +60,25 @@ postcode lookup — it stores nothing and never throws at its caller.
 
 ## Design work
 
-The design is applied to `/aanmelden`, `SiteHeader` and `SiteFooter`, from a
-Claude Design handoff. `app/assets/css/main.css` now carries the real palette —
-an amber brand on cream and sand grounds, with a warm `ink-*` ramp and Archivo
-as the typeface. The tokens are no longer placeholders.
+The design is applied to `/`, `/over-ons`, `/tarieven`, `/aanmelden`,
+`/docenten/[slug]` and the shared chrome, from a Claude Design handoff.
+`app/assets/css/main.css` carries the real palette — an amber brand on cream and
+sand grounds, with a warm `ink-*` ramp and Archivo as the typeface. The tokens
+are no longer placeholders.
 
-The remaining pages still use the scaffold's `slate-*` greys. When restyling
-them, replace `slate-*` with `ink-*` / `line-*` and take grounds from
-`cream` / `sand` / `mist` / `ivory` — don't introduce a second neutral scale.
-Keep preferring token and utility changes over rewriting page markup.
+`/contact`, `/werken-bij` and `/kennisbank` had no design to work from and still
+use the scaffold's `slate-*` greys. When restyling them, replace `slate-*` with
+`ink-*` / `line-*` and take grounds from `cream` / `sand` / `mist` / `ivory` —
+don't introduce a second neutral scale. Keep preferring token and utility changes
+over rewriting page markup.
+
+Sections shared across pages are components, not copy-paste: `TrialCta` (the
+amber closing block, with its own short form), `FaqSection`, `StatsBand`,
+`ReviewCarousel`, `TutorCard`, `CheckList` and `RatingLine`.
+
+Watch flex children that hold an `auto-fit` grid — they need `min-w-0` or the
+grid refuses to shrink and the page overflows on a phone. Check new pages at
+360px wide.
 
 ## Deployment
 

@@ -1,0 +1,77 @@
+<script setup lang="ts">
+import { reviews } from '~/data/site'
+
+/** Three reviews at a time, wrapping in both directions. */
+const start = ref(2)
+const visible = computed(() =>
+  [0, 1, 2].map((offset) => reviews[(start.value + offset) % reviews.length]!),
+)
+
+function step(direction: number) {
+  start.value = (start.value + direction + reviews.length) % reviews.length
+}
+</script>
+
+<template>
+  <div class="flex items-center justify-center gap-[clamp(10px,1.8vw,22px)]">
+    <button
+      type="button"
+      class="h-11 w-11 flex-none rounded-btn border border-line-300 bg-white text-base transition hover:border-brand-500 hover:bg-ivory"
+      aria-label="Vorige review"
+      @click="step(-1)"
+    >←</button>
+
+    <!-- min-w-0 lets the grid shrink below its 240px track inside the flex row;
+         without it the three columns overflow the viewport on a phone. -->
+    <div
+      class="grid w-full max-w-[900px] min-w-0 flex-1 gap-[clamp(14px,1.8vw,22px)] [grid-template-columns:repeat(auto-fit,minmax(240px,1fr))]"
+    >
+      <figure
+        v-for="review in visible"
+        :key="review.author"
+        class="flex min-h-[320px] flex-col rounded-tile bg-white p-6"
+      >
+        <svg class="mb-3 block h-[22px] w-[22px]" viewBox="0 0 48 48" aria-hidden="true">
+          <path
+            fill="#FFC107"
+            d="M43.6 20.1H42V20H24v8h11.3C33.7 32.7 29.3 36 24 36a12 12 0 110-24c3.1 0 5.8 1.2 8 3.1l5.7-5.7A20 20 0 1044 24c0-1.3-.1-2.6-.4-3.9z"
+          />
+          <path
+            fill="#FF3D00"
+            d="M6.3 14.7l6.6 4.8A12 12 0 0124 12c3.1 0 5.8 1.2 8 3.1l5.7-5.7A20 20 0 006.3 14.7z"
+          />
+          <path
+            fill="#4CAF50"
+            d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2A11.9 11.9 0 0124 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5A20 20 0 0024 44z"
+          />
+          <path
+            fill="#1976D2"
+            d="M43.6 20.1H42V20H24v8h11.3a12 12 0 01-4.1 5.6l6.2 5.2C36.9 39.2 44 34 44 24c0-1.3-.1-2.6-.4-3.9z"
+          />
+        </svg>
+
+        <p class="mb-2.5 text-sm tracking-[1px] text-accent-500">
+          <span class="sr-only">{{ review.rating }} van de 5 sterren</span>
+          <span aria-hidden="true">{{ '★'.repeat(review.rating) }}</span>
+        </p>
+
+        <h3 class="mb-2 text-[14.5px] leading-snug">{{ review.title }}</h3>
+        <blockquote class="mb-auto text-[13.5px] leading-[1.68] whitespace-pre-line text-ink-700">
+          {{ review.body }}
+        </blockquote>
+
+        <figcaption class="mt-6 border-t border-line-100 pt-4">
+          <span class="block text-[13.5px] font-bold">{{ review.author }}</span>
+          <span class="block text-[12.5px] text-ink-400">{{ review.affiliation }}</span>
+        </figcaption>
+      </figure>
+    </div>
+
+    <button
+      type="button"
+      class="h-11 w-11 flex-none rounded-btn border border-line-300 bg-white text-base transition hover:border-brand-500 hover:bg-ivory"
+      aria-label="Volgende review"
+      @click="step(1)"
+    >→</button>
+  </div>
+</template>
