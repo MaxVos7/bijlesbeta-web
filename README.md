@@ -79,7 +79,10 @@ hidden.
 ### Routes
 
 `/` · `/over-ons` · `/tarieven` · `/kennisbank` · `/kennisbank/[slug]` ·
-`/werken-bij` · `/contact` · `/aanmelden`
+`/werken-bij` · `/contact` · `/aanmelden` · `/docenten/[slug]`
+
+`/docenten/[slug]` renders one tutor from `app/data/tutors.ts`; an unknown slug
+404s. There is no `/docenten` index — `/over-ons#team` is the listing.
 
 ### Content
 
@@ -210,9 +213,17 @@ so the forms would have to post to Laravel directly (and CORS gets involved).
   `server/api/aanmelden.post.ts` for its shape.
 - Spam protection on signup is the honeypot only. The Gravity Form also runs
   Cloudflare Turnstile; adding it here needs a site key and a secret.
-- Visual design is applied to `/aanmelden`, the header and the footer. The other
-  pages still use the scaffold's slate greys and will look cool against the new
-  warm palette until they get the same treatment.
+- `/contact`, `/werken-bij` and `/kennisbank` have no design in the handoff, so
+  they still use the scaffold's slate greys. They wear the new header, footer and
+  type, but their page bodies want the same treatment as the rest.
+- Several photos are stand-ins. The design left three image slots empty (the
+  "Ons verhaal" photo, the Tarieven blackboard shot and the Over ons teamuitje
+  banner); those reuse `studenten.png` and `persoonlijk.png` for now. The
+  portrait in the trial-lesson block is still hotlinked from bijlesbeta.nl.
+- Tutor photos load from `mijn.bijlesbeta.nl`. If that host is ever locked down
+  or the portal moves, the team grid goes blank — worth copying them locally.
+- Archivo loads from Google Fonts. For a Dutch site, self-hosting the woff2 is
+  the safer call on privacy grounds and removes a third-party render dependency.
 - Real favicon and OG images (the logo itself is now in `public/logo.svg`)
 - Docent profiles on `/over-ons` (currently a placeholder with a `TODO`)
 - Sitemap generation (`robots.txt` already references `/sitemap.xml`)

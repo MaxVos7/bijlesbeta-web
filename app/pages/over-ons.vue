@@ -1,107 +1,265 @@
 <script setup lang="ts">
+import { comparison, heroPromises, overOnsBlocks, reassurance } from '~/data/site'
+import { findTutor, tutors } from '~/data/tutors'
+
 useSeoMeta({
   title: 'Over ons',
   description:
     'Bijles Bèta is opgericht door bètastudenten uit Groningen die hun enthousiasme voor wiskunde, natuurkunde en scheikunde willen delen.',
 })
 
-const principles = [
-  {
-    title: 'Persoonlijk contact',
-    description:
-      'We kennen onze leerlingen, ouders en docenten persoonlijk. Daardoor kunnen we flexibel zijn en snel schakelen als er iets verandert.',
-  },
-  {
-    title: 'Efficiënt en snel',
-    description:
-      'Een kleine organisatie zonder ingewikkelde structuren. Contact loopt via mail, telefoon of WhatsApp, en dat houdt de kosten laag.',
-  },
-  {
-    title: 'Een fijne leeromgeving',
-    description:
-      'Leerlingen leren het beste als ze zich op hun gemak voelen. Daar draait de match tussen leerling en docent om.',
-  },
-]
+// The grid is broken up by a story card and a full-width photo, so the roster
+// is split into three runs rather than rendered as one list.
+const firstRun = computed(() => tutors.slice(0, 6))
+const secondRun = computed(() => tutors.slice(6, 10))
+const rest = computed(() => tutors.slice(10))
 
-const studies = [
-  'Natuurkunde',
-  'Wiskunde',
-  'Scheikunde',
-  'Sterrenkunde',
-  'Technische opleidingen',
-  'Life Sciences',
-]
+const storyTutor = computed(() => findTutor('jelmer-spoor') ?? tutors[0]!)
+
+const storyQuote = computed(() => {
+  const intro = storyTutor.value.bio[0] ?? ''
+  return intro.length > 160 ? `${intro.slice(0, 160).trimEnd()}…` : intro
+})
 </script>
 
 <template>
   <div>
-    <PageHero
-      eyebrow="Over ons"
-      title="Samen een passie voor Bèta"
-      intro="Bijles Bèta is opgericht door ambitieuze studenten met een duidelijk doel: hun enthousiasme voor de bètavakken delen met Groningen."
-    />
-
-    <section class="section">
-      <div class="container-page grid gap-12 lg:grid-cols-2">
-        <div class="prose-page">
-          <h2 class="text-2xl">Ons verhaal</h2>
-          <p class="mt-4">
-            Wat begon als een handjevol studenten dat medescholieren hielp met wiskunde, is
-            uitgegroeid tot een team van meer dan dertig docenten. Wat hetzelfde bleef, is de
-            aanpak: één op één begeleiding, door iemand die het vak zelf studeert en er
-            enthousiast over is.
+    <section
+      class="bg-cream px-[clamp(16px,4vw,24px)] pt-[clamp(28px,4vw,48px)] pb-[clamp(48px,7vw,84px)]"
+    >
+      <div
+        class="mx-auto grid max-w-[1180px] items-center gap-[clamp(32px,5vw,60px)] [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))]"
+      >
+        <div class="min-w-0">
+          <p class="kicker mb-2.5">Over ons</p>
+          <h1 class="mb-[18px] text-[clamp(28px,3.6vw,42px)] leading-[1.14] tracking-[-0.03em]">
+            Samen een passie voor Bèta
+          </h1>
+          <p class="mb-[26px] max-w-[46ch] text-[clamp(15px,1.2vw,16px)] leading-[1.65] text-ink-600">
+            Opgericht door een groep ambitieuze studenten met een duidelijke visie: onze passie voor
+            Bèta vakken delen met Groningen.
           </p>
-          <p>
-            We geloven dat een goede match het verschil maakt. Niet alleen op vakinhoud, maar
-            ook qua persoon. Daarom koppelen we handmatig, en niet via een algoritme.
-          </p>
-        </div>
 
-        <div class="prose-page">
-          <h2 class="text-2xl">Onze aanpak</h2>
-          <dl class="mt-4 space-y-6">
-            <div v-for="principle in principles" :key="principle.title">
-              <dt class="font-semibold text-slate-900">{{ principle.title }}</dt>
-              <dd class="mt-1 leading-relaxed text-slate-600">{{ principle.description }}</dd>
-            </div>
-          </dl>
-        </div>
-      </div>
-    </section>
+          <CheckList :items="heroPromises" class="mb-[30px]" />
 
-    <section class="section bg-slate-50">
-      <div class="container-page">
-        <h2 class="text-2xl sm:text-3xl">Ons team</h2>
-        <p class="mt-3 max-w-2xl text-slate-600">
-          Al onze docenten zijn bètastudenten aan de Rijksuniversiteit Groningen. Ze studeren
-          onder andere:
-        </p>
-
-        <ul class="mt-8 flex flex-wrap gap-3">
-          <li
-            v-for="study in studies"
-            :key="study"
-            class="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm text-slate-700"
+          <NuxtLink
+            to="/aanmelden"
+            class="btn-primary gap-3.5 rounded-[11px] px-6 py-[15px] text-[15px] shadow-[0_6px_18px_rgb(245_179_1_/_0.35)] hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgb(245_179_1_/_0.42)]"
           >
-            {{ study }}
-          </li>
-        </ul>
-
-        <!-- TODO: docentprofielen inladen zodra de bron bekend is (Laravel API of CMS). -->
-        <p class="mt-8 text-sm text-slate-500">
-          Benieuwd wie je les gaat geven? Je maakt kennis tijdens de gratis proefles.
-        </p>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="container-page flex flex-wrap items-center justify-between gap-6">
-        <div>
-          <h2 class="text-2xl">Zin om kennis te maken?</h2>
-          <p class="mt-2 text-slate-600">De eerste les is gratis en vrijblijvend.</p>
+            Direct aanmelden <span class="text-lg" aria-hidden="true">→</span>
+          </NuxtLink>
+          <p class="mt-3.5 text-[13px] text-ink-400">{{ reassurance }}</p>
         </div>
-        <NuxtLink to="/aanmelden" class="btn-primary">Plan een proefles</NuxtLink>
+
+        <div class="min-w-0">
+          <img
+            src="/img/team-collage.png"
+            alt="Ons team"
+            class="mx-auto block h-auto w-full max-w-[480px]"
+          >
+        </div>
       </div>
     </section>
+
+    <section
+      id="team"
+      class="bg-white px-[clamp(16px,4vw,24px)] pt-[clamp(48px,6vw,80px)] pb-[clamp(30px,4vw,50px)]"
+    >
+      <div
+        class="mx-auto grid max-w-[1180px] gap-[clamp(14px,1.6vw,20px)] [grid-template-columns:repeat(auto-fill,minmax(215px,1fr))]"
+      >
+        <TutorCard v-for="tutor in firstRun" :key="tutor.slug" :tutor="tutor" />
+
+        <figure
+          class="flex flex-col items-center rounded-tile bg-sand p-[clamp(24px,3vw,34px)] text-center sm:col-span-2"
+        >
+          <figcaption class="mb-4 text-sm font-semibold">
+            Het verhaal van {{ storyTutor.name }}
+          </figcaption>
+          <blockquote
+            class="mb-3.5 max-w-[44ch] text-[clamp(16px,1.6vw,19px)] leading-[1.5] font-bold tracking-[-0.02em]"
+          >
+            “{{ storyQuote }}
+          </blockquote>
+          <NuxtLink
+            :to="`/docenten/${storyTutor.slug}`"
+            class="mb-auto border-b-[1.5px] border-ink-900 text-sm"
+          >
+            Lees meer
+          </NuxtLink>
+          <div class="mt-[26px] flex items-center gap-3 self-start text-left">
+            <img
+              :src="storyTutor.photo"
+              :alt="storyTutor.name"
+              class="block h-11 w-11 flex-none rounded-lg bg-line-200 object-cover"
+              loading="lazy"
+            >
+            <div>
+              <p class="text-[13.5px] font-bold">{{ storyTutor.name }}</p>
+              <p class="text-xs text-ink-400">{{ storyTutor.study }}</p>
+            </div>
+          </div>
+        </figure>
+
+        <TutorCard v-for="tutor in secondRun" :key="tutor.slug" :tutor="tutor" />
+      </div>
+    </section>
+
+    <section class="bg-white px-[clamp(16px,4vw,24px)] pb-[clamp(24px,3vw,40px)]">
+      <div class="relative mx-auto max-w-[1180px] overflow-hidden rounded-tile">
+        <img
+          src="/img/studenten.png"
+          alt="Het team van Bijles Bèta tijdens het teamuitje"
+          class="block aspect-[16/5] w-full object-cover"
+          loading="lazy"
+        >
+        <span
+          class="pointer-events-none absolute right-[18px] bottom-3.5 text-[13px] font-bold text-white [text-shadow:0_1px_6px_rgb(0_0_0_/_0.5)]"
+        >
+          Teamuitje 2025
+        </span>
+      </div>
+    </section>
+
+    <section class="bg-white px-[clamp(16px,4vw,24px)] pt-[clamp(24px,3vw,40px)] pb-[clamp(56px,7vw,90px)]">
+      <div
+        class="mx-auto grid max-w-[1180px] gap-[clamp(14px,1.6vw,20px)] [grid-template-columns:repeat(auto-fill,minmax(215px,1fr))]"
+      >
+        <TutorCard v-for="tutor in rest" :key="tutor.slug" :tutor="tutor" />
+      </div>
+    </section>
+
+    <section
+      class="bg-white px-[clamp(16px,4vw,24px)] pt-[clamp(30px,4vw,50px)] pb-[clamp(56px,7vw,90px)]"
+    >
+      <div class="mx-auto max-w-[1180px]">
+        <div class="mb-[clamp(28px,3.5vw,44px)] text-center">
+          <p class="kicker mb-2.5">{{ comparison.kicker }}</p>
+          <h2 class="text-[clamp(24px,2.9vw,33px)] tracking-[-0.025em]">{{ comparison.title }}</h2>
+        </div>
+
+        <div
+          class="relative mx-auto grid max-w-[840px] gap-[clamp(14px,2vw,22px)] [grid-template-columns:repeat(auto-fit,minmax(280px,1fr))]"
+        >
+          <div class="overflow-hidden rounded-tile border border-line-200 bg-white">
+            <div class="bg-sand px-6 py-[26px] text-center">
+              <span
+                class="mb-3.5 inline-flex h-[38px] w-[38px] items-center justify-center rounded-[9px] bg-ink-900 text-lg font-extrabold text-brand-500"
+                aria-hidden="true"
+              >B</span>
+              <h3 class="mb-2 text-[17px]">{{ comparison.us.title }}</h3>
+              <p class="text-[13px] leading-[1.55] text-ink-600">{{ comparison.us.body }}</p>
+            </div>
+            <ul class="m-0 list-none px-[22px] pt-2 pb-[22px]">
+              <li
+                v-for="point in comparison.us.points"
+                :key="point"
+                class="flex items-start gap-3 border-b border-line-100 py-3.5 text-[13px] leading-normal last:border-b-0"
+              >
+                <svg
+                  class="mt-0.5 h-3.5 w-3.5 flex-none text-success-500"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="3.4"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M4 12l6 6L20 6" />
+                </svg>
+                {{ point }}
+              </li>
+            </ul>
+          </div>
+
+          <div class="overflow-hidden rounded-tile border border-line-200 bg-white">
+            <div class="bg-sand px-6 py-[26px] text-center">
+              <span class="mb-3.5 inline-flex h-[38px] w-[38px] items-center justify-center">
+                <svg
+                  class="h-[26px] w-[26px] text-ink-400"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M4 21V5a1 1 0 011-1h9a1 1 0 011 1v16M15 10h4a1 1 0 011 1v10M3 21h18M7 8h2M7 12h2M7 16h2M18 14h.01M18 18h.01"
+                  />
+                </svg>
+              </span>
+              <h3 class="mb-2 text-[17px]">{{ comparison.them.title }}</h3>
+              <p class="text-[13px] leading-[1.55] text-ink-600">{{ comparison.them.body }}</p>
+            </div>
+            <ul class="m-0 list-none px-[22px] pt-2 pb-[22px]">
+              <li
+                v-for="point in comparison.them.points"
+                :key="point"
+                class="flex items-start gap-3 border-b border-line-100 py-3.5 text-[13px] leading-normal last:border-b-0"
+              >
+                <svg
+                  class="mt-0.5 h-3.5 w-3.5 flex-none text-danger"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="3.4"
+                  stroke-linecap="round"
+                  aria-hidden="true"
+                >
+                  <path d="M6 6l12 12M18 6L6 18" />
+                </svg>
+                {{ point }}
+              </li>
+            </ul>
+          </div>
+
+          <span
+            class="pointer-events-none absolute top-[38%] left-1/2 flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-brand-500 text-[15px] font-extrabold shadow-[0_6px_18px_rgb(245_179_1_/_0.4)]"
+            aria-hidden="true"
+          >VS</span>
+        </div>
+      </div>
+    </section>
+
+    <section
+      v-for="(block, index) in overOnsBlocks"
+      :key="block.title"
+      class="bg-white px-[clamp(16px,4vw,24px)] pb-[clamp(40px,5vw,70px)]"
+    >
+      <div
+        class="mx-auto grid max-w-[1080px] items-center gap-[clamp(30px,4.5vw,56px)] [grid-template-columns:repeat(auto-fit,minmax(300px,1fr))]"
+      >
+        <img
+          v-if="index % 2 === 1"
+          :src="block.image"
+          :alt="block.alt"
+          class="block aspect-[16/10] w-full min-w-0 rounded-tile object-cover"
+          loading="lazy"
+        >
+
+        <div class="min-w-0">
+          <h2 class="mb-[18px] text-[clamp(22px,2.5vw,29px)] tracking-[-0.025em]">{{ block.title }}</h2>
+          <p class="mb-[26px] text-sm leading-[1.75] text-ink-700">{{ block.body }}</p>
+          <NuxtLink :to="block.cta.to" class="btn-primary gap-3 px-5 py-[13px]">
+            {{ block.cta.label }} <span aria-hidden="true">→</span>
+          </NuxtLink>
+        </div>
+
+        <img
+          v-if="index % 2 === 0"
+          :src="block.image"
+          :alt="block.alt"
+          class="block aspect-[16/10] w-full min-w-0 rounded-tile object-cover"
+          loading="lazy"
+        >
+      </div>
+    </section>
+
+    <TrialCta />
+
+    <FaqSection />
   </div>
 </template>

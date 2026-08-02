@@ -43,6 +43,10 @@
   --color-line-300: #e2ded4;
   --color-line-400: #d9d4c9;
 
+  /* Text on the solid amber CTA block, where ink-* is too cold to sit well. */
+  --color-on-brand: #6b5200;
+  --color-on-brand-muted: #7a5f00;
+
   /* Grounds */
   --color-cream: #faf7f0;
   --color-sand: #f5f1e8;
