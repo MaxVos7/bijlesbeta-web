@@ -44,8 +44,9 @@ instead of being sent anywhere — so the forms stay testable locally.
 ```
 app/
   assets/css/main.css     Design tokens (@theme) + shared utilities (@utility)
-  components/             SiteHeader, SiteFooter, PageHero, FaqList, forms
-  data/site.ts            Nav, contact details, pricing plans, FAQ copy
+  components/             SiteHeader, SiteFooter, PageHero, FaqList, StatsBand, forms
+  data/site.ts            Nav, contact details, pricing plans, FAQ copy, stats, reviews
+  data/signup.ts          Aanmeld wizard: steps, fields, options, conditional logic
   data/kennisbank.ts      Kennisbank articles (typed, no CMS)
   layouts/default.vue     Header + main + footer shell
   pages/                  File-based routes
@@ -53,8 +54,27 @@ app/
 server/
   api/contact.post.ts     Validates + forwards contact form
   api/aanmelden.post.ts   Validates + forwards signup form
+  api/adres.get.ts        Postcode → street/city/codes, proxied to PDOK
   utils/laravel.ts        Forwarding + honeypot helpers
 ```
+
+### The aanmeld wizard
+
+`/aanmelden` is a four-step wizard ported from the Gravity Form
+"Aanmeldformulier" that runs on the current site. `app/data/signup.ts` holds the
+whole form as data — each step's fields are a function of the answers so far,
+which is how Gravity Forms' conditional logic is reproduced. `SignupForm.vue`
+only renders what that module returns, so changing a question, an option or a
+rule is a data edit rather than a template one. Each key carries its Gravity
+Forms field id in a comment for mapping the payload downstream.
+
+Street and city are filled from a postcode lookup (`/api/adres`, proxied to the
+public PDOK Locatieserver), which also supplies the two codes Gravity Forms
+keeps hidden — `woonplaatscode` and `gemeentecode`. Those decide whether an
+at-home lesson falls inside gemeente Groningen, which drives the travel-cost and
+out-of-region warnings on the last step. The lookup is best-effort: if it fails,
+the visitor types street and city themselves and the warnings simply stay
+hidden.
 
 ### Routes
 
@@ -93,6 +113,8 @@ POST to the Laravel app:
 | ------------------- | ------------------------- |
 | `/api/contact`      | `/api/website/contact`    |
 | `/api/aanmelden`    | `/api/website/aanmelden`  |
+
+(`/api/adres` is not part of this — it reads from PDOK and stores nothing.)
 
 **These Laravel endpoints do not exist yet** — they need to be added to the
 `bijlesbeta` app (or the paths in `server/api/*.post.ts` pointed at whatever
@@ -180,9 +202,18 @@ so the forms would have to post to Laravel directly (and CORS gets involved).
 
 ## Still to do
 
-- Laravel endpoints for contact + signup, and pointing `NUXT_LARAVEL_API_URL` at them
-- Visual design — a dedicated design session will work through `main.css` and the components
-- Real logo, favicon, and OG images (currently the default Nuxt favicon)
+- **`/algemene-voorwaarden` and `/privacy` do not exist yet** — the footer and
+  the signup consent checkbox both link to them, so those links 404 today. The
+  consent link is the urgent one.
+- Laravel endpoints for contact + signup, and pointing `NUXT_LARAVEL_API_URL` at
+  them. The signup payload now matches the Gravity Form's field set — see
+  `server/api/aanmelden.post.ts` for its shape.
+- Spam protection on signup is the honeypot only. The Gravity Form also runs
+  Cloudflare Turnstile; adding it here needs a site key and a secret.
+- Visual design is applied to `/aanmelden`, the header and the footer. The other
+  pages still use the scaffold's slate greys and will look cool against the new
+  warm palette until they get the same treatment.
+- Real favicon and OG images (the logo itself is now in `public/logo.svg`)
 - Docent profiles on `/over-ons` (currently a placeholder with a `TODO`)
 - Sitemap generation (`robots.txt` already references `/sitemap.xml`)
 - Analytics, and redirects from the old URL structure
