@@ -242,6 +242,48 @@ export const contactFormSuccess = {
   body: 'We hebben je bericht ontvangen en nemen zo snel mogelijk contact met je op.',
 } as const
 
+/**
+ * Zo werkt het — the route from aanmelding to the first bijles.
+ *
+ * `icon` names a path drawn inline in the page, as on `features`: the four
+ * step illustrations from the design aren't in the repo, so these are line
+ * icons in the brand amber. Swap them for the real drawings when they land.
+ */
+export const zoWerktHet = {
+  title: 'Zo werkt het',
+  intro:
+    'Krijg snel de juiste match met een professionele bijles docent. Leer elkaar kennen tijdens de proefles en maak een plan voor de bijlessen.',
+  /** Scrolls to the stappenplan below rather than leaving the page. */
+  secondaryCta: 'Kennismaking',
+  stepsIntro: {
+    kicker: 'Zo werkt het',
+    title: 'Het stappenplan',
+  },
+  steps: [
+    {
+      icon: 'form',
+      title: 'Stap 1: Aanmelden',
+      body: 'Meld je aan via ons handige aanmeldformulier.',
+    },
+    {
+      icon: 'match',
+      title: 'Stap 2: Match',
+      body: 'We gaan direct op zoek naar een docent die goed bij jou past.',
+    },
+    {
+      icon: 'trial',
+      title: 'Stap 3: Proefles',
+      body: 'Leer elkaar kennen en maak een plan voor de komende bijlessen.',
+    },
+    {
+      icon: 'lesson',
+      title: 'Stap 4: Bijles',
+      body: 'Met jouw bijlesdocent krijg je stap voor stap grip op die lastige bètavakken.',
+    },
+  ],
+  stepsLink: { label: 'Meld je hier aan', to: '/aanmelden' },
+} as const
+
 /** The Bijles Bèta / reguliere aanbieders comparison on Over ons. */
 export const comparison = {
   kicker: 'Daarom kies je voor Bijles Bèta',
