@@ -314,6 +314,79 @@ export const comparison = {
   },
 } as const
 
+/**
+ * Het bedrijf — the company story page, recreated from a Claude Design
+ * handoff based on screenshots of the legacy site. Lives at `/het-bedrijf`,
+ * separate from `/over-ons`, which keeps its own tutor roster and comparison
+ * table.
+ */
+export const hetBedrijf = {
+  hero: {
+    title: 'Bèta Bijles in Groningen sinds 2017',
+    body: 'Bijles Bèta is niet zomaar een bijles bedrijf. Wij zijn een groep van gepassioneerd bèta studenten in Groningen die onze passie voor het vak willen overbrengen aan anderen. Ontstaan met een duidelijke visie. Ontdek onze geschiedenis en onze kernwaarden.',
+    image: '/img/het-bedrijf-hero.png',
+    imageAlt: 'Twee leerlingen werken samen aan wiskunde',
+  },
+  verhaal: {
+    title: 'Ons verhaal',
+    body: 'Bijles kan hét hulpmiddel zijn om een leerling weer mee te laten komen op school. In 2017 zagen Mathijn en Max, beiden met een passie voor de exacte vakken, dit als een unieke kans. Vanuit Groningen richtten zij Bijles Bèta op met een duidelijke visie: wij laten leerlingen zien hoe je bèta vakken aanpakt en wanneer je dat eenmaal ziet, wordt een bèta vak ontzettend leuk!',
+    image: '/img/het-bedrijf-verhaal.png',
+    imageAlt: 'Twee docenten van Bijles Bèta met een kruiwagen',
+  },
+  aanpak: {
+    title: 'Onze aanpak',
+    body: [
+      'Voor ons is bijles een hulpmiddel om de leerling zo snel mogelijk weer mee te laten komen op school. We bieden handvatten waarmee leerlingen zelf de lessen beter kunnen volgen en de lol van het vak ontdekken. Onze prioriteit: een leerling leert zelf hoe je vraagstukken in een bèta vak aanpakt. Wij geven onze bijles vanuit passie voor de exacte vakken.',
+      'Wij geven bijles wiskunde, natuurkunde en scheikunde vanuit een passie voor de exacte vakken op vmbo, havo en vwo niveau.',
+    ],
+    image: '/img/het-bedrijf-docent.png',
+    imageAlt: 'Docent van Bijles Bèta',
+  },
+  team: {
+    title: 'Het team',
+    body: 'Bijles Bèta wordt vanaf het begin volledig georganiseerd door studenten van de rijksuniversiteit Groningen. Hierdoor is een hecht team ontstaan die veel contact met elkaar hebben en van elkaar leren.',
+    /** Split around the bold "buddy systeem" mid-sentence, same pattern as `statsIntro`. */
+    buddyBefore: 'Dit wordt versterkt door ons unieke ',
+    buddyBold: 'buddy systeem',
+    buddyAfter:
+      '. Beginnende docenten worden gekoppeld aan ervaren docenten, tijdens ieder bijles traject is er geregeld contact tussen beide docenten. Hierdoor krijgt een beginnend docent de kennis en het zelfvertrouwen om een kwalitatieve bijles te verzorgen.',
+    image: '/img/het-bedrijf-team.jpg',
+    imageAlt: 'Het team van Bijles Bèta tijdens een teamavond',
+  },
+  innovaties: {
+    kicker: 'Innovaties',
+    title: 'Zo blijft onze Bijles efficient en effectief',
+    intro: [
+      'Binnen Bijles Bèta zijn we vanaf onze oprichting gefocust op innovatie. Wij proberen onze organisatie altijd zo efficiënt mogelijk te laten werken. Hierdoor kunnen we onze tarieven laag houden.',
+      'Daarnaast zijn we altijd bezig om onze dienst te verbeteren. Bijles lijkt misschien een simpel product, maar door innovaties proberen wij meer te bieden dan onze concurrenten.',
+    ],
+    items: [
+      {
+        title: 'Ons eigen administratie portaal',
+        body: [
+          'Bijles Bèta heeft in de loop van de jaren een eigen administratie portaal ontwikkeld. In dit portaal geeft docenten, leerlingen en administratoren makkelijk toegang tot alle benodigde informatie. Lessen registratie, persoonsregistratie, facturatie en uitbetalingen gebeuren volledig automatisch.',
+          'Het systeem werkt zelfs zo goed dat het ondertussen ook door andere bijles bedrijven wordt gebruikt onder de naam StaatGenoteerd.',
+        ],
+      },
+      {
+        title: 'Bètatheek',
+        body: [
+          'Bijles Bèta focust de goede uitleg van de stof. Sinds kort zijn we bezig met het ontwikkelen van onze eigen kennisbank genaamd Bètatheek. De bètatheek is een collectie van artikelen die elk een specifiek vraagstuk uitgebreid uitlegt. De bètatheek dient als oefenmateriaal voor onze eigen leerlingen en voor alle andere bezoekers van onze website. Ook dient het als database voor onze docenten om oefenvragen uit te halen die ze kunnen gebruiken tijdens een bijles.',
+          'De bètatheek is nog in ontwikkeling en komt binnenkort beschikbaar! Blijf op de hoogte via een van onze sociale media kanalen.',
+        ],
+      },
+      {
+        title: 'Unieke examentraining',
+        body: [
+          'Het centraal examen is misschien wel de belangrijkste toets tijdens de middelbare school. Bijles Bèta biedt hiervoor een unieke ondersteuning: Bijles Bèta examentraining.',
+          'Onze examentraining is een intensieve persoonlijke begeleiding in de periode tussen de laatste tentamenweek en het centraal examen. Aan de hand van een speciaal ontwikkelde planning en toegang tot een uitgebreide collectie van uitwerkingen van examenvragen bereiden we onze leerlingen optimaal voor op de centrale examens.',
+          'Lees hier meer over onze examentraining.',
+        ],
+      },
+    ],
+  },
+} as const
+
 /** The two alternating text/photo blocks on Over ons. */
 export const overOnsBlocks = [
   {
