@@ -203,6 +203,42 @@ export const faqIntro = {
   link: 'Neem contact op!',
 } as const
 
+/**
+ * The contact page. Its FAQ sits beside the accordion rather than above it, so
+ * it has its own lead-in instead of reusing `faqIntro`.
+ */
+export const contactPage = {
+  kicker: 'Contact',
+  title: 'Zo kan je ons bereiken',
+  intro:
+    'Hoi! Mijn naam is Max en ik ben de contactpersoon van Bijles Bèta. Twijfel je ergens over? Of heb je een vraag. Neem dan nu contact op.',
+  openingHoursTitle: 'Openingstijden:',
+  faq: {
+    title: 'Veelgestelde vragen (FAQ)',
+    body: 'Bekijk onze veelgestelde vragen (FAQ)',
+  },
+  /** The panel beside the hero — placeholders stand in for labels here. */
+  form: {
+    kicker: 'Voor al je vragen',
+    title: 'Contactformulier',
+    firstName: 'Voornaam',
+    lastName: 'Achternaam',
+    email: 'E-mailadres',
+    message: 'Bericht',
+    privacy: 'Ik ga akkoord met het privacybeleid.',
+    /** Set in red directly after `privacy`, with no space between. */
+    privacyRequired: '(Vereist)',
+    submit: 'Verzenden',
+    submitting: 'Versturen…',
+  },
+} as const
+
+/** Shown by both variants of ContactForm once a message is through. */
+export const contactFormSuccess = {
+  title: 'Bedankt voor je bericht',
+  body: 'We hebben je bericht ontvangen en nemen zo snel mogelijk contact met je op.',
+} as const
+
 /** The Bijles Bèta / reguliere aanbieders comparison on Over ons. */
 export const comparison = {
   kicker: 'Daarom kies je voor Bijles Bèta',

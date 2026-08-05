@@ -61,12 +61,18 @@ postcode lookup — it stores nothing and never throws at its caller.
 ## Design work
 
 The design is applied to `/`, `/over-ons`, `/tarieven`, `/aanmelden`,
-`/docenten/[slug]` and the shared chrome, from a Claude Design handoff.
-`app/assets/css/main.css` carries the real palette — an amber brand on cream and
-sand grounds, with a warm `ink-*` ramp and Archivo as the typeface. The tokens
-are no longer placeholders.
+`/contact`, `/docenten/[slug]` and the shared chrome, from a Claude Design
+handoff. `app/assets/css/main.css` carries the real palette — an amber brand on
+cream and sand grounds, with a warm `ink-*` ramp and Archivo as the typeface.
+The tokens are no longer placeholders.
 
-`/contact`, `/werken-bij` and `/kennisbank` had no design to work from and still
+`/contact` puts its hero and its form panel in one sand band and sets its FAQ
+heading beside the accordion, so it uses neither `PageHero` nor `FaqSection`.
+Its form is `ContactForm` in its `panel` variant — same component as
+`/werken-bij`, with the name split in two, no phone field, placeholders instead
+of labels and required privacy consent.
+
+`/werken-bij` and `/kennisbank` had no design to work from and still
 use the scaffold's `slate-*` greys. When restyling them, replace `slate-*` with
 `ink-*` / `line-*` and take grounds from `cream` / `sand` / `mist` / `ivory` —
 don't introduce a second neutral scale. Keep preferring token and utility changes
