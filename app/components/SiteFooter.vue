@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { landingPath } from '~/data/landings'
 import {
   contact,
   legalLinks,
@@ -123,7 +124,11 @@ const config = useRuntimeConfig()
         <div>
           <p class="mb-2.5 font-bold text-brand-700">Vakken</p>
           <div class="flex flex-col items-start gap-1.5">
-            <NuxtLink v-for="subject in subjects" :key="subject.slug" to="/tarieven">
+            <NuxtLink
+              v-for="subject in subjects"
+              :key="subject.slug"
+              :to="landingPath(subject.slug)"
+            >
               {{ subject.name }}
             </NuxtLink>
             <NuxtLink to="/tarieven">Bijles aan huis</NuxtLink>

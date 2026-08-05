@@ -1,6 +1,19 @@
 <script setup lang="ts">
 import { nav } from '~/data/site'
 
+withDefaults(
+  defineProps<{
+    /**
+     * Drops the cream ground so the white bar can float over the landing
+     * pages' dark photographic hero. Not sticky in this variant — a bar with
+     * no ground of its own would carry the hero's transparency over the white
+     * sections below it.
+     */
+    transparent?: boolean
+  }>(),
+  { transparent: false },
+)
+
 const config = useRuntimeConfig()
 </script>
 
@@ -10,7 +23,10 @@ const config = useRuntimeConfig()
     menu by design: it stays inline and wraps to a second row on narrow
     screens, which clears a 360px phone without overflowing.
   -->
-  <div class="sticky top-0 z-50 bg-cream px-[clamp(12px,3vw,24px)] py-[clamp(10px,1.4vw,18px)]">
+  <div
+    class="px-[clamp(12px,3vw,24px)] py-[clamp(10px,1.4vw,18px)]"
+    :class="transparent ? 'relative z-10' : 'sticky top-0 z-50 bg-cream'"
+  >
     <header
       class="mx-auto flex max-w-[1180px] flex-wrap items-center justify-between gap-x-[clamp(16px,2vw,24px)] gap-y-3 rounded-card bg-white px-[clamp(14px,2vw,22px)] py-3 shadow-header"
     >

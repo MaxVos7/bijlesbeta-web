@@ -287,6 +287,12 @@ export const overOnsBlocks = [
   },
 ] as const
 
+export const pricingIntro = {
+  kicker: 'Tarieven en pakketten',
+  title: 'Eerlijk geprijsd',
+  body: 'Met pakketten stimuleren we consistente bijles waardoor jij het vak echt leert begrijpen. Het uurtarief is afhankelijk van het gekozen pakket.',
+} as const
+
 /** How the pricing packages work — the list beside the photo on Tarieven. */
 export const pricingNotes = [
   'Je kan altijd meer bijles afnemen dan in het pakket zit, je betaalt zelfde uurtarief.',
