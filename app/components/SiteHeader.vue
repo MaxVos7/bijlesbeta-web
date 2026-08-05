@@ -15,6 +15,13 @@ withDefaults(
 )
 
 const config = useRuntimeConfig()
+const route = useRoute()
+
+// Pages opening on the dark hero band darken the strip too, via
+// `definePageMeta({ headerGround: 'ink' })`. Everything else stays on cream.
+const groundClass = computed(() =>
+  route.meta.headerGround === 'ink' ? 'bg-ink-900' : 'bg-cream',
+)
 </script>
 
 <template>
@@ -25,7 +32,7 @@ const config = useRuntimeConfig()
   -->
   <div
     class="px-[clamp(12px,3vw,24px)] py-[clamp(10px,1.4vw,18px)]"
-    :class="transparent ? 'relative z-10' : 'sticky top-0 z-50 bg-cream'"
+    :class="transparent ? 'relative z-10' : ['sticky top-0 z-50', groundClass]"
   >
     <header
       class="mx-auto flex max-w-[1180px] flex-wrap items-center justify-between gap-x-[clamp(16px,2vw,24px)] gap-y-3 rounded-card bg-white px-[clamp(14px,2vw,22px)] py-3 shadow-header"

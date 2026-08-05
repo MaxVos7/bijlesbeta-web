@@ -15,6 +15,9 @@ export const contact = {
   whatsappHref: 'https://wa.me/31638260623',
   email: 'contact@bijlesbeta.nl',
   emailHref: 'mailto:contact@bijlesbeta.nl',
+  /** Sollicitaties go to a separate mailbox — shown beside the form on Werken bij. */
+  applicationsEmail: 'info@bijlesbeta.nl',
+  applicationsEmailHref: 'mailto:info@bijlesbeta.nl',
   address: {
     street: 'De Brink 34',
     postalCode: '9723 AM',
@@ -307,6 +310,94 @@ export const pricingAssurances = [
   'Kwalitatieve bijles',
   'Efficiënt en doelgericht',
 ] as const
+
+/**
+ * Werken bij — the recruitment page.
+ *
+ * The hero opens on the dark ink band rather than the usual cream one, which is
+ * why the page sets `headerGround: 'ink'` in its page meta.
+ */
+export const werkenBij = {
+  hero: {
+    title: 'Werken bij',
+    intro:
+      'Heb jij passie voor de bèta vakken en vind je het leuk om dit te delen met middelbare scholieren? Solliciteer dan direct!',
+    /*
+      Only this one line is confirmed: the cookie banner covered the rest of the
+      checklist in every screenshot the design handoff was built from. Add the
+      remaining lines here and the hero picks them up.
+    */
+    promises: ['Hecht team van Bèta docenten'],
+    cta: 'Direct solliciteren',
+    reassurance: 'We nemen zo snel mogelijk contact op.',
+    image: '/img/werken-bij-hero.png',
+    imageAlt: 'Docent legt natuurkunde uit aan een leerling voor het schoolbord',
+  },
+  perksIntro: {
+    kicker: 'Plezier, Passie en Kwaliteit',
+    title: 'Voor bijles bèta werken',
+  },
+  perks: [
+    {
+      title: 'Compensatie',
+      body: 'Wij bieden jou een goede compensatie van €16/uur.',
+    },
+    {
+      title: 'Geen tussenpersoon',
+      body: 'Wij ondersteunen waar nodig, maar zitten je niet in de weg.',
+    },
+    {
+      title: 'Flexibel',
+      body: 'Plan samen met je leerling de bijles in, wanneer het jullie uitkomt.',
+    },
+    {
+      title: 'Eigen manier',
+      body: 'Geef bijles op je eigen manier, als de leerling er maar blij van wordt.',
+    },
+  ],
+  perksLink: { label: 'Lees meer over onze docenten', to: '/over-ons#team' },
+  requirementsIntro: {
+    kicker: 'Benodigdheden',
+    title: 'Wat vragen wij van jou',
+  },
+  /** Only the first card carries a photo; the others start lower to line up with it. */
+  requirements: [
+    {
+      title: 'Science & Engineering',
+      body: 'Bijles Bèta wordt volledig gerund vanuit de faculteit Science & Engineering aan de Rijksuniversiteit in Groningen. Wij willen dit graag houden en zoeken naar docenten die hier een opleiding volgen.',
+      image: '/img/werken-bij-science.jpg',
+      alt: 'Student van de faculteit Science & Engineering in het lab',
+    },
+    {
+      title: 'Goed in Bèta',
+      body: 'Je bent goed in bèta. Bij voorkeur heb je op vwo een mooi cijfer gehaald voor het vak waarin jij bijles wil geven. Dit hoeft alleen dus niet per se, en ook niet in elk vak te zijn.',
+      image: null,
+      alt: null,
+    },
+    {
+      title: 'Plezier en passie',
+      body: 'Je vindt ziet het als een uitdaging om middelbare scholieren, die bèta misschien niet zo leuk vinden, te laten inzien dat bèta wèl heel leuk kan zijn. Hiervoor moet je een passie hebben voor het vak!',
+      image: null,
+      alt: null,
+    },
+  ],
+  apply: {
+    kicker: 'Solliciteren',
+    title: 'Vul je gegevens in',
+    body: 'We leren je graag kennen! Vul je gegevens in en we nemen contact op voor het inplannen van een sollicitatiegesprek.',
+    formKicker: 'Wij zoeken docenten',
+    formTitle: 'Solliciteren',
+  },
+  /** Checkbox options in the application form, in the order the live form lists them. */
+  subjectOptions: [
+    'Wiskunde A/C',
+    'Wiskunde B/D',
+    'Wiskunde',
+    'Natuurkunde',
+    'Scheikunde',
+    'NaSk',
+  ],
+} as const
 
 export const nav = [
   { label: 'Over ons', to: '/over-ons' },
