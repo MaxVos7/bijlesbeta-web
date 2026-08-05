@@ -61,11 +61,11 @@ postcode lookup — it stores nothing and never throws at its caller.
 ## Design work
 
 The design is applied to `/`, `/over-ons`, `/tarieven`, `/aanmelden`,
-`/contact`, `/werken-bij`, `/bijles-[vak]-[stad]`, `/docenten/[slug]` and the
-shared chrome, from a Claude Design handoff. `app/assets/css/main.css` carries
-the real palette — an amber brand on cream and sand grounds, with a warm
-`ink-*` ramp and Archivo as the typeface. The tokens are no longer
-placeholders.
+`/contact`, `/werken-bij`, `/bijles-[vak]-[stad]`, `/docenten/[slug]`,
+`/examentraining` and the shared chrome, from a Claude Design handoff.
+`app/assets/css/main.css` carries the real palette — an amber brand on cream
+and sand grounds, with a warm `ink-*` ramp and Archivo as the typeface. The
+tokens are no longer placeholders.
 
 `/contact` puts its hero and its form panel in one sand band and sets its FAQ
 heading beside the accordion, so it uses neither `PageHero` nor `FaqSection`.
@@ -85,6 +85,21 @@ add a city by adding a data entry in `app/data/landings.ts`, not a new page
 file. Its hero also opens on a dark photographic band, so it mounts
 `SiteHeader` itself with the `transparent` prop instead of going through the
 `default` layout; see `app/layouts/landing.vue`.
+
+`/examentraining` is a one-off exam bootcamp page (`app/data/site.ts`'s
+`examentraining` object), separate from the ongoing weekly bijles. Two
+components picked up small optional props to support it rather than forking
+them: `RatingLine` takes a `label` override (the hero reads "7 jaar ervaring"
+instead of "Uitstekend") and `FaqList` takes an `items` override (this page's
+own 3 questions instead of the sitewide `faqs`). Its 4 feature-card icons are
+placeholders (dashed box + generic image glyph) — the design handoff left
+these as empty image slots with no artwork; drop real icon graphics into
+`app/pages/examentraining.vue` when they exist. Its promo-video block is
+wired up (click reveals the embed area) but has no video yet either — set
+`YOUTUBE_URL` at the top of that page once there's a real link. All CTAs and
+the FAQ's "Neem contact op!" point at `#aanmelden` on the same page (plain
+`<a href>`, matching the pattern in `tarieven.vue`/`werken-bij.vue`), not the
+`/contact` route.
 
 `/kennisbank` had no design to work from and still uses the scaffold's
 `slate-*` greys. When restyling it, replace `slate-*` with `ink-*` / `line-*`

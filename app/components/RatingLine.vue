@@ -1,14 +1,18 @@
 <script setup lang="ts">
 import { rating } from '~/data/site'
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     centered?: boolean
     /** `inverse` is the variant that sits on a dark hero band. */
     tone?: 'default' | 'inverse'
+    /** Overrides the bold leading text, e.g. "7 jaar ervaring" on Examentraining. */
+    label?: string
   }>(),
-  { centered: false, tone: 'default' },
+  { centered: false, tone: 'default', label: undefined },
 )
+
+const leadLabel = computed(() => props.label ?? rating.label)
 </script>
 
 <template>
@@ -16,7 +20,7 @@ withDefaults(
     class="flex flex-wrap items-center gap-x-2.5 gap-y-2 text-sm"
     :class="[centered && 'justify-center', tone === 'inverse' && 'text-white']"
   >
-    <strong class="font-bold">{{ rating.label }}</strong>
+    <strong class="font-bold">{{ leadLabel }}</strong>
     <span class="sr-only">{{ rating.stars }} van de 5 sterren</span>
     <span class="text-[15px] tracking-[2px] text-accent-500" aria-hidden="true">
       {{ '★'.repeat(rating.stars) }}

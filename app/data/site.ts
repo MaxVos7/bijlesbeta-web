@@ -441,6 +441,130 @@ export const werkenBij = {
   ],
 } as const
 
+/**
+ * The Examentraining page — a one-day exam bootcamp, distinct from the
+ * ongoing weekly bijles. From the Claude Design handoff `Examentraining.dc.html`.
+ */
+export const examentraining = {
+  hero: {
+    /** Overrides RatingLine's default label; stars/count stay the sitewide ones. */
+    ratingLabel: '7 jaar ervaring',
+    title: 'Examentraining',
+    intro:
+      'Wij bieden een examentraining die jou op het juiste moment het duwtje geeft in de richting van een geslaagd eindexamen.',
+    promises: [
+      'Veel persoonlijke aandacht',
+      'Door universitair geschoolde docenten',
+      'Kleine klas van maximaal 8 leerlingen',
+    ],
+    cta: 'Meld je direct aan',
+    image: '/img/examentraining-hero.jpg',
+    imageAlt: 'Docent voor het bord tijdens de examentraining',
+  },
+  /**
+   * The four reasons the training works. Icons are left as placeholders —
+   * no artwork was supplied for these in the design handoff.
+   */
+  features: {
+    kicker: 'Examentraining van ervaren bijlesdocenten',
+    title: 'Wat maakte onze examentraining effectief',
+    items: [
+      {
+        title: 'Ervaren docenten',
+        body: 'Onze docenten volgen een bèta-studie aan de universiteit en geven al jaren lang wekelijks bijles.',
+      },
+      {
+        title: 'Kleine groepen',
+        body: 'Bij onze examen training heb je kleine groepen (<10 leerling) en meerdere docenten voor maximale persoonlijk aandacht.',
+      },
+      {
+        title: 'Goeie timing',
+        body: 'Onze examentraining vindt plaats ongeveer 2 weken voor je examen. Precies het juiste moment.',
+      },
+      {
+        title: 'Een scherpe prijs',
+        body: 'De meest voordelige van Groningen met veel persoonlijke aandacht.',
+      },
+    ],
+  },
+  details: {
+    kicker: 'Wat kost dat?!',
+    title: 'Details',
+    intro:
+      'De Bijles Bèta examentraining duurt één dag. In de ochtend herhalen we de belangrijkste onderdelen. In de middag maken we samen een oefenexamen.',
+    planningLabel: 'Planning:',
+    planning: [
+      { time: '9:00 – 12:00', label: 'Examenstof herhalen' },
+      { time: '12:00 – 13:00', label: 'Pauze (neem je eigen brood mee)' },
+      { time: '13:00 – 16:00', label: 'Samen het eindexamen 2024 maken' },
+      { time: '16:00 – 17:00', label: 'Vragenuurtje' },
+    ],
+    datesLabel: 'Datums:',
+    datesBody: 'Zie hieronder de datums per vak en niveau.',
+    locationLabel: 'Locatie:',
+    locationLines: ['Noorderhaven 46, 9712 VL Groningen', 'Ruime en rustige vergaderzaal van Rapide Software'],
+    specialNoticeBefore: 'Let op, de volgende trainingen:',
+    specialTrainings: ['vwo wiskunde A', 'vwo wiskunde B'],
+    specialNoticeAfter: 'zijn op een andere locatie:',
+    specialLocation: 'Henri Dunantlaan 2, 9728 HD Groningen',
+  },
+  /** The single "all-in-one" package card beside the details column. */
+  pricing: {
+    badge: 'Alles in één',
+    title: 'Examentraining',
+    blurb: 'ééndaagse examentraining waarbij we je volledig klaarstomen voor je examens.',
+    price: 119,
+    features: [
+      'Veel persoonlijke aandacht',
+      'Universitair geschoolde en ervaren docenten',
+      'Kleine klas van maximaal 8 leerlingen',
+    ],
+    cta: 'Meld je aan',
+  },
+  video: {
+    title: 'We stellen ons graag aan je voor!',
+    body: [
+      'Om je een idee te geven van onze examentraining hebben we een korte promotievideo opgenomen.',
+      'Bekijk onze video!',
+    ],
+    cta: 'Meld je aan',
+    caption: 'Klik hierboven om de video te starten',
+    startLabel: 'Video starten',
+  },
+  levelsNotice: {
+    kicker: 'Ga direct naar de juiste pagina',
+    title: 'Welk niveau doe je?',
+    noticeLead: 'Let op:',
+    notice: 'de examentraining voor 2026 zijn afgerond.',
+    body: 'Wil je nog ondersteuning voor je (her)examens. Vul dan onderstaand contact formulier in of meld je aan voor bijles.',
+  },
+  signup: {
+    kicker: 'Meld je direct aan',
+    title: 'Vul je gegevens in',
+    noticeLead: 'Let op:',
+    notice: 'Onze examentrainingen voor 2026 zijn inmiddels afgerond.',
+    body: 'Wil je begeleiding voor je (her)examens. Vul dat het contactformulier hiernaast in of meld je aan voor onze bijles.',
+  },
+  /** This page's own FAQ set — separate from the sitewide `faqs`. */
+  faqs: [
+    {
+      question: 'Wat doen we tijdens de examentraining?',
+      answer:
+        'In de ochtend leggen we de belangrijkste onderdelen van de examenstof nog een keer uit. Na de lunch maken we gezamenlijk het eindexamen van vorig jaar.',
+    },
+    {
+      question: 'Wanneer is de examen training?',
+      answer:
+        'Onze examentraining vindt plaats ongeveer twee weken voor je examen. De datums per vak en niveau staan hierboven bij de details.',
+    },
+    {
+      question: 'Kan ik ook bijles krijgen in combinatie met de examentraining?',
+      answer:
+        'Dat kan zeker. Veel leerlingen combineren de examentraining met wekelijkse bijles in de weken ervoor. Neem contact op en we kijken samen wat je nodig hebt.',
+    },
+  ],
+} as const
+
 export const nav = [
   { label: 'Over ons', to: '/over-ons' },
   { label: 'Tarieven', to: '/tarieven' },
