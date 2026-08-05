@@ -158,21 +158,21 @@ export const features = [
 /** Blurb and photo per subject, for the cards on the homepage. */
 export const subjectCards = [
   {
-    slug: 'wiskunde',
+    slug: 'wiskunde-groningen',
     name: 'Wiskunde',
     image: '/img/wiskunde.jpg',
     alt: 'Bijles wiskunde Groningen',
     body: 'Wiskunde is geen mysterie. Soms heb je alleen een klein duwtje in de rug nodig om het te zien.',
   },
   {
-    slug: 'natuurkunde',
+    slug: 'natuurkunde-groningen',
     name: 'Natuurkunde',
     image: '/img/natuurkunde.jpg',
     alt: 'Bijles natuurkunde Groningen',
     body: 'Achter elke formule zit een idee. Zodra je dat begrijpt, wordt natuurkunde echt interessant.',
   },
   {
-    slug: 'scheikunde',
+    slug: 'scheikunde-groningen',
     name: 'Scheikunde',
     image: '/img/scheikunde.jpg',
     alt: 'Bijles scheikunde Groningen',
@@ -648,19 +648,19 @@ export const nav = [
 
 export const subjects = [
   {
-    slug: 'wiskunde',
+    slug: 'wiskunde-groningen',
     name: 'Wiskunde',
     description:
       'Van wiskunde A, B en C tot wiskunde D en statistiek. Onze docenten leggen de stof uit tot het klikt.',
   },
   {
-    slug: 'natuurkunde',
+    slug: 'natuurkunde-groningen',
     name: 'Natuurkunde',
     description:
       'Mechanica, elektriciteit, golven en meer — met veel oefenen aan de hand van echte examenopgaven.',
   },
   {
-    slug: 'scheikunde',
+    slug: 'scheikunde-groningen',
     name: 'Scheikunde',
     description:
       'Rekenen aan reacties, organische chemie en evenwichten, uitgelegd door scheikundestudenten van de RUG.',

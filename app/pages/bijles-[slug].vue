@@ -1,34 +1,27 @@
 <script setup lang="ts">
-import {
-  findLanding,
-  landingHeroForm,
-  landingPromises,
-  landingSteps,
-} from '~/data/landings'
+import { findLanding, landingHeroForm, landingPromises, landingSteps } from '~/data/landings'
 import { reassurance, teamIntro } from '~/data/site'
 
 /**
- * One template for every subject-and-city landing page. The route carries both
- * halves — /bijles-wiskunde-groningen — and the copy comes from
- * `app/data/landings.ts`, so a new city is a data entry rather than a page.
+ * One template for every subject/level/location landing page. These 11 pages
+ * don't form a clean subject×city matrix — they're independently-authored
+ * flat slugs (`vmbo`, `aan-huis`, `wiskunde-a-groningen`, …) — so the route
+ * carries a single slug and the copy comes from `app/data/landings.ts`.
+ * Adding a page is a data entry here, not a new page file.
  */
 definePageMeta({
   layout: 'landing',
-  validate: (route) =>
-    findLanding(String(route.params.vak), String(route.params.stad)) !== null,
+  validate: (route) => findLanding(String(route.params.slug)) !== undefined,
 })
 
 const route = useRoute()
 
 // `validate` has already rejected anything unknown by the time we render.
-const { subject, city } = findLanding(String(route.params.vak), String(route.params.stad))!
-
-const title = `Bijles ${subject.name} in ${city.name}`
-const paragraphs = subject.block.body(city)
+const landing = findLanding(String(route.params.slug))!
 
 useSeoMeta({
-  title,
-  description: subject.seoDescription(city),
+  title: landing.title,
+  description: landing.seoDescription || undefined,
 })
 </script>
 
@@ -55,10 +48,10 @@ useSeoMeta({
             <h1
               class="mb-[18px] max-w-[16ch] text-[clamp(30px,4.2vw,48px)] leading-[1.12] tracking-[-0.025em] text-white text-pretty"
             >
-              {{ title }}
+              {{ landing.title }}
             </h1>
             <p class="mb-7 max-w-[46ch] text-[clamp(15px,1.2vw,17px)] leading-relaxed text-white/85">
-              {{ subject.intro(city) }}
+              {{ landing.intro }}
             </p>
 
             <CheckList :items="landingPromises" class="mb-8 font-semibold" />
@@ -134,16 +127,23 @@ useSeoMeta({
         class="mx-auto grid max-w-[1180px] items-center gap-[clamp(28px,4vw,56px)] [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))]"
       >
         <div class="min-w-0">
-          <p class="kicker mb-2">{{ subject.block.kicker }}</p>
+          <p class="kicker mb-2">{{ landing.kicker }}</p>
           <h2 class="mb-6 text-[clamp(24px,2.8vw,32px)] tracking-[-0.025em]">
-            {{ subject.block.title }}
+            {{ landing.seoTitle }}
           </h2>
           <p
-            v-for="(paragraph, index) in paragraphs"
+            v-for="(paragraph, index) in landing.seoParagraphs"
             :key="index"
             class="text-[15px] leading-[1.85] not-last:mb-4"
           >
-            {{ paragraph }}
+            <template v-for="(segment, segIndex) in paragraph" :key="segIndex">
+              <NuxtLink
+                v-if="segment.to"
+                :to="segment.to"
+                class="font-semibold text-ink-900 underline decoration-line-300 underline-offset-2 hover:decoration-ink-900"
+              >{{ segment.text }}</NuxtLink>
+              <template v-else>{{ segment.text }}</template>
+            </template>
           </p>
 
           <div class="mt-[26px] flex flex-wrap gap-x-[26px] gap-y-3.5 text-[15px] font-semibold">
@@ -158,8 +158,8 @@ useSeoMeta({
 
         <div class="min-w-0">
           <img
-            src="/img/uitleg-b.png"
-            alt="Docent legt de stof uit tijdens de bijles"
+            :src="landing.image"
+            :alt="landing.imageAlt"
             class="ml-auto block h-auto w-full max-w-[475px]"
             loading="lazy"
           >
