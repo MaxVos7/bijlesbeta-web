@@ -15,6 +15,9 @@ export const contact = {
   whatsappHref: 'https://wa.me/31638260623',
   email: 'contact@bijlesbeta.nl',
   emailHref: 'mailto:contact@bijlesbeta.nl',
+  /** Sollicitaties go to a separate mailbox — shown beside the form on Werken bij. */
+  applicationsEmail: 'info@bijlesbeta.nl',
+  applicationsEmailHref: 'mailto:info@bijlesbeta.nl',
   address: {
     street: 'De Brink 34',
     postalCode: '9723 AM',
@@ -203,6 +206,42 @@ export const faqIntro = {
   link: 'Neem contact op!',
 } as const
 
+/**
+ * The contact page. Its FAQ sits beside the accordion rather than above it, so
+ * it has its own lead-in instead of reusing `faqIntro`.
+ */
+export const contactPage = {
+  kicker: 'Contact',
+  title: 'Zo kan je ons bereiken',
+  intro:
+    'Hoi! Mijn naam is Max en ik ben de contactpersoon van Bijles Bèta. Twijfel je ergens over? Of heb je een vraag. Neem dan nu contact op.',
+  openingHoursTitle: 'Openingstijden:',
+  faq: {
+    title: 'Veelgestelde vragen (FAQ)',
+    body: 'Bekijk onze veelgestelde vragen (FAQ)',
+  },
+  /** The panel beside the hero — placeholders stand in for labels here. */
+  form: {
+    kicker: 'Voor al je vragen',
+    title: 'Contactformulier',
+    firstName: 'Voornaam',
+    lastName: 'Achternaam',
+    email: 'E-mailadres',
+    message: 'Bericht',
+    privacy: 'Ik ga akkoord met het privacybeleid.',
+    /** Set in red directly after `privacy`, with no space between. */
+    privacyRequired: '(Vereist)',
+    submit: 'Verzenden',
+    submitting: 'Versturen…',
+  },
+} as const
+
+/** Shown by both variants of ContactForm once a message is through. */
+export const contactFormSuccess = {
+  title: 'Bedankt voor je bericht',
+  body: 'We hebben je bericht ontvangen en nemen zo snel mogelijk contact met je op.',
+} as const
+
 /** The Bijles Bèta / reguliere aanbieders comparison on Over ons. */
 export const comparison = {
   kicker: 'Daarom kies je voor Bijles Bèta',
@@ -251,6 +290,12 @@ export const overOnsBlocks = [
   },
 ] as const
 
+export const pricingIntro = {
+  kicker: 'Tarieven en pakketten',
+  title: 'Eerlijk geprijsd',
+  body: 'Met pakketten stimuleren we consistente bijles waardoor jij het vak echt leert begrijpen. Het uurtarief is afhankelijk van het gekozen pakket.',
+} as const
+
 /** How the pricing packages work — the list beside the photo on Tarieven. */
 export const pricingNotes = [
   'Je kan altijd meer bijles afnemen dan in het pakket zit, je betaalt zelfde uurtarief.',
@@ -265,6 +310,94 @@ export const pricingAssurances = [
   'Kwalitatieve bijles',
   'Efficiënt en doelgericht',
 ] as const
+
+/**
+ * Werken bij — the recruitment page.
+ *
+ * The hero opens on the dark ink band rather than the usual cream one, which is
+ * why the page sets `headerGround: 'ink'` in its page meta.
+ */
+export const werkenBij = {
+  hero: {
+    title: 'Werken bij',
+    intro:
+      'Heb jij passie voor de bèta vakken en vind je het leuk om dit te delen met middelbare scholieren? Solliciteer dan direct!',
+    /*
+      Only this one line is confirmed: the cookie banner covered the rest of the
+      checklist in every screenshot the design handoff was built from. Add the
+      remaining lines here and the hero picks them up.
+    */
+    promises: ['Hecht team van Bèta docenten'],
+    cta: 'Direct solliciteren',
+    reassurance: 'We nemen zo snel mogelijk contact op.',
+    image: '/img/werken-bij-hero.png',
+    imageAlt: 'Docent legt natuurkunde uit aan een leerling voor het schoolbord',
+  },
+  perksIntro: {
+    kicker: 'Plezier, Passie en Kwaliteit',
+    title: 'Voor bijles bèta werken',
+  },
+  perks: [
+    {
+      title: 'Compensatie',
+      body: 'Wij bieden jou een goede compensatie van €16/uur.',
+    },
+    {
+      title: 'Geen tussenpersoon',
+      body: 'Wij ondersteunen waar nodig, maar zitten je niet in de weg.',
+    },
+    {
+      title: 'Flexibel',
+      body: 'Plan samen met je leerling de bijles in, wanneer het jullie uitkomt.',
+    },
+    {
+      title: 'Eigen manier',
+      body: 'Geef bijles op je eigen manier, als de leerling er maar blij van wordt.',
+    },
+  ],
+  perksLink: { label: 'Lees meer over onze docenten', to: '/over-ons#team' },
+  requirementsIntro: {
+    kicker: 'Benodigdheden',
+    title: 'Wat vragen wij van jou',
+  },
+  /** Only the first card carries a photo; the others start lower to line up with it. */
+  requirements: [
+    {
+      title: 'Science & Engineering',
+      body: 'Bijles Bèta wordt volledig gerund vanuit de faculteit Science & Engineering aan de Rijksuniversiteit in Groningen. Wij willen dit graag houden en zoeken naar docenten die hier een opleiding volgen.',
+      image: '/img/werken-bij-science.jpg',
+      alt: 'Student van de faculteit Science & Engineering in het lab',
+    },
+    {
+      title: 'Goed in Bèta',
+      body: 'Je bent goed in bèta. Bij voorkeur heb je op vwo een mooi cijfer gehaald voor het vak waarin jij bijles wil geven. Dit hoeft alleen dus niet per se, en ook niet in elk vak te zijn.',
+      image: null,
+      alt: null,
+    },
+    {
+      title: 'Plezier en passie',
+      body: 'Je vindt ziet het als een uitdaging om middelbare scholieren, die bèta misschien niet zo leuk vinden, te laten inzien dat bèta wèl heel leuk kan zijn. Hiervoor moet je een passie hebben voor het vak!',
+      image: null,
+      alt: null,
+    },
+  ],
+  apply: {
+    kicker: 'Solliciteren',
+    title: 'Vul je gegevens in',
+    body: 'We leren je graag kennen! Vul je gegevens in en we nemen contact op voor het inplannen van een sollicitatiegesprek.',
+    formKicker: 'Wij zoeken docenten',
+    formTitle: 'Solliciteren',
+  },
+  /** Checkbox options in the application form, in the order the live form lists them. */
+  subjectOptions: [
+    'Wiskunde A/C',
+    'Wiskunde B/D',
+    'Wiskunde',
+    'Natuurkunde',
+    'Scheikunde',
+    'NaSk',
+  ],
+} as const
 
 export const nav = [
   { label: 'Over ons', to: '/over-ons' },

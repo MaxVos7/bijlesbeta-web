@@ -4,54 +4,7 @@ import { contact, trialCta } from '~/data/site'
 /**
  * The amber block that closes most pages: the pitch on the left, a short
  * callback form on the right.
- *
- * The form collects only name, phone and email, so it synthesises the message
- * body that /api/contact requires — the request itself is the message.
  */
-const form = reactive({
-  name: '',
-  phone: '',
-  email: '',
-  consent: false,
-  // Honeypot — bots fill this, humans never see it.
-  website: '',
-})
-
-const status = ref<'idle' | 'pending' | 'success' | 'error'>('idle')
-const message = ref('')
-
-async function submit() {
-  if (status.value === 'pending') return
-
-  if (!form.name.trim() || !form.email.trim() || !form.consent) {
-    status.value = 'error'
-    message.value = 'Vul je naam en e-mailadres in en ga akkoord met het privacybeleid.'
-    return
-  }
-
-  status.value = 'pending'
-  message.value = ''
-
-  try {
-    await $fetch('/api/contact', {
-      method: 'POST',
-      body: {
-        name: form.name,
-        email: form.email,
-        phone: form.phone,
-        subject: 'Gratis proefles',
-        message: 'Aanvraag voor een gratis proefles via de website.',
-        website: form.website,
-      },
-    })
-    status.value = 'success'
-  } catch (error: any) {
-    status.value = 'error'
-    message.value =
-      error?.data?.message ??
-      'Er ging iets mis bij het versturen. Probeer het later opnieuw of bel ons.'
-  }
-}
 </script>
 
 <template>
@@ -72,7 +25,7 @@ async function submit() {
 
         <div class="flex max-w-[360px] items-center gap-3.5 rounded-tile bg-sand p-3.5">
           <img
-            src="https://bijlesbeta.nl/wp-content/uploads/2025/05/fbc1de12-fca2-4a3b-b508-6b46284a3ab6-e1746866164238.png"
+            src="/img/persoonlijk.png"
             alt=""
             class="h-[58px] w-[58px] flex-none rounded-panel object-cover"
             width="58"
@@ -98,62 +51,7 @@ async function submit() {
         </div>
       </div>
 
-      <div class="min-w-0 rounded-tile bg-white p-[clamp(18px,2vw,24px)]">
-        <div v-if="status === 'success'" class="py-6 text-center" role="status">
-          <h3 class="text-[17px]">Bedankt voor je bericht!</h3>
-          <p class="mt-2 text-sm leading-relaxed text-ink-700">
-            We nemen snel contact met je op om de proefles in te plannen.
-          </p>
-        </div>
-
-        <form v-else class="flex flex-col gap-3.5" novalidate @submit.prevent="submit">
-          <label class="sr-only" for="trial-name">Naam</label>
-          <input id="trial-name" v-model="form.name" class="field-input mt-0" type="text" placeholder="Naam" autocomplete="name">
-
-          <label class="sr-only" for="trial-phone">Telefoonnummer</label>
-          <input id="trial-phone" v-model="form.phone" class="field-input mt-0" type="tel" placeholder="Telefoonnummer" autocomplete="tel">
-
-          <label class="sr-only" for="trial-email">E-mailadres</label>
-          <input id="trial-email" v-model="form.email" class="field-input mt-0" type="email" placeholder="E-mailadres" autocomplete="email">
-
-          <label class="group flex cursor-pointer items-start gap-2.5 text-[12.5px] leading-normal text-ink-700">
-            <input v-model="form.consent" class="sr-only" type="checkbox">
-            <span
-              class="mt-px flex h-[18px] w-[18px] flex-none items-center justify-center rounded border-[1.5px] border-line-400 transition group-has-[:checked]:border-accent-500 group-has-[:checked]:bg-accent-400 group-has-[:focus-visible]:outline-2 group-has-[:focus-visible]:outline-offset-2 group-has-[:focus-visible]:outline-accent-500"
-            >
-              <svg
-                class="h-[11px] w-[11px] opacity-0 group-has-[:checked]:opacity-100"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="3.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M4 12l6 6L20 6" />
-              </svg>
-            </span>
-            <span>
-              Ik ga akkoord met het
-              <NuxtLink to="/privacy" class="border-b border-ink-900">privacybeleid</NuxtLink>.<span
-                class="text-danger"
-              > (Vereist)</span>
-            </span>
-          </label>
-
-          <div aria-hidden="true" class="absolute left-[-9999px]">
-            <label for="trial-website">Laat dit veld leeg</label>
-            <input id="trial-website" v-model="form.website" type="text" tabindex="-1" autocomplete="off">
-          </div>
-
-          <p v-if="status === 'error'" class="text-[12.5px] text-danger" role="alert">{{ message }}</p>
-
-          <button type="submit" class="btn-primary py-[15px] text-[15px]" :disabled="status === 'pending'">
-            {{ status === 'pending' ? 'Versturen…' : 'Proefles claimen' }}
-          </button>
-        </form>
-      </div>
+      <LeadForm class="min-w-0 rounded-tile bg-white p-[clamp(18px,2vw,24px)]" />
     </div>
   </section>
 </template>

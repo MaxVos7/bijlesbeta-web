@@ -61,16 +61,36 @@ postcode lookup — it stores nothing and never throws at its caller.
 ## Design work
 
 The design is applied to `/`, `/over-ons`, `/tarieven`, `/aanmelden`,
-`/docenten/[slug]` and the shared chrome, from a Claude Design handoff.
-`app/assets/css/main.css` carries the real palette — an amber brand on cream and
-sand grounds, with a warm `ink-*` ramp and Archivo as the typeface. The tokens
-are no longer placeholders.
+`/contact`, `/werken-bij`, `/bijles-[vak]-[stad]`, `/docenten/[slug]` and the
+shared chrome, from a Claude Design handoff. `app/assets/css/main.css` carries
+the real palette — an amber brand on cream and sand grounds, with a warm
+`ink-*` ramp and Archivo as the typeface. The tokens are no longer
+placeholders.
 
-`/contact`, `/werken-bij` and `/kennisbank` had no design to work from and still
-use the scaffold's `slate-*` greys. When restyling them, replace `slate-*` with
-`ink-*` / `line-*` and take grounds from `cream` / `sand` / `mist` / `ivory` —
-don't introduce a second neutral scale. Keep preferring token and utility changes
-over rewriting page markup.
+`/contact` puts its hero and its form panel in one sand band and sets its FAQ
+heading beside the accordion, so it uses neither `PageHero` nor `FaqSection`.
+Its form is `ContactForm` in its `panel` variant, with the name split in two,
+no phone field, placeholders instead of labels and required privacy consent.
+
+`/werken-bij` opens on a dark `ink-900` hero band rather than the usual cream
+one, so `SiteHeader` reads a `headerGround` route meta (set via
+`definePageMeta`) to darken the sticky strip instead of leaving it cream —
+see `app/types/route-meta.d.ts`. `RatingLine` has a matching `inverse` tone
+for use on that band. The application form is its own `ApplicationForm`
+component, not a `ContactForm` variant, since it collects a different shape
+of answers; it still posts through `/api/contact` with a fixed subject.
+
+`/bijles-[vak]-[stad]` is one template rendered per subject-and-city pair —
+add a city by adding a data entry in `app/data/landings.ts`, not a new page
+file. Its hero also opens on a dark photographic band, so it mounts
+`SiteHeader` itself with the `transparent` prop instead of going through the
+`default` layout; see `app/layouts/landing.vue`.
+
+`/kennisbank` had no design to work from and still uses the scaffold's
+`slate-*` greys. When restyling it, replace `slate-*` with `ink-*` / `line-*`
+and take grounds from `cream` / `sand` / `mist` / `ivory` — don't introduce a
+second neutral scale. Keep preferring token and utility changes over
+rewriting page markup.
 
 Sections shared across pages are components, not copy-paste: `TrialCta` (the
 amber closing block, with its own short form), `FaqSection`, `StatsBand`,
