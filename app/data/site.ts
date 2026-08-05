@@ -242,6 +242,48 @@ export const contactFormSuccess = {
   body: 'We hebben je bericht ontvangen en nemen zo snel mogelijk contact met je op.',
 } as const
 
+/**
+ * Zo werkt het — the route from aanmelding to the first bijles.
+ *
+ * `icon` names a path drawn inline in the page, as on `features`: the four
+ * step illustrations from the design aren't in the repo, so these are line
+ * icons in the brand amber. Swap them for the real drawings when they land.
+ */
+export const zoWerktHet = {
+  title: 'Zo werkt het',
+  intro:
+    'Krijg snel de juiste match met een professionele bijles docent. Leer elkaar kennen tijdens de proefles en maak een plan voor de bijlessen.',
+  /** Scrolls to the stappenplan below rather than leaving the page. */
+  secondaryCta: 'Kennismaking',
+  stepsIntro: {
+    kicker: 'Zo werkt het',
+    title: 'Het stappenplan',
+  },
+  steps: [
+    {
+      icon: 'form',
+      title: 'Stap 1: Aanmelden',
+      body: 'Meld je aan via ons handige aanmeldformulier.',
+    },
+    {
+      icon: 'match',
+      title: 'Stap 2: Match',
+      body: 'We gaan direct op zoek naar een docent die goed bij jou past.',
+    },
+    {
+      icon: 'trial',
+      title: 'Stap 3: Proefles',
+      body: 'Leer elkaar kennen en maak een plan voor de komende bijlessen.',
+    },
+    {
+      icon: 'lesson',
+      title: 'Stap 4: Bijles',
+      body: 'Met jouw bijlesdocent krijg je stap voor stap grip op die lastige bètavakken.',
+    },
+  ],
+  stepsLink: { label: 'Meld je hier aan', to: '/aanmelden' },
+} as const
+
 /** The Bijles Bèta / reguliere aanbieders comparison on Over ons. */
 export const comparison = {
   kicker: 'Daarom kies je voor Bijles Bèta',
@@ -268,6 +310,79 @@ export const comparison = {
       'Docenten wisselen regelmatig door grote schaal',
       'Contact vaak via formulieren of klantenservice',
       'Langdurig inschrijfproces of wachttijd',
+    ],
+  },
+} as const
+
+/**
+ * Het bedrijf — the company story page, recreated from a Claude Design
+ * handoff based on screenshots of the legacy site. Lives at `/het-bedrijf`,
+ * separate from `/over-ons`, which keeps its own tutor roster and comparison
+ * table.
+ */
+export const hetBedrijf = {
+  hero: {
+    title: 'Bèta Bijles in Groningen sinds 2017',
+    body: 'Bijles Bèta is niet zomaar een bijles bedrijf. Wij zijn een groep van gepassioneerd bèta studenten in Groningen die onze passie voor het vak willen overbrengen aan anderen. Ontstaan met een duidelijke visie. Ontdek onze geschiedenis en onze kernwaarden.',
+    image: '/img/het-bedrijf-hero.png',
+    imageAlt: 'Twee leerlingen werken samen aan wiskunde',
+  },
+  verhaal: {
+    title: 'Ons verhaal',
+    body: 'Bijles kan hét hulpmiddel zijn om een leerling weer mee te laten komen op school. In 2017 zagen Mathijn en Max, beiden met een passie voor de exacte vakken, dit als een unieke kans. Vanuit Groningen richtten zij Bijles Bèta op met een duidelijke visie: wij laten leerlingen zien hoe je bèta vakken aanpakt en wanneer je dat eenmaal ziet, wordt een bèta vak ontzettend leuk!',
+    image: '/img/het-bedrijf-verhaal.png',
+    imageAlt: 'Twee docenten van Bijles Bèta met een kruiwagen',
+  },
+  aanpak: {
+    title: 'Onze aanpak',
+    body: [
+      'Voor ons is bijles een hulpmiddel om de leerling zo snel mogelijk weer mee te laten komen op school. We bieden handvatten waarmee leerlingen zelf de lessen beter kunnen volgen en de lol van het vak ontdekken. Onze prioriteit: een leerling leert zelf hoe je vraagstukken in een bèta vak aanpakt. Wij geven onze bijles vanuit passie voor de exacte vakken.',
+      'Wij geven bijles wiskunde, natuurkunde en scheikunde vanuit een passie voor de exacte vakken op vmbo, havo en vwo niveau.',
+    ],
+    image: '/img/het-bedrijf-docent.png',
+    imageAlt: 'Docent van Bijles Bèta',
+  },
+  team: {
+    title: 'Het team',
+    body: 'Bijles Bèta wordt vanaf het begin volledig georganiseerd door studenten van de rijksuniversiteit Groningen. Hierdoor is een hecht team ontstaan die veel contact met elkaar hebben en van elkaar leren.',
+    /** Split around the bold "buddy systeem" mid-sentence, same pattern as `statsIntro`. */
+    buddyBefore: 'Dit wordt versterkt door ons unieke ',
+    buddyBold: 'buddy systeem',
+    buddyAfter:
+      '. Beginnende docenten worden gekoppeld aan ervaren docenten, tijdens ieder bijles traject is er geregeld contact tussen beide docenten. Hierdoor krijgt een beginnend docent de kennis en het zelfvertrouwen om een kwalitatieve bijles te verzorgen.',
+    image: '/img/het-bedrijf-team.jpg',
+    imageAlt: 'Het team van Bijles Bèta tijdens een teamavond',
+  },
+  innovaties: {
+    kicker: 'Innovaties',
+    title: 'Zo blijft onze Bijles efficient en effectief',
+    intro: [
+      'Binnen Bijles Bèta zijn we vanaf onze oprichting gefocust op innovatie. Wij proberen onze organisatie altijd zo efficiënt mogelijk te laten werken. Hierdoor kunnen we onze tarieven laag houden.',
+      'Daarnaast zijn we altijd bezig om onze dienst te verbeteren. Bijles lijkt misschien een simpel product, maar door innovaties proberen wij meer te bieden dan onze concurrenten.',
+    ],
+    items: [
+      {
+        title: 'Ons eigen administratie portaal',
+        body: [
+          'Bijles Bèta heeft in de loop van de jaren een eigen administratie portaal ontwikkeld. In dit portaal geeft docenten, leerlingen en administratoren makkelijk toegang tot alle benodigde informatie. Lessen registratie, persoonsregistratie, facturatie en uitbetalingen gebeuren volledig automatisch.',
+          'Het systeem werkt zelfs zo goed dat het ondertussen ook door andere bijles bedrijven wordt gebruikt onder de naam StaatGenoteerd.',
+        ],
+      },
+      {
+        title: 'Bètatheek',
+        body: [
+          'Bijles Bèta focust de goede uitleg van de stof. Sinds kort zijn we bezig met het ontwikkelen van onze eigen kennisbank genaamd Bètatheek. De bètatheek is een collectie van artikelen die elk een specifiek vraagstuk uitgebreid uitlegt. De bètatheek dient als oefenmateriaal voor onze eigen leerlingen en voor alle andere bezoekers van onze website. Ook dient het als database voor onze docenten om oefenvragen uit te halen die ze kunnen gebruiken tijdens een bijles.',
+          'De bètatheek is nog in ontwikkeling en komt binnenkort beschikbaar! Blijf op de hoogte via een van onze sociale media kanalen.',
+        ],
+      },
+      {
+        title: 'Unieke examentraining',
+        body: [
+          'Het centraal examen is misschien wel de belangrijkste toets tijdens de middelbare school. Bijles Bèta biedt hiervoor een unieke ondersteuning: Bijles Bèta examentraining.',
+          'Onze examentraining is een intensieve persoonlijke begeleiding in de periode tussen de laatste tentamenweek en het centraal examen. Aan de hand van een speciaal ontwikkelde planning en toegang tot een uitgebreide collectie van uitwerkingen van examenvragen bereiden we onze leerlingen optimaal voor op de centrale examens.',
+          'Lees hier meer over onze examentraining.',
+        ],
+      },
     ],
   },
 } as const
@@ -396,6 +511,130 @@ export const werkenBij = {
     'Natuurkunde',
     'Scheikunde',
     'NaSk',
+  ],
+} as const
+
+/**
+ * The Examentraining page — a one-day exam bootcamp, distinct from the
+ * ongoing weekly bijles. From the Claude Design handoff `Examentraining.dc.html`.
+ */
+export const examentraining = {
+  hero: {
+    /** Overrides RatingLine's default label; stars/count stay the sitewide ones. */
+    ratingLabel: '7 jaar ervaring',
+    title: 'Examentraining',
+    intro:
+      'Wij bieden een examentraining die jou op het juiste moment het duwtje geeft in de richting van een geslaagd eindexamen.',
+    promises: [
+      'Veel persoonlijke aandacht',
+      'Door universitair geschoolde docenten',
+      'Kleine klas van maximaal 8 leerlingen',
+    ],
+    cta: 'Meld je direct aan',
+    image: '/img/examentraining-hero.jpg',
+    imageAlt: 'Docent voor het bord tijdens de examentraining',
+  },
+  /**
+   * The four reasons the training works. Icons are left as placeholders —
+   * no artwork was supplied for these in the design handoff.
+   */
+  features: {
+    kicker: 'Examentraining van ervaren bijlesdocenten',
+    title: 'Wat maakte onze examentraining effectief',
+    items: [
+      {
+        title: 'Ervaren docenten',
+        body: 'Onze docenten volgen een bèta-studie aan de universiteit en geven al jaren lang wekelijks bijles.',
+      },
+      {
+        title: 'Kleine groepen',
+        body: 'Bij onze examen training heb je kleine groepen (<10 leerling) en meerdere docenten voor maximale persoonlijk aandacht.',
+      },
+      {
+        title: 'Goeie timing',
+        body: 'Onze examentraining vindt plaats ongeveer 2 weken voor je examen. Precies het juiste moment.',
+      },
+      {
+        title: 'Een scherpe prijs',
+        body: 'De meest voordelige van Groningen met veel persoonlijke aandacht.',
+      },
+    ],
+  },
+  details: {
+    kicker: 'Wat kost dat?!',
+    title: 'Details',
+    intro:
+      'De Bijles Bèta examentraining duurt één dag. In de ochtend herhalen we de belangrijkste onderdelen. In de middag maken we samen een oefenexamen.',
+    planningLabel: 'Planning:',
+    planning: [
+      { time: '9:00 – 12:00', label: 'Examenstof herhalen' },
+      { time: '12:00 – 13:00', label: 'Pauze (neem je eigen brood mee)' },
+      { time: '13:00 – 16:00', label: 'Samen het eindexamen 2024 maken' },
+      { time: '16:00 – 17:00', label: 'Vragenuurtje' },
+    ],
+    datesLabel: 'Datums:',
+    datesBody: 'Zie hieronder de datums per vak en niveau.',
+    locationLabel: 'Locatie:',
+    locationLines: ['Noorderhaven 46, 9712 VL Groningen', 'Ruime en rustige vergaderzaal van Rapide Software'],
+    specialNoticeBefore: 'Let op, de volgende trainingen:',
+    specialTrainings: ['vwo wiskunde A', 'vwo wiskunde B'],
+    specialNoticeAfter: 'zijn op een andere locatie:',
+    specialLocation: 'Henri Dunantlaan 2, 9728 HD Groningen',
+  },
+  /** The single "all-in-one" package card beside the details column. */
+  pricing: {
+    badge: 'Alles in één',
+    title: 'Examentraining',
+    blurb: 'ééndaagse examentraining waarbij we je volledig klaarstomen voor je examens.',
+    price: 119,
+    features: [
+      'Veel persoonlijke aandacht',
+      'Universitair geschoolde en ervaren docenten',
+      'Kleine klas van maximaal 8 leerlingen',
+    ],
+    cta: 'Meld je aan',
+  },
+  video: {
+    title: 'We stellen ons graag aan je voor!',
+    body: [
+      'Om je een idee te geven van onze examentraining hebben we een korte promotievideo opgenomen.',
+      'Bekijk onze video!',
+    ],
+    cta: 'Meld je aan',
+    caption: 'Klik hierboven om de video te starten',
+    startLabel: 'Video starten',
+  },
+  levelsNotice: {
+    kicker: 'Ga direct naar de juiste pagina',
+    title: 'Welk niveau doe je?',
+    noticeLead: 'Let op:',
+    notice: 'de examentraining voor 2026 zijn afgerond.',
+    body: 'Wil je nog ondersteuning voor je (her)examens. Vul dan onderstaand contact formulier in of meld je aan voor bijles.',
+  },
+  signup: {
+    kicker: 'Meld je direct aan',
+    title: 'Vul je gegevens in',
+    noticeLead: 'Let op:',
+    notice: 'Onze examentrainingen voor 2026 zijn inmiddels afgerond.',
+    body: 'Wil je begeleiding voor je (her)examens. Vul dat het contactformulier hiernaast in of meld je aan voor onze bijles.',
+  },
+  /** This page's own FAQ set — separate from the sitewide `faqs`. */
+  faqs: [
+    {
+      question: 'Wat doen we tijdens de examentraining?',
+      answer:
+        'In de ochtend leggen we de belangrijkste onderdelen van de examenstof nog een keer uit. Na de lunch maken we gezamenlijk het eindexamen van vorig jaar.',
+    },
+    {
+      question: 'Wanneer is de examen training?',
+      answer:
+        'Onze examentraining vindt plaats ongeveer twee weken voor je examen. De datums per vak en niveau staan hierboven bij de details.',
+    },
+    {
+      question: 'Kan ik ook bijles krijgen in combinatie met de examentraining?',
+      answer:
+        'Dat kan zeker. Veel leerlingen combineren de examentraining met wekelijkse bijles in de weken ervoor. Neem contact op en we kijken samen wat je nodig hebt.',
+    },
   ],
 } as const
 

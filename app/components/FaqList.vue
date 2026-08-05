@@ -6,11 +6,16 @@ const props = withDefaults(
     limit?: number
     /** `lg` is the roomier variant used inside the standalone FAQ section. */
     size?: 'md' | 'lg'
+    /** Overrides the sitewide `faqs` list, e.g. Examentraining's own 3 questions. */
+    items?: readonly { question: string; answer: string }[]
   }>(),
-  { limit: 0, size: 'md' },
+  { limit: 0, size: 'md', items: undefined },
 )
 
-const items = computed(() => (props.limit > 0 ? faqs.slice(0, props.limit) : faqs))
+const items = computed(() => {
+  const source = props.items ?? faqs
+  return props.limit > 0 ? source.slice(0, props.limit) : source
+})
 </script>
 
 <template>
