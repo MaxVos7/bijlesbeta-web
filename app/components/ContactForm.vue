@@ -41,7 +41,7 @@ const errorMessage = ref('')
 */
 const panelInput =
   'block w-full rounded-field border border-line-300 bg-white px-3.5 py-[13px] ' +
-  'text-[13.5px] text-ink-900 transition placeholder:text-ink-300 ' +
+  'text-[13.5px] text-ink-800 transition placeholder:text-ink-300 ' +
   'focus:border-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/25'
 
 /** The endpoint takes one name field, whichever way the form collects it. */

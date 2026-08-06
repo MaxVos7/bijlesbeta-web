@@ -10,7 +10,7 @@ import { contact, trialCta } from '~/data/site'
 <template>
   <section class="bg-white px-[clamp(16px,4vw,24px)] pb-[clamp(56px,7vw,88px)]">
     <div
-      class="mx-auto grid max-w-[1040px] items-start gap-[clamp(26px,3.5vw,44px)] rounded-[20px] bg-brand-500 p-[clamp(26px,3.5vw,44px)] [grid-template-columns:repeat(auto-fit,minmax(300px,1fr))]"
+      class="mx-auto grid max-w-[1040px] items-start gap-[clamp(26px,3.5vw,44px)] rounded-card bg-brand-500 p-[clamp(26px,3.5vw,44px)] [grid-template-columns:repeat(auto-fit,minmax(300px,1fr))]"
     >
       <div class="min-w-0">
         <p class="mb-2 text-[15px] font-semibold text-on-brand">{{ trialCta.kicker }}</p>
@@ -27,7 +27,7 @@ import { contact, trialCta } from '~/data/site'
           <img
             src="/img/persoonlijk.png"
             alt=""
-            class="h-[58px] w-[58px] flex-none rounded-panel object-cover"
+            class="h-[58px] w-[58px] flex-none rounded object-cover"
             width="58"
             height="58"
             loading="lazy"

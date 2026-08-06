@@ -123,7 +123,7 @@ export const rating = { label: 'Uitstekend', stars: 5, count: '20+ Reviews' } as
 export const heroPromises = [
   'Altijd een persoonlijke match met de juiste docent',
   'Enthousiaste bèta-studenten van de Rijksuniversiteit Groningen',
-  'Direct resultaat met effectieve 1-op-1 begeleiding',
+  'Sneller resultaat met effectieve 1-op-1 aandacht',
 ] as const
 
 export const reassurance = '100% gratis, je zit nergens aan vast'

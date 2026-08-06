@@ -25,7 +25,16 @@ const items = computed(() => {
     more than one open at a time.
   -->
   <div>
-    <details v-for="item in items" :key="item.question" name="faq" class="group border-b border-line-100">
+    <!-- The first answer stands open on load, as on the live site — the
+         accordion reads as an answer with more below it rather than as a
+         column of closed rows. -->
+    <details
+      v-for="(item, index) in items"
+      :key="item.question"
+      name="faq"
+      :open="index === 0"
+      class="group border-b border-line-100"
+    >
       <summary
         class="flex cursor-pointer list-none items-center justify-between gap-5 text-left font-bold leading-snug"
         :class="size === 'lg' ? 'py-[22px] text-[15.5px]' : 'py-5 text-[14.5px]'"
@@ -36,7 +45,7 @@ const items = computed(() => {
           :class="size === 'lg' ? 'h-[26px] w-[26px]' : 'h-6 w-6'"
         >
           <svg
-            class="text-ink-600 transition-transform duration-200 group-open:rotate-180"
+            class="text-ink-600 transition-transform duration-200 group-open:rotate-90"
             :class="size === 'lg' ? 'h-[13px] w-[13px]' : 'h-3 w-3'"
             viewBox="0 0 24 24"
             fill="none"
@@ -46,7 +55,7 @@ const items = computed(() => {
             stroke-linejoin="round"
             aria-hidden="true"
           >
-            <path d="M6 9l6 6 6-6" />
+            <path d="M9 6l6 6-6 6" />
           </svg>
         </span>
       </summary>

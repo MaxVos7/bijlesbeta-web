@@ -122,7 +122,7 @@ function openVideo() {
             class="mb-2.5 grid justify-start gap-x-2.5 gap-y-0.5 text-sm leading-[1.75] text-ink-700 [grid-template-columns:auto_1fr]"
           >
             <template v-for="row in examentraining.details.planning" :key="row.time">
-              <span class="font-bold whitespace-nowrap text-ink-900">{{ row.time }}</span>
+              <span class="font-bold whitespace-nowrap text-ink-800">{{ row.time }}</span>
               <span>{{ row.label }}</span>
             </template>
           </div>
@@ -139,7 +139,7 @@ function openVideo() {
           <p class="mt-[26px] text-[13.5px] leading-[1.7] text-ink-700 italic">
             {{ examentraining.details.specialNoticeBefore }}
           </p>
-          <p class="text-[13.5px] leading-[1.7] font-bold text-ink-900 italic">
+          <p class="text-[13.5px] leading-[1.7] font-bold text-ink-800 italic">
             <template v-for="(item, index) in examentraining.details.specialTrainings" :key="item">
               <br v-if="index > 0">– {{ item }}
             </template>
@@ -147,14 +147,14 @@ function openVideo() {
           <p class="text-[13.5px] leading-[1.7] text-ink-700 italic">
             {{ examentraining.details.specialNoticeAfter }}
           </p>
-          <p class="text-[13.5px] leading-[1.7] font-bold text-ink-900 italic">
+          <p class="text-[13.5px] leading-[1.7] font-bold text-ink-800 italic">
             {{ examentraining.details.specialLocation }}
           </p>
         </div>
 
         <div class="min-w-0 rounded-card bg-ink-900 p-[clamp(22px,2.6vw,30px)] text-white">
           <span
-            class="mb-[18px] inline-block rounded-[7px] border border-accent-500 px-[11px] py-[5px] text-[12.5px] font-semibold text-brand-500"
+            class="mb-[18px] inline-block rounded-btn border border-accent-500 px-[11px] py-[5px] text-[12.5px] font-semibold text-brand-500"
           >
             {{ examentraining.pricing.badge }}
           </span>
@@ -258,7 +258,7 @@ function openVideo() {
           {{ examentraining.levelsNotice.title }}
         </h2>
         <p class="mx-auto mb-3 max-w-[70ch] text-sm leading-[1.75] text-ink-700">
-          <strong class="text-ink-900">{{ examentraining.levelsNotice.noticeLead }}</strong>
+          <strong class="text-ink-800">{{ examentraining.levelsNotice.noticeLead }}</strong>
           {{ examentraining.levelsNotice.notice }}
         </p>
         <p class="mx-auto max-w-[70ch] text-sm leading-[1.75] text-ink-700">
@@ -278,7 +278,7 @@ function openVideo() {
             {{ examentraining.signup.title }}
           </h2>
           <p class="mb-3.5 max-w-[46ch] text-sm leading-[1.7] text-ink-700">
-            <strong class="text-ink-900">{{ examentraining.signup.noticeLead }}</strong>
+            <strong class="text-ink-800">{{ examentraining.signup.noticeLead }}</strong>
             {{ examentraining.signup.notice }}
           </p>
           <p class="mb-[30px] max-w-[46ch] text-sm leading-[1.7] text-ink-600">
