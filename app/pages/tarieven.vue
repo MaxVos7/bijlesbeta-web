@@ -22,15 +22,16 @@ useSeoMeta({
           </h1>
           <p class="mb-7 max-w-[46ch] text-[clamp(15px,1.2vw,17px)] leading-relaxed text-ink-600">
             Wij zijn een lokaal initiatief, georganiseerd door studenten. Hierdoor kunnen we onze
-            tarieven laag houden. Onze pakketten zijn gericht op consistente begeleiding, zodat je
-            het vak écht onder de knie krijgt.
+            tarieven laag houden.<br>
+            Onze pakketten zijn gericht op consistente begeleiding, zodat je het vak écht onder de
+            knie krijgt.
           </p>
 
           <CheckList :items="heroPromises" class="mb-8" />
 
           <a
             href="#pakketten"
-            class="btn-primary gap-3.5 rounded-panel px-[26px] py-4 text-base shadow-[0_6px_18px_rgb(245_179_1_/_0.35)] hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgb(245_179_1_/_0.42)]"
+            class="btn-primary gap-3.5 px-6 py-5 text-[15px] shadow-[0_6px_18px_rgb(255_187_0_/_0.35)] hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgb(255_187_0_/_0.42)]"
           >
             Tarieven bekijken <span class="text-lg" aria-hidden="true">→</span>
           </a>
@@ -89,7 +90,7 @@ useSeoMeta({
               {{ note }}
             </li>
           </ul>
-          <NuxtLink to="/contact" class="btn-primary gap-3.5 rounded-[11px] px-[22px] py-3.5 text-[15px]">
+          <NuxtLink to="/contact" class="btn-primary gap-3.5 px-[22px] py-3.5 text-[15px]">
             Neem contact op <span aria-hidden="true">→</span>
           </NuxtLink>
         </div>

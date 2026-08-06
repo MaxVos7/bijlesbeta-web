@@ -29,7 +29,7 @@ useSeoMeta({
           </p>
           <a
             href="#verhaal"
-            class="btn-primary gap-3.5 rounded-[11px] px-6 py-[15px] text-[15px] shadow-[0_6px_18px_rgb(245_179_1_/_0.35)] hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgb(245_179_1_/_0.42)]"
+            class="btn-primary gap-3.5 px-6 py-[15px] text-[15px] shadow-[0_6px_18px_rgb(255_187_0_/_0.35)] hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgb(255_187_0_/_0.42)]"
           >
             Het ontstaan <span class="text-lg" aria-hidden="true">→</span>
           </a>
@@ -88,7 +88,7 @@ useSeoMeta({
           <h2 class="mb-4 text-[clamp(24px,2.6vw,30px)] tracking-[-0.025em]">{{ hetBedrijf.team.title }}</h2>
           <p class="mb-3 text-[14.5px] leading-[1.75] text-ink-700">{{ hetBedrijf.team.body }}</p>
           <p class="mb-[26px] text-[14.5px] leading-[1.75] text-ink-700">
-            {{ hetBedrijf.team.buddyBefore }}<strong class="font-bold text-ink-900">{{ hetBedrijf.team.buddyBold }}</strong>{{ hetBedrijf.team.buddyAfter }}
+            {{ hetBedrijf.team.buddyBefore }}<strong class="font-bold text-ink-800">{{ hetBedrijf.team.buddyBold }}</strong>{{ hetBedrijf.team.buddyAfter }}
           </p>
           <NuxtLink to="/over-ons#team" class="btn-primary gap-3 px-5 py-[13px] text-sm">
             Ons team <span aria-hidden="true">→</span>

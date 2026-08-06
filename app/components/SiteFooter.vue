@@ -97,7 +97,7 @@ const footerNav = nav.filter((item) => item.label !== 'Kennisbank')
       </div>
 
       <div
-        class="grid gap-[clamp(24px,3vw,36px)] text-[13.5px] leading-[1.7] sm:grid-cols-2 lg:grid-cols-[repeat(auto-fit,minmax(190px,1fr))]"
+        class="grid gap-[clamp(24px,3vw,36px)] text-[13.5px] leading-[1.7] [grid-template-columns:repeat(auto-fit,minmax(140px,1fr))]"
       >
         <div>
           <p class="font-bold">Bijles Bèta</p>

@@ -44,7 +44,7 @@ const storyQuote = computed(() => {
 
           <NuxtLink
             to="/aanmelden"
-            class="btn-primary gap-3.5 rounded-[11px] px-6 py-[15px] text-[15px] shadow-[0_6px_18px_rgb(245_179_1_/_0.35)] hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgb(245_179_1_/_0.42)]"
+            class="btn-primary gap-3.5 px-6 py-[15px] text-[15px] shadow-[0_6px_18px_rgb(255_187_0_/_0.35)] hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgb(255_187_0_/_0.42)]"
           >
             Direct aanmelden <span class="text-lg" aria-hidden="true">→</span>
           </NuxtLink>
