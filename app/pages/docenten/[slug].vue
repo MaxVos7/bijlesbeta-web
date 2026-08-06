@@ -59,7 +59,7 @@ useSeoMeta({
             </div>
 
             <p class="mt-6 text-[13.5px] text-ink-600">
-              Studie: <strong class="text-ink-900">{{ tutor.study }}</strong>
+              Studie: <strong class="text-ink-800">{{ tutor.study }}</strong>
             </p>
           </div>
 
@@ -69,7 +69,7 @@ useSeoMeta({
               :alt="tutor.name"
               class="block aspect-[4/5] w-full max-w-[340px] rounded-md bg-sand object-cover"
             >
-            <NuxtLink to="/aanmelden" class="btn-primary gap-3.5 rounded-[11px] px-[22px] py-3.5 text-[14.5px]">
+            <NuxtLink to="/aanmelden" class="btn-primary gap-3.5 px-[22px] py-3.5 text-[14.5px]">
               Bijles aanvragen <span aria-hidden="true">→</span>
             </NuxtLink>
           </div>

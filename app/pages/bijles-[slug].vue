@@ -58,7 +58,7 @@ useSeoMeta({
 
             <NuxtLink
               to="/aanmelden"
-              class="btn-primary gap-3.5 rounded-panel px-[26px] py-4 text-base shadow-[0_6px_18px_rgb(245_179_1_/_0.35)] hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgb(245_179_1_/_0.42)]"
+              class="btn-primary gap-3.5 px-[26px] py-4 text-base shadow-[0_6px_18px_rgb(255_187_0_/_0.35)] hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgb(255_187_0_/_0.42)]"
             >
               Gratis proefles <span class="text-lg" aria-hidden="true">→</span>
             </NuxtLink>
@@ -66,7 +66,7 @@ useSeoMeta({
           </div>
 
           <div
-            class="w-full min-w-0 max-w-[470px] justify-self-end rounded-[20px] bg-brand-500 p-[clamp(20px,2.4vw,30px)]"
+            class="w-full min-w-0 max-w-[470px] justify-self-end rounded-card bg-brand-500 p-[clamp(20px,2.4vw,30px)]"
           >
             <p class="mb-1.5 text-[15px] font-semibold text-on-brand">{{ landingHeroForm.kicker }}</p>
             <h2 class="mb-2.5 text-[clamp(21px,2.2vw,27px)] tracking-[-0.025em]">
@@ -140,7 +140,7 @@ useSeoMeta({
               <NuxtLink
                 v-if="segment.to"
                 :to="segment.to"
-                class="font-semibold text-ink-900 underline decoration-line-300 underline-offset-2 hover:decoration-ink-900"
+                class="font-semibold text-ink-800 underline decoration-line-300 underline-offset-2 hover:decoration-ink-900"
               >{{ segment.text }}</NuxtLink>
               <template v-else>{{ segment.text }}</template>
             </template>

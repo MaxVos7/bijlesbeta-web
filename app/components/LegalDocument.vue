@@ -45,7 +45,7 @@ defineProps<{ doc: LegalDocument }>()
 
             <p v-else-if="block.kind === 'p'" class="mb-4 leading-relaxed text-ink-700">
               <template v-for="(item, k) in block.items" :key="k">
-                <strong v-if="item.lead" class="font-bold text-ink-900">{{ item.lead }} </strong>
+                <strong v-if="item.lead" class="font-bold text-ink-800">{{ item.lead }} </strong>
                 <span>{{ item.text }}</span>
                 <a
                   v-if="item.link"
@@ -63,7 +63,7 @@ defineProps<{ doc: LegalDocument }>()
               :class="block.kind === 'ol' ? 'list-decimal' : 'list-disc'"
             >
               <li v-for="(item, k) in block.items" :key="k" class="pl-1">
-                <strong v-if="item.lead" class="font-bold text-ink-900">{{ item.lead }} </strong>
+                <strong v-if="item.lead" class="font-bold text-ink-800">{{ item.lead }} </strong>
                 <span>{{ item.text }}</span>
                 <a
                   v-if="item.link"

@@ -33,13 +33,13 @@ useSeoMeta({
           <div class="flex flex-wrap gap-3">
             <NuxtLink
               to="/aanmelden"
-              class="btn-primary gap-3.5 rounded-panel px-[26px] py-4 text-base shadow-[0_6px_18px_rgb(245_179_1_/_0.35)] hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgb(245_179_1_/_0.42)]"
+              class="btn-primary gap-3.5 px-[26px] py-4 text-base shadow-[0_6px_18px_rgb(255_187_0_/_0.35)] hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgb(255_187_0_/_0.42)]"
             >
               Gratis proefles <span class="text-lg" aria-hidden="true">→</span>
             </NuxtLink>
             <a
               href="#stappenplan"
-              class="btn-secondary gap-3.5 rounded-panel px-6 py-4 text-base hover:border-brand-500 hover:bg-ivory"
+              class="btn-secondary gap-3.5 px-6 py-4 text-base hover:border-brand-500 hover:bg-ivory"
             >
               {{ zoWerktHet.secondaryCta }} <span class="text-lg" aria-hidden="true">→</span>
             </a>

@@ -33,14 +33,14 @@ const formatPrice = (value: number) =>
         :key="plan.slug"
         class="flex flex-col rounded-card border px-6 pt-[26px] pb-6 transition duration-200 hover:-translate-y-1 hover:shadow-[0_18px_38px_rgb(31_29_28_/_0.13)]"
         :class="[
-          plan.inverted ? 'border-ink-900 bg-ink-900 text-white' : 'bg-white text-ink-900',
-          plan.featured
-            ? 'border-brand-500 shadow-[0_10px_26px_rgb(245_179_1_/_0.18)]'
-            : !plan.inverted && 'border-line-200',
+          plan.inverted ? 'border-ink-900 bg-ink-900 text-white' : 'border-line-200 text-ink-800',
+          // The highlighted package is marked by its ground and a heavier
+          // amber rule along the bottom, not by a coloured border or a glow.
+          plan.featured ? 'border-b-4 border-b-brand-500 bg-parchment' : !plan.inverted && 'bg-white',
         ]"
       >
         <span
-          class="mb-[18px] self-start rounded-[7px] border border-accent-500 px-[11px] py-[5px] text-[12.5px] font-semibold whitespace-nowrap"
+          class="mb-[18px] self-start rounded-btn border border-accent-500 px-[11px] py-[5px] text-[15px] font-semibold whitespace-nowrap text-accent-500"
         >
           {{ plan.hoursLabel }}
         </span>
@@ -49,8 +49,8 @@ const formatPrice = (value: number) =>
           {{ plan.name }}
         </h3>
         <p
-          class="mb-[22px] text-sm leading-relaxed"
-          :class="plan.inverted ? 'text-ink-300' : 'text-ink-600'"
+          class="mb-[22px] text-base leading-[1.75]"
+          :class="plan.inverted ? 'text-ink-300' : 'text-ink-850'"
         >
           {{ plan.blurb }}
         </p>
@@ -101,7 +101,7 @@ const formatPrice = (value: number) =>
           Gratis proefles <span aria-hidden="true">→</span>
         </NuxtLink>
         <p class="mt-3.5 text-[11.5px]" :class="plan.inverted ? 'text-ink-300' : 'text-ink-600'">
-          <strong :class="plan.inverted ? 'text-white' : 'text-ink-900'">100% gratis</strong>,
+          <strong :class="plan.inverted ? 'text-white' : 'text-ink-800'">100% gratis</strong>,
           je zit nergens aan vast
         </p>
       </div>

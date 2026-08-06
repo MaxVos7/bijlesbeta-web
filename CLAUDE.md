@@ -64,8 +64,27 @@ The design is applied to `/`, `/over-ons`, `/tarieven`, `/aanmelden`,
 `/contact`, `/werken-bij`, `/bijles-[vak]-[stad]`, `/docenten/[slug]`,
 `/examentraining` and the shared chrome, from a Claude Design handoff.
 `app/assets/css/main.css` carries the real palette — an amber brand on cream
-and sand grounds, with a warm `ink-*` ramp and Archivo as the typeface. The
-tokens are no longer placeholders.
+and sand grounds, with a warm `ink-*` ramp, Plus Jakarta Sans for headings and
+Open Sans for body copy. The tokens are no longer placeholders.
+
+A second handoff (`Tarieven.dc.html`) pulled the tokens to bijlesbeta.nl
+parity, so a few things are now deliberate and shouldn't drift back:
+
+- **One amber.** `brand-500` and `accent-500` are both `#ffbb00`; the live site
+  runs no separate accent. `brand-600` (`#f0b000`) is the hover.
+- **Two radii.** Controls round on 4px (`field`, `btn`), surfaces on 8px
+  (`panel`, `tile`, `card`). All five names survive so components didn't have
+  to change, but they resolve onto those two values — don't reintroduce
+  one-off `rounded-[11px]`-style overrides.
+- **Three inks at the dark end.** `ink-900` (`#1d1d1b`) is the deep ink and is
+  for grounds and rules only — the dark bands, the inverted package, the 1.5px
+  underline beneath text links. Body copy and headings sit on `ink-800`
+  (`#333`), which is what `<body>` sets; `ink-850` (`#222`) is the package
+  descriptions and nothing else. Reach for `text-ink-800`, never
+  `text-ink-900`.
+- **`parchment` (`#f5f3e9`)** is the page ground on `<body>` and the fill of
+  the highlighted package — a hair warmer than `sand`, and not interchangeable
+  with it.
 
 `/contact` puts its hero and its form panel in one sand band and sets its FAQ
 heading beside the accordion, so it uses neither `PageHero` nor `FaqSection`.

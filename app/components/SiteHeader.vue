@@ -14,7 +14,6 @@ withDefaults(
   { transparent: false },
 )
 
-const config = useRuntimeConfig()
 const route = useRoute()
 
 // Pages opening on the dark hero band darken the strip too, via
@@ -60,7 +59,7 @@ watch(() => route.fullPath, () => {
         </NuxtLink>
 
         <nav
-          class="hidden min-w-[255px] flex-1 flex-wrap justify-center gap-x-[clamp(16px,2.2vw,28px)] gap-y-2 text-[15px] font-medium md:flex"
+          class="hidden flex-1 flex-wrap justify-start gap-x-[clamp(16px,2.2vw,28px)] gap-y-2 text-[15px] font-medium md:flex"
           aria-label="Hoofdmenu"
         >
           <NuxtLink
@@ -75,26 +74,9 @@ watch(() => route.fullPath, () => {
         </nav>
 
         <div class="flex items-center gap-2.5">
+          <!-- The bar carries the trial CTA alone; the portal login lives in
+               the footer, as on the live site. -->
           <NuxtLink to="/aanmelden" class="btn-primary">Gratis proefles</NuxtLink>
-
-          <a
-            :href="config.public.portalUrl"
-            class="hidden h-[42px] w-[42px] flex-none items-center justify-center rounded-btn border border-line-300 transition hover:bg-cream md:flex"
-            aria-label="Inloggen"
-          >
-            <svg
-              class="h-[18px] w-[18px]"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              aria-hidden="true"
-            >
-              <circle cx="12" cy="8" r="4" />
-              <path d="M4 21c0-4 3.6-6 8-6s8 2 8 6" />
-            </svg>
-          </a>
 
           <button
             type="button"

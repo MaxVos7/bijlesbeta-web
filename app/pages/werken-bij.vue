@@ -36,7 +36,7 @@ useSeoMeta({
 
           <a
             href="#solliciteren"
-            class="btn-primary gap-3.5 rounded-panel px-[26px] py-4 text-base shadow-[0_6px_18px_rgb(245_179_1_/_0.35)]"
+            class="btn-primary gap-3.5 px-[26px] py-4 text-base shadow-[0_6px_18px_rgb(255_187_0_/_0.35)]"
           >
             {{ werkenBij.hero.cta }} <span class="text-lg" aria-hidden="true">→</span>
           </a>
@@ -129,7 +129,7 @@ useSeoMeta({
               :class="!requirement.image && 'pt-[clamp(24px,10vw,150px)]'"
             >
               <span
-                class="inline-flex items-center justify-center rounded-[6px] bg-brand-500 px-[9px] py-[3px] text-[13px] font-bold text-ink-900"
+                class="inline-flex items-center justify-center rounded-btn bg-brand-500 px-[9px] py-[3px] text-[13px] font-bold text-ink-800"
               >
                 {{ index + 1 }}.
               </span>

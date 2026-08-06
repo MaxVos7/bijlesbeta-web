@@ -43,7 +43,7 @@ useSeoMeta({
 
           <NuxtLink
             to="/aanmelden"
-            class="btn-primary gap-3 px-[22px] py-3.5 text-[15px] shadow-[0_6px_18px_rgb(245_179_1_/_0.35)] hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgb(245_179_1_/_0.42)]"
+            class="btn-primary gap-3 px-[22px] py-3.5 text-[15px] shadow-[0_6px_18px_rgb(255_187_0_/_0.35)] hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgb(255_187_0_/_0.42)]"
           >
             Gratis proefles <span class="text-lg" aria-hidden="true">→</span>
           </NuxtLink>
@@ -107,7 +107,7 @@ useSeoMeta({
 
     <section id="verhaal" class="bg-white px-[clamp(16px,4vw,24px)] pb-[clamp(56px,7vw,90px)]">
       <div
-        class="mx-auto grid max-w-[1040px] overflow-hidden rounded-[20px] bg-sand [grid-template-columns:repeat(auto-fit,minmax(300px,1fr))]"
+        class="mx-auto grid max-w-[1040px] overflow-hidden rounded-card bg-sand [grid-template-columns:repeat(auto-fit,minmax(300px,1fr))]"
       >
         <img
           src="/img/studenten.png"
