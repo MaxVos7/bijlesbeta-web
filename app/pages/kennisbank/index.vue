@@ -43,8 +43,8 @@ function isFeatured(article: Article) {
             class="rounded-btn border px-4 py-[11px] text-[13.5px] transition"
             :class="
               activeTag === chip
-                ? 'border-brand-500 bg-brand-500 font-bold text-ink-800'
-                : 'border-line-200 bg-cream font-medium text-ink-800 hover:border-line-400'
+                ? 'border-brand-500 bg-brand-500 font-bold text-ink-700'
+                : 'border-line-200 bg-cream font-medium text-ink-700 hover:border-line-400'
             "
             :aria-pressed="activeTag === chip"
             @click="activeTag = chip"
