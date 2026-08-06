@@ -48,13 +48,13 @@ export const landings: LandingPage[] = [
     seoTitle: 'Het kwartje moet vallen',
     seoDescription:
       'Zoek je bijles wiskunde in Groningen? Onze RUG-studenten komen bij je thuis. Van wiskunde A tot B, alle niveaus. ✓ Gratis proefles',
-    image: '/img/wiskunde.jpg',
+    image: '/img/uitleg-b.png',
     imageAlt: 'Bijles wiskunde in Groningen',
     seoParagraphs: [
       [{ text: 'Zoek je bijles wiskunde in Groningen? Bij Bijles Bèta krijg je persoonlijke begeleiding van studenten die zelf wiskunde of een bèta-studie volgen aan de Rijksuniversiteit Groningen. Ze snappen de stof én weten hoe ze het moeten uitleggen.' }],
       [{ text: 'Onze wiskunde bijles is voor alle niveaus: ' }, { text: 'vmbo', to: '/bijles-vmbo' }, { text: ', ' }, { text: 'havo', to: '/bijles-havo' }, { text: ' en ' }, { text: 'vwo', to: '/bijles-vwo' }, { text: '. Van de brugklas tot je eindexamen. Volg je ' }, { text: 'wiskunde A', to: '/bijles-wiskunde-a-groningen' }, { text: ' of ' }, { text: 'wiskunde B', to: '/bijles-wiskunde-b-groningen' }, { text: '? Onze docenten hebben ervaring met beide varianten.' }],
       [{ text: 'Wat bijles wiskunde in Groningen bij ons bijzonder maakt? We komen ' }, { text: 'bij je thuis', to: '/bijles-aan-huis' }, { text: '. Geen reistijd, geen gedoe. Gewoon effectief werken aan jouw wiskunde in je eigen omgeving.' }],
-      [{ text: 'Bekijk onze ' }, { text: 'tarieven', to: '/tarieven' }, { text: ' of lees ' }, { text: 'hoe het werkt', to: '/zo-werkt-het' }, { text: '. We starten altijd met een gratis proefles - vrijblijvend en zonder opzegtermijn.' }],
+      [{ text: 'Bekijk onze ' }, { text: 'tarieven', to: '/tarieven' }, { text: ' of lees ' }, { text: 'hoe het werkt', to: '/zo-werkt-het' }, { text: '. We starten altijd met een gratis proefles – vrijblijvend en zonder opzegtermijn.' }],
     ],
   },
   {
@@ -200,7 +200,7 @@ export const landings: LandingPage[] = [
       [{ text: 'Onze docenten geven bijles in ' }, { text: 'wiskunde', to: '/bijles-wiskunde-groningen' }, { text: ', ' }, { text: 'natuurkunde', to: '/bijles-natuurkunde-groningen' }, { text: ' en ' }, { text: 'scheikunde', to: '/bijles-scheikunde-groningen' }, { text: '. Ze zijn allemaal studenten aan de Rijksuniversiteit Groningen en komen uit de regio. Of je nu in het centrum woont, in Helpman, Paddepoel of een dorp in de omgeving - wij komen naar je toe.' }],
       [{ text: 'Waarom bijles aan huis werkt? Je bent ontspannen in je eigen omgeving. Geen stress van een onbekende locatie. Je ouders kunnen eventueel meekijken hoe het gaat. En na de les kun je direct verder met je huiswerk - de docent heeft je net uitgelegd hoe het moet.' }],
       [{ text: 'Bijles aan huis is beschikbaar voor ' }, { text: 'vmbo', to: '/bijles-vmbo' }, { text: ', ' }, { text: 'havo', to: '/bijles-havo' }, { text: ' en ' }, { text: 'vwo', to: '/bijles-vwo' }, { text: ' leerlingen. Of je nu ' }, { text: 'wiskunde A', to: '/bijles-wiskunde-a-groningen' }, { text: ', ' }, { text: 'wiskunde B', to: '/bijles-wiskunde-b-groningen' }, { text: ' of een ander bèta vak volgt - wij hebben een passende docent.' }],
-      [{ text: 'Bekijk onze ' }, { text: 'tarieven', to: '/tarieven' }, { text: ' of lees ' }, { text: 'hoe het werkt', to: '/zo-werkt-het' }, { text: '. We starten met een gratis proefles - vrijblijvend en zonder opzegtermijn.' }],
+      [{ text: 'Bekijk onze ' }, { text: 'tarieven', to: '/tarieven' }, { text: ' of lees ' }, { text: 'hoe het werkt', to: '/zo-werkt-het' }, { text: '. We starten met een gratis proefles – vrijblijvend en zonder opzegtermijn.' }],
     ],
   },
   {
@@ -219,7 +219,7 @@ export const landings: LandingPage[] = [
       [{ text: 'Onze docenten geven bijles in ' }, { text: 'wiskunde', to: '/bijles-wiskunde-groningen' }, { text: ', ' }, { text: 'natuurkunde', to: '/bijles-natuurkunde-groningen' }, { text: ' en ' }, { text: 'scheikunde', to: '/bijles-scheikunde-groningen' }, { text: '. Ze zijn allemaal studenten aan de Rijksuniversiteit Groningen en komen uit de regio. Of je nu in het centrum woont, in Helpman, Paddepoel of een dorp in de omgeving - wij komen naar je toe.' }],
       [{ text: 'Waarom bijles aan huis werkt? Je bent ontspannen in je eigen omgeving. Geen stress van een onbekende locatie. Je ouders kunnen eventueel meekijken hoe het gaat. En na de les kun je direct verder met je huiswerk - de docent heeft je net uitgelegd hoe het moet.' }],
       [{ text: 'Bijles aan huis is beschikbaar voor ' }, { text: 'vmbo', to: '/bijles-vmbo' }, { text: ', ' }, { text: 'havo', to: '/bijles-havo' }, { text: ' en ' }, { text: 'vwo', to: '/bijles-vwo' }, { text: ' leerlingen. Of je nu ' }, { text: 'wiskunde A', to: '/bijles-wiskunde-a-groningen' }, { text: ', ' }, { text: 'wiskunde B', to: '/bijles-wiskunde-b-groningen' }, { text: ' of een ander bèta vak volgt - wij hebben een passende docent.' }],
-      [{ text: 'Bekijk onze ' }, { text: 'tarieven', to: '/tarieven' }, { text: ' of lees ' }, { text: 'hoe het werkt', to: '/zo-werkt-het' }, { text: '. We starten met een gratis proefles - vrijblijvend en zonder opzegtermijn.' }],
+      [{ text: 'Bekijk onze ' }, { text: 'tarieven', to: '/tarieven' }, { text: ' of lees ' }, { text: 'hoe het werkt', to: '/zo-werkt-het' }, { text: '. We starten met een gratis proefles – vrijblijvend en zonder opzegtermijn.' }],
     ],
   },
   {

@@ -32,8 +32,8 @@ const items = computed(() => {
       v-for="(item, index) in items"
       :key="item.question"
       name="faq"
-      :open="index === 0"
       class="group border-b border-line-100"
+      :open="index === 0"
     >
       <summary
         class="flex cursor-pointer list-none items-center justify-between gap-5 text-left font-bold leading-snug"
