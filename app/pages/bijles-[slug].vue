@@ -29,7 +29,7 @@ useSeoMeta({
   <div>
     <section class="relative overflow-hidden bg-ink-900 pb-[clamp(48px,7vw,88px)]">
       <img
-        src="/img/lab.jpg"
+        src="/img/studenten.png"
         alt=""
         class="absolute inset-0 h-full w-full object-cover"
         aria-hidden="true"
@@ -134,7 +134,7 @@ useSeoMeta({
           <p
             v-for="(paragraph, index) in landing.seoParagraphs"
             :key="index"
-            class="text-[15px] leading-[1.85] not-last:mb-4"
+            class="text-[15px] leading-[1.85]"
           >
             <template v-for="(segment, segIndex) in paragraph" :key="segIndex">
               <NuxtLink
@@ -212,13 +212,25 @@ useSeoMeta({
     <section
       class="bg-white px-[clamp(16px,4vw,24px)] pt-[clamp(48px,6vw,80px)] pb-[clamp(64px,8vw,100px)]"
     >
-      <div class="mx-auto max-w-[1080px]">
-        <p class="kicker mb-2.5">{{ teamIntro.kicker }}</p>
-        <h2 class="mb-5 text-[clamp(23px,2.5vw,30px)] tracking-[-0.025em]">{{ teamIntro.title }}</h2>
-        <p class="mb-7 max-w-[46ch] text-[15px] leading-[1.75] text-ink-700">{{ teamIntro.body }}</p>
-        <NuxtLink to="/over-ons#team" class="btn-secondary gap-3 hover:border-brand-500 hover:bg-ivory">
-          Ons team →
-        </NuxtLink>
+      <div
+        class="mx-auto grid max-w-[1080px] items-center gap-[clamp(28px,4vw,56px)] [grid-template-columns:repeat(auto-fit,minmax(300px,1fr))]"
+      >
+        <div class="min-w-0">
+          <p class="kicker mb-2.5">{{ teamIntro.kicker }}</p>
+          <h2 class="mb-5 text-[clamp(23px,2.5vw,30px)] tracking-[-0.025em]">{{ teamIntro.title }}</h2>
+          <p class="mb-7 max-w-[46ch] text-[15px] leading-[1.75] text-ink-700">{{ teamIntro.body }}</p>
+          <NuxtLink to="/over-ons#team" class="btn-secondary gap-3 hover:border-brand-500 hover:bg-ivory">
+            Ons team →
+          </NuxtLink>
+        </div>
+        <div class="min-w-0">
+          <img
+            src="/img/team-collage.png"
+            alt="Het team van Bijles Bèta"
+            class="mx-auto block h-auto w-full max-w-[420px]"
+            loading="lazy"
+          >
+        </div>
       </div>
     </section>
 

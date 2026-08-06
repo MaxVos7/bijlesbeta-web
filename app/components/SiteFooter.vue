@@ -11,6 +11,9 @@ import {
 } from '~/data/site'
 
 const config = useRuntimeConfig()
+
+// The live site's footer omits Kennisbank — it's a header-only link there.
+const footerNav = nav.filter((item) => item.label !== 'Kennisbank')
 </script>
 
 <template>
@@ -131,7 +134,7 @@ const config = useRuntimeConfig()
             >
               {{ subject.name }}
             </NuxtLink>
-            <NuxtLink to="/tarieven">Bijles aan huis</NuxtLink>
+            <NuxtLink to="/tarieven">Bijles aan Huis</NuxtLink>
           </div>
         </div>
 
@@ -151,7 +154,7 @@ const config = useRuntimeConfig()
         <div>
           <p class="mb-2.5 font-bold text-brand-700">Navigatie</p>
           <div class="flex flex-col items-start gap-1.5">
-            <NuxtLink v-for="item in nav" :key="item.to" :to="item.to">{{ item.label }}</NuxtLink>
+            <NuxtLink v-for="item in footerNav" :key="item.to" :to="item.to">{{ item.label }}</NuxtLink>
             <NuxtLink v-for="item in legalLinks" :key="item.to" :to="item.to">
               {{ item.label }}
             </NuxtLink>

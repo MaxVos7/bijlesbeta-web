@@ -25,7 +25,13 @@ const items = computed(() => {
     more than one open at a time.
   -->
   <div>
-    <details v-for="item in items" :key="item.question" name="faq" class="group border-b border-line-100">
+    <details
+      v-for="(item, index) in items"
+      :key="item.question"
+      name="faq"
+      class="group border-b border-line-100"
+      :open="index === 0"
+    >
       <summary
         class="flex cursor-pointer list-none items-center justify-between gap-5 text-left font-bold leading-snug"
         :class="size === 'lg' ? 'py-[22px] text-[15.5px]' : 'py-5 text-[14.5px]'"

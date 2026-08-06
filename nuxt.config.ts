@@ -14,8 +14,8 @@ export default defineNuxtConfig({
   app: {
     head: {
       htmlAttrs: { lang: 'nl' },
-      // Brand first, as on bijlesbeta.nl.
-      titleTemplate: 'Bijles Bèta | %s',
+      // Brand last, as on bijlesbeta.nl.
+      titleTemplate: '%s - Bijles Bèta',
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
