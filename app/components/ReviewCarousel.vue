@@ -60,9 +60,10 @@ function step(direction: number) {
           {{ review.body }}
         </blockquote>
 
-        <figcaption class="mt-6 border-t border-line-100 pt-4">
+        <!-- No rule above the name: the space alone separates it from the quote. -->
+        <figcaption class="mt-6 pt-4">
           <span class="block text-[13.5px] font-bold">{{ review.author }}</span>
-          <span class="block text-[12.5px] text-ink-400">{{ review.affiliation }}</span>
+          <span class="block text-[12.5px] text-ink-600">{{ review.affiliation }}</span>
         </figcaption>
       </figure>
     </div>

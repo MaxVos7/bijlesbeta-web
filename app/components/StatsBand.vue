@@ -76,7 +76,7 @@ onBeforeUnmount(() => {
         <div
           v-for="(stat, index) in stats"
           :key="stat.label"
-          class="rounded-tile border border-line-200 bg-ivory px-3 py-[30px]"
+          class="rounded-tile border border-line-200 bg-white px-3 py-[30px]"
         >
           <p class="text-[clamp(32px,4vw,44px)] font-bold leading-none tracking-[-0.035em]">
             {{ displayed[index] }}{{ stat.suffix }}

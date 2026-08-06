@@ -155,6 +155,9 @@ const config = useRuntimeConfig()
             <NuxtLink v-for="item in legalLinks" :key="item.to" :to="item.to">
               {{ item.label }}
             </NuxtLink>
+            <!-- TODO: reopens the cookie consent banner, which isn't built
+                 yet — the anchor is a placeholder until it is. -->
+            <a href="#cookies">Beheer cookies</a>
           </div>
         </div>
       </div>
