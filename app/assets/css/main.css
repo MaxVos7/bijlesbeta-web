@@ -29,11 +29,18 @@
   --color-accent-500: #f5b301;
   --color-accent-600: #c98c00;
 
-  /* Ink — warm greys for text, darkest first. */
-  --color-ink-900: #1f1d1c;
-  --color-ink-700: #5f5a52;
-  --color-ink-600: #7c766c;
-  --color-ink-500: #8b857c;
+  /* Ink — warm greys for text, darkest first.
+
+     700/600/500 are deliberately the same value. bijlesbeta.nl sets every
+     piece of secondary copy in the ink at 55% opacity rather than stepping
+     down a ramp, so the three names collapse onto one tone; they are kept
+     apart so components don't all have to change. 400 and 300 stay opaque —
+     they're the tones that have to read on the dark hero bands, where a 55%
+     ink would disappear. */
+  --color-ink-900: #1d1d1b;
+  --color-ink-700: rgb(29 29 27 / 0.55);
+  --color-ink-600: rgb(29 29 27 / 0.55);
+  --color-ink-500: rgb(29 29 27 / 0.55);
   --color-ink-400: #9b958b;
   --color-ink-300: #a8a29a;
 
@@ -59,10 +66,12 @@
   --color-success-500: #22a45d;
   --color-success-900: #166534;
 
-  /* Typography */
-  --font-sans: 'Archivo', ui-sans-serif, system-ui, -apple-system, 'Segoe UI',
+  /* Typography — two families, as on bijlesbeta.nl: Plus Jakarta Sans sets the
+     headings, Open Sans the body copy. */
+  --font-sans: 'Open Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI',
     Roboto, 'Helvetica Neue', Arial, sans-serif;
-  --font-display: var(--font-sans);
+  --font-display: 'Plus Jakarta Sans', ui-sans-serif, system-ui, -apple-system,
+    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 
   /* Radii */
   --radius-field: 9px;
@@ -95,6 +104,13 @@
   h4 {
     @apply font-bold tracking-tight text-ink-900;
     font-family: var(--font-display);
+  }
+
+  /* Links warm to the brand amber on hover unless a utility says otherwise —
+     `btn-*` and the other coloured links pin their own colour in the utilities
+     layer, which outranks this. */
+  a:hover {
+    @apply text-brand-700;
   }
 
   ::selection {

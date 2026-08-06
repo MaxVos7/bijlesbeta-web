@@ -68,7 +68,7 @@ async function submit() {
   <div>
     <div v-if="status === 'success'" class="py-6 text-center" role="status">
       <h3 class="text-[17px]">Bedankt voor je bericht!</h3>
-      <p class="mt-2 text-sm leading-relaxed text-ink-700">
+      <p class="mt-2 text-[15px] leading-relaxed text-ink-700">
         We nemen snel contact met je op om de proefles in te plannen.
       </p>
     </div>
@@ -101,12 +101,9 @@ async function submit() {
             <path d="M4 12l6 6L20 6" />
           </svg>
         </span>
-        <span>
-          Ik ga akkoord met het
-          <NuxtLink to="/privacy" class="border-b border-ink-900">privacybeleid</NuxtLink>.<span
-            class="text-danger"
-          > (Vereist)</span>
-        </span>
+        <!-- "privacybeleid" is set plain here, not as a link, matching the live
+             form. The linked version still stands in the longer SignupForm. -->
+        <span>Ik ga akkoord met het privacybeleid.<span class="text-danger">(Vereist)</span></span>
       </label>
 
       <div aria-hidden="true" class="absolute left-[-9999px]">

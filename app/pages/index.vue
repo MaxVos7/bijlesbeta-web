@@ -27,12 +27,14 @@ useSeoMeta({
         <div class="min-w-0">
           <RatingLine class="mb-[18px]" />
 
+          <!-- 32px over a 25ch measure so the headline breaks over two lines,
+               as it does on bijlesbeta.nl. -->
           <h1
-            class="mb-[18px] max-w-[16ch] text-[clamp(30px,4.2vw,48px)] leading-[1.12] tracking-[-0.025em] text-pretty"
+            class="mb-[18px] max-w-[25ch] text-[32px] leading-[1.25] tracking-[-0.025em] text-pretty"
           >
             Bijles wiskunde, natuurkunde en scheikunde in Groningen
           </h1>
-          <p class="mb-7 max-w-[46ch] text-[clamp(15px,1.2vw,17px)] leading-relaxed text-ink-600">
+          <p class="mb-7 max-w-[46ch] text-base leading-[1.7] text-ink-600">
             Krijg weer grip op bètavakken met persoonlijke begeleiding van onze topdocenten van de
             Rijksuniversiteit.
           </p>
@@ -41,11 +43,11 @@ useSeoMeta({
 
           <NuxtLink
             to="/aanmelden"
-            class="btn-primary gap-3.5 rounded-panel px-[26px] py-4 text-base shadow-[0_6px_18px_rgb(245_179_1_/_0.35)] hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgb(245_179_1_/_0.42)]"
+            class="btn-primary gap-3 px-[22px] py-3.5 text-[15px] shadow-[0_6px_18px_rgb(245_179_1_/_0.35)] hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgb(245_179_1_/_0.42)]"
           >
             Gratis proefles <span class="text-lg" aria-hidden="true">→</span>
           </NuxtLink>
-          <p class="mt-3.5 text-[13px] text-ink-400">{{ reassurance }}</p>
+          <p class="mt-3.5 text-[13px] text-ink-600">{{ reassurance }}</p>
         </div>
 
         <div class="min-w-0">
@@ -77,9 +79,9 @@ useSeoMeta({
           <h2 class="text-[clamp(24px,2.8vw,32px)] tracking-[-0.025em]">Onze vakken op een rijtje</h2>
         </div>
 
-        <div
-          class="grid gap-[clamp(16px,2vw,24px)] [grid-template-columns:repeat(auto-fit,minmax(280px,1fr))]"
-        >
+        <!-- Three across or one — an auto-fit track would land on a two-up
+             state between the two, which the three subjects never sit well in. -->
+        <div class="grid grid-cols-1 gap-[clamp(16px,2vw,24px)] md:grid-cols-3">
           <article
             v-for="subject in subjectCards"
             :key="subject.slug"
@@ -91,9 +93,9 @@ useSeoMeta({
               class="block aspect-video w-full object-cover"
               loading="lazy"
             >
-            <div class="flex flex-1 flex-col items-start gap-3 p-6">
+            <div class="flex flex-1 flex-col items-center gap-3 p-6 text-center">
               <h3 class="text-xl tracking-[-0.02em]">{{ subject.name }}</h3>
-              <p class="mb-auto text-sm leading-[1.65] text-ink-700">{{ subject.body }}</p>
+              <p class="mb-auto text-base leading-[1.65] text-ink-700">{{ subject.body }}</p>
               <NuxtLink :to="landingPath(subject.slug)" class="btn-primary mt-2 gap-3 px-5 py-3">
                 Kijk verder →
               </NuxtLink>
@@ -116,7 +118,7 @@ useSeoMeta({
         <div class="px-[clamp(26px,3.5vw,48px)] py-[clamp(32px,4.5vw,58px)]">
           <p class="kicker mb-2">{{ story.kicker }}</p>
           <h2 class="mb-5 text-[clamp(23px,2.5vw,30px)] tracking-[-0.025em]">{{ story.title }}</h2>
-          <p class="mb-7 text-[15px] leading-[1.75] text-ink-700">{{ story.body }}</p>
+          <p class="mb-7 text-base leading-[1.75] text-ink-700">{{ story.body }}</p>
           <NuxtLink to="/over-ons" class="btn-secondary gap-3 hover:border-brand-500 hover:bg-ivory">
             Lees ons verhaal →
           </NuxtLink>
@@ -136,7 +138,7 @@ useSeoMeta({
         <div class="min-w-0">
           <p class="kicker mb-2.5">{{ teamIntro.kicker }}</p>
           <h2 class="mb-5 text-[clamp(23px,2.5vw,30px)] tracking-[-0.025em]">{{ teamIntro.title }}</h2>
-          <p class="mb-7 max-w-[46ch] text-[15px] leading-[1.75] text-ink-700">{{ teamIntro.body }}</p>
+          <p class="mb-7 max-w-[46ch] text-base leading-[1.75] text-ink-700">{{ teamIntro.body }}</p>
           <NuxtLink to="/over-ons#team" class="btn-secondary gap-3 hover:border-brand-500 hover:bg-ivory">
             Ons team →
           </NuxtLink>
@@ -160,6 +162,17 @@ useSeoMeta({
         </div>
 
         <ReviewCarousel />
+
+        <p class="mt-[clamp(24px,3vw,34px)] text-center">
+          <a
+            href="https://www.google.com/search?q=bijles+b%C3%A8ta+groningen+reviews"
+            rel="noopener"
+            target="_blank"
+            class="border-b-[1.5px] border-ink-900 pb-[3px] text-[15px] font-semibold"
+          >
+            Meer google reviews →
+          </a>
+        </p>
       </div>
     </section>
 

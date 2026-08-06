@@ -57,7 +57,7 @@ import { features } from '~/data/site'
           </svg>
         </span>
         <h3 class="mt-2 text-[17px] tracking-[-0.01em]">{{ feature.title }}</h3>
-        <p class="text-sm leading-[1.62] text-ink-600">{{ feature.body }}</p>
+        <p class="text-[15px] leading-[1.62] text-ink-600">{{ feature.body }}</p>
       </div>
     </div>
 
