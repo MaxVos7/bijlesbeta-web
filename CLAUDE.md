@@ -247,7 +247,9 @@ things there are the live site's and shouldn't be tidied:
   artwork; `clock` stands in for Flexibel, where bijlesbeta.nl draws a door.
   The live icons are rasters embedded in Elementor SVGs and can't be pulled out
   on their own — swap in the real glyph if it ever lands in `public/img`.
-- `requirementsIntro.kicker` reads "Benodigheden" because the live page does.
+- Parity stops at the copy. bijlesbeta.nl writes "Benodigheden" and "Je vindt
+  ziet het als een uitdaging"; both are typos and both are corrected here.
+  Match the live site's layout and its measurements, not its spelling.
 
 `/bijles-[vak]-[stad]` is one template rendered per subject-and-city pair —
 add a city by adding a data entry in `app/data/landings.ts`, not a new page

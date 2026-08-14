@@ -482,8 +482,8 @@ export const werkenBij = {
   ],
   perksLink: { label: 'Lees meer over onze docenten', to: '/over-ons#team' },
   requirementsIntro: {
-    /* "Benodigheden" is the live site's own spelling — kept for parity. */
-    kicker: 'Benodigheden',
+    /* bijlesbeta.nl writes "Benodigheden"; that's a typo and isn't copied. */
+    kicker: 'Benodigdheden',
     title: 'Wat vragen wij van jou',
   },
   requirements: [
@@ -501,7 +501,8 @@ export const werkenBij = {
     },
     {
       title: 'Plezier en passie',
-      body: 'Je vindt ziet het als een uitdaging om middelbare scholieren, die bèta misschien niet zo leuk vinden, te laten inzien dat bèta wél heel leuk kan zijn. Hiervoor moet je een passie hebben voor het vak!',
+      /* The live page reads "Je vindt ziet het" — two verbs collided there. */
+      body: 'Je ziet het als een uitdaging om middelbare scholieren, die bèta misschien niet zo leuk vinden, te laten inzien dat bèta wél heel leuk kan zijn. Hiervoor moet je een passie hebben voor het vak!',
       image: '/img/proefles.png',
       alt: 'Twee leerlingen lachen tijdens het samen huiswerk maken',
     },

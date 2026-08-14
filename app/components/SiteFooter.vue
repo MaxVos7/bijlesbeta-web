@@ -216,14 +216,19 @@ const subjectLinks = [
 </template>
 
 <style scoped>
-/* Elementor's kit colours, so the values below read as they do in the template. */
+/*
+  Local aliases for the tokens this block leans on, so the rules below read the
+  way Elementor's template does without restating any value. The `@theme` block
+  in `main.css` stays the single source: `ink-900` and `accent-500` already are
+  the kit's #1D1D1B and #FFBB00.
+*/
 .site-footer {
-  --fb-ink: #1d1d1b;
-  --fb-accent: #ffbb00;
-  --fb-display: 'Plus Jakarta Sans', sans-serif;
-  --fb-text: 'Open Sans', sans-serif;
+  --fb-ink: var(--color-ink-900);
+  --fb-accent: var(--color-accent-500);
+  --fb-display: var(--font-display);
+  --fb-text: var(--font-sans);
 
-  background: #fff;
+  background: var(--color-white);
   color: var(--fb-ink);
   font-family: var(--fb-text);
   font-size: 16px;
@@ -301,7 +306,7 @@ const subjectLinks = [
   align-items: center;
   justify-content: center;
   border-radius: 10%;
-  background: #fff;
+  background: var(--color-white);
   color: var(--fb-ink);
 }
 
@@ -460,14 +465,15 @@ const subjectLinks = [
 }
 
 .fb-btn--secondary {
-  border: 1px solid #00000033;
-  background-color: #fff;
+  /* The live hairline is black at 20%, not one of the `line-*` greys. */
+  border: 1px solid color-mix(in srgb, var(--color-black) 20%, transparent);
+  background-color: var(--color-white);
 }
 
 .fb-btn:hover,
 .fb-btn:focus {
   background-color: var(--fb-ink);
-  color: #fff;
+  color: var(--color-white);
 }
 
 .fb-btn__inner {
