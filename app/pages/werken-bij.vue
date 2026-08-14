@@ -13,82 +13,95 @@ useSeoMeta({
 
 <template>
   <div>
-    <section
-      id="top"
-      class="bg-ink-900 px-[clamp(16px,4vw,24px)] pt-[clamp(24px,4vw,44px)] pb-[clamp(40px,6vw,72px)]"
-    >
+    <!--
+      Hero. Measured off post-45.css rather than designed: a 1200px band on the
+      deep ink, split 50/50 with a 100px gutter, the text column padded 72px
+      over 92px. The live band also carries 192px of top padding because its
+      header floats over it; ours sits in flow, so that padding lives in the
+      header strip instead.
+    -->
+    <section id="top" class="bg-ink-900 px-5 md:px-10">
       <div
-        class="mx-auto grid max-w-[1100px] items-center gap-[clamp(32px,5vw,60px)] [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))]"
+        class="mx-auto grid max-w-[1200px] gap-5 pb-20 md:grid-cols-2 md:gap-[100px] md:pb-0"
       >
-        <div class="min-w-0">
-          <RatingLine tone="inverse" class="mb-[18px]" />
+        <div class="flex min-w-0 flex-col justify-center pt-[72px] md:pb-[92px]">
+          <RatingLine tone="inverse" />
 
           <h1
-            class="mb-[18px] max-w-[16ch] text-[clamp(30px,4.2vw,32px)] leading-[1.12] tracking-[-0.025em] text-white"
+            class="mt-4 mb-1 text-[26px] leading-[1.2] text-white md:text-[32px] md:leading-[44px]"
           >
             {{ werkenBij.hero.title }}
           </h1>
-          <p class="mb-7 max-w-[46ch] text-[clamp(15px,1.2vw,16px)] leading-[1.7] text-line-400 text-pretty">
+          <p class="max-w-[46ch] text-[16px] leading-[28px] text-white text-pretty">
             {{ werkenBij.hero.intro }}
           </p>
 
-          <CheckList :items="werkenBij.hero.promises" class="mb-8 text-white" />
+          <CheckList
+            :items="werkenBij.hero.promises"
+            class="mt-3 mb-6 font-semibold text-white"
+          />
 
+          <!--
+            Not `btn-primary`: this one CTA inverts on the dark band — parchment
+            with a hairline, stepping to the amber on hover, which is the live
+            button exactly (20px/24px padding on `btn`'s 11px leading).
+          -->
           <a
             href="#solliciteren"
-            class="btn-primary gap-3.5 px-[26px] py-4 text-base shadow-[0_6px_18px_rgb(255_187_0_/_0.35)]"
+            class="btn self-start border border-black/20 bg-parchment px-6 py-5 text-ink-900 hover:bg-brand-500 hover:text-ink-900"
           >
-            {{ werkenBij.hero.cta }} <span class="text-lg" aria-hidden="true">→</span>
+            {{ werkenBij.hero.cta }} <span class="text-lg leading-[11px]" aria-hidden="true">→</span>
           </a>
-          <p class="mt-3.5 text-[13px] text-ink-400">{{ werkenBij.hero.reassurance }}</p>
+          <p class="mt-3 text-[12px] text-white">{{ werkenBij.hero.reassurance }}</p>
         </div>
 
-        <div class="min-w-0">
+        <div class="flex min-w-0 flex-col justify-center">
           <img
             :src="werkenBij.hero.image"
             :alt="werkenBij.hero.imageAlt"
-            class="mx-auto block aspect-[16/11] w-full max-w-[620px] object-contain"
-            width="620"
-            height="426"
+            class="block h-[350px] w-full object-cover object-center md:h-[450px]"
+            width="474"
+            height="510"
           >
         </div>
       </div>
     </section>
 
-    <section
-      class="bg-white px-[clamp(16px,4vw,24px)] pt-[clamp(56px,7vw,96px)] pb-[clamp(24px,3vw,40px)]"
-    >
-      <div class="mx-auto max-w-[1100px]">
-        <div class="mb-[clamp(30px,4vw,46px)] text-center">
-          <p class="kicker mb-2.5">{{ werkenBij.perksIntro.kicker }}</p>
-          <h2 class="text-[clamp(24px,2.8vw,28px)] tracking-[-0.025em]">
+    <!-- Perks. One white band carries this and the requirements below it. -->
+    <section class="bg-white px-5 pt-20 md:px-10">
+      <div class="mx-auto max-w-[1200px] md:px-9">
+        <div class="mb-8 flex flex-col gap-2 text-center">
+          <p class="kicker text-[19px]">{{ werkenBij.perksIntro.kicker }}</p>
+          <h2 class="text-[28px] leading-[44px] tracking-[-0.025em]">
             {{ werkenBij.perksIntro.title }}
           </h2>
         </div>
 
-        <div
-          class="grid gap-[clamp(14px,1.8vw,22px)] [grid-template-columns:repeat(auto-fit,minmax(300px,1fr))]"
-        >
+        <div class="grid grid-cols-2 gap-3 desk:grid-cols-4">
           <div
             v-for="perk in werkenBij.perks"
             :key="perk.title"
-            class="flex flex-col gap-3 rounded-tile border border-line-200 px-6 py-[26px]"
+            class="flex flex-col gap-5 rounded-tile border border-ink-900/10 p-3 md:p-6"
           >
-            <!-- Placeholder for the illustrated icon — the drawings were not part
-                 of the design export. Swap for an <img> once they land. -->
-            <span
-              class="h-[52px] w-[52px] flex-none rounded-panel border border-dashed border-line-300 bg-cream"
+            <img
+              :src="`/img/feature-${perk.icon}.svg`"
+              alt=""
               aria-hidden="true"
-            />
-            <h3 class="mt-2 text-[17px] tracking-[-0.01em]">{{ perk.title }}</h3>
-            <p class="text-sm leading-[1.62] text-ink-600">{{ perk.body }}</p>
+              class="block h-[50px] w-[50px] self-start object-contain object-left"
+            >
+            <div>
+              <h3 class="mb-2.5 text-[16px] leading-[26px] tracking-[-0.01em] md:text-[19px]">
+                {{ perk.title }}
+              </h3>
+              <p class="text-[13px] leading-[1.5] text-ink-600">{{ perk.body }}</p>
+            </div>
           </div>
         </div>
 
-        <p class="mt-[clamp(32px,4vw,48px)] text-center">
+        <p class="mt-4 text-center desk:mt-8">
           <NuxtLink
             :to="werkenBij.perksLink.to"
-            class="border-b-[1.5px] border-ink-900 pb-[3px] text-[15px] font-semibold"
+            class="border-b-[1.5px] border-ink-900 pb-[3px] font-display text-[15px] font-bold"
           >
             {{ werkenBij.perksLink.label }}&nbsp;&nbsp;→
           </NuxtLink>
@@ -96,78 +109,77 @@ useSeoMeta({
       </div>
     </section>
 
-    <section
-      class="bg-white px-[clamp(16px,4vw,24px)] pt-[clamp(48px,6vw,76px)] pb-[clamp(56px,7vw,90px)]"
-    >
-      <div class="mx-auto max-w-[1100px]">
-        <div class="mb-[clamp(28px,3.5vw,42px)] text-center">
-          <p class="kicker mb-2.5">{{ werkenBij.requirementsIntro.kicker }}</p>
-          <h2 class="text-[clamp(24px,2.8vw,28px)] tracking-[-0.025em]">
+    <!--
+      Requirements. All three cards carry a photo on the live site, so they line
+      up on their own — the card is a 12px surface with a 12px inset frame
+      around a 176px-tall crop.
+    -->
+    <section class="bg-white px-5 py-20 md:px-10">
+      <div class="mx-auto max-w-[1200px]">
+        <div class="mb-5 text-center">
+          <p class="kicker">{{ werkenBij.requirementsIntro.kicker }}</p>
+          <h2 class="text-[28px] leading-[44px] tracking-[-0.025em]">
             {{ werkenBij.requirementsIntro.title }}
           </h2>
         </div>
 
-        <!-- Only the first card carries a photo; the other two pad their heads
-             down so all three numbers sit on the same line. -->
-        <div
-          class="grid items-start gap-[clamp(16px,2vw,24px)] [grid-template-columns:repeat(auto-fit,minmax(280px,1fr))]"
-        >
+        <div class="grid gap-3 md:grid-cols-3">
           <article
             v-for="(requirement, index) in werkenBij.requirements"
             :key="requirement.title"
-            class="flex flex-col overflow-hidden rounded-card border border-line-200"
+            class="flex flex-col gap-4 rounded-xl border border-ink-900/10 bg-white p-3"
           >
             <img
-              v-if="requirement.image"
               :src="requirement.image"
               :alt="requirement.alt ?? ''"
-              class="block aspect-[16/10] w-full object-cover"
+              class="block h-[176px] w-full rounded-field object-cover object-center"
               loading="lazy"
             >
-            <div
-              class="flex flex-1 flex-col items-start gap-3 p-6"
-              :class="!requirement.image && 'pt-[clamp(24px,10vw,150px)]'"
-            >
+            <div class="flex flex-1 flex-col items-start gap-2 px-3 pb-3">
               <span
-                class="inline-flex items-center justify-center rounded-btn bg-brand-500 px-[9px] py-[3px] text-[13px] font-bold text-ink-800"
+                class="mb-[5px] inline-block rounded-btn bg-accent-500 px-2.5 py-1 font-display text-[15px] font-bold text-ink-900"
               >
                 {{ index + 1 }}.
               </span>
-              <h3 class="text-[17px] tracking-[-0.01em]">{{ requirement.title }}</h3>
-              <p class="text-sm leading-[1.65] text-ink-700 text-pretty">{{ requirement.body }}</p>
+              <h3 class="text-[19px] leading-[20px] tracking-[-0.01em]">{{ requirement.title }}</h3>
+              <p class="text-[15px] leading-[28px] text-ink-800 text-pretty">
+                {{ requirement.body }}
+              </p>
             </div>
           </article>
         </div>
       </div>
     </section>
 
+    <!--
+      Apply. The live band runs on parchment and splits 34/66 with a 63px
+      gutter — the copy column is the narrow one.
+    -->
     <section
       id="solliciteren"
-      class="scroll-mt-24 bg-sand px-[clamp(16px,4vw,24px)] pt-[clamp(48px,6vw,80px)] pb-[clamp(56px,7vw,90px)]"
+      class="scroll-mt-24 bg-parchment px-5 py-20 md:px-10"
     >
       <div
-        class="mx-auto grid max-w-[1100px] items-end gap-[clamp(32px,5vw,60px)] [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))]"
+        class="mx-auto grid max-w-[1200px] gap-10 md:grid-cols-[34fr_66fr] md:gap-[63px]"
       >
-        <div class="min-w-0">
-          <p class="kicker mb-2.5">{{ werkenBij.apply.kicker }}</p>
-          <h2
-            class="mb-[18px] text-[clamp(26px,3.2vw,28px)] leading-[1.14] tracking-[-0.03em]"
-          >
+        <div class="flex min-w-0 flex-col justify-center py-9">
+          <p class="kicker text-[19px]">{{ werkenBij.apply.kicker }}</p>
+          <h2 class="mb-1 text-[26px] leading-[1.2] tracking-[-0.03em] md:text-[32px] md:leading-[44px]">
             {{ werkenBij.apply.title }}
           </h2>
-          <p class="mb-[26px] max-w-[44ch] text-sm leading-[1.75] text-ink-600 text-pretty">
+          <p class="max-w-[44ch] text-[14px] leading-[1.75] text-ink-600 text-pretty">
             {{ werkenBij.apply.body }}
           </p>
 
           <a
             :href="contact.applicationsEmailHref"
-            class="inline-flex items-center gap-3.5 text-[15px] font-semibold"
+            class="mt-3 inline-flex items-center gap-3 self-start text-[17px] font-semibold text-ink-900 hover:text-accent-500"
           >
             <span
-              class="inline-flex h-[38px] w-[38px] flex-none items-center justify-center rounded-field bg-brand-100"
+              class="inline-flex h-8 w-8 flex-none items-center justify-center rounded-field bg-accent-500/15 p-2"
             >
               <svg
-                class="h-[18px] w-[18px] text-brand-700"
+                class="h-4 w-4 text-accent-500"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"

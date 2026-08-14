@@ -100,10 +100,17 @@ async function submit() {
 </script>
 
 <template>
-  <div class="panel min-w-0 p-[clamp(24px,3vw,36px)]">
+  <!--
+    The live panel is a flat 8px white surface with 24px of padding and no
+    elevation, so `panel`'s shadow is switched off here rather than removed
+    from the utility, which other pages still want.
+  -->
+  <div class="panel min-w-0 self-start p-6 shadow-none">
     <div class="mb-[26px] text-center">
-      <p class="mb-1.5 text-sm font-semibold text-brand-700">{{ werkenBij.apply.formKicker }}</p>
-      <h3 class="text-[22px] tracking-[-0.02em]">{{ werkenBij.apply.formTitle }}</h3>
+      <p class="mb-1 font-display text-[15px] font-bold text-accent-500">
+        {{ werkenBij.apply.formKicker }}
+      </p>
+      <h3 class="text-[22px] leading-[44px] tracking-[-0.02em]">{{ werkenBij.apply.formTitle }}</h3>
     </div>
 
     <div
@@ -118,7 +125,7 @@ async function submit() {
       </p>
     </div>
 
-    <form v-else class="flex flex-col gap-[18px]" novalidate @submit.prevent="submit">
+    <form v-else class="flex flex-col gap-5" novalidate @submit.prevent="submit">
       <div>
         <span class="field-label mb-0">
           Naam <span class="text-brand-700">(Vereist)</span>
@@ -131,7 +138,7 @@ async function submit() {
               type="text"
               placeholder="Voornaam"
               autocomplete="given-name"
-              class="field-input"
+              class="field-input-lg"
               :aria-invalid="Boolean(errors.firstName)"
             >
             <label for="sollicitatie-voornaam" class="mt-1.5 block text-[12.5px] text-ink-500">
@@ -146,7 +153,7 @@ async function submit() {
               type="text"
               placeholder="Achternaam"
               autocomplete="family-name"
-              class="field-input"
+              class="field-input-lg"
               :aria-invalid="Boolean(errors.lastName)"
             >
             <label for="sollicitatie-achternaam" class="mt-1.5 block text-[12.5px] text-ink-500">
@@ -167,7 +174,7 @@ async function submit() {
           type="tel"
           placeholder="Telefoonnummer"
           autocomplete="tel"
-          class="field-input"
+          class="field-input-lg"
           :aria-invalid="Boolean(errors.phone)"
         >
         <p v-if="errors.phone" class="field-error">{{ errors.phone }}</p>
@@ -183,7 +190,7 @@ async function submit() {
           type="email"
           placeholder="E-mailadres"
           autocomplete="email"
-          class="field-input"
+          class="field-input-lg"
           :aria-invalid="Boolean(errors.email)"
         >
         <p v-if="errors.email" class="field-error">{{ errors.email }}</p>
@@ -205,7 +212,7 @@ async function submit() {
               v-model="form.subjects"
               type="checkbox"
               :value="option"
-              class="h-4 w-4 flex-none accent-accent-500"
+              class="h-5 w-5 flex-none accent-accent-500"
             >
             {{ option }}
           </label>
@@ -222,7 +229,7 @@ async function submit() {
           v-model="form.study"
           type="text"
           placeholder="Mijn studie"
-          class="field-input"
+          class="field-input-lg"
           :aria-invalid="Boolean(errors.study)"
         >
         <p v-if="errors.study" class="field-error">{{ errors.study }}</p>
@@ -237,7 +244,7 @@ async function submit() {
           v-model="form.motivation"
           rows="6"
           placeholder="Mijn motivatie"
-          class="field-input resize-y leading-[1.6]"
+          class="field-input-lg resize-y py-0"
           :aria-invalid="Boolean(errors.motivation)"
         />
         <p v-if="errors.motivation" class="field-error">{{ errors.motivation }}</p>
@@ -291,7 +298,7 @@ async function submit() {
             type="text"
             placeholder="1234AB"
             autocomplete="postal-code"
-            class="field-input"
+            class="field-input-lg"
             :aria-invalid="Boolean(errors.postalCode)"
           >
           <p v-if="errors.postalCode" class="field-error">{{ errors.postalCode }}</p>
@@ -305,7 +312,7 @@ async function submit() {
             v-model="form.houseNumber"
             type="text"
             placeholder="1A"
-            class="field-input"
+            class="field-input-lg"
             :aria-invalid="Boolean(errors.houseNumber)"
           >
           <p v-if="errors.houseNumber" class="field-error">{{ errors.houseNumber }}</p>
@@ -319,7 +326,7 @@ async function submit() {
           v-model="form.heardFrom"
           type="text"
           placeholder="Ik ken jullie van"
-          class="field-input"
+          class="field-input-lg"
         >
       </div>
 
@@ -339,7 +346,7 @@ async function submit() {
           <input
             v-model="form.privacy"
             type="checkbox"
-            class="mt-0.5 h-4 w-4 flex-none accent-accent-500"
+            class="mt-0.5 h-5 w-5 flex-none accent-accent-500"
             :aria-invalid="Boolean(errors.privacy)"
           >
           <span>
@@ -354,7 +361,7 @@ async function submit() {
 
       <p v-if="status === 'error'" class="field-error" role="alert">{{ errorMessage }}</p>
 
-      <button type="submit" class="btn-primary w-full py-[15px]" :disabled="status === 'pending'">
+      <button type="submit" class="btn-primary w-full py-4 hover:bg-ink-900 hover:text-white" :disabled="status === 'pending'">
         {{ status === 'pending' ? 'Versturen…' : 'Aanmelden' }}
       </button>
     </form>

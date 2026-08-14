@@ -215,6 +215,20 @@
     focus:ring-2 focus:ring-accent-500/25;
 }
 
+/*
+  The tall field, as bijlesbeta.nl styles its Gravity Forms: Plus Jakarta Sans
+  15px/600 on a 44px leading with 20px of padding, which is what makes the live
+  inputs read as 86px rather than 44px. Only `/werken-bij`'s application form is
+  measured against the live markup so far, so this sits beside `field-input`
+  rather than replacing it — move the other forms over as each is checked.
+*/
+@utility field-input-lg {
+  @apply mt-1.5 block w-full rounded-field border border-black/10 bg-white px-5
+    py-5 font-display text-[15px] leading-[44px] font-semibold text-ink-900
+    transition placeholder:text-ink-400 focus:border-accent-500
+    focus:outline-none focus:ring-2 focus:ring-accent-500/25;
+}
+
 @utility field-error {
   @apply mt-1.5 text-[12.5px] text-danger;
 }

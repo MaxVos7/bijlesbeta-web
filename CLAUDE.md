@@ -226,6 +226,29 @@ for use on that band. The application form is its own `ApplicationForm`
 component, not a `ContactForm` variant, since it collects a different shape
 of answers; it still posts through `/api/contact` with a fixed subject.
 
+Its layout is measured against `post-45.css` rather than designed, so a few
+things there are the live site's and shouldn't be tidied:
+
+- **Its bands run 1200px, not 1100.** The hero splits 50/50 on a 100px gutter
+  with the copy column padded 72px over 92px; the apply band splits 34/66 on a
+  63px gutter and sits on `parchment`, not `sand`. The live hero also carries
+  192px of top padding because its header floats over the band — ours is in
+  flow, so that space lives in the header strip instead.
+- **The hero CTA is not `btn-primary`.** It inverts on the dark band: parchment
+  with a `black/20` hairline, stepping to the amber on hover.
+- **The requirement cards round on 12px**, which is the second measured
+  exception to the two-radii rule after the header card. Their photo is a
+  176px-tall crop inset by the card's own 12px padding.
+- **`field-input-lg`** carries the live Gravity Forms metrics — 15px/600 Plus
+  Jakarta Sans on a 44px leading with 20px padding, so the input reads 86px
+  tall. `ApplicationForm` is the only form checked against the live markup so
+  far; move the others onto it as each is measured.
+- The four perk icons reuse `FeatureGrid`'s drawings. Three are the live
+  artwork; `clock` stands in for Flexibel, where bijlesbeta.nl draws a door.
+  The live icons are rasters embedded in Elementor SVGs and can't be pulled out
+  on their own — swap in the real glyph if it ever lands in `public/img`.
+- `requirementsIntro.kicker` reads "Benodigheden" because the live page does.
+
 `/bijles-[vak]-[stad]` is one template rendered per subject-and-city pair —
 add a city by adding a data entry in `app/data/landings.ts`, not a new page
 file. Its hero also opens on a dark photographic band, so it mounts

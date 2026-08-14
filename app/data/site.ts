@@ -437,12 +437,11 @@ export const werkenBij = {
     title: 'Werken bij',
     intro:
       'Heb jij passie voor de bèta vakken en vind je het leuk om dit te delen met middelbare scholieren? Solliciteer dan direct!',
-    /*
-      Only this one line is confirmed: the cookie banner covered the rest of the
-      checklist in every screenshot the design handoff was built from. Add the
-      remaining lines here and the hero picks them up.
-    */
-    promises: ['Hecht team van Bèta docenten'],
+    promises: [
+      'Hecht team van Bèta docenten',
+      'Goede begeleiding door ervaren docenten',
+      'Wij waarderen een goede uitleg',
+    ],
     cta: 'Direct solliciteren',
     reassurance: 'We nemen zo snel mogelijk contact op.',
     image: '/img/werken-bij-hero.png',
@@ -452,30 +451,41 @@ export const werkenBij = {
     kicker: 'Plezier, Passie en Kwaliteit',
     title: 'Voor bijles bèta werken',
   },
+  /*
+    `icon` names a drawing in `public/img/feature-<icon>.svg`, the same set the
+    homepage's FeatureGrid uses. Three are the live site's own; `clock` stands
+    in for Flexibel, where bijlesbeta.nl draws a door — same illustration
+    family, and the live artwork is a raster embedded in an Elementor SVG that
+    isn't downloadable on its own.
+  */
   perks: [
     {
+      icon: 'coins',
       title: 'Compensatie',
       body: 'Wij bieden jou een goede compensatie van €16/uur.',
     },
     {
+      icon: 'team',
       title: 'Geen tussenpersoon',
       body: 'Wij ondersteunen waar nodig, maar zitten je niet in de weg.',
     },
     {
+      icon: 'clock',
       title: 'Flexibel',
       body: 'Plan samen met je leerling de bijles in, wanneer het jullie uitkomt.',
     },
     {
+      icon: 'board',
       title: 'Eigen manier',
       body: 'Geef bijles op je eigen manier, als de leerling er maar blij van wordt.',
     },
   ],
   perksLink: { label: 'Lees meer over onze docenten', to: '/over-ons#team' },
   requirementsIntro: {
-    kicker: 'Benodigdheden',
+    /* "Benodigheden" is the live site's own spelling — kept for parity. */
+    kicker: 'Benodigheden',
     title: 'Wat vragen wij van jou',
   },
-  /** Only the first card carries a photo; the others start lower to line up with it. */
   requirements: [
     {
       title: 'Science & Engineering',
@@ -486,14 +496,14 @@ export const werkenBij = {
     {
       title: 'Goed in Bèta',
       body: 'Je bent goed in bèta. Bij voorkeur heb je op vwo een mooi cijfer gehaald voor het vak waarin jij bijles wil geven. Dit hoeft alleen dus niet per se, en ook niet in elk vak te zijn.',
-      image: null,
-      alt: null,
+      image: '/img/bord.png',
+      alt: 'Docent schrijft natuurkundeformules op het schoolbord',
     },
     {
       title: 'Plezier en passie',
-      body: 'Je vindt ziet het als een uitdaging om middelbare scholieren, die bèta misschien niet zo leuk vinden, te laten inzien dat bèta wèl heel leuk kan zijn. Hiervoor moet je een passie hebben voor het vak!',
-      image: null,
-      alt: null,
+      body: 'Je vindt ziet het als een uitdaging om middelbare scholieren, die bèta misschien niet zo leuk vinden, te laten inzien dat bèta wél heel leuk kan zijn. Hiervoor moet je een passie hebben voor het vak!',
+      image: '/img/proefles.png',
+      alt: 'Twee leerlingen lachen tijdens het samen huiswerk maken',
     },
   ],
   apply: {
