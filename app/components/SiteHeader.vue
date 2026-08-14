@@ -45,7 +45,7 @@ watch(() => route.fullPath, () => {
     :class="transparent ? 'relative z-10' : ['sticky top-0 z-50', groundClass]"
   >
     <header
-      class="mx-auto flex max-w-[1180px] flex-col rounded-card bg-white px-[clamp(14px,2vw,22px)] py-3 shadow-header"
+      class="mx-auto flex max-w-[1100px] flex-col rounded-card bg-white px-[clamp(14px,2vw,22px)] py-3 shadow-header"
     >
       <div class="flex flex-wrap items-center justify-between gap-x-[clamp(16px,2vw,24px)] gap-y-3">
         <NuxtLink to="/" class="flex items-center" aria-label="Bijles Bèta — naar de homepage">

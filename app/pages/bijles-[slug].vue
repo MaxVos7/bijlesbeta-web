@@ -40,17 +40,17 @@ useSeoMeta({
 
       <div class="relative px-[clamp(12px,3vw,24px)] pt-[clamp(36px,5vw,72px)]">
         <div
-          class="mx-auto grid max-w-[1180px] items-center gap-[clamp(32px,5vw,60px)] [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))]"
+          class="mx-auto grid max-w-[1100px] items-center gap-[clamp(32px,5vw,60px)] [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))]"
         >
           <div class="min-w-0 text-white">
             <RatingLine tone="inverse" class="mb-[18px]" />
 
             <h1
-              class="mb-[18px] max-w-[16ch] text-[clamp(30px,4.2vw,48px)] leading-[1.12] tracking-[-0.025em] text-white text-pretty"
+              class="mb-[18px] max-w-[16ch] text-[clamp(30px,4.2vw,32px)] leading-[1.12] tracking-[-0.025em] text-white text-pretty"
             >
               {{ landing.title }}
             </h1>
-            <p class="mb-7 max-w-[46ch] text-[clamp(15px,1.2vw,17px)] leading-relaxed text-white/85">
+            <p class="mb-7 max-w-[46ch] text-[clamp(15px,1.2vw,16px)] leading-relaxed text-white/85">
               {{ landing.intro }}
             </p>
 
@@ -88,10 +88,10 @@ useSeoMeta({
     <section
       class="bg-white px-[clamp(16px,4vw,24px)] pt-[clamp(48px,6vw,80px)] pb-[clamp(40px,5vw,64px)]"
     >
-      <div class="mx-auto max-w-[1180px]">
+      <div class="mx-auto max-w-[1100px]">
         <div class="mb-[clamp(28px,3.5vw,42px)] text-center">
           <p class="kicker mb-2">{{ landingSteps.kicker }}</p>
-          <h2 class="text-[clamp(24px,2.8vw,32px)] tracking-[-0.025em]">{{ landingSteps.title }}</h2>
+          <h2 class="text-[clamp(24px,2.8vw,28px)] tracking-[-0.025em]">{{ landingSteps.title }}</h2>
         </div>
 
         <div
@@ -124,11 +124,11 @@ useSeoMeta({
       class="bg-white px-[clamp(16px,4vw,24px)] pt-[clamp(32px,4vw,56px)] pb-[clamp(48px,6vw,80px)]"
     >
       <div
-        class="mx-auto grid max-w-[1180px] items-center gap-[clamp(28px,4vw,56px)] [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))]"
+        class="mx-auto grid max-w-[1100px] items-center gap-[clamp(28px,4vw,56px)] [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))]"
       >
         <div class="min-w-0">
           <p class="kicker mb-2">{{ landing.kicker }}</p>
-          <h2 class="mb-6 text-[clamp(24px,2.8vw,32px)] tracking-[-0.025em]">
+          <h2 class="mb-6 text-[clamp(24px,2.8vw,28px)] tracking-[-0.025em]">
             {{ landing.seoTitle }}
           </h2>
           <p
@@ -170,16 +170,16 @@ useSeoMeta({
     <section
       class="bg-white px-[clamp(16px,4vw,24px)] pt-[clamp(40px,5vw,64px)] pb-[clamp(56px,7vw,90px)]"
     >
-      <div class="mx-auto max-w-[1180px]">
+      <div class="mx-auto max-w-[1100px]">
         <FeatureGrid />
       </div>
     </section>
 
     <section class="bg-sand px-[clamp(16px,4vw,24px)] py-[clamp(56px,7vw,88px)]">
-      <div class="mx-auto max-w-[1180px]">
+      <div class="mx-auto max-w-[1100px]">
         <div class="mb-[clamp(26px,3.5vw,38px)] text-center">
           <RatingLine centered class="mb-3" />
-          <h2 class="text-[clamp(23px,2.6vw,30px)] tracking-[-0.025em]">
+          <h2 class="text-[clamp(23px,2.6vw,28px)] tracking-[-0.025em]">
             Wat vinden onze leerlingen?
           </h2>
         </div>
@@ -204,7 +204,7 @@ useSeoMeta({
     <section
       class="bg-white px-[clamp(16px,4vw,24px)] pt-[clamp(24px,3vw,40px)] pb-[clamp(40px,5vw,60px)]"
     >
-      <div class="mx-auto max-w-[1180px]">
+      <div class="mx-auto max-w-[1100px]">
         <PricingSection />
       </div>
     </section>
@@ -217,7 +217,7 @@ useSeoMeta({
       >
         <div class="min-w-0">
           <p class="kicker mb-2.5">{{ teamIntro.kicker }}</p>
-          <h2 class="mb-5 text-[clamp(23px,2.5vw,30px)] tracking-[-0.025em]">{{ teamIntro.title }}</h2>
+          <h2 class="mb-5 text-[clamp(23px,2.5vw,28px)] tracking-[-0.025em]">{{ teamIntro.title }}</h2>
           <p class="mb-7 max-w-[46ch] text-[15px] leading-[1.75] text-ink-700">{{ teamIntro.body }}</p>
           <NuxtLink to="/over-ons#team" class="btn-secondary gap-3 hover:border-brand-500 hover:bg-ivory">
             Ons team →

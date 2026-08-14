@@ -64,7 +64,7 @@ onBeforeUnmount(() => {
 <template>
   <section class="bg-white px-[clamp(16px,4vw,24px)] pt-[clamp(30px,4vw,50px)] pb-[clamp(56px,7vw,90px)]">
     <div ref="band" class="mx-auto max-w-[820px] text-center">
-      <h2 class="text-[clamp(26px,3.2vw,36px)] text-accent-500">{{ statsIntro.title }}</h2>
+      <h2 class="text-[clamp(26px,3.2vw,28px)] text-accent-500">{{ statsIntro.title }}</h2>
 
       <p
         class="mx-auto mt-3.5 mb-[clamp(26px,3.5vw,38px)] max-w-[62ch] text-[15px] leading-[1.7] text-ink-700"

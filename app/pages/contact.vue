@@ -19,13 +19,13 @@ useSeoMeta({
       class="bg-sand px-[clamp(16px,4vw,24px)] pt-[clamp(28px,4vw,52px)] pb-[clamp(48px,7vw,88px)]"
     >
       <div
-        class="mx-auto grid max-w-[1180px] items-center gap-[clamp(32px,5vw,60px)] [grid-template-columns:repeat(auto-fit,minmax(330px,1fr))]"
+        class="mx-auto grid max-w-[1100px] items-center gap-[clamp(32px,5vw,60px)] [grid-template-columns:repeat(auto-fit,minmax(330px,1fr))]"
       >
         <div class="min-w-0">
           <p class="kicker mb-2.5">{{ contactPage.kicker }}</p>
 
           <h1
-            class="mb-[18px] max-w-[18ch] text-[clamp(28px,3.6vw,40px)] leading-[1.15] text-pretty"
+            class="mb-[18px] max-w-[18ch] text-[clamp(28px,3.6vw,32px)] leading-[1.15] text-pretty"
           >
             {{ contactPage.title }}
           </h1>
@@ -110,10 +110,10 @@ useSeoMeta({
     <!-- Heading beside the accordion rather than above it, unlike FaqSection. -->
     <section id="faq" class="bg-white px-[clamp(16px,4vw,24px)] py-[clamp(56px,7vw,96px)]">
       <div
-        class="mx-auto grid max-w-[1180px] items-start gap-[clamp(24px,4vw,56px)] [grid-template-columns:repeat(auto-fit,minmax(300px,1fr))]"
+        class="mx-auto grid max-w-[1100px] items-start gap-[clamp(24px,4vw,56px)] [grid-template-columns:repeat(auto-fit,minmax(300px,1fr))]"
       >
         <div class="min-w-0">
-          <h2 class="mb-3.5 text-[clamp(24px,2.9vw,33px)] tracking-[-0.025em] text-pretty">
+          <h2 class="mb-3.5 text-[clamp(24px,2.9vw,28px)] tracking-[-0.025em] text-pretty">
             {{ contactPage.faq.title }}
           </h2>
           <p class="text-[14.5px] leading-[1.7] text-ink-700">{{ contactPage.faq.body }}</p>

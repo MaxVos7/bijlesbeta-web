@@ -24,7 +24,7 @@ useSeoMeta({
     <section
       class="bg-white px-[clamp(16px,4vw,24px)] pt-[clamp(28px,4vw,52px)] pb-[clamp(40px,5vw,64px)]"
     >
-      <div class="mx-auto max-w-[1180px]">
+      <div class="mx-auto max-w-[1100px]">
         <NuxtLink
           to="/over-ons#team"
           class="mb-[22px] inline-flex items-center gap-2 text-[13.5px] font-semibold text-ink-600 hover:text-brand-700"
@@ -36,7 +36,7 @@ useSeoMeta({
           class="grid items-start gap-[clamp(28px,4vw,56px)] [grid-template-columns:repeat(auto-fit,minmax(300px,1fr))]"
         >
           <div class="min-w-0">
-            <h1 class="mb-4 text-[clamp(26px,3.2vw,36px)] tracking-[-0.03em]">{{ tutor.name }}</h1>
+            <h1 class="mb-4 text-[clamp(26px,3.2vw,32px)] tracking-[-0.03em]">{{ tutor.name }}</h1>
 
             <ul class="mb-6 flex list-none flex-wrap gap-2.5 p-0">
               <li
@@ -78,7 +78,7 @@ useSeoMeta({
     </section>
 
     <section class="bg-white px-[clamp(16px,4vw,24px)] pb-[clamp(48px,6vw,80px)]">
-      <div class="mx-auto max-w-[1180px]">
+      <div class="mx-auto max-w-[1100px]">
         <h2 class="mb-5 text-[clamp(19px,2vw,23px)] tracking-[-0.02em]">Andere docenten</h2>
         <div
           class="grid gap-[clamp(14px,1.6vw,20px)] [grid-template-columns:repeat(auto-fill,minmax(200px,1fr))]"

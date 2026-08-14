@@ -14,17 +14,17 @@ useSeoMeta({
       class="bg-cream px-[clamp(16px,4vw,24px)] pt-[clamp(24px,4vw,44px)] pb-[clamp(48px,7vw,88px)]"
     >
       <div
-        class="mx-auto grid max-w-[1180px] items-center gap-[clamp(32px,5vw,60px)] [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))]"
+        class="mx-auto grid max-w-[1100px] items-center gap-[clamp(32px,5vw,60px)] [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))]"
       >
         <div class="min-w-0">
           <RatingLine class="mb-[18px]" />
 
           <h1
-            class="mb-[18px] max-w-[16ch] text-[clamp(30px,4.2vw,48px)] leading-[1.12] tracking-[-0.025em] text-pretty"
+            class="mb-[18px] max-w-[16ch] text-[clamp(30px,4.2vw,32px)] leading-[1.12] tracking-[-0.025em] text-pretty"
           >
             {{ zoWerktHet.title }}
           </h1>
-          <p class="mb-7 max-w-[46ch] text-[clamp(15px,1.2vw,17px)] leading-relaxed text-ink-600">
+          <p class="mb-7 max-w-[46ch] text-[clamp(15px,1.2vw,16px)] leading-relaxed text-ink-600">
             {{ zoWerktHet.intro }}
           </p>
 
@@ -61,10 +61,10 @@ useSeoMeta({
       id="stappenplan"
       class="bg-white px-[clamp(16px,4vw,24px)] pt-[clamp(48px,6vw,80px)] pb-[clamp(40px,5vw,64px)]"
     >
-      <div class="mx-auto max-w-[1180px]">
+      <div class="mx-auto max-w-[1100px]">
         <div class="mb-[clamp(28px,3.5vw,42px)] text-center">
           <p class="kicker mb-2">{{ zoWerktHet.stepsIntro.kicker }}</p>
-          <h2 class="text-[clamp(24px,2.8vw,32px)] tracking-[-0.025em]">
+          <h2 class="text-[clamp(24px,2.8vw,28px)] tracking-[-0.025em]">
             {{ zoWerktHet.stepsIntro.title }}
           </h2>
         </div>

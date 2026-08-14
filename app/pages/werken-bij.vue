@@ -18,17 +18,17 @@ useSeoMeta({
       class="bg-ink-900 px-[clamp(16px,4vw,24px)] pt-[clamp(24px,4vw,44px)] pb-[clamp(40px,6vw,72px)]"
     >
       <div
-        class="mx-auto grid max-w-[1180px] items-center gap-[clamp(32px,5vw,60px)] [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))]"
+        class="mx-auto grid max-w-[1100px] items-center gap-[clamp(32px,5vw,60px)] [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))]"
       >
         <div class="min-w-0">
           <RatingLine tone="inverse" class="mb-[18px]" />
 
           <h1
-            class="mb-[18px] max-w-[16ch] text-[clamp(30px,4.2vw,48px)] leading-[1.12] tracking-[-0.025em] text-white"
+            class="mb-[18px] max-w-[16ch] text-[clamp(30px,4.2vw,32px)] leading-[1.12] tracking-[-0.025em] text-white"
           >
             {{ werkenBij.hero.title }}
           </h1>
-          <p class="mb-7 max-w-[46ch] text-[clamp(15px,1.2vw,17px)] leading-[1.7] text-line-400 text-pretty">
+          <p class="mb-7 max-w-[46ch] text-[clamp(15px,1.2vw,16px)] leading-[1.7] text-line-400 text-pretty">
             {{ werkenBij.hero.intro }}
           </p>
 
@@ -58,10 +58,10 @@ useSeoMeta({
     <section
       class="bg-white px-[clamp(16px,4vw,24px)] pt-[clamp(56px,7vw,96px)] pb-[clamp(24px,3vw,40px)]"
     >
-      <div class="mx-auto max-w-[1180px]">
+      <div class="mx-auto max-w-[1100px]">
         <div class="mb-[clamp(30px,4vw,46px)] text-center">
           <p class="kicker mb-2.5">{{ werkenBij.perksIntro.kicker }}</p>
-          <h2 class="text-[clamp(24px,2.8vw,32px)] tracking-[-0.025em]">
+          <h2 class="text-[clamp(24px,2.8vw,28px)] tracking-[-0.025em]">
             {{ werkenBij.perksIntro.title }}
           </h2>
         </div>
@@ -99,10 +99,10 @@ useSeoMeta({
     <section
       class="bg-white px-[clamp(16px,4vw,24px)] pt-[clamp(48px,6vw,76px)] pb-[clamp(56px,7vw,90px)]"
     >
-      <div class="mx-auto max-w-[1180px]">
+      <div class="mx-auto max-w-[1100px]">
         <div class="mb-[clamp(28px,3.5vw,42px)] text-center">
           <p class="kicker mb-2.5">{{ werkenBij.requirementsIntro.kicker }}</p>
-          <h2 class="text-[clamp(24px,2.8vw,32px)] tracking-[-0.025em]">
+          <h2 class="text-[clamp(24px,2.8vw,28px)] tracking-[-0.025em]">
             {{ werkenBij.requirementsIntro.title }}
           </h2>
         </div>
@@ -146,12 +146,12 @@ useSeoMeta({
       class="scroll-mt-24 bg-sand px-[clamp(16px,4vw,24px)] pt-[clamp(48px,6vw,80px)] pb-[clamp(56px,7vw,90px)]"
     >
       <div
-        class="mx-auto grid max-w-[1180px] items-end gap-[clamp(32px,5vw,60px)] [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))]"
+        class="mx-auto grid max-w-[1100px] items-end gap-[clamp(32px,5vw,60px)] [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))]"
       >
         <div class="min-w-0">
           <p class="kicker mb-2.5">{{ werkenBij.apply.kicker }}</p>
           <h2
-            class="mb-[18px] text-[clamp(26px,3.2vw,38px)] leading-[1.14] tracking-[-0.03em]"
+            class="mb-[18px] text-[clamp(26px,3.2vw,28px)] leading-[1.14] tracking-[-0.03em]"
           >
             {{ werkenBij.apply.title }}
           </h2>

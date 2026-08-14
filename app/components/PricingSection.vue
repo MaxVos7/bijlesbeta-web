@@ -17,7 +17,7 @@ const formatPrice = (value: number) =>
   <div>
     <div class="mb-[clamp(30px,4vw,48px)] text-center">
       <p class="kicker mb-2.5">{{ pricingIntro.kicker }}</p>
-      <h2 class="mb-3.5 text-[clamp(24px,2.9vw,33px)] tracking-[-0.025em]">
+      <h2 class="mb-3.5 text-[clamp(24px,2.9vw,28px)] tracking-[-0.025em]">
         {{ pricingIntro.title }}
       </h2>
       <p class="mx-auto max-w-[62ch] text-[15px] leading-[1.7] text-ink-700">

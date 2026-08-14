@@ -12,10 +12,10 @@ import { comparison } from '~/data/site'
   <section
     class="bg-white px-[clamp(16px,4vw,24px)] pt-[clamp(30px,4vw,50px)] pb-[clamp(56px,7vw,90px)]"
   >
-    <div class="mx-auto max-w-[1180px]">
+    <div class="mx-auto max-w-[1100px]">
       <div class="mb-[clamp(28px,3.5vw,44px)] text-center">
         <p class="kicker mb-2.5">{{ comparison.kicker }}</p>
-        <h2 class="text-[clamp(24px,2.9vw,33px)] tracking-[-0.025em]">{{ comparison.title }}</h2>
+        <h2 class="text-[clamp(24px,2.9vw,28px)] tracking-[-0.025em]">{{ comparison.title }}</h2>
       </div>
 
       <div

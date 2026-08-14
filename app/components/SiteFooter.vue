@@ -22,7 +22,7 @@ const footerNav = nav.filter((item) => item.label !== 'Kennisbank')
   <footer
     class="border-t border-line-200 bg-sand px-[clamp(16px,4vw,24px)] pt-[clamp(48px,6vw,72px)] pb-[clamp(44px,5vw,64px)]"
   >
-    <div class="mx-auto max-w-[1180px]">
+    <div class="mx-auto max-w-[1100px]">
       <div
         class="mb-[clamp(38px,5vw,58px)] flex flex-col items-center gap-4 text-center"
       >

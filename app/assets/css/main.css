@@ -141,10 +141,18 @@
   Shared primitives, declared with @utility so they can be composed with @apply
   and overridden inline by ordinary Tailwind classes.
 */
+/*
+  Buttons, sized off bijlesbeta.nl's Elementor kit: Plus Jakarta Sans 15px/700
+  with 14px/20px padding and a 12px gap, on the 4px control radius.
+
+  The 11px line-height is the live site's, and is what makes the button read as
+  39px tall rather than 50px — the label's own leading, not the padding, sets
+  the height. Safe only because the label never wraps (`whitespace-nowrap`).
+*/
 @utility btn {
-  @apply inline-flex items-center justify-center gap-2 whitespace-nowrap
-    rounded-btn px-[18px] py-3 text-sm font-bold transition
-    disabled:cursor-not-allowed disabled:opacity-60;
+  @apply inline-flex items-center justify-center gap-3 whitespace-nowrap
+    rounded-btn px-5 py-3.5 font-display text-[15px] leading-[11px] font-bold
+    transition disabled:cursor-not-allowed disabled:opacity-60;
 }
 
 @utility btn-primary {
@@ -157,7 +165,7 @@
 }
 
 @utility container-page {
-  @apply mx-auto w-full max-w-[1180px] px-4 sm:px-6;
+  @apply mx-auto w-full max-w-[1100px] px-4 sm:px-6;
 }
 
 @utility section {
@@ -170,9 +178,17 @@
   }
 }
 
-/* A small amber lead-in above a heading. Deep enough to read as body text. */
+/*
+  The amber lead-in above a section heading. Matched to bijlesbeta.nl exactly:
+  Plus Jakarta Sans 18px/700 in the brand amber.
+
+  That amber on cream is about 1.6:1, well under WCAG AA. It is deliberate —
+  parity with the live site was chosen over contrast here. The kicker is
+  decorative and always repeats above a heading that carries the same meaning
+  in full ink, so nothing is lost if it doesn't read.
+*/
 @utility kicker {
-  @apply text-[15px] font-semibold text-brand-700;
+  @apply font-display text-[18px] font-bold text-accent-500;
 }
 
 @utility field-label {

@@ -16,7 +16,7 @@ const review = featuredReview
       class="bg-cream px-[clamp(16px,4vw,24px)] pt-[clamp(28px,4vw,48px)] pb-[clamp(48px,6vw,80px)]"
     >
       <div
-        class="mx-auto grid max-w-[1180px] items-start gap-[clamp(28px,4vw,56px)] [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))]"
+        class="mx-auto grid max-w-[1100px] items-start gap-[clamp(28px,4vw,56px)] [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))]"
       >
         <div class="min-w-0">
           <p class="kicker mb-2.5">Aanmelden</p>
@@ -116,10 +116,10 @@ const review = featuredReview
 
     <section class="bg-white px-[clamp(16px,4vw,24px)] py-[clamp(48px,6vw,80px)]">
       <div
-        class="mx-auto grid max-w-[1180px] items-start gap-[clamp(26px,4vw,50px)] [grid-template-columns:repeat(auto-fit,minmax(300px,1fr))]"
+        class="mx-auto grid max-w-[1100px] items-start gap-[clamp(26px,4vw,50px)] [grid-template-columns:repeat(auto-fit,minmax(300px,1fr))]"
       >
         <div>
-          <h2 class="mb-3 text-[clamp(22px,2.5vw,29px)] tracking-[-0.025em]">
+          <h2 class="mb-3 text-[clamp(22px,2.5vw,28px)] tracking-[-0.025em]">
             Veelgestelde vragen (FAQ)
           </h2>
           <p class="text-sm text-ink-600">Bekijk onze veelgestelde vragen (FAQ)</p>

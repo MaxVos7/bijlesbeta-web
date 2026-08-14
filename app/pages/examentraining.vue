@@ -32,12 +32,12 @@ function openVideo() {
     <!-- Hero: rating + promises on the left, the training photo on the right. -->
     <section class="bg-cream px-[clamp(16px,4vw,24px)] pt-[clamp(24px,3.5vw,44px)] pb-[clamp(40px,6vw,72px)]">
       <div
-        class="mx-auto grid max-w-[1180px] items-center gap-[clamp(28px,4.5vw,56px)] [grid-template-columns:repeat(auto-fit,minmax(330px,1fr))]"
+        class="mx-auto grid max-w-[1100px] items-center gap-[clamp(28px,4.5vw,56px)] [grid-template-columns:repeat(auto-fit,minmax(330px,1fr))]"
       >
         <div class="min-w-0">
           <RatingLine :label="examentraining.hero.ratingLabel" class="mb-4" />
 
-          <h1 class="mb-4 text-[clamp(27px,3.2vw,37px)] leading-[1.15] tracking-[-0.025em]">
+          <h1 class="mb-4 text-[clamp(27px,3.2vw,32px)] leading-[1.15] tracking-[-0.025em]">
             {{ examentraining.hero.title }}
           </h1>
           <p class="mb-[26px] max-w-[52ch] text-[15px] leading-[1.7] text-ink-600">
@@ -64,10 +64,10 @@ function openVideo() {
     <!-- Why the training works: four cards. Icons are placeholders — no -->
     <!-- artwork was supplied for these in the design handoff. -->
     <section class="bg-white px-[clamp(16px,4vw,24px)] py-[clamp(48px,6vw,80px)]">
-      <div class="mx-auto max-w-[1180px]">
+      <div class="mx-auto max-w-[1100px]">
         <div class="mb-[clamp(28px,3.6vw,42px)] text-center">
           <p class="kicker mb-2.5">{{ examentraining.features.kicker }}</p>
-          <h2 class="text-[clamp(23px,2.7vw,31px)] tracking-[-0.025em]">
+          <h2 class="text-[clamp(23px,2.7vw,28px)] tracking-[-0.025em]">
             {{ examentraining.features.title }}
           </h2>
         </div>
@@ -108,11 +108,11 @@ function openVideo() {
     <!-- Details on the left, the all-in-one package card on the right. -->
     <section class="bg-white px-[clamp(16px,4vw,24px)] pt-[clamp(32px,4vw,56px)] pb-[clamp(48px,6vw,80px)]">
       <div
-        class="mx-auto grid max-w-[1180px] items-start gap-[clamp(28px,4vw,56px)] [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))]"
+        class="mx-auto grid max-w-[1100px] items-start gap-[clamp(28px,4vw,56px)] [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))]"
       >
         <div class="min-w-0">
           <p class="kicker mb-2">{{ examentraining.details.kicker }}</p>
-          <h2 class="mb-[18px] text-[clamp(23px,2.7vw,31px)] tracking-[-0.025em]">
+          <h2 class="mb-[18px] text-[clamp(23px,2.7vw,28px)] tracking-[-0.025em]">
             {{ examentraining.details.title }}
           </h2>
           <p class="mb-3.5 text-sm leading-[1.75] text-ink-700">{{ examentraining.details.intro }}</p>
@@ -196,10 +196,10 @@ function openVideo() {
     <!-- Promo video: a click reveals the embed area. -->
     <section class="bg-white px-[clamp(16px,4vw,24px)] pt-[clamp(32px,4vw,56px)] pb-[clamp(56px,7vw,90px)]">
       <div
-        class="mx-auto grid max-w-[1180px] items-center gap-[clamp(28px,4vw,56px)] [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))]"
+        class="mx-auto grid max-w-[1100px] items-center gap-[clamp(28px,4vw,56px)] [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))]"
       >
         <div class="min-w-0">
-          <h2 class="mb-3.5 text-[clamp(23px,2.6vw,30px)] tracking-[-0.025em]">
+          <h2 class="mb-3.5 text-[clamp(23px,2.6vw,28px)] tracking-[-0.025em]">
             {{ examentraining.video.title }}
           </h2>
           <p class="text-sm leading-[1.75] text-ink-700">{{ examentraining.video.body[0] }}</p>
@@ -252,9 +252,9 @@ function openVideo() {
 
     <!-- Levels: notice only, per the design — no level picker. -->
     <section class="bg-white px-[clamp(16px,4vw,24px)] pt-[clamp(24px,3vw,40px)] pb-[clamp(48px,6vw,80px)]">
-      <div class="mx-auto max-w-[1180px] text-center">
+      <div class="mx-auto max-w-[1100px] text-center">
         <p class="kicker mb-2.5">{{ examentraining.levelsNotice.kicker }}</p>
-        <h2 class="mb-[22px] text-[clamp(23px,2.7vw,31px)] tracking-[-0.025em]">
+        <h2 class="mb-[22px] text-[clamp(23px,2.7vw,28px)] tracking-[-0.025em]">
           {{ examentraining.levelsNotice.title }}
         </h2>
         <p class="mx-auto mb-3 max-w-[70ch] text-sm leading-[1.75] text-ink-700">
@@ -270,11 +270,11 @@ function openVideo() {
     <!-- Signup: WhatsApp/e-mail on the left, the contact form panel on the right. -->
     <section id="aanmelden" class="bg-sand px-[clamp(16px,4vw,24px)] pt-[clamp(40px,5.5vw,72px)] pb-[clamp(48px,7vw,88px)]">
       <div
-        class="mx-auto grid max-w-[1180px] items-center gap-[clamp(32px,5vw,60px)] [grid-template-columns:repeat(auto-fit,minmax(330px,1fr))]"
+        class="mx-auto grid max-w-[1100px] items-center gap-[clamp(32px,5vw,60px)] [grid-template-columns:repeat(auto-fit,minmax(330px,1fr))]"
       >
         <div class="min-w-0">
           <p class="kicker mb-2.5">{{ examentraining.signup.kicker }}</p>
-          <h2 class="mb-[18px] max-w-[14ch] text-[clamp(26px,3.4vw,38px)] leading-[1.15]">
+          <h2 class="mb-[18px] max-w-[14ch] text-[clamp(26px,3.4vw,28px)] leading-[1.15]">
             {{ examentraining.signup.title }}
           </h2>
           <p class="mb-3.5 max-w-[46ch] text-sm leading-[1.7] text-ink-700">
@@ -332,9 +332,9 @@ function openVideo() {
 
     <!-- FAQ: this page's own 3 questions, not the sitewide list. -->
     <section id="faq" class="bg-sand px-[clamp(16px,4vw,24px)] py-[clamp(56px,7vw,88px)]">
-      <div class="mx-auto max-w-[1180px]">
+      <div class="mx-auto max-w-[1100px]">
         <div class="mb-[clamp(24px,3.2vw,36px)] text-center">
-          <h2 class="mb-3 text-[clamp(24px,2.9vw,33px)] tracking-[-0.025em]">{{ faqIntro.title }}</h2>
+          <h2 class="mb-3 text-[clamp(24px,2.9vw,28px)] tracking-[-0.025em]">{{ faqIntro.title }}</h2>
           <p class="text-[14.5px] text-ink-700">
             {{ faqIntro.before }}
             <a href="#aanmelden" class="border-b-[1.5px] border-ink-900">{{ faqIntro.link }}</a>

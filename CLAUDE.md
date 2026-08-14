@@ -85,6 +85,85 @@ parity, so a few things are now deliberate and shouldn't drift back:
 - **`parchment` (`#f5f3e9`)** is the page ground on `<body>` and the fill of
   the highlighted package — a hair warmer than `sand`, and not interchangeable
   with it.
+- **The kicker is `accent-500` at 18px**, matching the live site exactly. That
+  amber on cream is ~1.6:1, well under WCAG AA, and it is a deliberate call:
+  parity was chosen over contrast because the kicker is decorative and always
+  repeats above a heading that carries the same meaning in full ink. Don't
+  "fix" it back to `brand-700` without raising it first.
+- **`btn` is 15px/700 Plus Jakarta Sans, 14px/20px padding, 12px gap, and an
+  11px line-height.** The odd leading is the live site's and is what makes the
+  button 39px tall rather than 50px — the label's leading sets the height, not
+  the padding. It only works because `btn` is `whitespace-nowrap`; if a button
+  ever needs to wrap, give that one an explicit leading rather than removing
+  this.
+
+### Checking against bijlesbeta.nl
+
+Don't measure from screenshots — the live site's real values are readable
+straight from its Elementor kit. The homepage's is
+`bijlesbeta.nl/wp-content/uploads/elementor/css/post-14.css`, and the global
+palette is in `post-6.css`:
+
+    primary / text  #1D1D1B      accent     #FFBB00
+    secondary       #FFFFFF      2afe360    #1D1D1B8C  (= our `ink-600`)
+    5227cc2         #1D1D1B1A    8a029d9    #F5F3E9    (= `parchment`)
+
+Two traps when diffing this way. The live site marks kickers up as `<h2>` and
+the section title as `<h3>` (an Elementor quirk) while we use `<p>` + `<h2>`,
+so a headings-only query reports our kickers as missing when they aren't —
+ours is the better outline and shouldn't change. And `.nl` has no single body
+size: the hero paragraph is 16px, card body copy is 15px/28px.
+
+Our slugs don't match theirs, so the page you want is rarely at the path you'd
+guess. `elementor-page-<id>` in a page's HTML gives you its post id:
+
+| ours | bijlesbeta.nl | post |
+|---|---|---|
+| `/` | `/` | 14 |
+| `/aanmelden` | `/aanmelden/` | 103 |
+| `/contact` | `/contact/` | 46 |
+| `/over-ons` | `/over-ons/` | 239 |
+| `/tarieven` | `/tarieven/` | 44 |
+| `/werken-bij` | `/werken-bij/` | 45 |
+| `/het-bedrijf` | `/het-bedrijf/` | 1567 |
+| `/zo-werkt-het` | `/zo-werkt-het/` | 42 |
+| `/examentraining` | `/examentraining-groningen/` | 2180 |
+| `/kennisbank` | `/kennisbank/` | 204 |
+| `/kennisbank/[slug]` | `/kennisbank/<cat>/<slug>/` | 169 |
+| `/docenten/[slug]` | `/kennisbank/docenten/<slug>/` | 827 |
+| `/privacy` | `/privacy-statement/` | 1897 |
+| `/bijles-[vak]-[stad]` | `/bijles-<vak>-<stad>/` | 2247 |
+
+The docenten and kennisbank article pages are posts, not pages, so they're in
+`post-sitemap.xml` rather than `page-sitemap.xml`.
+
+### The type scale
+
+Every live page runs the same five steps, and none of them exceed 32px:
+
+    page H1        32px / 44px   (26px below 768px; 42px on kennisbank posts)
+    section title  28px / 44px
+    sub-heading    22px / 44px   (27px on a few inner pages)
+    card heading   19px / 26px
+    card title     19px / 20px   (the tight one, subject cards)
+    body           15px / 28px   (hero paragraphs 16px / 28px)
+    kicker         18-19px       (15px for the small eyebrows)
+
+Our headings stay fluid — `clamp()` with the floor and vw slope intact — but
+no ceiling may exceed the step above. Before this pass there were 28 distinct
+clamp sizes topping out at 50px; keep new headings on the existing sizes
+rather than inventing a 29th.
+
+The content column is **1100px** (`container-page`, and the `max-w-[1100px]`
+on the pages that don't use it), which is the `--content-width` the live
+containers actually set. A few live bands run 1200px or 1368px; 1100 is the
+one the body copy sits in.
+
+The live site steps type at 767px and nowhere else, so Tailwind's `md` lines
+up with it exactly. Only two things actually take that step: the page H1
+(32px → 26px) and the four icon-box feature cards in `FeatureGrid` (19px →
+16px). Subject-card titles and section titles hold one size at every width —
+don't add breakpoints they don't have.
 
 `/contact` puts its hero and its form panel in one sand band and sets its FAQ
 heading beside the accordion, so it uses neither `PageHero` nor `FaqSection`.

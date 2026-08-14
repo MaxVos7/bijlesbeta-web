@@ -14,7 +14,7 @@ import { contact, trialCta } from '~/data/site'
     >
       <div class="min-w-0">
         <p class="mb-2 text-[15px] font-semibold text-on-brand">{{ trialCta.kicker }}</p>
-        <h2 class="mb-3.5 text-[clamp(23px,2.6vw,31px)] tracking-[-0.025em]">
+        <h2 class="mb-3.5 text-[clamp(23px,2.6vw,28px)] tracking-[-0.025em]">
           {{ trialCta.title }}
         </h2>
         <p class="mb-6 max-w-[44ch] text-[14.5px] leading-relaxed text-on-brand-muted">

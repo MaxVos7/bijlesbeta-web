@@ -69,7 +69,7 @@ onUnmounted(() => {
 <template>
   <div v-if="article">
     <section class="bg-white px-[clamp(16px,4vw,24px)] pt-[clamp(20px,3vw,34px)] pb-[clamp(48px,6vw,72px)]">
-      <div class="mx-auto max-w-[1180px]">
+      <div class="mx-auto max-w-[1100px]">
         <div class="overflow-hidden rounded-panel bg-cream">
           <img
             v-if="article.coverImage"
@@ -163,8 +163,8 @@ onUnmounted(() => {
     </section>
 
     <section v-if="related.length" class="bg-sand px-[clamp(16px,4vw,24px)] py-[clamp(48px,6vw,72px)]">
-      <div class="mx-auto max-w-[1180px]">
-        <h2 class="mb-[clamp(20px,2.6vw,30px)] text-[clamp(24px,2.9vw,33px)]">Lees ook eens…</h2>
+      <div class="mx-auto max-w-[1100px]">
+        <h2 class="mb-[clamp(20px,2.6vw,30px)] text-[clamp(24px,2.9vw,28px)]">Lees ook eens…</h2>
         <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           <article v-for="item in related" :key="item.slug" class="flex flex-col rounded-card bg-white p-3.5">
             <div class="relative">

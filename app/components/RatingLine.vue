@@ -17,7 +17,7 @@ const leadLabel = computed(() => props.label ?? rating.label)
 
 <template>
   <p
-    class="flex flex-wrap items-center gap-x-2.5 gap-y-2 text-sm"
+    class="flex flex-wrap items-center gap-x-2.5 gap-y-2 text-[15px] leading-[22.5px]"
     :class="[centered && 'justify-center', tone === 'inverse' && 'text-white']"
   >
     <strong class="font-bold">{{ leadLabel }}</strong>

@@ -12,15 +12,15 @@ useSeoMeta({
   <div>
     <section class="bg-cream px-[clamp(16px,4vw,24px)] pt-[clamp(24px,4vw,44px)]">
       <div
-        class="mx-auto grid max-w-[1180px] items-end gap-[clamp(32px,5vw,60px)] [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))]"
+        class="mx-auto grid max-w-[1100px] items-end gap-[clamp(32px,5vw,60px)] [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))]"
       >
         <div class="min-w-0 pb-[clamp(40px,6vw,80px)]">
           <RatingLine class="mb-[18px]" />
 
-          <h1 class="mb-[18px] text-[clamp(32px,4.4vw,50px)] leading-[1.1] tracking-[-0.03em]">
+          <h1 class="mb-[18px] text-[32px] leading-[1.1] tracking-[-0.03em]">
             Tarieven
           </h1>
-          <p class="mb-7 max-w-[46ch] text-[clamp(15px,1.2vw,17px)] leading-relaxed text-ink-600">
+          <p class="mb-7 max-w-[46ch] text-[clamp(15px,1.2vw,16px)] leading-relaxed text-ink-600">
             Wij zijn een lokaal initiatief, georganiseerd door studenten. Hierdoor kunnen we onze
             tarieven laag houden.<br>
             Onze pakketten zijn gericht op consistente begeleiding, zodat je het vak écht onder de
@@ -52,7 +52,7 @@ useSeoMeta({
       id="pakketten"
       class="bg-white px-[clamp(16px,4vw,24px)] pt-[clamp(88px,10vw,130px)] pb-[clamp(40px,5vw,60px)]"
     >
-      <div class="mx-auto max-w-[1180px]">
+      <div class="mx-auto max-w-[1100px]">
         <PricingSection />
       </div>
     </section>
@@ -68,7 +68,7 @@ useSeoMeta({
           loading="lazy"
         >
         <div class="min-w-0">
-          <h2 class="mb-[22px] text-[clamp(23px,2.6vw,30px)] tracking-[-0.025em]">Zo werkt het</h2>
+          <h2 class="mb-[22px] text-[clamp(23px,2.6vw,28px)] tracking-[-0.025em]">Zo werkt het</h2>
           <ul class="mb-[30px] flex list-none flex-col gap-3.5 p-0">
             <li
               v-for="note in pricingNotes"

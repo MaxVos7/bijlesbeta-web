@@ -28,11 +28,11 @@ const storyQuote = computed(() => {
       class="bg-cream px-[clamp(16px,4vw,24px)] pt-[clamp(28px,4vw,48px)] pb-[clamp(48px,7vw,84px)]"
     >
       <div
-        class="mx-auto grid max-w-[1180px] items-center gap-[clamp(32px,5vw,60px)] [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))]"
+        class="mx-auto grid max-w-[1100px] items-center gap-[clamp(32px,5vw,60px)] [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))]"
       >
         <div class="min-w-0">
           <p class="kicker mb-2.5">Over ons</p>
-          <h1 class="mb-[18px] text-[clamp(28px,3.6vw,42px)] leading-[1.14] tracking-[-0.03em]">
+          <h1 class="mb-[18px] text-[clamp(28px,3.6vw,32px)] leading-[1.14] tracking-[-0.03em]">
             Samen een passie voor Bèta
           </h1>
           <p class="mb-[26px] max-w-[46ch] text-[clamp(15px,1.2vw,16px)] leading-[1.65] text-ink-600">
@@ -66,7 +66,7 @@ const storyQuote = computed(() => {
       class="bg-white px-[clamp(16px,4vw,24px)] pt-[clamp(48px,6vw,80px)] pb-[clamp(30px,4vw,50px)]"
     >
       <div
-        class="mx-auto grid max-w-[1180px] gap-[clamp(14px,1.6vw,20px)] [grid-template-columns:repeat(auto-fill,minmax(215px,1fr))]"
+        class="mx-auto grid max-w-[1100px] gap-[clamp(14px,1.6vw,20px)] [grid-template-columns:repeat(auto-fill,minmax(215px,1fr))]"
       >
         <TutorCard v-for="tutor in firstRun" :key="tutor.slug" :tutor="tutor" />
 
@@ -106,7 +106,7 @@ const storyQuote = computed(() => {
     </section>
 
     <section class="bg-white px-[clamp(16px,4vw,24px)] pb-[clamp(24px,3vw,40px)]">
-      <div class="relative mx-auto max-w-[1180px] overflow-hidden rounded-tile">
+      <div class="relative mx-auto max-w-[1100px] overflow-hidden rounded-tile">
         <img
           src="/img/studenten.png"
           alt="Het team van Bijles Bèta tijdens het teamuitje"
@@ -123,7 +123,7 @@ const storyQuote = computed(() => {
 
     <section class="bg-white px-[clamp(16px,4vw,24px)] pt-[clamp(24px,3vw,40px)] pb-[clamp(56px,7vw,90px)]">
       <div
-        class="mx-auto grid max-w-[1180px] gap-[clamp(14px,1.6vw,20px)] [grid-template-columns:repeat(auto-fill,minmax(215px,1fr))]"
+        class="mx-auto grid max-w-[1100px] gap-[clamp(14px,1.6vw,20px)] [grid-template-columns:repeat(auto-fill,minmax(215px,1fr))]"
       >
         <TutorCard v-for="tutor in rest" :key="tutor.slug" :tutor="tutor" />
       </div>
@@ -148,7 +148,7 @@ const storyQuote = computed(() => {
         >
 
         <div class="min-w-0">
-          <h2 class="mb-[18px] text-[clamp(22px,2.5vw,29px)] tracking-[-0.025em]">{{ block.title }}</h2>
+          <h2 class="mb-[18px] text-[clamp(22px,2.5vw,28px)] tracking-[-0.025em]">{{ block.title }}</h2>
           <p class="mb-[26px] text-sm leading-[1.75] text-ink-700">{{ block.body }}</p>
           <NuxtLink :to="block.cta.to" class="btn-primary gap-3 px-5 py-[13px]">
             {{ block.cta.label }} <span aria-hidden="true">→</span>

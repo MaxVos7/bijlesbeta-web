@@ -34,7 +34,7 @@ function isFeatured(article: Article) {
     />
 
     <section class="bg-white px-[clamp(16px,4vw,24px)] pt-[clamp(48px,6vw,68px)] pb-[clamp(56px,7vw,88px)]">
-      <div class="mx-auto max-w-[1180px]">
+      <div class="mx-auto max-w-[1100px]">
         <div class="flex flex-wrap gap-2.5" role="group" aria-label="Filter op categorie">
           <button
             v-for="chip in chips"
@@ -125,7 +125,7 @@ function isFeatured(article: Article) {
     </section>
 
     <section class="bg-white px-[clamp(16px,4vw,24px)] pb-[clamp(56px,7vw,88px)]">
-      <div class="mx-auto max-w-[1180px]">
+      <div class="mx-auto max-w-[1100px]">
         <FeatureGrid />
       </div>
     </section>
