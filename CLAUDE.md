@@ -72,20 +72,38 @@ parity, so a few things are now deliberate and shouldn't drift back:
 
 - **One amber.** `brand-500` and `accent-500` are both `#ffbb00`; the live site
   runs no separate accent. `brand-600` (`#f0b000`) is the hover.
-- **Two radii.** Controls round on 4px (`field`, `btn`), surfaces on 8px
-  (`panel`, `tile`, `card`). All five names survive so components didn't have
-  to change, but they resolve onto those two values — don't reintroduce
-  one-off `rounded-[11px]`-style overrides.
-- **Three inks at the dark end.** `ink-900` (`#1d1d1b`) is the deep ink and is
-  for grounds and rules only — the dark bands, the inverted package, the 1.5px
-  underline beneath text links. Body copy and headings sit on `ink-800`
-  (`#333`), which is what `<body>` sets; `ink-850` (`#222`) is the package
-  descriptions and nothing else. Reach for `text-ink-800`, never
-  `text-ink-900`.
+- **Three radii.** Controls round on 4px (`field`, `btn`), surfaces on 8px
+  (`panel`, `tile`, `card`), and three large blocks on 12px (`block`): the
+  header card, the amber closing panel and the `Zo werkt het` photograph. The
+  five 4/8px names survive so components didn't have to change, but they
+  resolve onto those two values — don't reintroduce one-off
+  `rounded-[11px]`-style overrides.
+- **Headings and copy both sit on `ink-800`.** This is the one place the site
+  knowingly departs from parity: bijlesbeta.nl sets its heading widgets in
+  `#1d1d1b`, and we keep `#333`, which is also what `<body>` sets — so most
+  copy needs no colour class at all. It has been raised and decided twice;
+  don't "correct" it to `ink-900` from a measurement. `ink-900` stays for
+  grounds and rules only — the dark bands, the inverted package, the 1.5px
+  underline beneath text links. `ink-850` (`#222`) is the package
+  descriptions and the FAQ heading, and nothing else. Reach for
+  `text-ink-800`, never `text-ink-900`.
+- **`line-ink` (`#1d1d1b1a`) is the rule colour.** Cards, tiles and package
+  borders on the live site are all the deep ink at 10%, not an opaque warm
+  grey. The opaque `line-*` steps stay for hairlines that have to hold a tone
+  of their own.
 - **`parchment` (`#f5f3e9`)** is the page ground on `<body>` and the fill of
   the highlighted package — a hair warmer than `sand`, and not interchangeable
   with it.
-- **The kicker is `accent-500` at 18px**, matching the live site exactly. That
+- **Secondary copy is not automatically muted.** `ink-700` (the ink at 55%) is
+  the hero paragraph, the closing block's body line and the card footnotes —
+  but the section intros under `Eerlijk geprijsd` and `Bijles Bèta in cijfers`
+  are 16px/28px in *full* ink on the live site, not a muted 15px. Check before
+  reaching for `text-ink-700`.
+- **Two greens.** `success-500` (`#26cb7c`) is the checkmark glyph; `mint`
+  (`#00b67a`) is the darker one the savings pill sets both its label and its
+  10% tint in. They are not interchangeable.
+- **The kicker is `accent-500` at 18px** with a 1:1 leading, matching the live
+  site exactly (the packages band runs its own 19px). That
   amber on cream is ~1.6:1, well under WCAG AA, and it is a deliberate call:
   parity was chosen over contrast because the kicker is decorative and always
   repeats above a heading that carries the same meaning in full ink. Don't
@@ -96,6 +114,11 @@ parity, so a few things are now deliberate and shouldn't drift back:
   the padding. It only works because `btn` is `whitespace-nowrap`; if a button
   ever needs to wrap, give that one an explicit leading rather than removing
   this.
+- **`btn-lg` is the in-page CTA**, at 20px/24px padding: the hero, the four
+  packages, `Zo werkt het` and the closing block all use it. It measures 54px
+  rather than 51px because the trailing arrow is the tallest thing in the row.
+  That arrow must be `<BtnArrow />` — a 15×14 SVG — and never a `→` character,
+  which brings a 28px line box with it and grows the button to 68px.
 
 ### The header
 
@@ -202,10 +225,33 @@ no ceiling may exceed the step above. Before this pass there were 28 distinct
 clamp sizes topping out at 50px; keep new headings on the existing sizes
 rather than inventing a 29th.
 
+**The 44px leading is not decorative.** Every step from 22px up is set on a
+flat 44px line, which is what holds the vertical rhythm between a heading and
+the copy under it. A `leading-[1.1]` or `leading-snug` on a heading collapses
+it by 8–10px and the whole band creeps upward. `/tarieven` was measured back
+onto this: the page H1, the section titles and the FAQ heading all carry an
+explicit `leading-[44px]`.
+
+**Not every section title is 28px.** `Eerlijk geprijsd` is, but `Zo werkt
+het`, `Bijles Bèta in cijfers` and `Moeilijke vragen bestaan niet!` are all
+32px on the live pages. Measure the one you're touching rather than assuming
+the step.
+
 The content column is **1100px** (`container-page`, and the `max-w-[1100px]`
 on the pages that don't use it), which is the `--content-width` the live
-containers actually set. A few live bands run 1200px or 1368px; 1100 is the
-one the body copy sits in.
+containers actually set. Three bands on `/tarieven` deliberately don't use it
+and shouldn't be pulled back in: the packages grid runs **1368px** so four
+cards fit on one row with 12px between them, `Zo werkt het` runs **1400px**,
+and the stats band narrows to **900px**. Band gutters are 40px, tapering to
+16px on a phone (`px-[clamp(16px,4vw,40px)]`).
+
+**`/tarieven`'s bands are separated by 80px spacer strips, not by section
+padding** — that is how the live page is built, and it is what lets the hero
+photograph (700px tall, flush to the top of the hero) hang past the bottom of
+its own band. The hero is `relative z-10` for exactly that reason; without it
+the white bands that follow paint over the picture. `StatsBand` is the
+exception: it carries its own 80px on both edges, so pages mount it directly
+against its neighbours.
 
 The live site steps type at 767px and nowhere else, so Tailwind's `md` lines
 up with it exactly. Only two things actually take that step: the page H1

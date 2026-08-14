@@ -62,26 +62,29 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <section class="bg-white px-[clamp(16px,4vw,24px)] pt-[clamp(30px,4vw,50px)] pb-[clamp(56px,7vw,90px)]">
-    <div ref="band" class="mx-auto max-w-[820px] text-center">
-      <h2 class="text-[clamp(26px,3.2vw,28px)] text-accent-500">{{ statsIntro.title }}</h2>
+  <!--
+    The band carries the live 80px rhythm on both of its own edges, so pages
+    mount it directly against the section before and after rather than adding
+    spacer strips of their own.
+  -->
+  <section class="bg-white px-[clamp(16px,4vw,40px)] py-20">
+    <div ref="band" class="mx-auto max-w-[900px] text-center">
+      <h2 class="text-[32px] leading-[44px] text-accent-500">{{ statsIntro.title }}</h2>
 
-      <p
-        class="mx-auto mt-3.5 mb-[clamp(26px,3.5vw,38px)] max-w-[62ch] text-[15px] leading-[1.7] text-ink-700"
-      >
+      <p class="mx-auto mt-3 mb-3 max-w-[800px] text-base leading-[28px] text-ink-800">
         {{ statsIntro.body }}<strong>{{ statsIntro.emphasis }}</strong>
       </p>
 
-      <div class="grid gap-[clamp(12px,1.6vw,18px)] [grid-template-columns:repeat(auto-fit,minmax(180px,1fr))]">
+      <div class="grid gap-3 [grid-template-columns:repeat(auto-fit,minmax(180px,1fr))]">
         <div
           v-for="(stat, index) in stats"
           :key="stat.label"
-          class="rounded-tile border border-line-200 bg-white px-3 py-[30px]"
+          class="rounded-tile border border-line-ink p-6"
         >
-          <p class="text-[clamp(32px,4vw,44px)] font-bold leading-none tracking-[-0.035em]">
+          <p class="text-[50px] leading-none font-bold tracking-[-0.035em] text-ink-800">
             {{ displayed[index] }}{{ stat.suffix }}
           </p>
-          <p class="mt-2.5 text-[13.5px] text-ink-600">{{ stat.label }}</p>
+          <p class="text-[15px] leading-[37.5px] font-semibold text-ink-800">{{ stat.label }}</p>
         </div>
       </div>
     </div>

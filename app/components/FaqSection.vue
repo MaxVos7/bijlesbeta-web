@@ -3,17 +3,21 @@ import { faqIntro } from '~/data/site'
 </script>
 
 <template>
-  <section id="faq" class="bg-sand px-[clamp(16px,4vw,24px)] py-[clamp(56px,7vw,88px)]">
+  <!-- The accordion closes the page on the site's own parchment rather than a
+       ground of its own — `sand` reads a shade cooler and shows as a seam. -->
+  <section id="faq" class="px-[clamp(16px,4vw,40px)] pt-12 pb-20">
     <div class="mx-auto max-w-[1100px]">
       <div class="mb-[clamp(24px,3.2vw,36px)] text-center">
-        <h2 class="mb-3 text-[clamp(24px,2.9vw,28px)] tracking-[-0.025em]">{{ faqIntro.title }}</h2>
-        <p class="text-[14.5px] text-ink-700">
+        <h2 class="mb-3 text-[32px] leading-[44px] tracking-[-0.025em] text-ink-850">
+          {{ faqIntro.title }}
+        </h2>
+        <p class="text-base leading-6 text-ink-800">
           {{ faqIntro.before }}
           <NuxtLink to="/contact" class="border-b-[1.5px] border-ink-900">{{ faqIntro.link }}</NuxtLink>
         </p>
       </div>
 
-      <div class="mx-auto max-w-[840px] rounded-card bg-white px-[clamp(18px,2.6vw,30px)] py-2.5">
+      <div class="mx-auto max-w-[728px] rounded-card bg-white p-6">
         <FaqList size="lg" />
       </div>
     </div>

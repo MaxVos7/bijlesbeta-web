@@ -763,32 +763,38 @@ export const pricingPlans: PricingPlan[] = [
 export const faqs = [
   {
     question: 'Hebben jullie op de korte termijn docenten beschikbaar?',
+    lead: 'Ja!',
     answer:
-      'Ja! Wij hebben vrijwel altijd docenten beschikbaar die op de korte termijn bijles kunnen geven in de Bèta vakken aan huis in Groningen. In drukke periodes laten we tijdig weten op welk termijn we docenten beschikbaar hebben.',
+      'Wij hebben vrijwel altijd docenten beschikbaar die op de korte termijn bijles kunnen geven in de Bèta vakken aan huis in Groningen. In drukke periodes laten we tijdig weten op welk termijn we docenten beschikbaar hebben.',
   },
   {
     question: 'Ik woon buiten Groningen, kan ik ook bijles krijgen van jullie?',
+    lead: 'Dat kan zeker!',
     answer:
-      'Dat kan zeker! Er valt vrijwel altijd iets te regelen. Leerlingen die buiten de stad wonen spreken vaak af met onze docenten op openbare locaties zoals het forum of de middelbare school. Mocht de afstand te doen zijn per fiets, dan rekenen wij vaak een reiskostenvergoeding van 5 euro per les, die rechtstreeks naar de docent gaat.',
+      'Er valt vrijwel altijd iets te regelen. Leerlingen die buiten de stad wonen spreken vaak af met onze docenten op openbare locaties zoals het forum of de middelbare school. Mocht de afstand te doen zijn per fiets, dan rekenen wij vaak een reiskostenvergoeding van 5 euro per les, die rechtstreeks naar de docent gaat.',
   },
   {
     question: 'Wanneer en hoe betaal ik voor de bijles?',
+    lead: 'Na de bijlessen sturen wij een factuur.',
     answer:
-      'Na de bijlessen sturen wij een factuur. Dit doen wij iedere maand. Je kan het factuur in de eerste twee week van de volgende maand verwachten. Deze is gemakkelijk online te betalen.',
+      'Dit doen wij iedere maand. Je kan het factuur in de eerste twee week van de volgende maand verwachten. Deze is gemakkelijk online te betalen.',
   },
   {
     question: 'Ik zit niet op de middelbare school, kan ik ook bijles krijgen van jullie?',
+    lead: 'Dat kan zeker!',
     answer:
-      'Dat kan zeker! Onze topdocenten zijn zeer flexibel, door hun brede kennis kunnen we ons makkelijk aanpassen aan jouw bijlesvraag. Al onze docenten zijn student aan de Faculty of Science & Engineering van de Rijksuniversiteit Groningen.',
+      'Onze topdocenten zijn zeer flexibel, door hun brede kennis kunnen we ons makkelijk aanpassen aan jouw bijlesvraag. Al onze docenten zijn student aan de Faculty of Science & Engineering van de Rijksuniversiteit Groningen.',
   },
   {
     question: 'Ik moet de bijles helaas kort van te voren afzeggen, wat gebeurt er dan?',
+    lead: 'Geef dat minstens 24 uur van te voren aan!',
     answer:
-      'Geef dat minstens 24 uur van te voren aan! Bij ons geldt dat de bijles tot 24 uur van tevoren mag worden afgezegd. Hierna zijn wij genoodzaakt de bijles te verrekenen.',
+      'Bij ons geldt dat de bijles tot 24 uur van tevoren mag worden afgezegd. Hierna zijn wij genoodzaakt de bijles te verrekenen.',
   },
   {
     question: 'Geven jullie ook examen training?',
+    lead: 'Dat doen we zeker!',
     answer:
-      'Dat doen we zeker! We geven dit jaar examentraining voor het vak wiskunde. Voor alle andere vakken kunnen onze docenten je perfect voorbereiden op je examen via onze bijles.',
+      'We geven dit jaar examentraining voor het vak wiskunde. Voor alle andere vakken kunnen onze docenten je perfect voorbereiden op je examen via onze bijles.',
   },
 ]

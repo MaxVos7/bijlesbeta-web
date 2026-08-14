@@ -52,8 +52,18 @@
   --color-ink-500: rgb(29 29 27 / 0.55);
   --color-ink-400: #9b958b;
   --color-ink-300: #a8a29a;
+  /* Form placeholders, and only those — the one cool grey on the site, come
+     by honestly from the live form plugin's stylesheet. */
+  --color-placeholder: #9ca3af;
 
-  /* Lines — borders and dividers, lightest first. */
+  /* Lines — borders and dividers, lightest first.
+
+     `line-ink` is the live site's own rule colour — its `5227cc2` global,
+     `#1D1D1B1A`, the deep ink at 10%. Every card, tile and package border on
+     bijlesbeta.nl is drawn in it, so it is the default for surfaces on a
+     light ground; the opaque steps stay for the few rules that sit on top of
+     white and have to hold their own tone. */
+  --color-line-ink: rgb(29 29 27 / 0.1);
   --color-line-100: #eeeae2;
   --color-line-200: #eae6dd;
   --color-line-300: #e2ded4;
@@ -70,12 +80,21 @@
   --color-sand: #f5f1e8;
   --color-mist: #f8f5ef;
   --color-ivory: #fffdf7;
+  /* The ground of the form panel inside the amber closing block — the one
+     neutral that has to hold its own against the brand yellow. */
+  --color-linen: #f8f6ec;
 
-  /* Feedback */
+  /* Feedback.
+
+     The two greens are both the live site's and they are not
+     interchangeable: `success-500` (#26CB7C) is the checkmark glyph, `mint`
+     (#00B67A) is the darker one the savings pill sets both its label and its
+     10% tint in. */
   --color-danger: #d92d20;
   --color-success-50: #e6f6ec;
-  --color-success-500: #22a45d;
+  --color-success-500: #26cb7c;
   --color-success-900: #166534;
+  --color-mint: #00b67a;
 
   /* Breakpoints. Tailwind's own scale, plus the one the header needs: the
      live site is built on Elementor's breakpoints, whose desktop floor is
@@ -101,6 +120,9 @@
   --radius-panel: 8px;
   --radius-tile: 8px;
   --radius-card: 8px;
+  /* The third step, and the only one above 8px: the header card, the amber
+     closing panel and the `Zo werkt het` photograph all round on 12px. */
+  --radius-block: 12px;
 
   /* Elevation — tuned to the cream ground, not to white. `header` is the
      live site's own value, on the floating bar and its mobile dropdown. */
@@ -121,6 +143,9 @@
     font-family: var(--font-sans);
   }
 
+  /* Headings stay on `ink-800`. bijlesbeta.nl does set its heading widgets in
+     `#1D1D1B`, so this is a knowing departure from parity, not an oversight —
+     see the `ink-800` note in CLAUDE.md before "correcting" it. */
   h1,
   h2,
   h3,
@@ -164,6 +189,18 @@
     transition disabled:cursor-not-allowed disabled:opacity-60;
 }
 
+/*
+  The larger of the live site's two button sizes: 20px/24px padding instead of
+  14px/20px, which is what every in-page CTA uses (the hero, the packages, the
+  closing blocks). It measures 54px tall rather than 39px because the arrow
+  glyph — a 15×14 `BtnArrow`, not a `→` character — is the tallest thing in the
+  row once the 11px label leading is applied. Setting the arrow in text instead
+  reintroduces a 28px line box and the button grows to 68px.
+*/
+@utility btn-lg {
+  @apply px-6 py-5;
+}
+
 @utility btn-primary {
   @apply btn bg-brand-500 text-ink-800 hover:bg-brand-600;
 }
@@ -197,7 +234,7 @@
   in full ink, so nothing is lost if it doesn't read.
 */
 @utility kicker {
-  @apply font-display text-[18px] font-bold text-accent-500;
+  @apply font-display text-[18px] leading-none font-bold text-accent-500;
 }
 
 @utility field-label {
@@ -208,11 +245,18 @@
   @apply mb-2 text-xs leading-relaxed text-ink-500;
 }
 
+/*
+  Text fields, sized off the live Gravity Forms inputs: 15px semibold on white
+  with 20px of horizontal padding, landing on a 42px control. The placeholder
+  is the one cool grey on the site — it comes from the form plugin's own
+  stylesheet and is left alone rather than warmed to `ink-300`, which is too
+  close to the filled value to read as a prompt.
+*/
 @utility field-input {
   @apply mt-1.5 block w-full rounded-field border border-line-300 bg-white
-    px-3.5 py-[13px] text-[13.5px] text-ink-800 transition
-    placeholder:text-ink-300 focus:border-accent-500 focus:outline-none
-    focus:ring-2 focus:ring-accent-500/25;
+    px-5 py-[9px] text-[15px] font-semibold text-ink-800 transition
+    placeholder:font-normal placeholder:text-placeholder focus:border-accent-500
+    focus:outline-none focus:ring-2 focus:ring-accent-500/25;
 }
 
 /*
@@ -224,7 +268,7 @@
 */
 @utility field-input-lg {
   @apply mt-1.5 block w-full rounded-field border border-black/10 bg-white px-5
-    py-5 font-display text-[15px] leading-[44px] font-semibold text-ink-900
+    py-5 font-display text-[15px] leading-[44px] font-semibold text-ink-800
     transition placeholder:text-ink-400 focus:border-accent-500
     focus:outline-none focus:ring-2 focus:ring-accent-500/25;
 }

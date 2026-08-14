@@ -10,93 +10,82 @@ useSeoMeta({
 
 <template>
   <div>
-    <section class="bg-cream px-[clamp(16px,4vw,24px)] pt-[clamp(24px,4vw,44px)]">
+    <!--
+      The hero sits on the page's own parchment, not on a ground of its own,
+      and its photograph runs 700px tall from the very top of the band — past
+      the bottom of the band and through the two spacer strips below it. That
+      overlap is why the section is `relative z-10`: the white bands come
+      later in the document and would otherwise paint over the picture.
+    -->
+    <section class="relative z-10 px-[clamp(16px,4vw,40px)]">
       <div
-        class="mx-auto grid max-w-[1100px] items-end gap-[clamp(32px,5vw,60px)] [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))]"
+        class="mx-auto grid max-w-[1100px] gap-x-[100px] gap-y-8 max-desk:grid-cols-1 desk:grid-cols-2"
       >
-        <div class="min-w-0 pb-[clamp(40px,6vw,80px)]">
+        <div class="min-w-0 pt-[52px] pb-[92px]">
           <RatingLine class="mb-[18px]" />
 
-          <h1 class="mb-[18px] text-[32px] leading-[1.1] tracking-[-0.03em]">
-            Tarieven
-          </h1>
-          <p class="mb-7 max-w-[46ch] text-[clamp(15px,1.2vw,16px)] leading-relaxed text-ink-600">
+          <h1 class="mb-[18px] text-[32px] leading-[44px] tracking-[-0.03em]">Tarieven</h1>
+          <!-- Two paragraphs, as on the live page — not one with a <br>. -->
+          <p class="text-base leading-6 text-ink-700">
             Wij zijn een lokaal initiatief, georganiseerd door studenten. Hierdoor kunnen we onze
-            tarieven laag houden.<br>
+            tarieven laag houden.
+          </p>
+          <p class="mb-7 text-base leading-6 text-ink-700">
             Onze pakketten zijn gericht op consistente begeleiding, zodat je het vak écht onder de
             knie krijgt.
           </p>
 
           <CheckList :items="heroPromises" class="mb-8" />
 
-          <a
-            href="#pakketten"
-            class="btn-primary gap-3.5 px-6 py-5 text-[15px] shadow-[0_6px_18px_rgb(255_187_0_/_0.35)] hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgb(255_187_0_/_0.42)]"
-          >
-            Tarieven bekijken <span class="text-lg" aria-hidden="true">→</span>
+          <a href="#pakketten" class="btn-primary btn-lg">
+            Tarieven bekijken <BtnArrow />
           </a>
-          <p class="mt-3.5 text-[13px] text-ink-400">{{ reassurance }}</p>
+          <p class="mt-3.5 text-[13px] text-ink-700">{{ reassurance }}</p>
         </div>
 
-        <div class="mb-[clamp(-80px,-5vw,-40px)] min-w-0">
+        <div class="relative min-w-0">
           <img
             src="/img/fiets.png"
             alt="Docent op de fiets in Groningen"
-            class="mx-auto block aspect-[3/4] w-full max-w-[420px] rounded object-cover"
+            class="block w-full rounded-panel object-cover max-desk:aspect-[5/7] desk:absolute desk:inset-x-0 desk:top-0 desk:h-[700px]"
           >
         </div>
       </div>
     </section>
 
-    <section
-      id="pakketten"
-      class="bg-white px-[clamp(16px,4vw,24px)] pt-[clamp(88px,10vw,130px)] pb-[clamp(40px,5vw,60px)]"
-    >
-      <div class="mx-auto max-w-[1100px]">
-        <PricingSection />
-      </div>
+    <!-- The live rhythm between bands: an 80px strip on the page ground, then
+         an 80px strip already in the next band's white. -->
+    <div class="h-20" />
+    <div class="h-20 bg-white" />
+
+    <section id="pakketten" class="bg-white px-[clamp(16px,4vw,40px)]">
+      <PricingSection />
     </section>
 
-    <section id="zo-werkt-het" class="bg-white px-[clamp(16px,4vw,24px)] py-[clamp(40px,6vw,80px)]">
+    <div class="h-20 bg-white" />
+
+    <section id="zo-werkt-het" class="bg-white px-[clamp(16px,4vw,40px)]">
       <div
-        class="mx-auto grid max-w-[1080px] items-center gap-[clamp(32px,5vw,60px)] [grid-template-columns:repeat(auto-fit,minmax(300px,1fr))]"
+        class="mx-auto grid max-w-[1400px] items-stretch gap-[72px] max-desk:grid-cols-1 desk:grid-cols-2"
       >
-        <img
-          src="/img/persoonlijk.png"
-          alt="Docent legt de stof uit"
-          class="block aspect-[4/3] w-full min-w-0 rounded-tile object-cover"
-          loading="lazy"
-        >
+        <div
+          class="min-h-[333px] w-full min-w-0 rounded-block bg-cover bg-center max-desk:aspect-[665/377]"
+          style="background-image: url('/img/bord.png')"
+          role="img"
+          aria-label="Docent schrijft natuurkundeformules op een schoolbord"
+        />
         <div class="min-w-0">
-          <h2 class="mb-[22px] text-[clamp(23px,2.6vw,28px)] tracking-[-0.025em]">Zo werkt het</h2>
-          <ul class="mb-[30px] flex list-none flex-col gap-3.5 p-0">
-            <li
-              v-for="note in pricingNotes"
-              :key="note"
-              class="flex items-start gap-3 text-sm leading-relaxed text-ink-700"
-            >
-              <svg
-                class="mt-1 h-[15px] w-[15px] flex-none text-success-500"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="3.2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M4 12l6 6L20 6" />
-              </svg>
-              {{ note }}
-            </li>
-          </ul>
-          <NuxtLink to="/contact" class="btn-primary gap-3.5 px-[22px] py-3.5 text-[15px]">
-            Neem contact op <span aria-hidden="true">→</span>
+          <h2 class="mb-[22px] text-[32px] leading-[44px] tracking-[-0.025em]">Zo werkt het</h2>
+          <CheckList :items="pricingNotes" class="mb-[30px]" />
+          <NuxtLink to="/contact" class="btn-primary btn-lg">
+            Neem contact op <BtnArrow />
           </NuxtLink>
         </div>
       </div>
     </section>
 
+    <!-- No spacer here or before the trial block: `StatsBand` carries the
+         live 80px on both of its own edges. -->
     <StatsBand />
 
     <TrialCta />

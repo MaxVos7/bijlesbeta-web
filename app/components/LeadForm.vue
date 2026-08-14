@@ -113,7 +113,11 @@ async function submit() {
 
       <p v-if="status === 'error'" class="text-[12.5px] text-danger" role="alert">{{ message }}</p>
 
-      <button type="submit" class="btn-primary py-[15px] text-[15px]" :disabled="status === 'pending'">
+      <button
+        type="submit"
+        class="btn-primary w-full py-[17px] leading-[15px]"
+        :disabled="status === 'pending'"
+      >
         {{ status === 'pending' ? 'Versturen…' : 'Proefles claimen' }}
       </button>
     </form>
