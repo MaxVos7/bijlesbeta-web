@@ -52,7 +52,7 @@ useSeoMeta({
 
         <div class="min-w-0">
           <img
-            src="/img/map.png"
+            src="/img/map.svg"
             alt="Bijles aan huis in heel Groningen"
             class="mx-auto block h-auto w-full max-w-[620px]"
           >

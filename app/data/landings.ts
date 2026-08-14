@@ -212,7 +212,7 @@ export const landings: LandingPage[] = [
     seoTitle: 'Leren in je eigen omgeving',
     seoDescription:
       'Bijles aan huis in Groningen en omgeving. Onze RUG-studenten komen naar jou toe voor wiskunde, natuurkunde en scheikunde. ✓ Gratis proefles ✓ Geen reistijd',
-    image: '/img/map.png',
+    image: '/img/map.svg',
     imageAlt: 'Bijles aan huis in heel Groningen',
     seoParagraphs: [
       [{ text: 'Zoek je bijles aan huis in Groningen? Bij Bijles Bèta komen onze docenten naar jou toe. Geen reistijd naar een bijlesinstituut, geen wachten in een overvolle studiezaal. Gewoon thuis, aan je eigen bureau, met al je boeken binnen handbereik.' }],
