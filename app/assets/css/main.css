@@ -77,6 +77,14 @@
   --color-success-500: #22a45d;
   --color-success-900: #166534;
 
+  /* Breakpoints. Tailwind's own scale, plus the one the header needs: the
+     live site is built on Elementor's breakpoints, whose desktop floor is
+     1025px — a pixel past `lg`. Named here rather than written inline as
+     `min-[1025px]:`, and written in rem like Tailwind's own, because both a
+     bare arbitrary variant and a px value here sort ahead of `sm` in the
+     generated stylesheet and lose every conflict with `md:`. */
+  --breakpoint-desk: 64.0625rem; /* 1025px */
+
   /* Typography — two families, as on bijlesbeta.nl: Plus Jakarta Sans sets the
      headings, Open Sans the body copy. */
   --font-sans: 'Open Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI',
@@ -94,8 +102,9 @@
   --radius-tile: 8px;
   --radius-card: 8px;
 
-  /* Elevation — tuned to the cream ground, not to white. */
-  --shadow-header: 0 4px 20px rgb(31 29 28 / 0.07);
+  /* Elevation — tuned to the cream ground, not to white. `header` is the
+     live site's own value, on the floating bar and its mobile dropdown. */
+  --shadow-header: 0 4px 34px 0 rgb(0 0 0 / 0.1);
   --shadow-card: 0 8px 30px rgb(31 29 28 / 0.07);
 
   /* Layout rhythm */

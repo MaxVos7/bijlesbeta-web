@@ -97,6 +97,36 @@ parity, so a few things are now deliberate and shouldn't drift back:
   ever needs to wrap, give that one an explicit leading rather than removing
   this.
 
+### The header
+
+`SiteHeader` is a literal reconstruction of the live site's Elementor header
+and is measured against it, not designed. Three things follow from that and
+should not be "tidied":
+
+- **Its breakpoints are Elementor's, not Tailwind's** — mobile ≤767, tablet
+  768–1024, desktop ≥1025. `md:` covers the tablet floor; the desktop floor is
+  the `desk:` breakpoint added to `@theme`, because `lg:` starts a pixel early.
+  `desk` is declared in rem (`64.0625rem`) deliberately: a px value, or a bare
+  `min-[1025px]:` variant, sorts ahead of `sm` in the generated stylesheet and
+  then loses every conflict with `md:`.
+- **The three columns run on percentage widths** — 20/53/25 on desktop,
+  14/64/19 on tablet, 30/43/13 on mobile, with the actions column reordered
+  ahead of the menu toggle below 768px. Those percentages are what put the nav
+  and the CTA where they sit; content-width layout gets it visibly wrong.
+- **The strip around the bar has no ground of its own.** The bar floats on the
+  page's own band and the page scrolls behind it, so the strip must stay clear
+  rather than repainting `cream` a shade off `parchment`. `headerGround: 'ink'`
+  is the one override, for a page whose hero opens on the dark band.
+
+The card is 12px, `shadow-header`, 16px/24px padding, and the CTA is the
+Elementor button rather than `btn`: 15/13/12px by breakpoint with its own
+padding, and it inverts to `ink-900` on hover instead of stepping to
+`brand-600`.
+
+Nav items are `ink-900`, going amber on hover *and* on the current page — the
+live rule groups `:hover`, `:focus` and `.elementor-item-active` onto the one
+accent colour, so `active-class` is part of the parity, not decoration.
+
 ### Checking against bijlesbeta.nl
 
 Don't measure from screenshots — the live site's real values are readable
@@ -190,7 +220,7 @@ no phone field, placeholders instead of labels and required privacy consent.
 
 `/werken-bij` opens on a dark `ink-900` hero band rather than the usual cream
 one, so `SiteHeader` reads a `headerGround` route meta (set via
-`definePageMeta`) to darken the sticky strip instead of leaving it cream —
+`definePageMeta`) to darken the sticky strip instead of leaving it clear —
 see `app/types/route-meta.d.ts`. `RatingLine` has a matching `inverse` tone
 for use on that band. The application form is its own `ApplicationForm`
 component, not a `ContactForm` variant, since it collects a different shape
