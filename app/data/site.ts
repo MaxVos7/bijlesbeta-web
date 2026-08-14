@@ -32,10 +32,10 @@ export const contact = {
 } as const
 
 export const socials = [
-  { label: 'Facebook', href: 'https://www.facebook.com/bijlesbeta' },
+  { label: 'Facebook', href: 'https://www.facebook.com/BijlesBeta' },
   { label: 'Instagram', href: 'https://www.instagram.com/bijlesbeta' },
   { label: 'LinkedIn', href: 'https://www.linkedin.com/company/bijlesbeta' },
-  { label: 'X', href: 'https://x.com/bijlesbeta' },
+  { label: 'X', href: 'https://x.com/bijles_beta' },
 ] as const
 
 /** Footer column of portal links — these point at the Laravel portal. */
