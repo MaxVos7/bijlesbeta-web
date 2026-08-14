@@ -137,6 +137,24 @@ guess. `elementor-page-<id>` in a page's HTML gives you its post id:
 The docenten and kennisbank article pages are posts, not pages, so they're in
 `post-sitemap.xml` rather than `page-sitemap.xml`.
 
+### Redirects
+
+`redirects.ts` holds 301s from the WordPress URLs to this app's routes, wired
+into `routeRules` in `nuxt.config.ts`. Only changed paths are listed — the
+landings, `/over-ons`, `/tarieven` and the rest keep their slugs, as do all 28
+docenten. What moves is `/examentraining-groningen`, `/privacy-statement`, the
+whole `/kennisbank/docenten/**` subtree, and every kennisbank article (WordPress
+nests those under a category segment we don't use; ten were shortened too).
+
+Each path is registered with *and* without its trailing slash — the live URLs
+all carry one and Nitro matches the two separately. If you add a kennisbank
+article that existed on WordPress, add its old path here as well.
+
+Two live pages deliberately have no redirect: `/aanmelden-test/` is a WordPress
+scratch page, and `/excel-training-groningen/` is a real service this app
+doesn't cover. Pointing it at an unrelated page would be worse than the 404 —
+give it a page or leave it.
+
 ### The type scale
 
 Every live page runs the same five steps, and none of them exceed 32px:

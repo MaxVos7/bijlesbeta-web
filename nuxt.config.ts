@@ -1,4 +1,5 @@
 import tailwindcss from '@tailwindcss/vite'
+import { legacyRedirects } from './redirects'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
@@ -42,6 +43,9 @@ export default defineNuxtConfig({
       portalUrl: 'https://mijn.bijlesbeta.nl',
     },
   },
+
+  // 301s from the WordPress URLs this app replaces. See `redirects.ts`.
+  routeRules: legacyRedirects,
 
   nitro: {
     compressPublicAssets: true,
