@@ -1,5 +1,12 @@
 <script setup lang="ts">
-import { faqIntro } from '~/data/site'
+import { faqIntro, faqs } from '~/data/site'
+
+/*
+  The FAQ rich result comes from here rather than from each page, so the
+  markup can only ever describe questions that are actually rendered — Google
+  treats FAQ markup for invisible content as a violation, not a hint.
+*/
+useFaqJsonLd(faqs)
 </script>
 
 <template>

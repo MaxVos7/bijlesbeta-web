@@ -21,6 +21,8 @@ useSeo({
   description:
     'Persoonlijke Excel training voor MKB in Groningen. Leer draaitabellen, formules en automatisering. Bij u op kantoor of online. Gratis intake. €60/uur.',
 })
+
+useFaqJsonLd(excelTraining.faq.items)
 </script>
 
 <template>

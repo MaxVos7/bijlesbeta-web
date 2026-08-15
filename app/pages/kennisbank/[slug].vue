@@ -30,6 +30,8 @@ useSeo({
   type: 'article',
 })
 
+useArticleJsonLd(article)
+
 const dateFormatter = new Intl.DateTimeFormat('nl-NL', { dateStyle: 'long' })
 const related = relatedArticles(article, 3)
 const coverFailed = ref(false)

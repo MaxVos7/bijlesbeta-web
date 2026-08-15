@@ -17,6 +17,10 @@ useSeo({
     `${tutor.value?.name} geeft bijles in ${tutor.value?.expertise.join(', ')} en studeert ${tutor.value?.study} aan de Rijksuniversiteit Groningen.`,
   image: tutor.value?.photo,
 })
+
+// Guarded: the 404 above is thrown before this, but the ref is still typed
+// as possibly undefined.
+if (tutor.value) usePersonJsonLd(tutor.value)
 </script>
 
 <!--

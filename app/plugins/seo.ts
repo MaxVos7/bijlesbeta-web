@@ -33,4 +33,8 @@ export default defineNuxtPlugin(() => {
     ],
   })
 
+  // The organisation and site nodes belong on every page, the way Rank Math
+  // emits them on the live site.
+  useOrganisationJsonLd()
+  useWebsiteJsonLd()
 })
