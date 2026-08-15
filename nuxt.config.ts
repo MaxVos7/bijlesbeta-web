@@ -47,7 +47,17 @@ export default defineNuxtConfig({
         },
       ],
       link: [
-        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+        /*
+          Three icons, which is the smallest set that covers everything:
+          the .ico (16/32/48) for browsers that ignore SVG icons and for the
+          bare /favicon.ico request some clients make regardless of markup,
+          the SVG for everything modern — it scales and lifts the deep ink to
+          parchment on a dark tab strip — and a 180px PNG for iOS, which
+          composites transparency onto black and so gets its own opaque tile.
+        */
+        { rel: 'icon', href: '/favicon.ico', sizes: '48x48' },
+        { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
+        { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
         { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
         {
