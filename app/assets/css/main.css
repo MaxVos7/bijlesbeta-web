@@ -56,6 +56,17 @@
      by honestly from the live form plugin's stylesheet. */
   --color-placeholder: #9ca3af;
 
+  /* The rest of that borrowed palette. bijlesbeta.nl runs Gravity Forms and
+     leaves its control colours alone, so the labels, hints, required marks
+     and the progress track are all cool where the page around them is warm.
+     Named here rather than written inline so the exception is visible: these
+     five are the form plugin's, not the site's ink ramp. */
+  --color-field-label: #112337;
+  --color-field-hint: #585e6a;
+  --color-field-required: #c02b0a;
+  --color-field-line: #686e77;
+  --color-field-track: rgb(17 35 55 / 0.1);
+
   /* Lines — borders and dividers, lightest first.
 
      `line-ink` is the live site's own rule colour — its `5227cc2` global,
@@ -128,6 +139,8 @@
      live site's own value, on the floating bar and its mobile dropdown. */
   --shadow-header: 0 4px 34px 0 rgb(0 0 0 / 0.1);
   --shadow-card: 0 8px 30px rgb(31 29 28 / 0.07);
+  /* The hairline lift under every Gravity Forms control on the live site. */
+  --shadow-field: 0 1px 4px 0 rgb(18 25 97 / 0.08);
 
   /* Layout rhythm */
   --spacing-section: 5rem;
@@ -246,6 +259,28 @@
 }
 
 /*
+  The Gravity Forms label, mark and description, measured off the live signup
+  form: a 14px/500 label with 12px under it, a 12px required mark beside it,
+  and a 13px description that sits *below* the control rather than between the
+  label and it. All three take the plugin's cool tones rather than the ink
+  ramp — see the `--color-field-*` note in the theme block.
+*/
+@utility field-label-lg {
+  @apply mb-3 block font-display text-[14px] leading-5 font-medium text-field-label;
+}
+
+/* No margin of its own — the template decides whether a space precedes it.
+   The consent box runs it flush against the sentence's full stop, as the live
+   form does; every other label separates the two with a space. */
+@utility field-required {
+  @apply font-display text-[12px] leading-[17px] font-medium text-field-required;
+}
+
+@utility field-hint-lg {
+  @apply mt-2 font-display text-[13px] leading-[18.6px] text-field-hint;
+}
+
+/*
   Text fields, sized off the live Gravity Forms inputs: 15px semibold on white
   with 20px of horizontal padding, landing on a 42px control. The placeholder
   is the one cool grey on the site — it comes from the form plugin's own
@@ -260,17 +295,35 @@
 }
 
 /*
-  The tall field, as bijlesbeta.nl styles its Gravity Forms: Plus Jakarta Sans
-  15px/600 on a 44px leading with 20px of padding, which is what makes the live
-  inputs read as 86px rather than 44px. Only `/werken-bij`'s application form is
-  measured against the live markup so far, so this sits beside `field-input`
-  rather than replacing it — move the other forms over as each is checked.
+  The Gravity Forms control, as bijlesbeta.nl renders it: Plus Jakarta Sans
+  15px/600 on white, 20px of horizontal padding, a 4px radius, a black/10
+  hairline and the plugin's own 1px lift. It measures **42px** — the live
+  inputs set an explicit height and let the 44px leading overhang it by a
+  pixel top and bottom.
+
+  It used to be written here as 20px of vertical padding on a 44px leading,
+  which computes to 86px. That came from reading `getComputedStyle` off a
+  hidden Gravity Forms page, where the height rule doesn't apply; every live
+  input on `/aanmelden` and `/werken-bij` measures 42px. Don't restore the
+  padding.
+
+  Carries no margin of its own — the label above it owns the gap.
 */
 @utility field-input-lg {
-  @apply mt-1.5 block w-full rounded-field border border-black/10 bg-white px-5
-    py-5 font-display text-[15px] leading-[44px] font-semibold text-ink-800
-    transition placeholder:text-ink-400 focus:border-accent-500
+  @apply block w-full rounded-field border border-black/10 bg-white px-5 py-0
+    font-display text-[15px] leading-[40px] font-semibold text-ink-800
+    shadow-field transition placeholder:text-ink-400 focus:border-accent-500
     focus:outline-none focus:ring-2 focus:ring-accent-500/25;
+}
+
+/*
+  The same control as a `<select>`. The live form gives its dropdowns a 44px
+  box rather than the 42px it gives text inputs, so this is its own utility —
+  composing `field-input-lg` with an `h-*` class leaves the winner to
+  stylesheet order.
+*/
+@utility field-select-lg {
+  @apply field-input-lg h-[44px] leading-[42px];
 }
 
 @utility field-error {

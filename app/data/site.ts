@@ -13,6 +13,9 @@ export const contact = {
   phoneHref: 'tel:+31858201900',
   whatsapp: '06 382 60 623',
   whatsappHref: 'https://wa.me/31638260623',
+  /** `/aanmelden` links the landline at WhatsApp rather than at `tel:`, as
+      bijlesbeta.nl does — the 085 number is a WhatsApp Business line. */
+  phoneWhatsappHref: 'https://wa.me/31858201900',
   email: 'contact@bijlesbeta.nl',
   emailHref: 'mailto:contact@bijlesbeta.nl',
   /** Sollicitaties go to a separate mailbox — shown beside the form on Werken bij. */
@@ -113,9 +116,9 @@ export const reviews: Review[] = [
   },
 ]
 
-/** The single review pulled out on the aanmelden page. */
+/** The single review pulled out on the aanmelden page — the live page's own. */
 export const featuredReview: Review =
-  reviews.find((review) => review.author === 'Reinier Teekens') ?? reviews[0]!
+  reviews.find((review) => review.author === 'Juul de Lange') ?? reviews[0]!
 
 export const rating = { label: 'Uitstekend', stars: 5, count: '20+ Reviews' } as const
 
@@ -233,6 +236,21 @@ export const contactPage = {
     privacyRequired: '(Vereist)',
     submit: 'Verzenden',
     submitting: 'Versturen…',
+  },
+} as const
+
+/**
+ * Aanmelden. The live page runs without header or footer — the wizard is the
+ * whole document — so this is the only copy on it that isn't a shared
+ * component or part of the form itself (`data/signup.ts`).
+ */
+export const aanmeldenPage = {
+  kicker: 'Aanmelden',
+  title: 'Zo kan je ons bereiken',
+  reviewsTitle: 'Wat mensen over ons zeggen',
+  faq: {
+    title: 'Veelgestelde vragen (FAQ)',
+    body: 'Bekijk onze veelgestelde vragen (FAQ)',
   },
 } as const
 

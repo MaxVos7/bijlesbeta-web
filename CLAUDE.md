@@ -313,9 +313,12 @@ things there are the live site's and shouldn't be tidied:
   exception to the two-radii rule after the header card. Their photo is a
   176px-tall crop inset by the card's own 12px padding.
 - **`field-input-lg`** carries the live Gravity Forms metrics — 15px/600 Plus
-  Jakarta Sans on a 44px leading with 20px padding, so the input reads 86px
-  tall. `ApplicationForm` is the only form checked against the live markup so
-  far; move the others onto it as each is measured.
+  Jakarta Sans, 20px of horizontal padding, a black/10 hairline and the
+  plugin's 1px lift, on a **42px** control. It was written here as 86px once,
+  from `getComputedStyle` on a Gravity Forms page that was still
+  `display: none`; every visible input on `/werken-bij` and `/aanmelden`
+  measures 42px. Selects get their own `field-select-lg` at 44px. Neither
+  carries a margin — the label above owns the gap.
 - The four perk icons reuse `FeatureGrid`'s drawings. Three are the live
   artwork; `clock` stands in for Flexibel, where bijlesbeta.nl draws a door.
   The live icons are rasters embedded in Elementor SVGs and can't be pulled out
@@ -323,6 +326,42 @@ things there are the live site's and shouldn't be tidied:
 - Parity stops at the copy. bijlesbeta.nl writes "Benodigheden" and "Je vindt
   ziet het als een uitdaging"; both are typos and both are corrected here.
   Match the live site's layout and its measurements, not its spelling.
+
+`/aanmelden` is measured against `post-103.css` and the live Gravity Form
+rather than designed, so it has its own set of things that shouldn't be tidied:
+
+- **It runs without header or footer.** bijlesbeta.nl serves the page as the
+  Elementor document and nothing else, so the route sits on `layouts/bare.vue`
+  via `definePageMeta`. Adding the chrome back is a product decision, not a
+  cleanup.
+- **Its bands split 34.237% / the rest on a 63px gutter** inside the 1100px
+  column, and the FAQ below splits 40/60 with *no* gutter. Both are the live
+  containers' own numbers; an `auto-fit` grid lands on 50/50 and reads
+  visibly wrong.
+- **Below 768px the two columns swap.** The live form column carries
+  `--order: -99999`, so on a phone the wizard comes first and the contact
+  details and the review follow it — hence `flex-col-reverse md:flex-row`.
+- **The bands are separated by spacer strips**, as on `/tarieven`: 43px of page
+  ground under the wizard, then 84px of white above the FAQ. `StatsBand`
+  brings its own 80px, so nothing is written around it.
+- **The h1 sets `letter-spacing: normal`**, opting out of the base
+  `tracking-tight`. The live heading widgets on this page carry no tracking at
+  all; the rest of the site hasn't been re-measured for it.
+- **The form's controls are Gravity Forms', not the site's.** Labels, hints,
+  required marks, the radio hairline and the progress track all take the
+  `--color-field-*` tokens — the plugin's cool palette, kept out of the ink
+  ramp deliberately, the same exception `--color-placeholder` already makes.
+  Descriptions print *below* the control, never between it and the label.
+- **The progress bar is 78px wide, not full width** — the live wrapper is
+  sized to its own `Stap 1 van 4` label.
+- **`Vorige` sits above `Volgende`, not beside it.** The live footer is a
+  wrapping flex row and the next button spans it, so the back button can never
+  share the line.
+- Parity stops at two places. The live final submit is Gravity Forms' unstyled
+  blue `#204ce5` at 38px while every other step's button is the themed amber
+  at 49px; ours keeps the amber. And the live `#72`/`#80` (Plaatscode,
+  Gemeentecode) are real inputs hidden with `visibility: hidden` — here they're
+  plain state on `SignupValues`, filled by the PDOK lookup.
 
 `/bijles-[vak]-[stad]` is one template rendered per subject-and-city pair —
 add a city by adding a data entry in `app/data/landings.ts`, not a new page

@@ -127,7 +127,7 @@ async function submit() {
 
     <form v-else class="flex flex-col gap-5" novalidate @submit.prevent="submit">
       <div>
-        <span class="field-label mb-0">
+        <span class="field-label mb-1.5">
           Naam <span class="text-brand-700">(Vereist)</span>
         </span>
         <div class="grid gap-3.5 [grid-template-columns:repeat(auto-fit,minmax(150px,1fr))]">
@@ -165,7 +165,7 @@ async function submit() {
       </div>
 
       <div>
-        <label for="sollicitatie-telefoon" class="field-label mb-0">
+        <label for="sollicitatie-telefoon" class="field-label mb-1.5">
           Telefoon <span class="text-brand-700">(Vereist)</span>
         </label>
         <input
@@ -181,7 +181,7 @@ async function submit() {
       </div>
 
       <div>
-        <label for="sollicitatie-email" class="field-label mb-0">
+        <label for="sollicitatie-email" class="field-label mb-1.5">
           E-mailadres <span class="text-brand-700">(Vereist)</span>
         </label>
         <input
@@ -221,7 +221,7 @@ async function submit() {
       </fieldset>
 
       <div>
-        <label for="sollicitatie-studie" class="field-label mb-0">
+        <label for="sollicitatie-studie" class="field-label mb-1.5">
           Mijn studie <span class="text-brand-700">(Vereist)</span>
         </label>
         <input
@@ -236,7 +236,7 @@ async function submit() {
       </div>
 
       <div>
-        <label for="sollicitatie-motivatie" class="field-label mb-0">
+        <label for="sollicitatie-motivatie" class="field-label mb-1.5">
           Mijn motivatie <span class="text-brand-700">(Vereist)</span>
         </label>
         <textarea
@@ -289,7 +289,7 @@ async function submit() {
 
       <div class="grid gap-3.5 [grid-template-columns:repeat(auto-fit,minmax(150px,1fr))]">
         <div>
-          <label for="sollicitatie-postcode" class="field-label mb-0">
+          <label for="sollicitatie-postcode" class="field-label mb-1.5">
             Postcode <span class="text-brand-700">(Vereist)</span>
           </label>
           <input
@@ -304,7 +304,7 @@ async function submit() {
           <p v-if="errors.postalCode" class="field-error">{{ errors.postalCode }}</p>
         </div>
         <div>
-          <label for="sollicitatie-huisnummer" class="field-label mb-0">
+          <label for="sollicitatie-huisnummer" class="field-label mb-1.5">
             Huisnummer <span class="text-brand-700">(Vereist)</span>
           </label>
           <input
@@ -320,7 +320,7 @@ async function submit() {
       </div>
 
       <div>
-        <label for="sollicitatie-bron" class="field-label mb-0">Ik ken jullie van</label>
+        <label for="sollicitatie-bron" class="field-label mb-1.5">Ik ken jullie van</label>
         <input
           id="sollicitatie-bron"
           v-model="form.heardFrom"

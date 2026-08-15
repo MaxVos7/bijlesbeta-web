@@ -109,6 +109,22 @@ export type SignupField =
       placeholder?: string
       inputType?: 'text' | 'tel' | 'email' | 'number'
       autocomplete?: string
+      min?: number
+      max?: number
+    }
+  /**
+   * Gravity Forms' Name field: one label over two inputs sharing a row, with
+   * the part name repeated as the placeholder. Modelled as its own kind
+   * rather than two `text` fields so the label stays single, as on the live
+   * form.
+   */
+  | {
+      kind: 'name'
+      name: SignupTextKey
+      label: string
+      hint?: string
+      required: boolean
+      parts: { name: SignupTextKey; placeholder: string; autocomplete: string }[]
     }
   | {
       kind: 'checkbox'
@@ -131,7 +147,9 @@ export const GRONINGEN_MUNICIPALITY_CODE = '0014'
 export const GRONINGEN_CITY_CODE = '1070'
 
 const SUBJECTS_LOWER = ['Wiskunde', 'Natuurkunde', 'Scheikunde', 'NaSk']
-const SUBJECTS_UPPER = ['Wiskunde A', 'Wiskunde B', 'Natuurkunde', 'Scheikunde']
+/** The live field lists these interleaved rather than pairing the two
+    wiskundes — kept in its order so the form reads the same. */
+const SUBJECTS_UPPER = ['Wiskunde A', 'Natuurkunde', 'Wiskunde B', 'Scheikunde']
 
 /** Which set of Bijlesvakken applies, or none if level/year don't say yet. */
 function subjectOptions(v: SignupValues): string[] | null {
@@ -139,7 +157,7 @@ function subjectOptions(v: SignupValues): string[] | null {
   const havoVwo = v.level === '2' || v.level === '3'
   const lower = Boolean(v.level) && !havoVwo
   const middle = havoVwo && v.schoolYear !== '' && year <= 3
-  const upper = ['2', '3', '5'].includes(v.level) && v.schoolYear !== '' && year >= 4
+  const upper = havoVwo && v.schoolYear !== '' && year >= 4
 
   if (lower || middle) return SUBJECTS_LOWER
   if (upper) return SUBJECTS_UPPER
@@ -268,9 +286,12 @@ export const signupSteps: SignupStep[] = [
           kind: 'text',
           name: 'schoolYear',
           label: 'Schooljaar',
+          hint: 'Voer een getal kleiner dan of gelijk aan 8 in.',
           required: true,
           placeholder: 'Schooljaar',
           inputType: 'number',
+          min: 0,
+          max: 8,
         },
         {
           kind: 'select',
@@ -315,7 +336,6 @@ export const signupSteps: SignupStep[] = [
           name: 'subjectOther',
           label: 'Staat het vak er niet tussen?',
           required: false,
-          placeholder: 'Bijvoorbeeld biologie',
         })
       }
 
@@ -366,20 +386,22 @@ export const signupSteps: SignupStep[] = [
     fields: (v) => {
       const fields: SignupField[] = [
         {
-          kind: 'text',
+          kind: 'name',
           name: 'contactFirstName',
-          label: 'Voornaam contactpersoon',
+          label: 'Naam contactpersoon',
           required: true,
-          placeholder: 'Voornaam',
-          autocomplete: 'given-name',
-        },
-        {
-          kind: 'text',
-          name: 'contactLastName',
-          label: 'Achternaam contactpersoon',
-          required: true,
-          placeholder: 'Achternaam',
-          autocomplete: 'family-name',
+          parts: [
+            {
+              name: 'contactFirstName',
+              placeholder: 'Voornaam',
+              autocomplete: 'given-name',
+            },
+            {
+              name: 'contactLastName',
+              placeholder: 'Achternaam',
+              autocomplete: 'family-name',
+            },
+          ],
         },
         {
           kind: 'text',
@@ -469,11 +491,15 @@ export const signupCopy = {
   submit: 'Aanmelden',
   submitting: 'Versturen…',
   invalid: 'Vul de verplichte velden in om verder te gaan.',
+  /** Shown under the individual field, as Gravity Forms does. */
+  fieldRequired: 'Dit veld is verplicht.',
+  numberRange: (max: number) => `Voer een getal kleiner dan of gelijk aan ${max} in.`,
   requiredMark: '(Vereist)',
   consentPrefix: 'Ik ga akkoord met de',
   consentTerms: 'algemene voorwaarden',
   consentAnd: 'en het',
   consentPrivacy: 'privacy beleid',
+  lookingUpAddress: 'We zoeken je adres op…',
   travelWarning:
     'Let op: voor bijles aan huis buiten Groningen rekenen we een extra reisvergoeding.',
   regionWarning:
