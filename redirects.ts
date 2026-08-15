@@ -52,8 +52,15 @@ const articles: Record<string, string> = {
 
 type Redirect = { redirect: { to: string, statusCode: 301 } }
 
+/**
+ * Targets carry the trailing slash, which is this site's canonical form.
+ * Pointing at the bare path instead would send every legacy URL through two
+ * hops — the rule, then `server/middleware/trailing-slash.ts`.
+ */
 function permanent(to: string): Redirect {
-  return { redirect: { to, statusCode: 301 } }
+  // A `**` target already carries whatever the source had, slash included.
+  const needsSlash = !to.endsWith('/') && !to.endsWith('**')
+  return { redirect: { to: needsSlash ? `${to}/` : to, statusCode: 301 } }
 }
 
 /**

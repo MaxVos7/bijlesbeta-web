@@ -90,6 +90,15 @@ export default defineNuxtConfig({
     },
   },
 
+  /*
+    Internal links carry the trailing slash too, so a crawler never follows an
+    in-page link into a redirect. `server/middleware/trailing-slash.ts` is what
+    enforces it for anything arriving from outside.
+  */
+  experimental: {
+    defaults: { nuxtLink: { trailingSlash: 'append' } },
+  },
+
   // 301s from the WordPress URLs this app replaces. See `redirects.ts`.
   routeRules: legacyRedirects,
 
