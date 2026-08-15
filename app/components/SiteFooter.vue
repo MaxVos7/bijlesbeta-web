@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import { landingPath } from '~/data/landings'
-import { contact, legalLinks, nav, portalLinks, socials, tagline } from '~/data/site'
+import { contact, cookieConsent, legalLinks, nav, portalLinks, socials, tagline } from '~/data/site'
 
 const config = useRuntimeConfig()
+
+// The only way back to the banner once a choice is stored.
+const { reopen } = useCookieConsent()
 
 // The live site's footer omits Kennisbank — it's a header-only link there.
 const footerNav = nav.filter((item) => item.label !== 'Kennisbank')
@@ -204,9 +207,9 @@ const subjectLinks = [
               </li>
             </ul>
           </nav>
-          <!-- TODO: reopens the consent banner, which isn't built yet — the
-               anchor is a placeholder until it is. -->
-          <div class="fb-manage"><a href="#cookies">Beheer cookies</a></div>
+          <div class="fb-manage">
+            <button type="button" @click="reopen">{{ cookieConsent.manageLabel }}</button>
+          </div>
         </div>
       </div>
     </div>
@@ -429,16 +432,23 @@ const subjectLinks = [
   margin: -2px 0 0;
 }
 
-.fb-manage a {
+/* A button, not a link — it reopens the banner rather than navigating, so it
+   carries the menu's type but none of a button's own chrome. */
+.fb-manage button {
+  padding: 0;
+  border: 0;
+  background: none;
   color: var(--fb-ink);
+  cursor: pointer;
   font-family: var(--fb-display);
   font-size: 15px;
   font-weight: 600;
+  text-align: left;
   text-decoration: none;
   transition: all ease-in-out 0.1s;
 }
 
-.fb-manage a:hover {
+.fb-manage button:hover {
   color: var(--fb-accent);
 }
 

@@ -54,6 +54,28 @@ export const legalLinks = [
 ] as const
 
 /**
+ * Cookie banner copy, taken from bijlesbeta.nl's own banner.
+ *
+ * The three choices map onto the consent levels in `useCookieConsent` — the
+ * order is the live site's, with the least permissive first.
+ */
+export const cookieConsent = {
+  title: 'Wij waarderen je privacy',
+  body:
+    'Wij gebruiken cookies om je surfervaring te verbeteren en ons verkeer te analyseren. '
+    + 'Door op "Alles accepteren" te klikken, stem je in met ons gebruik van cookies.',
+  policyLabel: 'Privacybeleid',
+  policyTo: '/privacy',
+  /** Reopens the banner; sits in the footer's navigation column. */
+  manageLabel: 'Beheer cookies',
+  deny: 'Alles weigeren',
+  analytics: 'Alleen analytics',
+  accept: 'Alles accepteren',
+  /** Names the dialog for screen readers. */
+  ariaLabel: 'Cookie instellingen',
+} as const
+
+/**
  * Headline numbers, counted up when the band scrolls into view.
  * `value` is the number to count to; `suffix` is appended once it lands.
  */

@@ -110,6 +110,45 @@ Gravity Form's conditional logic. Change questions, options and rules there, not
 in `SignupForm.vue`. `server/api/adres.get.ts` is a read-only PDOK proxy for the
 postcode lookup — it stores nothing and never throws at its caller.
 
+## Analytics and cookie consent
+
+Reproduced from bijlesbeta.nl, which hand-rolls this rather than running a
+consent plugin. Three pieces, and the order between them is the whole point:
+
+1. **Consent Mode v2 defaults**, inline in `<head>` from `nuxt.config.ts`.
+   Everything denied except `functionality_storage` and `security_storage`,
+   with `wait_for_update: 500`. These are the live site's values.
+2. **Google Tag Manager**, loaded by `app/plugins/gtm.ts` at `tagPriority: 20`
+   so it always lands *after* the defaults at 10. Defaults that render after
+   the container are defaults nothing reads, and nothing about the page would
+   look wrong — check the order in the rendered `<head>` if you touch either.
+3. **The banner** (`CookieBanner`), which only ever sends `consent` *updates*.
+
+The container is `NUXT_PUBLIC_GTM_ID`, **empty by default**. Nothing loads at
+all until it is set, so staging never reports into the live property. The live
+container is `GTM-MJCC44HR`; set it only on the domain that should own that
+data. There is deliberately no fallback when it is unset.
+
+`useCookieConsent` holds the three levels the live banner offers — `deny`,
+`analytics`, `accept` — and stores the choice in a `cookie_consent` cookie for
+180 days. The name and lifetime match bijlesbeta.nl's, so a visitor who already
+chose there keeps that choice when these pages replace it. Picking anything
+short of `accept` also purges non-allowlisted cookies, so a downgrade clears
+`_ga` rather than only stopping future writes.
+
+Two deliberate departures from the live implementation:
+
+- **The banner is rendered from the cookie during SSR**, so a returning visitor
+  never sees it. The live site always renders it and hides it once its script
+  runs, which flashes.
+- **It is mounted in `app.vue`**, not in `default.vue`, so it also covers the
+  `bare` layout (`/aanmelden`) and `landing`. A consent banner that skips pages
+  is worse than none.
+
+The footer's "Beheer cookies" is the only way back to it once a choice is
+stored — it is a `<button>` calling `reopen()`, not a link, so `.fb-manage`
+styles the button element.
+
 ## Design work
 
 The design is applied to `/`, `/over-ons`, `/tarieven`, `/aanmelden`,
