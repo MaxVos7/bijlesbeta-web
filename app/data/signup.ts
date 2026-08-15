@@ -83,6 +83,45 @@ export type SignupTextKey = Exclude<keyof SignupValues, 'subjects' | 'consent'>
 
 type Option = { label: string; value: string }
 
+/**
+ * Per-field length caps, shared with `server/api/aanmelden.post.ts` so the
+ * wizard and the endpoint can't disagree about what fits.
+ *
+ * They were only enforced server-side, which meant a 600-character answer
+ * passed all four steps and was rejected on submit, at the bottom of a long
+ * form. The client now caps the input and says so under the field.
+ */
+export const SIGNUP_MAX: Record<SignupTextKey, number> = {
+  lessonKind: 40,
+  lessonKindNote: 2000,
+  weeklyHours: 40,
+  totalHours: 40,
+  availability: 500,
+  location: 40,
+  locationNote: 500,
+  school: 200,
+  schoolYear: 20,
+  level: 40,
+  levelOther: 120,
+  subjectOther: 200,
+  studentFirstName: 120,
+  studentPhone: 40,
+  contactMethod: 60,
+  contactFirstName: 120,
+  contactLastName: 120,
+  email: 180,
+  postalCode: 20,
+  houseNumber: 20,
+  street: 200,
+  city: 120,
+  cityCode: 10,
+  municipalityCode: 10,
+  addressNote: 500,
+  contactPhone: 40,
+  heardAbout: 200,
+  website: 200,
+}
+
 export type SignupField =
   | {
       kind: 'radio'
@@ -226,7 +265,11 @@ export const signupSteps: SignupStep[] = [
         })
       }
 
-      if (v.weeklyHours || v.totalHours) {
+      // Only the answer that belongs to the chosen lesson kind counts —
+      // switching from Wekelijks to Anders left the old one in state and
+      // unlocked the next question before it had been answered.
+      const hoursAnswered = v.lessonKind === 'weekly' ? v.weeklyHours : v.totalHours
+      if (hoursAnswered.trim()) {
         fields.push({
           kind: 'text',
           name: 'availability',
@@ -236,7 +279,7 @@ export const signupSteps: SignupStep[] = [
         })
       }
 
-      if (v.availability) {
+      if (v.availability.trim()) {
         fields.push({
           kind: 'radio',
           name: 'location',
@@ -500,6 +543,10 @@ export const signupCopy = {
   /** Shown under the individual field, as Gravity Forms does. */
   fieldRequired: 'Dit veld is verplicht.',
   numberRange: (max: number) => `Voer een getal kleiner dan of gelijk aan ${max} in.`,
+  numberMin: (min: number) => `Voer een getal groter dan of gelijk aan ${min} in.`,
+  wholeNumber: 'Voer een heel getal in.',
+  invalidEmail: 'Vul een geldig e-mailadres in.',
+  tooLong: (max: number) => `Dit antwoord is te lang. Gebruik maximaal ${max} tekens.`,
   requiredMark: '(Vereist)',
   consentPrefix: 'Ik ga akkoord met de',
   consentTerms: 'algemene voorwaarden',

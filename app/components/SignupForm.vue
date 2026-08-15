@@ -2,6 +2,7 @@
 import {
   GRONINGEN_CITY_CODE,
   GRONINGEN_MUNICIPALITY_CODE,
+  SIGNUP_MAX,
   emptySignupValues,
   signupCopy,
   signupSteps,
@@ -17,6 +18,19 @@ const values = reactive<SignupValues>(emptySignupValues())
 const status = ref<'idle' | 'pending' | 'success' | 'error'>('idle')
 const showError = ref(false)
 const errorMessage = ref('')
+
+/*
+  A rejected submit left its red message under the form until the next submit,
+  so correcting the offending field looked like it had done nothing. Editing
+  any answer clears it; the per-field messages stay, since those are still
+  accurate until the step is re-checked.
+*/
+watch(
+  () => JSON.stringify(values),
+  () => {
+    if (errorMessage.value) errorMessage.value = ''
+  },
+)
 
 /** Focused on every step change so a keyboard or screen reader lands on the
     new questions rather than back at the top of the document. */
@@ -54,10 +68,34 @@ function errorFor(field: SignupField): string {
 
   if (field.required && !filled(field.name)) return signupCopy.fieldRequired
 
-  if (field.kind === 'text' && field.max !== undefined && filled(field.name)) {
-    const entered = Number(values[field.name])
-    if (Number.isNaN(entered) || entered > field.max) return signupCopy.numberRange(field.max)
+  return field.kind === 'text' ? textProblem(field) : ''
+}
+
+/**
+ * What's wrong with a filled text field, or `''`.
+ *
+ * These rules mirror the server's, so a typo is caught under the field rather
+ * than by a generic message at the bottom of the form after four steps.
+ */
+function textProblem(field: Extract<SignupField, { kind: 'text' }>): string {
+  if (!filled(field.name)) return ''
+  const raw = String(values[field.name] ?? '').trim()
+
+  if (field.inputType === 'number') {
+    const entered = Number(raw)
+    // `min` was declared on the field but never enforced, so -5 and 3.5 both
+    // passed the wizard and the server, and only the portal refused them.
+    if (!Number.isInteger(entered)) return signupCopy.wholeNumber
+    if (field.max !== undefined && entered > field.max) return signupCopy.numberRange(field.max)
+    if (field.min !== undefined && entered < field.min) return signupCopy.numberMin(field.min)
+    return ''
   }
+
+  if (field.inputType === 'email' && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(raw)) {
+    return signupCopy.invalidEmail
+  }
+
+  if (raw.length > SIGNUP_MAX[field.name]) return signupCopy.tooLong(SIGNUP_MAX[field.name])
 
   return ''
 }
@@ -70,10 +108,7 @@ const invalid = computed(() =>
       return field.required && field.parts.some((part) => !filled(part.name))
     }
     if (field.required && !filled(field.name)) return true
-    if (field.kind === 'text' && field.max !== undefined && filled(field.name)) {
-      const entered = Number(values[field.name])
-      return Number.isNaN(entered) || entered > field.max
-    }
+    if (field.kind === 'text') return textProblem(field) !== ''
     return false
   }),
 )
@@ -212,7 +247,7 @@ async function submit() {
   } catch (error: any) {
     status.value = 'error'
     errorMessage.value =
-      error?.data?.message ??
+      error?.data?.data?.message ??
       'Er ging iets mis bij het versturen. Probeer het later opnieuw of bel ons.'
   }
 }
@@ -437,6 +472,7 @@ function reset() {
               :autocomplete="field.autocomplete"
               :min="field.min"
               :max="field.max"
+              :maxlength="field.inputType === 'number' ? undefined : SIGNUP_MAX[field.name]"
               :aria-invalid="Boolean(errorFor(field)) || undefined"
               :aria-describedby="field.hint ? `${fieldId(field.name)}-hint` : undefined"
             >

@@ -40,6 +40,8 @@ function invalid(message: string): never {
 }
 
 export default defineEventHandler(async (event) => {
+  rateLimit(event)
+
   const parts = await readMultipartFormData(event)
 
   if (!parts?.length) {

@@ -22,8 +22,18 @@ const schema = z.object({
   locationNote: optional(500),
   school: optional(200),
 
-  // Step 2 — Vak en niveau
-  schoolYear: z.string().trim().min(1).max(20),
+  // Step 2 — Vak en niveau.
+  // A whole number the portal will take: it validates `student_year` as
+  // integer max:6 and refuses the *whole* submission otherwise, so "abc",
+  // "3.5" and "-5" have to fail here rather than at the portal.
+  schoolYear: z
+    .string()
+    .trim()
+    .min(1)
+    .max(20)
+    .refine((value) => Number.isInteger(Number(value)) && Number(value) >= 0 && Number(value) <= 6, {
+      message: 'schoolYear must be a whole number between 0 and 6',
+    }),
   level: z.string().trim().min(1).max(40),
   levelOther: optional(120),
   subjects: z.array(z.string().trim().max(60)).min(1).max(10),
@@ -55,6 +65,8 @@ const schema = z.object({
 })
 
 export default defineEventHandler(async (event) => {
+  rateLimit(event)
+
   const body = await readValidatedBody(event, schema.safeParse)
 
   if (!body.success) {
@@ -110,7 +122,10 @@ function signupPayload(v: Answers) {
   const notes = [
     v.location,
     v.location === 'anders' && v.locationNote && `Toelichting: ${v.locationNote}`,
-    v.school && `School: ${v.school}`,
+    // Guarded like the other conditional notes: the question is only asked
+    // when the lessons happen at school, and switching away from that answer
+    // used to leave the school name in the payload.
+    v.location === 'at_school' && v.school && `School: ${v.school}`,
     v.contactMethod && `Contact via: ${v.contactMethod}`,
     v.level === 'different' && v.levelOther && `Niveau: ${v.levelOther}`,
     v.subjectOther && `Ander vak: ${v.subjectOther}`,

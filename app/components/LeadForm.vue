@@ -58,7 +58,7 @@ async function submit() {
   } catch (error: any) {
     status.value = 'error'
     message.value =
-      error?.data?.message ??
+      error?.data?.data?.message ??
       'Er ging iets mis bij het versturen. Probeer het later opnieuw of bel ons.'
   }
 }
