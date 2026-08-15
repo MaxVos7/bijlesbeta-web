@@ -110,6 +110,43 @@ Gravity Form's conditional logic. Change questions, options and rules there, not
 in `SignupForm.vue`. `server/api/adres.get.ts` is a read-only PDOK proxy for the
 postcode lookup — it stores nothing and never throws at its caller.
 
+## SEO and the WordPress cutover
+
+This app replaces bijlesbeta.nl, which is still WordPress. The whole search
+index for that domain was built by the old site, so the rule is: change what
+Google sees as little as possible.
+
+- **URLs carry a trailing slash.** Every indexed URL has one, so
+  `/over-ons/` is canonical and `server/middleware/trailing-slash.ts` 301s the
+  bare form to it. Internal `NuxtLink`s append it too, and `redirects.ts`
+  targets carry it, so nothing resolves in more than one hop. Before this,
+  both forms answered 200 with no canonical — duplicate content.
+- **Titles are the live site's, verbatim.** They are a direct ranking and
+  click-through signal, so the cutover changes none of them. Twenty of
+  twenty-five are `<page> - Bijles Bèta`, which is what `titleTemplate`
+  produces; five set `absoluteTitle` because their live title doesn't follow
+  it. Check a page against the live one before rewording its title.
+- **Descriptions are the live ones except two.** `/zo-werkt-het` and
+  `/aanmelden` had Rank Math fallbacks rather than written copy — one of them
+  was literally the rating label "Uitstekend" — so ours are kept there.
+- **`useSeo()`, not `useSeoMeta()`.** It fans title and description out to
+  Open Graph and Twitter, which `useSeoMeta` does not do on its own.
+- **`robots.txt` keys off the request host**, not an environment flag: only
+  `NUXT_PUBLIC_SITE_URL`'s host is crawlable, everything else gets
+  `Disallow: /`. A misconfigured deploy is invisible rather than competing
+  with the live site.
+- **The sitemap is generated from the same data the pages render from**, so it
+  can't list a URL that doesn't exist. If you add a page with no data behind
+  it, add it to `STATIC_PATHS` in `server/routes/sitemap.xml.get.ts`.
+- **JSON-LD is emitted where the content lives** — `FaqSection` emits its own
+  `FAQPage` rather than each page doing it, so markup can never describe
+  questions that aren't rendered.
+
+Before cutover, re-run the inventory check: every URL in the live sitemaps
+plus the 28 docenten profiles must return 200 in at most one hop. The last run
+was 77/78, the exception being `/aanmelden-test/`, a WordPress scratch page
+that is deliberately dropped.
+
 ## Analytics and cookie consent
 
 Reproduced from bijlesbeta.nl, which hand-rolls this rather than running a
