@@ -54,6 +54,39 @@ export type Article = {
   body: ArticleBlock[]
 }
 
+/**
+ * Kennisbank categories.
+ *
+ * These are the seven archives bijlesbeta.nl publishes at
+ * `/kennisbank/category/<slug>/`, all of them indexed, plus `studietips` for
+ * the three articles this site added that the live one never had. An article's
+ * `tags` are its categories — they already matched the live archives exactly,
+ * article for article, so nothing needed remapping.
+ *
+ * The slug is the URL and the name is both the pill label and the page title.
+ */
+export const kennisbankCategories = [
+  { slug: 'wiskunde', name: 'Wiskunde' },
+  { slug: 'wiskunde-a', name: 'Wiskunde A' },
+  { slug: 'natuurkunde', name: 'Natuurkunde' },
+  { slug: 'scheikunde', name: 'Scheikunde' },
+  { slug: 'havo-5', name: 'Havo 5' },
+  { slug: 'examenstof', name: 'Examenstof' },
+  { slug: 'statistiek', name: 'Statistiek' },
+  { slug: 'studietips', name: 'Studietips' },
+] as const
+
+export type KennisbankCategory = (typeof kennisbankCategories)[number]
+
+export function findCategory(slug: string) {
+  return kennisbankCategories.find((category) => category.slug === slug)
+}
+
+/** The slug for a tag as it appears on an article, for linking the pills. */
+export function categorySlug(name: string) {
+  return kennisbankCategories.find((category) => category.name === name)?.slug
+}
+
 const strong = (text: string): Run => ({ text, bold: true })
 const em = (text: string): Run => ({ text, em: true })
 const sub = (text: string): Run => ({ text, sub: true })
@@ -781,6 +814,16 @@ export const filterTags = [
 
 export function findArticle(slug: string) {
   return articles.find((article) => article.slug === slug)
+}
+
+/** Every article filed under a category, newest first, for its archive page. */
+export function articlesInCategory(slug: string): Article[] {
+  const category = findCategory(slug)
+  if (!category) return []
+
+  return articles
+    .filter((article) => article.tags.includes(category.name))
+    .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt))
 }
 
 /** Other articles sharing at least one tag with `article`, in list order. */

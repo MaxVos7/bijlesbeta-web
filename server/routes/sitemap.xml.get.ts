@@ -1,4 +1,4 @@
-import { articles } from '~/data/kennisbank'
+import { articles, kennisbankCategories } from '~/data/kennisbank'
 import { landings, landingPath } from '~/data/landings'
 import { tutors } from '~/data/tutors'
 
@@ -52,6 +52,7 @@ export default defineEventHandler((event) => {
     ...STATIC_PATHS,
     ...landings.map((landing) => landingPath(landing.slug)),
     ...articles.map((article) => `/kennisbank/${article.slug}`),
+    ...kennisbankCategories.map((category) => `/kennisbank/category/${category.slug}`),
     ...tutors.map((tutor) => `/docenten/${tutor.slug}`),
   ]
 

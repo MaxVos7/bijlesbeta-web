@@ -17,7 +17,7 @@
  * 22px step is a measurement of the rendered page, ±1px. Re-check it before
  * treating those two numbers as settled.
  */
-import type { Article } from '~/data/kennisbank'
+import { categorySlug, type Article } from '~/data/kennisbank'
 
 const props = withDefaults(
   defineProps<{
@@ -68,14 +68,15 @@ const publishedOn = computed(() => dateFormatter.format(new Date(props.article.p
         <!-- The pills are the live site's `category-button`: amber label on an
              amber hairline with no fill of its own, so the photograph reads
              straight through them. That is parity, not an oversight — the same
-             call as the kicker's amber-on-cream. They are spans rather than
-             links because this app has no per-category archive to point at. -->
-        <div class="pointer-events-none absolute top-2 left-3 flex flex-wrap gap-2">
-          <span
+             call as the kicker's amber-on-cream. They link to the category
+             archive, which exists at the same URL WordPress served. -->
+        <div class="absolute top-2 left-3 flex flex-wrap gap-2">
+          <NuxtLink
             v-for="tag in article.tags"
             :key="tag"
+            :to="`/kennisbank/category/${categorySlug(tag)}`"
             class="rounded-btn border border-brand-500 px-3 py-1.5 font-display text-[15px] leading-[21px] font-semibold whitespace-nowrap text-brand-500"
-          >{{ tag }}</span>
+          >{{ tag }}</NuxtLink>
         </div>
       </div>
 
