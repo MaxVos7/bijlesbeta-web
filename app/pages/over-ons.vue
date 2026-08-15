@@ -2,10 +2,10 @@
 import { heroPromises, overOnsBlocks, reassurance } from '~/data/site'
 import { findTutor, tutors } from '~/data/tutors'
 
-useSeoMeta({
+useSeo({
   title: 'Over ons',
   description:
-    'Bijles Bèta is opgericht door bètastudenten uit Groningen die hun enthousiasme voor wiskunde, natuurkunde en scheikunde willen delen.',
+    'Opgericht door een groep ambitieuze studenten met een duidelijke visie: onze passie voor Bèta vakken delen met Groningen.',
 })
 
 // The grid is broken up by a story card and a full-width photo, so the roster

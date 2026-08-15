@@ -10,10 +10,12 @@ if (!tutor.value) {
   throw createError({ statusCode: 404, statusMessage: 'Docent niet gevonden', fatal: true })
 }
 
-useSeoMeta({
-  title: () => `${tutor.value?.name} — bijlesdocent`,
+useSeo({
+  // The live profile titles are the docent's name and nothing else.
+  title: () => tutor.value?.name ?? 'Docent',
   description: () =>
     `${tutor.value?.name} geeft bijles in ${tutor.value?.expertise.join(', ')} en studeert ${tutor.value?.study} aan de Rijksuniversiteit Groningen.`,
+  image: tutor.value?.photo,
 })
 </script>
 

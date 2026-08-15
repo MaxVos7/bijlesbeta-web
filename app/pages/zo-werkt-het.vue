@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { heroPromises, reassurance, zoWerktHet } from '~/data/site'
 
-useSeoMeta({
+useSeo({
   title: 'Zo werkt het',
+  // The live description here is the rating label ("Uitstekend") picked up by
+  // Rank Math, not written copy, so ours is kept.
   description:
     'Van aanmelding tot de eerste bijles in vier stappen: meld je aan, wij zoeken de juiste docent, jullie leren elkaar kennen tijdens de gratis proefles en daarna gaan de bijlessen van start.',
 })

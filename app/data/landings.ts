@@ -24,6 +24,11 @@ export type LandingPage = {
   slug: string
   /** Used as both the <title>/H1 and the hero heading — kept as authored. */
   title: string
+  /**
+   * Overrides the <title> only, for the two landings whose live title differs
+   * from their heading. Set, it replaces the whole title including the brand.
+   */
+  metaTitle?: string
   /** The kicker above the hero heading. */
   kicker: string
   /** The hero paragraph. */
@@ -187,6 +192,7 @@ export const landings: LandingPage[] = [
   {
     slug: 'aan-huis',
     title: 'Bijles aan huis',
+    metaTitle: 'Bijles aan Huis in Groningen - Bijles Bèta',
     kicker: 'Wij komen naar jou toe',
     intro:
       'Geen reistijd, geen gedoe. Onze docenten komen bij jou thuis in Groningen en omgeving. In je eigen vertrouwde omgeving leer je het beste.',
@@ -225,6 +231,7 @@ export const landings: LandingPage[] = [
   {
     slug: 'aan-huis-utrecht',
     title: 'Bijles aan huis Utrecht',
+    metaTitle: 'Bijles wiskunde, natuurkunde en scheikunde in Utrecht | Bijles Bèta',
     kicker: 'Geen reistijd, geen gedoe.',
     // The source page's hero intro was left as generic placeholder copy
     // (identical to the abandoned draft stub pages) — write a real one

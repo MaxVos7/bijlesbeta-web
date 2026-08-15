@@ -19,9 +19,10 @@ const route = useRoute()
 // `validate` has already rejected anything unknown by the time we render.
 const landing = findLanding(String(route.params.slug))!
 
-useSeoMeta({
-  title: landing.title,
-  description: landing.seoDescription || undefined,
+useSeo({
+  absoluteTitle: Boolean(landing.metaTitle),
+  title: landing.metaTitle ?? landing.title,
+  description: landing.seoDescription || landing.intro,
 })
 </script>
 

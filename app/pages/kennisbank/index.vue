@@ -16,7 +16,7 @@ import { articles, filterTags, type Article } from '~/data/kennisbank'
  *   common row height here — the live overview grid lets them end where their
  *   copy ends, unlike the related-articles grid on an article page.
  */
-useSeoMeta({
+useSeo({
   title: 'Kennisbank',
   description:
     'Op onze kennisbank leggen onze eigen docenten onderwerpen uit aan de hand van een voorbeeldvraag en een duidelijke uitleg.',

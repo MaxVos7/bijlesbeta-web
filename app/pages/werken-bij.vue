@@ -4,10 +4,10 @@ import { contact, werkenBij } from '~/data/site'
 // The hero opens on the dark ink band, so the sticky header strip follows it up.
 definePageMeta({ headerGround: 'ink' })
 
-useSeoMeta({
-  title: 'Werken bij Bijles Bèta',
+useSeo({
+  title: 'Werken bij',
   description:
-    'Heb jij passie voor de bèta vakken en vind je het leuk om dit te delen met middelbare scholieren? Solliciteer direct als docent bij Bijles Bèta in Groningen.',
+    'Ben jij RUG student en wil je Bijles geven in Groningen? Bij Bijles Bèta geven we bijles in Wiskunde, Natuurkunde en Scheikunde.',
 })
 </script>
 

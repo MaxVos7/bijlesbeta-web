@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { contact, examentraining, faqIntro } from '~/data/site'
 
-useSeoMeta({
-  title: 'Examentraining',
-  description: examentraining.hero.intro,
+useSeo({
+  absoluteTitle: true,
+  title: 'Examentraining Groningen | Bijles Bèta',
+  description:
+    'Onze examentraining geeft jou op het juiste moment wat je nodigt hebt voor een geslaagd eindexamen. Kleine klassen, ervaren docent.',
 })
 
 /*

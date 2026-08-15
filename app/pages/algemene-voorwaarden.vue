@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { terms, termsPdf } from '~/data/legal'
 
-useSeoMeta({
+useSeo({
   title: terms.title,
   description: terms.description,
 })

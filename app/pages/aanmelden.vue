@@ -8,8 +8,10 @@ import { aanmeldenPage, contact, featuredReview } from '~/data/site'
  */
 definePageMeta({ layout: 'bare' })
 
-useSeoMeta({
-  title: 'Aanmelden voor een gratis proefles',
+useSeo({
+  title: 'Aanmelden',
+  // The live description here is Rank Math's fallback ("Bekijk onze
+  // veelgestelde vragen (FAQ)"), not written copy, so ours is kept.
   description:
     'Meld je aan voor een gratis en vrijblijvende proefles. Na je aanmelding neemt een van onze docenten contact met je op om de proefles in te plannen.',
 })

@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { contact, contactPage } from '~/data/site'
 
-useSeoMeta({
+useSeo({
   title: 'Contact',
   description:
-    'Neem contact op met Bijles Bèta in Groningen via WhatsApp, telefoon of e-mail. We reageren doorgaans binnen één werkdag.',
+    'Hoi! Mijn naam is Max en ik ben de contactpersoon van Bijles Bèta. Twijfel je ergens over? Of heb je een vraag. Neem dan nu contact op.',
 })
 </script>
 

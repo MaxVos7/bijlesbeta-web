@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { heroPromises, pricingNotes, reassurance } from '~/data/site'
 
-useSeoMeta({
+useSeo({
   title: 'Tarieven',
   description:
-    'Bijles vanaf €25 per uur. Geen servicekosten, een gratis proefles en maandelijkse facturatie achteraf.',
+    'Bijles van iemand die wiskunde, natuurkunde of scheikunde studeert. En dat voor een eerlijke prijs!',
 })
 </script>
 

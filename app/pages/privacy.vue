@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { privacy } from '~/data/legal'
 
-useSeoMeta({
-  title: privacy.title,
+useSeo({
+  // The live <title> reads "Privacy statement"; the document's own heading
+  // stays "Privacyverklaring".
+  title: 'Privacy statement',
   description: privacy.description,
 })
 </script>

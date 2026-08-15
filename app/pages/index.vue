@@ -8,10 +8,12 @@ import {
   teamIntro,
 } from '~/data/site'
 
-useSeoMeta({
-  title: 'Bijles wiskunde, natuurkunde en scheikunde in Groningen',
+useSeo({
+  // Absolute: the live homepage is the one page that leads with the brand.
+  absoluteTitle: true,
+  title: 'Bijles Bèta | Bijles wiskunde, natuurkunde en scheikunde in Groningen',
   description:
-    'Persoonlijke bijles in de bètavakken door studenten van de Rijksuniversiteit Groningen. Start altijd met een gratis proefles.',
+    'Bijles wiskunde, natuurkunde en scheikunde in Groningen en Drenthe. Ervaren RUG-studenten geven persoonlijke begeleiding bij jou thuis. Plan nu een proefles!',
 })
 </script>
 

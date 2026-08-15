@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { hetBedrijf } from '~/data/site'
 
-useSeoMeta({
-  title: 'Het bedrijf',
+useSeo({
+  // Absolute: the live title carries no brand suffix at all.
+  absoluteTitle: true,
+  title: 'Over Bijles Bèta, wat ons Groningse bedrijf uniek en innovatief maakt',
   description:
-    'Het verhaal van Bijles Bèta: hoe we in 2017 zijn begonnen, onze aanpak, ons team van bèta-studenten en de innovaties die onze bijles efficiënt houden.',
+    'Bijles Bèta is opgericht in 2017 door Mathijn en Max. Wij bieden bijles wiskunde, natuurkunde en scheikunde aan huis in Groningen door gepassioneerde studenten.',
 })
 </script>
 

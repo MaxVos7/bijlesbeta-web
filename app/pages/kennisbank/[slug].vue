@@ -23,9 +23,11 @@ if (!article) {
   throw createError({ statusCode: 404, statusMessage: 'Artikel niet gevonden', fatal: true })
 }
 
-useSeoMeta({
+useSeo({
   title: article.title,
   description: article.excerpt,
+  image: article.coverImage,
+  type: 'article',
 })
 
 const dateFormatter = new Intl.DateTimeFormat('nl-NL', { dateStyle: 'long' })
