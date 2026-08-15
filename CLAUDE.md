@@ -152,8 +152,9 @@ styles the button element.
 ## Design work
 
 The design is applied to `/`, `/over-ons`, `/tarieven`, `/aanmelden`,
-`/contact`, `/werken-bij`, `/bijles-[vak]-[stad]`, `/docenten/[slug]`,
-`/examentraining` and the shared chrome, from a Claude Design handoff.
+`/contact`, `/werken-bij`, `/zo-werkt-het`, `/bijles-[vak]-[stad]`,
+`/docenten/[slug]`, `/examentraining` and the shared chrome, from a Claude
+Design handoff.
 `app/assets/css/main.css` carries the real palette — an amber brand on cream
 and sand grounds, with a warm `ink-*` ramp, Plus Jakarta Sans for headings and
 Open Sans for body copy. The tokens are no longer placeholders.
@@ -454,6 +455,49 @@ rather than designed, so it has its own set of things that shouldn't be tidied:
   at 49px; ours keeps the amber. And the live `#72`/`#80` (Plaatscode,
   Gemeentecode) are real inputs hidden with `visibility: hidden` — here they're
   plain state on `SignupValues`, filled by the PDOK lookup.
+
+`/zo-werkt-het` is measured against `post-42.css`, and its two own bands carry
+the live page's numbers:
+
+- **The hero has no ground of its own.** It sits on the page's `parchment`;
+  white starts in the spacer strip below it, as on `/tarieven` and `/contact`.
+- **Its H1 holds 32px/44px at every width.** `post-42.css` has no 767px step
+  for it — this page and `/contact` are the two that don't take the 26px
+  step, so don't add one from the type scale.
+- **The copy column is padded 52px over 92px** (32/20 below 768px) and its
+  children sit on a flat 12px rhythm plus each widget's own margin, which is
+  where the 16/24/36px gaps come from. The band splits 50/50 on a **100px**
+  gutter inside the usual 1100px column.
+- **The second hero button is not `btn-secondary`.** It is `parchment` with a
+  `black/20` hairline, the same inversion `/werken-bij`'s hero CTA takes. The
+  row needs `items-start`, or the bordered button's 56px stretches the amber
+  one past its 54px.
+- **The photograph is a flat 550px crop from the top on the 8px surface
+  radius** — not the 12px block radius the `Zo werkt het` picture on
+  `/tarieven` uses, and not a fixed aspect. The live artwork is
+  `kruiwagenZWARTWITpng-min-2`, a 984 KB cut-out PNG; `fiets.png` stands in
+  for it until that file lands in `public/img`.
+- **The stappenplan runs a 19px kicker** (like `/contact`) over the 28px
+  section title, and takes a further **36px** of gutter inside the 1100px
+  column, collapsing to 0 below 768px — the same nested-gutter pattern as
+  `/kennisbank`.
+- **The four cards are equal columns on a 12px gap**, two-up from 1025px down,
+  with 24px of padding (12px below 768px), the `line-ink` hairline and the
+  8px radius. Their titles are the 19px/26px card heading, stepping to 16px
+  below 768px, over 13px body copy in *full* ink. They carry **no hover
+  state** on the live page.
+- **The step artwork is bijlesbeta.nl's own**, lifted from its media library
+  into `public/img/stappen` and wired through `zoWerktHet.steps[].icon`. Two
+  are vector; Match and Bijles are rasters inside an SVG wrapper, which is how
+  Elementor stored them — don't try to recolour those two with `currentColor`.
+- **`Meld je hier aan` is a text link, not a button** — 15px/700 Plus Jakarta
+  Sans with a plain `underline` and a trailing `BtnArrow`, no padding.
+- The closing amber block sits on the page's parchment here rather than on
+  white, which is what `TrialCta`'s `ground` prop is for. One delta remains:
+  the live gap between the stappenplan and the comparison band is a flat 80px,
+  while `ComparisonTable` adds its own (unmeasured) top padding on top of this
+  page's 80px strip. Measure that shared band against the live global template
+  before trimming either side.
 
 `/bijles-[vak]-[stad]` is one template rendered per subject-and-city pair —
 add a city by adding a data entry in `app/data/landings.ts`, not a new page

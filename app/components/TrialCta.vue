@@ -9,10 +9,24 @@ import { contact, trialCta } from '~/data/site'
  * 36px of padding, 48px of white above and below it, and its kicker in plain
  * white rather than the `on-brand` amber-ink the handoff used.
  */
+withDefaults(
+  defineProps<{
+    /**
+     * Which band the panel sits in. Most pages run it on white; on
+     * `/zo-werkt-het` the live container is transparent, so it sits on the
+     * page's own parchment instead.
+     */
+    ground?: 'white' | 'page'
+  }>(),
+  { ground: 'white' },
+)
 </script>
 
 <template>
-  <section class="bg-white px-[clamp(16px,4vw,40px)] py-12">
+  <section
+    class="px-[clamp(16px,4vw,40px)] py-12"
+    :class="ground === 'white' && 'bg-white'"
+  >
     <div
       class="mx-auto grid max-w-[1100px] items-start gap-3 rounded-block bg-brand-500 p-[clamp(20px,3vw,36px)] [grid-template-columns:repeat(auto-fit,minmax(260px,1fr))]"
     >

@@ -10,119 +10,107 @@ useSeoMeta({
 
 <template>
   <div>
-    <section
-      class="bg-cream px-[clamp(16px,4vw,24px)] pt-[clamp(24px,4vw,44px)] pb-[clamp(48px,7vw,88px)]"
-    >
-      <div
-        class="mx-auto grid max-w-[1100px] items-center gap-[clamp(32px,5vw,60px)] [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))]"
-      >
-        <div class="min-w-0">
-          <RatingLine class="mb-[18px]" />
+    <!--
+      Measured against `post-42.css` rather than designed, like `/tarieven` and
+      `/werken-bij`. The numbers below are the live page's:
 
-          <h1
-            class="mb-[18px] max-w-[16ch] text-[clamp(30px,4.2vw,32px)] leading-[1.12] tracking-[-0.025em] text-pretty"
-          >
+      - The band has no ground of its own. It sits on the page's `parchment`;
+        white only starts in the spacer strip below it.
+      - 1100px content column on 40px gutters, split 50/50 on a 100px gap.
+      - The copy column carries 52px of top and 92px of bottom padding (32/20
+        below 768px), and its children are spaced on a flat 12px rhythm plus
+        each widget's own margin — hence the odd-looking 16/24/36px steps.
+      - The H1 holds 32px/44px at every width. Unlike the other pages, this one
+        has no 767px step for it; don't add one.
+      - The photograph is a flat 550px crop from the top, on the 8px surface
+        radius rather than the 12px block one.
+    -->
+    <section class="px-[clamp(16px,4vw,40px)]">
+      <div
+        class="mx-auto grid max-w-[1100px] gap-x-[100px] gap-y-8 max-desk:grid-cols-1 desk:grid-cols-2"
+      >
+        <div class="min-w-0 pt-[52px] pb-[92px] max-md:pt-8 max-md:pb-5">
+          <RatingLine class="mb-3" />
+
+          <h1 class="mb-4 text-[32px] leading-[44px] tracking-[-0.03em]">
             {{ zoWerktHet.title }}
           </h1>
-          <p class="mb-7 max-w-[46ch] text-[clamp(15px,1.2vw,16px)] leading-relaxed text-ink-600">
-            {{ zoWerktHet.intro }}
-          </p>
+          <p class="mb-6 text-base leading-6 text-ink-700">{{ zoWerktHet.intro }}</p>
 
-          <CheckList :items="heroPromises" class="mb-8" />
+          <CheckList :items="heroPromises" class="mb-9" />
 
-          <div class="flex flex-wrap gap-3">
-            <NuxtLink
-              to="/aanmelden"
-              class="btn-primary gap-3.5 px-[26px] py-4 text-base shadow-[0_6px_18px_rgb(255_187_0_/_0.35)] hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgb(255_187_0_/_0.42)]"
-            >
-              Gratis proefles <span class="text-lg" aria-hidden="true">→</span>
+          <!-- `items-start` so the bordered second button doesn't stretch the
+               first to its own 56px; the live pair is 54 and 56. -->
+          <div class="mb-3 flex flex-wrap items-start gap-3">
+            <NuxtLink to="/aanmelden" class="btn-primary btn-lg">
+              Gratis proefles <BtnArrow />
             </NuxtLink>
-            <a
-              href="#stappenplan"
-              class="btn-secondary gap-3.5 px-6 py-4 text-base hover:border-brand-500 hover:bg-ivory"
-            >
-              {{ zoWerktHet.secondaryCta }} <span class="text-lg" aria-hidden="true">→</span>
+            <!--
+              Not `btn-secondary`: the live page's second button is the page
+              ground with a black/20 hairline, the same treatment the hero CTA
+              on `/werken-bij` takes.
+            -->
+            <a href="#stappenplan" class="btn btn-lg border border-black/20 bg-parchment hover:bg-cream">
+              {{ zoWerktHet.secondaryCta }} <BtnArrow />
             </a>
           </div>
-          <p class="mt-3.5 text-[13px] text-ink-400">{{ reassurance }}</p>
+          <p class="text-[12px] text-ink-700">{{ reassurance }}</p>
         </div>
 
         <div class="min-w-0">
           <img
             src="/img/fiets.png"
             alt="Docent op de fiets in Groningen"
-            class="mx-auto block aspect-[3/4] w-full max-w-[420px] rounded object-cover"
+            class="block h-[550px] w-full rounded-panel object-cover object-top"
           >
         </div>
       </div>
     </section>
 
-    <section
-      id="stappenplan"
-      class="bg-white px-[clamp(16px,4vw,24px)] pt-[clamp(48px,6vw,80px)] pb-[clamp(40px,5vw,64px)]"
-    >
-      <div class="mx-auto max-w-[1100px]">
-        <div class="mb-[clamp(28px,3.5vw,42px)] text-center">
-          <p class="kicker mb-2">{{ zoWerktHet.stepsIntro.kicker }}</p>
-          <h2 class="text-[clamp(24px,2.8vw,28px)] tracking-[-0.025em]">
-            {{ zoWerktHet.stepsIntro.title }}
-          </h2>
-        </div>
+    <!-- The live rhythm between bands: an 80px strip on the page ground, then
+         an 80px strip already in the next band's white. -->
+    <div class="h-20" />
+    <div class="h-20 bg-white" />
 
-        <div
-          class="grid gap-[clamp(16px,2vw,24px)] [grid-template-columns:repeat(auto-fit,minmax(240px,1fr))]"
-        >
+    <!--
+      The stappenplan, also off `post-42.css`:
+
+      - A further 36px of gutter inside the 1100px column, collapsing to 0
+        below 768px.
+      - This page runs the 19px kicker rather than the sitewide 18px, and its
+        section title is the 28px step — not the 32px `Zo werkt het` uses on
+        `/tarieven`.
+      - The four cards are equal columns on a 12px gap, two-up from 1025px
+        down. They carry no hover state on the live page.
+      - The two 32px spacers around the grid halve to 16px below 1025px.
+    -->
+    <section id="stappenplan" class="bg-white px-[clamp(16px,4vw,40px)] pb-20">
+      <div class="mx-auto max-w-[1100px] px-9 max-md:px-0">
+        <p class="kicker mb-3 text-center text-[19px]">{{ zoWerktHet.stepsIntro.kicker }}</p>
+        <h2 class="mb-8 text-center text-[28px] leading-[44px] tracking-[-0.025em] max-desk:mb-4">
+          {{ zoWerktHet.stepsIntro.title }}
+        </h2>
+
+        <div class="grid grid-cols-2 gap-3 desk:grid-cols-4">
           <article
             v-for="step in zoWerktHet.steps"
             :key="step.title"
-            class="flex flex-col rounded-tile border border-line-200 px-[22px] pt-[22px] pb-[26px] transition duration-200 hover:-translate-y-[3px] hover:shadow-[0_16px_34px_rgb(31_29_28_/_0.10)]"
+            class="flex flex-col gap-5 rounded-tile border border-line-ink p-6 max-md:p-3"
           >
-            <span class="mb-[22px] flex h-10 w-10 items-center justify-center">
-              <svg
-                class="h-8 w-8 text-brand-500"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.7"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <template v-if="step.icon === 'form'">
-                  <path d="M14 3H6a1 1 0 00-1 1v16a1 1 0 001 1h8" />
-                  <path d="M14 3l5 4v14h-5z" />
-                  <path d="M9 12h.01" />
-                </template>
-                <template v-else-if="step.icon === 'match'">
-                  <path d="M4 14v-3a8 8 0 0116 0v3" />
-                  <path d="M4 14h2.5a1 1 0 011 1v3a1 1 0 01-1 1H5a1 1 0 01-1-1z" />
-                  <path d="M20 14h-2.5a1 1 0 00-1 1v3a1 1 0 001 1H19a1 1 0 001-1z" />
-                  <path d="M9 21h6" />
-                </template>
-                <template v-else-if="step.icon === 'trial'">
-                  <path d="M3 9l9 4 9-4" />
-                  <path d="M3 9v9l9 4 9-4V9" />
-                  <path d="M7 4l5 5 5-5" />
-                </template>
-                <template v-else>
-                  <path d="M3 4h18v11H3z" />
-                  <path d="M12 15v6" />
-                  <path d="M9 21h6" />
-                  <path d="M8 8h6M8 11h4" />
-                </template>
-              </svg>
-            </span>
-            <h3 class="mb-2.5 text-[17px] tracking-[-0.01em]">{{ step.title }}</h3>
-            <p class="text-[13px] leading-[1.7] text-ink-700">{{ step.body }}</p>
+            <img :src="step.icon" alt="" class="h-[50px] w-[50px] object-contain object-left">
+            <div>
+              <h3 class="mb-2.5 text-[19px] leading-[26px] max-md:text-base">{{ step.title }}</h3>
+              <p class="text-[13px]">{{ step.body }}</p>
+            </div>
           </article>
         </div>
 
-        <p class="mt-[clamp(32px,4vw,48px)] text-center">
+        <p class="mt-8 text-center max-desk:mt-4">
           <NuxtLink
             :to="zoWerktHet.stepsLink.to"
-            class="border-b-[1.5px] border-ink-900 pb-[3px] text-[15px] font-semibold"
+            class="inline-flex items-center gap-3 font-display text-[15px] font-bold text-ink-800 underline"
           >
-            {{ zoWerktHet.stepsLink.label }}&nbsp;&nbsp;→
+            {{ zoWerktHet.stepsLink.label }} <BtnArrow />
           </NuxtLink>
         </p>
       </div>
@@ -130,7 +118,9 @@ useSeoMeta({
 
     <ComparisonTable />
 
-    <TrialCta />
+    <!-- The live trial block on this page sits on the page's own parchment,
+         not on the white the comparison band ends in. -->
+    <TrialCta ground="page" />
 
     <FaqSection />
   </div>

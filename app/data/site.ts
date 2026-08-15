@@ -299,24 +299,30 @@ export const zoWerktHet = {
     kicker: 'Zo werkt het',
     title: 'Het stappenplan',
   },
+  /**
+   * `icon` is a path under `public/img/stappen` — bijlesbeta.nl's own
+   * illustrations, lifted from its media library rather than redrawn. Two of
+   * the four are vector; the Match and Bijles drawings are rasters inside an
+   * SVG wrapper, which is how Elementor stored them.
+   */
   steps: [
     {
-      icon: 'form',
+      icon: '/img/stappen/stap-1-aanmelden.svg',
       title: 'Stap 1: Aanmelden',
       body: 'Meld je aan via ons handige aanmeldformulier.',
     },
     {
-      icon: 'match',
+      icon: '/img/stappen/stap-2-match.svg',
       title: 'Stap 2: Match',
       body: 'We gaan direct op zoek naar een docent die goed bij jou past.',
     },
     {
-      icon: 'trial',
+      icon: '/img/stappen/stap-3-proefles.svg',
       title: 'Stap 3: Proefles',
       body: 'Leer elkaar kennen en maak een plan voor de komende bijlessen.',
     },
     {
-      icon: 'lesson',
+      icon: '/img/stappen/stap-4-bijles.svg',
       title: 'Stap 4: Bijles',
       body: 'Met jouw bijlesdocent krijg je stap voor stap grip op die lastige bètavakken.',
     },
@@ -324,13 +330,13 @@ export const zoWerktHet = {
   stepsLink: { label: 'Meld je hier aan', to: '/aanmelden' },
 } as const
 
-/** The Bijles Bèta / reguliere aanbieders comparison on Over ons. */
+/** The Bijles Bèta / reguliere aanbieders comparison on Over ons and Zo werkt het. */
 export const comparison = {
   kicker: 'Daarom kies je voor Bijles Bèta',
   title: 'De verschillen op een rij',
   us: {
     title: 'Bijles Bèta',
-    body: 'Alleen in Groningen en persoonlijk contact.',
+    body: 'Altijd in de buurt en persoonlijk contact.',
     points: [
       'Persoonlijk en betrokken in contact',
       'Klein team van bèta-studenten dat samenwerkt en elkaar goed kent',
@@ -342,7 +348,7 @@ export const comparison = {
   },
   them: {
     title: 'Reguliere aanbieders',
-    body: 'Groot en landelijk georganiseerd, vaak op afstand.',
+    body: 'Groot georganiseerd, vaak op afstand.',
     points: [
       'Anoniem en op afstand',
       'Grote poule van docenten die vaak wisselen of elkaar niet kennen',
