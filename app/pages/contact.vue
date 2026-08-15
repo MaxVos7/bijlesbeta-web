@@ -11,89 +11,103 @@ useSeoMeta({
 <template>
   <div>
     <!--
-      Hero and form share one band on the sand ground: the contact details sit
-      left, the form panel right, and the auto-fit grid drops them into a single
-      column once the columns can no longer hold 330px.
+      Measured against `post-46.css`, not designed. The page is three bands on
+      the live site and the numbers below are that page's own:
+
+      - the hero row carries `--content-width:1100px`, a 63px gap and a 50/50
+        split above 768px, and sits on the page's own parchment rather than on
+        a ground of its own;
+      - a 43px spacer closes the parchment, then 84px of white opens the FAQ;
+      - the FAQ splits 40/60 on a zero gutter, with the accordion inset 24px.
+
+      The column gap inside the hero's left column is 12px, which is the
+      Elementor container default there — the widget margins (4px under the H1,
+      12px above and below the icon list) stack on top of it.
     -->
-    <section
-      class="bg-sand px-[clamp(16px,4vw,24px)] pt-[clamp(28px,4vw,52px)] pb-[clamp(48px,7vw,88px)]"
-    >
-      <div
-        class="mx-auto grid max-w-[1100px] items-center gap-[clamp(32px,5vw,60px)] [grid-template-columns:repeat(auto-fit,minmax(330px,1fr))]"
-      >
-        <div class="min-w-0">
-          <p class="kicker mb-2.5">{{ contactPage.kicker }}</p>
+    <section class="px-[clamp(16px,4vw,40px)] pt-9 pb-[43px]">
+      <div class="mx-auto grid max-w-[1100px] items-center gap-[63px] md:grid-cols-2">
+        <div class="flex min-w-0 flex-col justify-center gap-3 py-9">
+          <!-- 19px, not the sitewide 18px `kicker` — this page runs its own. -->
+          <p class="kicker text-[19px] leading-[19px]">{{ contactPage.kicker }}</p>
 
-          <h1
-            class="mb-[18px] max-w-[18ch] text-[clamp(28px,3.6vw,32px)] leading-[1.15] text-pretty"
-          >
-            {{ contactPage.title }}
-          </h1>
+          <h1 class="mb-1 text-[32px] leading-[44px]">{{ contactPage.title }}</h1>
 
-          <p class="mb-[30px] max-w-[52ch] text-[15px] leading-[1.7] text-ink-600">
-            {{ contactPage.intro }}
-          </p>
+          <p class="text-[14px] leading-[21px] text-ink-700">{{ contactPage.intro }}</p>
 
-          <div class="mb-[clamp(28px,3.5vw,40px)] flex flex-col gap-[18px]">
-            <a
-              :href="contact.whatsappHref"
-              rel="noopener"
-              class="flex items-center gap-4 text-[15px] font-bold transition hover:text-brand-700"
-            >
-              <span
-                class="flex h-[34px] w-[34px] flex-none items-center justify-center rounded-full bg-brand-500 text-white"
+          <!--
+            The live icon list draws Font Awesome's `whatsapp` and `envelope`
+            glyphs at 32px in the flat brand amber — no disc behind them — with
+            12px to the label and 16px between the rows.
+          -->
+          <ul class="my-3 flex flex-col gap-4">
+            <li>
+              <a
+                :href="contact.whatsappHref"
+                rel="noopener"
+                class="flex items-center gap-3 font-display text-[17px] leading-[1.5] font-semibold transition hover:text-brand-700"
               >
-                <svg class="h-[19px] w-[19px]" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                  <path
-                    d="M12 2a10 10 0 00-8.6 15.1L2 22l5-1.3A10 10 0 1012 2zm0 1.8a8.2 8.2 0 016.9 12.6l-.2.3.7 2.6-2.7-.7-.3.2A8.2 8.2 0 1112 3.8zm-3.5 4c-.2 0-.5.1-.7.4-.3.3-.8.9-.8 1.9 0 1 .7 2 1 2.4.3.4 1.5 2.5 3.8 3.4 1.9.7 2.3.6 2.7.6.5 0 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2 0-.1-.2-.2-.4-.3l-1.4-.7c-.2-.1-.4-.1-.5.1l-.6.8c-.1.2-.3.2-.5.1-.3-.1-1.1-.4-1.8-1.1-.6-.6-1-1.2-1.1-1.4-.1-.2 0-.3.1-.4l.4-.5c.1-.2.1-.3 0-.5l-.6-1.4c-.1-.3-.3-.3-.5-.3h-.6z"
-                  />
-                </svg>
-              </span>
-              {{ contact.phone }}
-            </a>
+                <span class="flex w-10 flex-none justify-center text-accent-500">
+                  <svg
+                    class="h-8 w-8"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M12 2a10 10 0 00-8.6 15.1L2 22l5-1.3A10 10 0 1012 2zm0 1.8a8.2 8.2 0 016.9 12.6l-.2.3.7 2.6-2.7-.7-.3.2A8.2 8.2 0 1112 3.8zm-3.5 4c-.2 0-.5.1-.7.4-.3.3-.8.9-.8 1.9 0 1 .7 2 1 2.4.3.4 1.5 2.5 3.8 3.4 1.9.7 2.3.6 2.7.6.5 0 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2 0-.1-.2-.2-.4-.3l-1.4-.7c-.2-.1-.4-.1-.5.1l-.6.8c-.1.2-.3.2-.5.1-.3-.1-1.1-.4-1.8-1.1-.6-.6-1-1.2-1.1-1.4-.1-.2 0-.3.1-.4l.4-.5c.1-.2.1-.3 0-.5l-.6-1.4c-.1-.3-.3-.3-.5-.3h-.6z"
+                    />
+                  </svg>
+                </span>
+                {{ contact.phone }}
+              </a>
+            </li>
 
-            <a
-              :href="contact.emailHref"
-              class="flex items-center gap-4 text-[15px] font-bold transition hover:text-brand-700"
-            >
-              <span
-                class="flex h-[34px] w-[34px] flex-none items-center justify-center rounded-full bg-brand-500 text-white"
+            <li>
+              <a
+                :href="contact.emailHref"
+                class="flex items-center gap-3 font-display text-[17px] leading-[1.5] font-semibold transition hover:text-brand-700"
               >
-                <svg
-                  class="h-[18px] w-[18px]"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  aria-hidden="true"
-                >
-                  <rect x="3" y="5" width="18" height="14" rx="2" />
-                  <path d="m3.5 6.5 8.5 6 8.5-6" />
-                </svg>
-              </span>
-              {{ contact.email }}
-            </a>
-          </div>
+                <span class="flex w-10 flex-none justify-center text-accent-500">
+                  <svg
+                    class="h-8 w-8"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M2 6.8A2.8 2.8 0 0 1 4.8 4h14.4A2.8 2.8 0 0 1 22 6.8v.3l-9.5 5.6a1 1 0 0 1-1 0L2 7.1v-.3Z"
+                    />
+                    <path
+                      d="M22 9.4v7.8a2.8 2.8 0 0 1-2.8 2.8H4.8A2.8 2.8 0 0 1 2 17.2V9.4l9 5.3c.6.4 1.4.4 2 0l9-5.3Z"
+                    />
+                  </svg>
+                </span>
+                {{ contact.email }}
+              </a>
+            </li>
+          </ul>
 
-          <div
-            class="grid gap-x-8 gap-y-0 text-sm leading-[1.7] [grid-template-columns:repeat(auto-fit,minmax(190px,max-content))]"
-          >
-            <div>
-              <p class="mb-0.5 font-bold">{{ contactPage.openingHoursTitle }}</p>
-              <div
-                class="grid justify-start gap-x-[22px] gap-y-0.5 text-ink-700 [grid-template-columns:auto_auto]"
-              >
+          <!--
+            Two equal columns on a 12px gutter, the rule drawn on the right edge
+            of the first rather than the left edge of the second — that is where
+            the live widget hangs its border. The live markup pads the hours
+            apart with `&nbsp;`; a two-column grid gets the same result honestly.
+          -->
+          <!-- Elementor wraps these two onto separate lines below 768px and
+               leaves the rule hanging; ours drops it instead. -->
+          <div class="flex flex-col gap-4 text-[16px] leading-[24px] md:flex-row md:gap-3">
+            <div class="flex-1 md:border-r md:border-black/10">
+              <p class="font-bold">{{ contactPage.openingHoursTitle }}</p>
+              <div class="grid justify-start gap-x-[18px] [grid-template-columns:auto_auto]">
                 <template v-for="row in contact.openingHoursRows" :key="row.days">
                   <span>{{ row.days }}</span><span>{{ row.hours }}</span>
                 </template>
               </div>
             </div>
 
-            <div class="border-l border-line-300 pl-8">
-              <p class="mb-0.5 font-bold">Bijles Bèta</p>
-              <p class="text-ink-700">
+            <div class="flex-1">
+              <p class="font-bold">Bijles Bèta</p>
+              <p>
                 {{ contact.address.street }},<br >
                 {{ contact.address.postalCode }} {{ contact.address.city }}
               </p>
@@ -107,19 +121,20 @@ useSeoMeta({
       </div>
     </section>
 
-    <!-- Heading beside the accordion rather than above it, unlike FaqSection. -->
-    <section id="faq" class="bg-white px-[clamp(16px,4vw,24px)] py-[clamp(56px,7vw,96px)]">
-      <div
-        class="mx-auto grid max-w-[1100px] items-start gap-[clamp(24px,4vw,56px)] [grid-template-columns:repeat(auto-fit,minmax(300px,1fr))]"
-      >
+    <!--
+      Heading beside the accordion rather than above it, unlike `FaqSection`.
+      The band opens on 84px of white and closes on `StatsBand`'s own 80px, so
+      it carries no bottom padding of its own.
+    -->
+    <section id="faq" class="bg-white px-[clamp(16px,4vw,40px)] pt-[84px]">
+      <div class="mx-auto grid max-w-[1100px] items-start md:grid-cols-[40%_60%]">
         <div class="min-w-0">
-          <h2 class="mb-3.5 text-[clamp(24px,2.9vw,28px)] tracking-[-0.025em] text-pretty">
-            {{ contactPage.faq.title }}
-          </h2>
-          <p class="text-[14.5px] leading-[1.7] text-ink-700">{{ contactPage.faq.body }}</p>
+          <h2 class="mb-1 text-[27px] leading-[44px]">{{ contactPage.faq.title }}</h2>
+          <p class="text-[16px] leading-[24px]">{{ contactPage.faq.body }}</p>
         </div>
 
-        <div class="min-w-0">
+        <!-- The live accordion sits 24px inside its 60% column. -->
+        <div class="mt-8 min-w-0 md:mt-0 md:pl-6">
           <FaqList size="lg" />
         </div>
       </div>

@@ -36,13 +36,16 @@ const errors = ref<Record<string, string>>({})
 const errorMessage = ref('')
 
 /*
-  The panel's fields are placeholder-only, so they carry no top margin —
-  `field-input` reserves one for the label it normally sits under.
+  The panel's fields are the live Gravity Forms controls, measured off
+  bijlesbeta.nl/contact: a 42px box with 20px of horizontal padding, 15px/600
+  Plus Jakarta Sans on a 44px leading and no vertical padding — the leading is
+  what centres the value in a box shorter than its own line. The rule is the
+  form plugin's `#0000001A`, not the site's warm `line-*` ramp.
+
+  They are placeholder-only, so `field-input`'s label margin is cleared.
 */
 const panelInput =
-  'block w-full rounded-field border border-line-300 bg-white px-3.5 py-[13px] ' +
-  'text-[13.5px] text-ink-800 transition placeholder:text-ink-300 ' +
-  'focus:border-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/25'
+  'field-input mt-0 h-[42px] border-black/10 py-0 font-display leading-[44px]'
 
 /** The endpoint takes one name field, whichever way the form collects it. */
 const fullName = () =>
@@ -95,17 +98,14 @@ async function submit() {
 </script>
 
 <template>
-  <div
-    :class="
-      panel && 'panel px-[clamp(20px,2.4vw,28px)] pt-[clamp(22px,2.6vw,30px)] pb-[clamp(24px,2.8vw,32px)]'
-    "
-  >
+  <!-- The live panel is a flat white 8px card on 24px of padding — no shadow. -->
+  <div :class="panel && 'rounded-panel bg-white p-6'">
     <div v-if="status === 'success' && panel" role="status">
-      <p class="kicker text-center">{{ copy.kicker }}</p>
-      <h2 class="mt-1.5 text-center text-[clamp(21px,2.2vw,26px)] tracking-[-0.02em]">
+      <p class="kicker text-center text-[15px] leading-[15px]">{{ copy.kicker }}</p>
+      <h2 class="mt-3 text-center text-[22px] leading-[44px]">
         {{ contactFormSuccess.title }}
       </h2>
-      <p class="mt-4 text-center text-[13.5px] leading-[1.7] text-ink-700">
+      <p class="text-center text-[14px] leading-[21px] text-ink-700">
         {{ contactFormSuccess.body }}
       </p>
     </div>
@@ -121,13 +121,20 @@ async function submit() {
 
     <form v-else :class="!panel && 'space-y-5'" novalidate @submit.prevent="submit">
       <template v-if="panel">
-        <p class="kicker mb-1.5 text-center">{{ copy.kicker }}</p>
-        <h2 class="mb-[22px] text-center text-[clamp(21px,2.2vw,26px)] tracking-[-0.02em]">
+        <!--
+          15px kicker and a 22px title on the 44px leading, both centred. The
+          12px between them and above the fields is the panel container's own
+          gap on the live page; the extra 4px under the title is the heading
+          widget's margin.
+        -->
+        <p class="kicker mb-3 text-center text-[15px] leading-[15px]">{{ copy.kicker }}</p>
+        <h2 class="mb-4 text-center text-[22px] leading-[44px]">
           {{ copy.title }}
         </h2>
 
-        <div class="grid gap-3 [grid-template-columns:repeat(auto-fit,minmax(150px,1fr))]">
-          <div>
+        <!-- The live name field splits into two inputs on a 12px gutter. -->
+        <div class="flex gap-3">
+          <div class="flex-1">
             <input
               v-model="form.firstName"
               type="text"
@@ -140,7 +147,7 @@ async function submit() {
             <p v-if="errors.firstName" class="field-error">{{ errors.firstName }}</p>
           </div>
 
-          <div>
+          <div class="flex-1">
             <input
               v-model="form.lastName"
               type="text"
@@ -154,7 +161,7 @@ async function submit() {
           </div>
         </div>
 
-        <div class="mt-3">
+        <div class="mt-2">
           <input
             v-model="form.email"
             type="email"
@@ -167,14 +174,14 @@ async function submit() {
           <p v-if="errors.email" class="field-error">{{ errors.email }}</p>
         </div>
 
-        <div class="mt-3">
+        <!-- The live message box is a flat 192px, not a row count. -->
+        <div class="mt-2">
           <textarea
             v-model="form.message"
-            rows="7"
             :placeholder="copy.message"
             :aria-label="copy.message"
             :aria-invalid="Boolean(errors.message)"
-            :class="[panelInput, 'resize-y leading-[1.6]']"
+            :class="[panelInput, 'h-[192px] resize-y']"
           />
           <p v-if="errors.message" class="field-error">{{ errors.message }}</p>
         </div>
@@ -241,11 +248,17 @@ async function submit() {
       </div>
 
       <template v-if="panel">
-        <label class="mt-5 flex cursor-pointer items-start gap-2.5 text-[13px] leading-normal text-ink-700">
+        <!--
+          The live consent row is a 20px box on a 4px radius beside 14px/20px
+          copy. Gravity Forms sets that label in its own cool `#112337`; the
+          site's ink is kept instead, which is the same call `main.css` makes
+          everywhere but the placeholder grey.
+        -->
+        <label class="mt-2 flex cursor-pointer items-start gap-2.5 font-display text-[14px] leading-[20px]">
           <input
             v-model="form.privacy"
             type="checkbox"
-            class="mt-px h-[15px] w-[15px] flex-none accent-accent-500"
+            class="h-5 w-5 flex-none rounded-field accent-accent-500"
             :aria-invalid="Boolean(errors.privacy)"
           >
           <span>{{ copy.privacy }}<span class="text-danger">{{ copy.privacyRequired }}</span></span>
@@ -258,7 +271,7 @@ async function submit() {
       <button
         type="submit"
         class="btn-primary"
-        :class="panel && 'mt-[18px] w-full py-[15px]'"
+        :class="panel && 'mt-4 w-full px-4 py-[17px] leading-[15px]'"
         :disabled="status === 'pending'"
       >
         <template v-if="panel">{{ status === 'pending' ? copy.submitting : copy.submit }}</template>
