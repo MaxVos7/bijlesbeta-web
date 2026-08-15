@@ -259,10 +259,37 @@ up with it exactly. Only two things actually take that step: the page H1
 16px). Subject-card titles and section titles hold one size at every width —
 don't add breakpoints they don't have.
 
-`/contact` puts its hero and its form panel in one sand band and sets its FAQ
+`/contact` puts its hero and its form panel in one band and sets its FAQ
 heading beside the accordion, so it uses neither `PageHero` nor `FaqSection`.
 Its form is `ContactForm` in its `panel` variant, with the name split in two,
 no phone field, placeholders instead of labels and required privacy consent.
+
+It is measured against `post-46.css` rather than designed, so these are the
+live page's numbers and shouldn't be tidied:
+
+- **The hero band has no ground of its own.** It sits on the page's
+  `parchment`, not on `sand` — the live container is transparent. White only
+  starts 43px below the hero, and the FAQ band opens on 84px of it. `StatsBand`
+  closes the page on its own 80px, so the FAQ carries no bottom padding.
+- **The hero splits 50/50 on a 63px gutter**; the FAQ splits 40/60 on a zero
+  gutter, with the accordion inset 24px inside its own column.
+- **This page runs a 19px kicker**, not the sitewide 18px, and the form panel
+  runs the small 15px one. The H1 is the usual 32px/44px and holds that size at
+  every width — `post-46.css` has no 767px step for it. The FAQ heading is the
+  27px sub-heading, and the panel title the 22px one, both on the 44px line.
+- **The hero paragraph is 14px/21px in `ink-700`** — the one place a hero
+  paragraph is not 16px — while the opening hours and the address beside it are
+  16px/24px in full ink, on two equal columns with the rule hung off the right
+  edge of the first.
+- **The contact rows are 32px flat amber glyphs**, no disc behind them, on a
+  17px/600 label. The live artwork is Font Awesome's `whatsapp` and `envelope`;
+  ours are equivalent drawings, not copies of those paths.
+- **The panel is a flat white 8px card on 24px of padding — no shadow**, and
+  its fields are the live Gravity Forms controls: a 42px box, 20px horizontal
+  padding, 15px/600 Plus Jakarta Sans on a 44px leading and no vertical padding,
+  ruled in the plugin's `#0000001A`. Fields stack on 8px, the two name inputs
+  split on 12px, the message box is a flat 192px, and the submit button is
+  full-width at 16px padding on a 15px leading, so it reads 49px.
 
 `/werken-bij` opens on a dark `ink-900` hero band rather than the usual cream
 one, so `SiteHeader` reads a `headerGround` route meta (set via
