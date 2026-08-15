@@ -90,6 +90,13 @@
   --color-on-brand: #6b5200;
   --color-on-brand-muted: #7a5f00;
 
+  /* Inline links inside body copy on bijlesbeta.nl's own pages. It is the
+     hello-elementor theme's default link colour rather than anything from the
+     kit — no amber, no ink, and no underline. The sitewide rule here is still
+     ink-900 with a 1.5px underline; this token exists only so /het-bedrijf can
+     reproduce the live page it replaces. Don't reach for it elsewhere. */
+  --color-link-wp: #c36;
+
   /* Grounds. `parchment` is the page ground the live site sets on <body>,
      and the fill of the highlighted package — a hair warmer than `sand`. */
   --color-parchment: #f5f3e9;
@@ -240,6 +247,17 @@
 @utility prose-page {
   & :where(p) {
     @apply mb-4 leading-relaxed text-ink-700;
+  }
+}
+
+/*
+  Body copy whose inline links are the live site's, not ours — see
+  `--color-link-wp`. Scoped to a wrapper rather than set on `a` globally so the
+  ink-900 + underline rule keeps every other page.
+*/
+@utility copy-live-links {
+  & :where(a) {
+    @apply text-link-wp no-underline;
   }
 }
 

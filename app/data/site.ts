@@ -6,6 +6,8 @@
  * change in one place.
  */
 
+import type { Run } from '~/data/kennisbank'
+
 export const tagline = 'Maakt het antwoord logisch.'
 
 export const contact = {
@@ -360,78 +362,189 @@ export const comparison = {
   },
 } as const
 
+/** One of the three alternating text/photo bands on `/het-bedrijf`. */
+type StoryBlock = {
+  /** Only the first band carries one — it is the hero button's target. */
+  id?: string
+  title: string
+  /** Which side the photograph sits on; the live page runs right, left, right. */
+  photo: 'left' | 'right'
+  body: readonly (readonly Run[])[]
+  cta?: { label: string; to: string }
+  image: string
+  imageAlt: string
+}
+
+type HetBedrijf = {
+  hero: {
+    title: string
+    body: string
+    cta: { label: string; href: string }
+    image: string
+    imageAlt: string
+  }
+  blocks: readonly StoryBlock[]
+  innovaties: {
+    kicker: string
+    title: string
+    intro: readonly (readonly Run[])[]
+    items: readonly { title: string; body: readonly (readonly Run[])[] }[]
+  }
+}
+
 /**
- * Het bedrijf — the company story page, recreated from a Claude Design
- * handoff based on screenshots of the legacy site. Lives at `/het-bedrijf`,
+ * Het bedrijf — the company story page, measured back onto
+ * bijlesbeta.nl/het-bedrijf/ (`post-1567.css`). Lives at `/het-bedrijf`,
  * separate from `/over-ons`, which keeps its own tutor roster and comparison
  * table.
+ *
+ * The copy is the live page's *verbatim*, which means it carries a handful of
+ * its slips — "Het onstaan" in the hero button, "Binnen Bijles Bèta zijn
+ * vanaf onze oprichting", "efficient", "ontwikkelen onze eigen kennisbank",
+ * "leerlingen voor alle andere bezoekers", "tentamen week", "examen vragen"
+ * and "centraal examens". They are transcribed, not introduced: fixing them
+ * here would make the cutover a content change as well as a platform one.
+ * Correct them on bijlesbeta.nl first, then here.
+ *
+ * Body copy is `Run[]` rather than plain strings because the live paragraphs
+ * carry inline links and bold — see the `Run` note in `kennisbank.ts`.
  */
-export const hetBedrijf = {
+export const hetBedrijf: HetBedrijf = {
   hero: {
     title: 'Bèta Bijles in Groningen sinds 2017',
     body: 'Bijles Bèta is niet zomaar een bijles bedrijf. Wij zijn een groep van gepassioneerd bèta studenten in Groningen die onze passie voor het vak willen overbrengen aan anderen. Ontstaan met een duidelijke visie. Ontdek onze geschiedenis en onze kernwaarden.',
-    image: '/img/het-bedrijf-hero.png',
-    imageAlt: 'Twee leerlingen werken samen aan wiskunde',
+    /** The live label is missing a `t`; `#het-onstaan` is its href, so the
+        first band carries that id rather than the spelling being corrected. */
+    cta: { label: 'Het onstaan', href: '#het-onstaan' },
+    image: '/img/bord.png',
+    imageAlt: 'Twee docenten van Bijles Bèta aan het schoolbord',
   },
-  verhaal: {
-    title: 'Ons verhaal',
-    body: 'Bijles kan hét hulpmiddel zijn om een leerling weer mee te laten komen op school. In 2017 zagen Mathijn en Max, beiden met een passie voor de exacte vakken, dit als een unieke kans. Vanuit Groningen richtten zij Bijles Bèta op met een duidelijke visie: wij laten leerlingen zien hoe je bèta vakken aanpakt en wanneer je dat eenmaal ziet, wordt een bèta vak ontzettend leuk!',
-    image: '/img/het-bedrijf-verhaal.png',
-    imageAlt: 'Twee docenten van Bijles Bèta met een kruiwagen',
-  },
-  aanpak: {
-    title: 'Onze aanpak',
-    body: [
-      'Voor ons is bijles een hulpmiddel om de leerling zo snel mogelijk weer mee te laten komen op school. We bieden handvatten waarmee leerlingen zelf de lessen beter kunnen volgen en de lol van het vak ontdekken. Onze prioriteit: een leerling leert zelf hoe je vraagstukken in een bèta vak aanpakt. Wij geven onze bijles vanuit passie voor de exacte vakken.',
-      'Wij geven bijles wiskunde, natuurkunde en scheikunde vanuit een passie voor de exacte vakken op vmbo, havo en vwo niveau.',
-    ],
-    image: '/img/het-bedrijf-docent.png',
-    imageAlt: 'Docent van Bijles Bèta',
-  },
-  team: {
-    title: 'Het team',
-    body: 'Bijles Bèta wordt vanaf het begin volledig georganiseerd door studenten van de rijksuniversiteit Groningen. Hierdoor is een hecht team ontstaan die veel contact met elkaar hebben en van elkaar leren.',
-    /** Split around the bold "buddy systeem" mid-sentence, same pattern as `statsIntro`. */
-    buddyBefore: 'Dit wordt versterkt door ons unieke ',
-    buddyBold: 'buddy systeem',
-    buddyAfter:
-      '. Beginnende docenten worden gekoppeld aan ervaren docenten, tijdens ieder bijles traject is er geregeld contact tussen beide docenten. Hierdoor krijgt een beginnend docent de kennis en het zelfvertrouwen om een kwalitatieve bijles te verzorgen.',
-    image: '/img/het-bedrijf-team.jpg',
-    imageAlt: 'Het team van Bijles Bèta tijdens een teamavond',
-  },
+
+  /**
+   * The three alternating text/photo bands. `photo: 'left'` is the middle one
+   * — the live page runs right, left, right.
+   */
+  blocks: [
+    {
+      id: 'het-onstaan',
+      title: 'Ons verhaal',
+      photo: 'right',
+      body: [
+        [
+          'Bijles kan hét hulpmiddel zijn om een leerling weer mee te laten komen op school. In 2017 zagen Mathijn en Max, beiden met een passie voor de exacte vakken, dit als een unieke kans. Vanuit Groningen richtten zij Bijles Bèta op met een duidelijke visie: wij laten leerlingen zien hoe je bèta vakken aanpakt en wanneer je dat eenmaal ziet, wordt een bèta vak ontzettend leuk!',
+        ],
+      ],
+      image: '/img/het-bedrijf-verhaal.png',
+      imageAlt: 'Twee docenten van Bijles Bèta met een kruiwagen',
+    },
+    {
+      title: 'Onze aanpak',
+      photo: 'left',
+      body: [
+        [
+          'Voor ons is bijles een hulpmiddel om de leerling zo snel mogelijk weer mee te laten komen op school. We bieden handvatten waarmee leerlingen zelf de lessen beter kunnen volgen en de lol van het vak ontdekken. Onze prioriteit: een leerling leert zelf hoe je vraagstukken in een bèta vak aanpakt. Wij geven onze bijles vanuit passie voor de exacte vakken.',
+        ],
+        [
+          'Wij geven bijles ',
+          { text: 'wiskunde', link: '/bijles-wiskunde-groningen' },
+          ', ',
+          { text: 'natuurkunde', link: '/bijles-natuurkunde-groningen' },
+          ' en ',
+          { text: 'scheikunde', link: '/bijles-scheikunde-groningen' },
+          ' vanuit een passie voor de exacte vakken op ',
+          { text: 'vmbo', link: '/bijles-vmbo' },
+          ', ',
+          { text: 'havo', link: '/bijles-havo' },
+          ' en ',
+          { text: 'vwo', link: '/bijles-vwo' },
+          ' niveau.',
+        ],
+      ],
+      cta: { label: 'Meld je aan', to: '/aanmelden' },
+      image: '/img/studenten.png',
+      imageAlt: 'Twee leerlingen werken samen aan wiskunde',
+    },
+    {
+      title: 'Het team',
+      photo: 'right',
+      body: [
+        [
+          'Bijles Bèta wordt vanaf het begin volledig georganiseerd door studenten van de rijksuniversiteit Groningen. Hierdoor is een hecht team ontstaan die veel contact met elkaar hebben en van elkaar leren.',
+        ],
+        [
+          'Dit wordt versterkt door ons unieke ',
+          { text: 'buddy systeem', bold: true },
+          '. Beginnende docenten worden gekoppeld aan ervaren docenten, tijdens ieder bijles traject is er geregeld contact tussen beide docenten. Hierdoor krijgt een beginnend docent de kennis en het zelfvertrouwen om een kwalitatieve bijles te verzorgen.',
+        ],
+      ],
+      /** The live button points at `/over-ons`, not at its team anchor. */
+      cta: { label: 'Ons team', to: '/over-ons' },
+      image: '/img/het-bedrijf-team.jpg',
+      imageAlt: 'Het team van Bijles Bèta tijdens een teamavond',
+    },
+  ],
+
   innovaties: {
     kicker: 'Innovaties',
     title: 'Zo blijft onze Bijles efficient en effectief',
     intro: [
-      'Binnen Bijles Bèta zijn we vanaf onze oprichting gefocust op innovatie. Wij proberen onze organisatie altijd zo efficiënt mogelijk te laten werken. Hierdoor kunnen we onze tarieven laag houden.',
-      'Daarnaast zijn we altijd bezig om onze dienst te verbeteren. Bijles lijkt misschien een simpel product, maar door innovaties proberen wij meer te bieden dan onze concurrenten.',
+      [
+        'Binnen Bijles Bèta zijn vanaf onze oprichting gefocust op innovatie. Wij proberen onze organisatie altijd zo efficient mogelijk te laten werken. Hierdoor kunnen we ',
+        { text: 'onze tarieven', link: '/tarieven' },
+        ' laag houden.',
+      ],
+      [
+        'Daarnaast zijn we altijd bezig om onze dienst te verbeteren. Bijles lijkt misschien een simpel product, maar door innovaties proberen wij meer te bieden dan onze concurrenten.',
+      ],
     ],
     items: [
       {
         title: 'Ons eigen administratie portaal',
         body: [
-          'Bijles Bèta heeft in de loop van de jaren een eigen administratie portaal ontwikkeld. In dit portaal geeft docenten, leerlingen en administratoren makkelijk toegang tot alle benodigde informatie. Lessen registratie, persoonsregistratie, facturatie en uitbetalingen gebeuren volledig automatisch.',
-          'Het systeem werkt zelfs zo goed dat het ondertussen ook door andere bijles bedrijven wordt gebruikt onder de naam StaatGenoteerd.',
+          [
+            'Bijles Bèta heeft in de loop van de jaren een eigen administratie portaal ontwikkeld. In dit portaal geeft docenten, leerlingen en administratoren makkelijk toegang tot alle benodigde informatie. Lessen registratie, persoonsregistratie, facturatie en uitbetalingen gebeuren volledig automatisch.',
+          ],
+          [
+            'Het systeem werkt zelfs zo goed dat het ondertussen ook door andere bijles bedrijven wordt gebruikt onder de naam ',
+            { text: 'StaatGenoteerd', link: 'https://staatgenoteerd.nl' },
+            '.',
+          ],
         ],
       },
       {
         title: 'Bètatheek',
         body: [
-          'Bijles Bèta focust de goede uitleg van de stof. Sinds kort zijn we bezig met het ontwikkelen van onze eigen kennisbank genaamd Bètatheek. De bètatheek is een collectie van artikelen die elk een specifiek vraagstuk uitgebreid uitlegt. De bètatheek dient als oefenmateriaal voor onze eigen leerlingen en voor alle andere bezoekers van onze website. Ook dient het als database voor onze docenten om oefenvragen uit te halen die ze kunnen gebruiken tijdens een bijles.',
-          'De bètatheek is nog in ontwikkeling en komt binnenkort beschikbaar! Blijf op de hoogte via een van onze sociale media kanalen.',
+          [
+            'Bijles Bèta focust de goede uitleg van de stof. Sinds kort zijn we bezig met het ontwikkelen onze eigen kennisbank genaamd: ',
+            { text: 'Bètatheek', bold: true },
+            '. De bètatheek is een collectie van artikelen die elk een specifiek vraagstuk uitgebreid uitlegt. De bètatheek dient als oefenmateriaal voor onze eigen leerlingen voor alle andere bezoekers van onze website. Ook dient het als database voor onze docenten om oefenvragen uit te halen die ze kunnen gebruiken tijdens een bijles.',
+          ],
+          [
+            'De bètatheek is nog in ontwikkeling en komt binnenkort beschikbaar! Blijf op de hoogte via een van onze sociale media kanalen.',
+          ],
         ],
       },
       {
         title: 'Unieke examentraining',
         body: [
-          'Het centraal examen is misschien wel de belangrijkste toets tijdens de middelbare school. Bijles Bèta biedt hiervoor een unieke ondersteuning: Bijles Bèta examentraining.',
-          'Onze examentraining is een intensieve persoonlijke begeleiding in de periode tussen de laatste tentamenweek en het centraal examen. Aan de hand van een speciaal ontwikkelde planning en toegang tot een uitgebreide collectie van uitwerkingen van examenvragen bereiden we onze leerlingen optimaal voor op de centrale examens.',
-          'Lees hier meer over onze examentraining.',
+          [
+            'Het centraal examen is misschien wel de belangrijkste toets tijdens de middelbare school. Bijles Bèta biedt hiervoor een unieke ondersteuning: ',
+            { text: 'Bijles Bèta examentraining', bold: true },
+            '.',
+          ],
+          [
+            'Onze examentraining is een intensieve persoonlijke begeleiding in de periode tussen de laatste tentamen week en het centraal examen. Aan de hand van een speciaal ontwikkelde planning en toegang tot een uitgebreide collectie van uitwerkingen van examen vragen bereiden we onze leerlingen optimaal voor op de centraal examens.',
+          ],
+          [
+            'Lees hier meer over onze ',
+            { text: 'examentraining', link: '/examentraining' },
+            '.',
+          ],
         ],
       },
     ],
   },
-} as const
+}
 
 /** The two alternating text/photo blocks on Over ons. */
 export const overOnsBlocks = [

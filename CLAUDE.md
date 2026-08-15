@@ -190,8 +190,8 @@ styles the button element.
 
 The design is applied to `/`, `/over-ons`, `/tarieven`, `/aanmelden`,
 `/contact`, `/werken-bij`, `/zo-werkt-het`, `/bijles-[vak]-[stad]`,
-`/docenten/[slug]`, `/examentraining` and the shared chrome, from a Claude
-Design handoff.
+`/docenten/[slug]`, `/examentraining`, `/het-bedrijf` and the shared chrome,
+from a Claude Design handoff.
 `app/assets/css/main.css` carries the real palette — an amber brand on cream
 and sand grounds, with a warm `ink-*` ramp, Plus Jakarta Sans for headings and
 Open Sans for body copy. The tokens are no longer placeholders.
@@ -598,6 +598,59 @@ measurements and shouldn't be tidied:
 Four paragraphs in the `kruistabel` article still hold raw `$$…$$` LaTeX and
 render literally. Rendering maths needs a decision (KaTeX at build time, or
 images), so it is left visible rather than papered over.
+
+### /het-bedrijf
+
+Measured against `post-1567.css`, not designed. It is the one page whose bands
+are *wider* than its hero, and the one page whose inline links aren't the
+site's:
+
+- **Only the hero runs the 1100px column.** It is the only container on the
+  page that sets `--content-width`; everything below takes the kit default,
+  `min(100%, 1400px)`. The story bands and the innovations list are therefore
+  visibly wider than the headline above them — that is the live page, not a
+  mistake.
+- **Five 80px spacer strips**, as on `/tarieven`. The first sits on parchment
+  and the other four on white, which is where the page changes ground.
+- **The headings run `tracking-normal`.** The base heading rule is
+  `tracking-tight`, from the design handoff; every heading in this Elementor
+  page is at normal letter-spacing. Section titles are 32px/44px, not the 28px
+  step, and hold that size at every width — there is no 767px step here, not
+  even for the H1.
+- **Inline links are `#c36` with no underline** — the hello-elementor theme's
+  default, which this page inherits and the rest of the site doesn't. That is
+  `--color-link-wp`, reachable only through the `copy-live-links` wrapper. The
+  sitewide rule is still ink-900 with a 1.5px underline; don't spread this one.
+- **All three CTAs invert to ink-900 on hover**, like the header's, rather than
+  stepping to `brand-600` the way `btn-primary` does alone. The hero's is the
+  page's only non-amber button: parchment on a 1px black-at-20% rule.
+- **The hero stacks at 1025px, not 768.** Between the two the copy goes full
+  width while the photograph stays at 50%, so it sits left-aligned under the
+  text. It looks like a bug and is what the live page does.
+- **The copy is the live page's verbatim, slips included** — "Het onstaan" on
+  the hero button, "Binnen Bijles Bèta zijn vanaf onze oprichting",
+  "efficient", "tentamen week", "examen vragen", "centraal examens". They are
+  transcribed, not introduced; fix them on bijlesbeta.nl first, then here.
+- **`#het-onstaan` is a dead anchor on the live site.** The hero button points
+  at it and nothing carries the id; ours puts it on the first band.
+
+Its body copy is `Run[]`, the same shape the kennisbank uses, because the live
+paragraphs carry inline links and bold. `ArticleRuns` renders internal links
+through `NuxtLink` so they pick up the trailing slash.
+
+The three photographs in the story bands are `background-image` on the live
+site, so they carry no alt text there; ours are `<img>` with real alts, which
+changes nothing visually.
+
+The page had the hero and `Onze aanpak` photographs the wrong way round
+against the live page — the blackboard shot is the hero and the two students
+at the table belong to `Onze aanpak`, not the reverse — and a library portrait
+in a slot the live page doesn't have one. `bord.png` and `studenten.png` are
+the same photographs the live page uses, so nothing new was added; the hero's
+crop is tighter than `Rijschoolfotos-78.png` and is the only place the artwork
+still differs. That left `het-bedrijf-hero.png` — a byte-identical copy of
+`studenten.png` — and `het-bedrijf-docent.png` unreferenced, and they are
+gone.
 
 Sections shared across pages are components, not copy-paste: `TrialCta` (the
 amber closing block, with its own short form), `FaqSection`, `StatsBand`,
