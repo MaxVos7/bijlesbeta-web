@@ -45,12 +45,64 @@ Both must pass. There is no test suite yet.
 
 ## Forms
 
-`server/api/contact.post.ts` and `server/api/aanmelden.post.ts` validate with
-zod, silently accept honeypot hits, and forward to Laravel. When
-`NUXT_LARAVEL_API_URL` is unset they log in dev and return 503 in production —
-that 503 is intentional. Do not make them silently succeed.
+All three form routes validate with zod, silently accept honeypot hits, and
+forward to the Laravel side. When the relevant environment variables are unset
+they log in dev and return 503 in production — that 503 is intentional. Do not
+make them silently succeed.
 
-The matching Laravel endpoints have not been built yet.
+Two different Laravel surfaces are in play, with two different credentials:
+
+- `server/api/contact.post.ts` posts through `forwardToLaravel`
+  (`NUXT_LARAVEL_API_URL` + a bearer token). **That endpoint doesn't exist
+  yet.**
+- `server/api/aanmelden.post.ts` and `server/api/solliciteren.post.ts` post
+  through `server/utils/portal.ts` to the portal's external-registration
+  endpoints — the same ones the Gravity Forms webhooks on bijlesbeta.nl use
+  today, authenticating with an `X-Secret-Key` header
+  (`NUXT_PORTAL_API_URL` + `NUXT_PORTAL_SECRET_KEY`). These **do** exist; see
+  `RegisteredUserController::storeExternalFull` / `storeExternalApplicant` in
+  `../bijlesbeta`.
+
+Things the portal's contract forces, which look arbitrary otherwise:
+
+- **Subjects and levels travel as numeric ids, not names.** The id maps live in
+  `server/utils/portal.ts` and come from the portal's `SubjectsSeeder` and
+  `LevelsSeeder`. The endpoints take `subjects` as a comma-separated id list
+  and *silently discard* anything non-numeric, so a label missing from the map
+  is dropped without an error — add new subjects to both sides.
+- **`student_subjects_1` is the only subject key we send.** The controller
+  reads the first non-empty of `_1.._3`, so the other two are noise.
+- **The hours question splits across two mutually exclusive keys**:
+  `student_weekly_amount_indication` as a `basis`/`standard`/`premium` band for
+  weekly lessons, `student_incidental_amount_indication` as a plain count
+  otherwise.
+- **`student_year` is capped at 6**, because the portal validates `max:6` and
+  rejects the whole submission above it. The live Gravity Form allows 8, so a 7
+  or 8 fails silently on bijlesbeta.nl today; `app/data/signup.ts` caps at 6 so
+  the visitor is told first.
+- **Five wizard answers have no field on the endpoint** — school, contact
+  method, and the "Anders, namelijk…" wording behind lesson kind, level and
+  subject. They are appended to `location_indication` under labels, which is
+  the only uncapped free-text key. They are deliberately *not* put in
+  `account_known_via`, which means "how did you hear about us". The real fix is
+  fields on the endpoint, or fewer questions.
+- **`street`, `city` and the two PDOK codes are not sent.** The portal
+  re-derives the address from postcode and house number in its own job.
+
+The CV on `/solliciteren` is a real upload: `register-external-applicant`
+requires `resume_url` and hands it to a job that does a plain `Http::get`, so
+the file must be publicly fetchable before the application is posted. The route
+uploads first and only posts the application once that returns a URL — an
+applicant is never recorded without the CV they attached. **The upload endpoint
+still has to be built on the portal:**
+
+    POST /upload-external-resume
+    X-Secret-Key: <the same shared key>
+    multipart/form-data, one `file` part (pdf/doc/docx, ≤10 MB)
+    200/201 -> { "url": "https://…" }   publicly fetchable by the queue worker
+
+Until it exists, `/solliciteren` returns a 502 and tells the applicant to mail
+their application instead.
 
 The signup wizard is data-driven: `app/data/signup.ts` defines the steps and
 returns each step's fields as a function of the answers so far, mirroring the

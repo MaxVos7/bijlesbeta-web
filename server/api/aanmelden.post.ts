@@ -65,14 +65,79 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const { website, ...payload } = body.data
+  const { website, ...answers } = body.data
 
   // Silently accept honeypot hits so bots get no signal.
   if (isSpam({ website })) {
     return { ok: true }
   }
 
-  await forwardToLaravel(event, '/api/website/aanmelden', payload)
+  await postToPortal(event, '/register-external-full', signupPayload(answers))
 
   return { ok: true }
 })
+
+type Answers = Omit<z.infer<typeof schema>, 'website'>
+
+/**
+ * Maps the wizard's answers onto `register-external-full`, which is the same
+ * body the Gravity Forms webhook posts today — see the webhook's field list on
+ * bijlesbeta.nl, and `RegisteredUserController::storeExternalFull` for what it
+ * does with each key.
+ *
+ * Two shapes matter. `student_subjects_1` is a comma-separated list of numeric
+ * subject ids, not names; the controller reads the first non-empty of the
+ * three `_1.._3` keys, so only `_1` is sent. And the hours question arrives on
+ * one of two mutually exclusive keys depending on the lesson kind — weekly as
+ * a `basis`/`standard`/`premium` band, anything else as a plain count.
+ *
+ * Five answers the wizard asks for have no field on the endpoint at all: the
+ * school name, the preferred contact method, and the "Anders, namelijk…"
+ * wording behind lesson kind, level and subject. They are appended to
+ * `location_indication` under labels rather than dropped — it is the only
+ * free-text key with no length cap, and it already carries the visitor's own
+ * notes about how the lessons should work. They do not belong in
+ * `account_known_via`, which means "how did you hear about us", so that key
+ * carries only the answer to that question.
+ *
+ * The right fix is for the endpoint to grow fields for them, or for the wizard
+ * to stop asking; see the note in CLAUDE.md.
+ *
+ * `street`, `city` and the two PDOK codes are deliberately not sent — the
+ * portal re-derives the address from postcode and house number in its own job.
+ */
+function signupPayload(v: Answers) {
+  const notes = [
+    v.location,
+    v.location === 'anders' && v.locationNote && `Toelichting: ${v.locationNote}`,
+    v.school && `School: ${v.school}`,
+    v.contactMethod && `Contact via: ${v.contactMethod}`,
+    v.level === 'different' && v.levelOther && `Niveau: ${v.levelOther}`,
+    v.subjectOther && `Ander vak: ${v.subjectOther}`,
+    v.lessonKind === 'different' && v.lessonKindNote && `Soort bijles: ${v.lessonKindNote}`,
+  ].filter(Boolean)
+
+  return compact({
+    student_first_name: v.studentFirstName,
+    student_phone_number: v.studentPhone,
+    student_level: levelId(v.level),
+    student_subjects_1: subjectIds(v.subjects),
+    student_year: v.schoolYear,
+
+    student_interval_type: v.lessonKind,
+    // Only one of these two is ever asked, and the portal prefers the band.
+    student_weekly_amount_indication: v.lessonKind === 'weekly' ? v.weeklyHours : '',
+    student_incidental_amount_indication: v.lessonKind === 'weekly' ? '' : v.totalHours,
+
+    location_indication: notes.join(' — '),
+    date_time_indication: v.availability,
+
+    account_name: `${v.contactFirstName} ${v.contactLastName}`.trim(),
+    account_email: v.email,
+    account_phone_number: v.contactPhone,
+    account_postcode: v.postalCode,
+    account_housenumber: v.houseNumber,
+    account_address_comment: v.addressNote,
+    account_known_via: v.heardAbout,
+  })
+}

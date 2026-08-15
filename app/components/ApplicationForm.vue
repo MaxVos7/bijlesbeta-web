@@ -4,11 +4,11 @@ import { werkenBij } from '~/data/site'
 /*
   The docent application form from /werken-bij.
 
-  There is no sollicitatie endpoint yet, so the answers are composed into a
-  single message and posted to /api/contact with a fixed subject — the same
-  path ContactForm takes. The CV dropzone is deliberately visual only: the
-  contact endpoint accepts JSON, not multipart, so only the file *name* travels
-  along in the message and the team asks for the document by mail.
+  Posts multipart to `/api/solliciteren`, which uploads the CV and then hands
+  the application to the portal's `register-external-applicant` — the endpoint
+  the Gravity Forms webhook uses today. The CV is a real upload, not a
+  filename: the portal requires a `resume_url` and fetches it, so a submission
+  without a readable file is refused rather than recorded half-complete.
 */
 
 const form = reactive({
@@ -28,15 +28,37 @@ const form = reactive({
 })
 
 const fileInput = ref<HTMLInputElement | null>(null)
-const cvFileName = ref('')
+const cvFile = ref<File | null>(null)
+const cvFileName = computed(() => cvFile.value?.name ?? '')
+
+/** What the portal's resume job can read back, mirrored in the API route. */
+const CV_TYPES = [
+  'application/pdf',
+  'application/msword',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+]
+const MAX_CV_BYTES = 10 * 1024 * 1024
 
 const status = ref<'idle' | 'pending' | 'success' | 'error'>('idle')
 const errors = ref<Record<string, string>>({})
 const errorMessage = ref('')
 
 function onFileChange(event: Event) {
-  const file = (event.target as HTMLInputElement).files?.[0]
-  cvFileName.value = file?.name ?? ''
+  const file = (event.target as HTMLInputElement).files?.[0] ?? null
+  cvFile.value = file
+
+  // Checked here as well as in the API route, so the applicant hears about a
+  // file the portal can't read before they fill in the rest.
+  const { cv, ...rest } = errors.value
+  errors.value = rest
+
+  if (!file) return
+  if (file.size > MAX_CV_BYTES) {
+    errors.value = { ...errors.value, cv: 'Je CV is te groot. Gebruik een bestand van maximaal 10 MB.' }
+  }
+  else if (!CV_TYPES.includes(file.type)) {
+    errors.value = { ...errors.value, cv: 'Gebruik een pdf- of Word-bestand voor je CV.' }
+  }
 }
 
 function validate() {
@@ -52,22 +74,16 @@ function validate() {
   }
   if (!form.postalCode.trim()) next.postalCode = 'Vul je postcode in.'
   if (!form.houseNumber.trim()) next.houseNumber = 'Vul je huisnummer in.'
+  if (!cvFile.value) next.cv = 'Voeg je CV toe om te solliciteren.'
+  else if (cvFile.value.size > MAX_CV_BYTES) {
+    next.cv = 'Je CV is te groot. Gebruik een bestand van maximaal 10 MB.'
+  }
+  else if (!CV_TYPES.includes(cvFile.value.type)) {
+    next.cv = 'Gebruik een pdf- of Word-bestand voor je CV.'
+  }
   if (!form.privacy) next.privacy = 'Ga akkoord met het privacybeleid om te versturen.'
   errors.value = next
   return Object.keys(next).length === 0
-}
-
-/** Everything the contact endpoint has no field for goes into the message body. */
-function composeMessage() {
-  const lines = [
-    `Bijlesvakken: ${form.subjects.join(', ')}`,
-    `Studie: ${form.study.trim()}`,
-    `Adres: ${form.postalCode.trim()} ${form.houseNumber.trim()}`,
-  ]
-  if (form.heardFrom.trim()) lines.push(`Kent ons van: ${form.heardFrom.trim()}`)
-  if (cvFileName.value) lines.push(`CV: ${cvFileName.value} (niet meegestuurd — per mail opvragen)`)
-  lines.push('', 'Motivatie:', form.motivation.trim())
-  return lines.join('\n')
 }
 
 async function submit() {
@@ -76,18 +92,25 @@ async function submit() {
   status.value = 'pending'
   errorMessage.value = ''
 
+  // Multipart rather than JSON, so the CV travels with the answers.
+  const body = new FormData()
+  body.append('firstName', form.firstName.trim())
+  body.append('lastName', form.lastName.trim())
+  body.append('phone', form.phone.trim())
+  body.append('email', form.email.trim())
+  body.append('study', form.study.trim())
+  body.append('motivation', form.motivation.trim())
+  body.append('postalCode', form.postalCode.trim())
+  body.append('houseNumber', form.houseNumber.trim())
+  body.append('heardFrom', form.heardFrom.trim())
+  body.append('privacy', String(form.privacy))
+  body.append('website', form.website)
+  // One part per checked box; the route collects them back into an array.
+  for (const subject of form.subjects) body.append('subjects', subject)
+  if (cvFile.value) body.append('cv', cvFile.value, cvFile.value.name)
+
   try {
-    await $fetch('/api/contact', {
-      method: 'POST',
-      body: {
-        name: `${form.firstName.trim()} ${form.lastName.trim()}`,
-        email: form.email.trim(),
-        phone: form.phone.trim(),
-        subject: 'Sollicitatie docent',
-        message: composeMessage(),
-        website: form.website,
-      },
-    })
+    await $fetch('/api/solliciteren', { method: 'POST', body })
     status.value = 'success'
   }
   catch (error: any) {
@@ -278,13 +301,18 @@ async function submit() {
             type="file"
             accept=".pdf,.doc,.docx"
             class="sr-only"
+            :aria-invalid="Boolean(errors.cv)"
             @change="onFileChange"
           >
           <button type="button" class="btn-primary text-[13.5px]" @click="fileInput?.click()">
             Selecteer bestanden
           </button>
         </div>
-        <p class="mt-2.5 text-[12.5px] text-ink-500">Max. bestandsgrootte: 2 MB.</p>
+        <!-- Sized off the constant so the promise and the check can't drift. -->
+        <p class="mt-2.5 text-[12.5px] text-ink-500">
+          Pdf of Word, max. {{ MAX_CV_BYTES / 1024 / 1024 }} MB.
+        </p>
+        <p v-if="errors.cv" class="field-error" role="alert">{{ errors.cv }}</p>
       </div>
 
       <div class="grid gap-3.5 [grid-template-columns:repeat(auto-fit,minmax(150px,1fr))]">

@@ -38,6 +38,11 @@ export default defineNuxtConfig({
     // Server-only. Set via NUXT_LARAVEL_API_URL / NUXT_LARAVEL_API_TOKEN.
     laravelApiUrl: '',
     laravelApiToken: '',
+    // The portal's external-registration endpoints, which authenticate with a
+    // shared secret rather than a bearer token. Set via NUXT_PORTAL_API_URL /
+    // NUXT_PORTAL_SECRET_KEY — never commit the key.
+    portalApiUrl: '',
+    portalSecretKey: '',
     public: {
       siteUrl: 'https://bijlesbeta.nl',
       portalUrl: 'https://mijn.bijlesbeta.nl',

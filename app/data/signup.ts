@@ -286,12 +286,18 @@ export const signupSteps: SignupStep[] = [
           kind: 'text',
           name: 'schoolYear',
           label: 'Schooljaar',
-          hint: 'Voer een getal kleiner dan of gelijk aan 8 in.',
+          /*
+            The live Gravity Form allows 8, but the portal validates
+            `student_year` as `max:6` and rejects the whole submission above
+            that — so on bijlesbeta.nl a 7 or 8 silently fails. Capped here so
+            the visitor is told before submitting rather than after.
+          */
+          hint: 'Voer een getal kleiner dan of gelijk aan 6 in.',
           required: true,
           placeholder: 'Schooljaar',
           inputType: 'number',
           min: 0,
-          max: 8,
+          max: 6,
         },
         {
           kind: 'select',
