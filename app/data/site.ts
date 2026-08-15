@@ -844,3 +844,107 @@ export const faqs = [
       'We geven dit jaar examentraining voor het vak wiskunde. Voor alle andere vakken kunnen onze docenten je perfect voorbereiden op je examen via onze bijles.',
   },
 ]
+
+/**
+ * `/excel-training-groningen` — a 1-on-1 Excel training for professionals,
+ * ported from the live page of the same URL. It is the one service on
+ * bijlesbeta.nl that isn't bijles, and it sells to businesses rather than to
+ * pupils, so it shares the chrome and nothing else.
+ */
+export const excelTraining = {
+  hero: {
+    ratingLabel: '7 jaar ervaring, 25 ervaren docenten',
+    title: 'Excel Training Groningen voor professionals',
+    intro:
+      'Persoonlijke 1-op-1 begeleiding voor ondernemers en medewerkers die meer uit Excel willen halen. Geen abstracte voorbeelden maar direct toegepast op jouw persoonlijke situatie. Bij jou op locatie voor maar €60 per uur.',
+    cta: 'Plan gratis intake',
+  },
+  intro: {
+    title: 'Excel training op maat',
+    body:
+      'Geen standaard cursus met oefeningen die niets met jouw situatie te maken hebben. Bij Bijles Bèta werken we direct met jouw eigen spreadsheets en data. Zo leer je precies wat jij nodig hebt.',
+    price: 'Persoonlijke training voor maar €60 per uur.',
+  },
+  pains: {
+    title: 'Herkenbaar?!',
+    items: [
+      'Uren kwijt aan handmatig kopiëren en plakken tussen spreadsheets.',
+      'Formules die niet doen wat je wilt (of die je niet begrijpt)',
+      'Collega’s die "even snel" iets in Excel moeten doen, maar vastlopen',
+      'Het gevoel dat Excel veel meer kan, maar je weet niet hoe',
+    ],
+    cta: 'Neem contact op',
+  },
+  curriculum: {
+    kicker: 'Wat je leert',
+    title: 'Wil jij ook een excel pro worden?',
+    body:
+      'Krijg persoonlijke training van onze ervaren bijlesdocenten. Hieronder zie je een overzicht van de onderwerpen die voorbij komen in onze training. Alles afgestemd op jouw behoefte.',
+    groups: [
+      {
+        title: 'Basis & Gevorderd:',
+        items: [
+          'Efficiënt werken met grote datasets',
+          'Formules: VERT.ZOEKEN, ALS, SOMMEN.ALS, INDEX/VERGELIJKEN',
+          'Draaitabellen maken en analyseren',
+          'Gegevens filteren, sorteren en opschonen',
+          'Grafieken en visualisaties',
+        ],
+      },
+      {
+        title: 'Automatisering & Geavanceerd:',
+        items: [
+          'Sjablonen bouwen die je steeds kunt hergebruiken',
+          'Data importeren uit andere bronnen',
+          'Foutopsporing in formules',
+          'Macro’s en automatisering (optioneel)',
+          'Power Query basics (optioneel)',
+        ],
+      },
+    ],
+  },
+  steps: [
+    {
+      title: 'Gratis intake gesprek',
+      body: 'We bespreken je situatie, doelen en huidige Excel-niveau. 30 minuten, vrijblijvend.',
+    },
+    {
+      title: 'Training op maat',
+      body: 'Sessies van 1-2 uur, bij jou op locatie of online. We werken met jouw eigen bestanden.',
+    },
+    {
+      title: 'Direct resultaat',
+      body: 'Na elke sessie kun je het geleerde meteen toepassen in je werk.',
+    },
+  ],
+  faq: {
+    title: 'Moeilijke vragen bestaan niet!',
+    items: [
+      {
+        question: 'Voor wie is deze training?',
+        answer:
+          'Ondernemers die zelf administratie doen, office managers die rapportages maken, accountants en boekhouders, en medewerkers die dagelijks met Excel werken.',
+      },
+      {
+        question: 'Hoe lang duurt de training',
+        answer:
+          'Onze training bestaat uit 1-op-1 sessies. Het is precies zo lang als je nodig hebt. Je betaald ons per uur.',
+      },
+      {
+        question: 'Ik ben een echte beginner. Is dat erg?',
+        answer:
+          'Helemaal niet. We beginnen waar jij staat. Of je nu de basis wilt leren of juist gevorderde functies, we passen de training aan op jouw niveau.',
+      },
+      {
+        question: 'Kan ik ook een training voor meerdere medewerkers boeken?',
+        answer:
+          'Ja, neem contact op voor de mogelijkheden. We kunnen ook kleine groepen (2-3 personen) trainen.',
+      },
+      {
+        question: 'In welk gebied zijn jullie actief?',
+        answer:
+          'We komen bij je op locatie in Groningen en omgeving. Online training is natuurlijk overal mogelijk.',
+      },
+    ],
+  },
+} as const
