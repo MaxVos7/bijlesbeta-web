@@ -52,6 +52,12 @@
   --color-ink-500: rgb(29 29 27 / 0.55);
   --color-ink-400: #9b958b;
   --color-ink-300: #a8a29a;
+  /* The live site's `410adae` global — #222 at 72%, and *not* the same tone as
+     `ink-700` (#1D1D1B at 55%). The two are not interchangeable: this is the
+     kennisbank hero's intro, the excerpt on every article card and the meta
+     row under an article title. It is the one place the site steps its
+     secondary copy off #222 rather than off the deep ink. */
+  --color-ink-muted: rgb(34 34 34 / 0.72);
   /* Form placeholders, and only those — the one cool grey on the site, come
      by honestly from the live form plugin's stylesheet. */
   --color-placeholder: #9ca3af;
@@ -340,25 +346,34 @@
   rendered from `Article['body']` blocks (see `data/kennisbank.ts`). Kept as
   one utility rather than per-element classes in the template since the set
   of elements is fixed and only ever appears inside the article body.
+
+  Measured against the live article template (`post-169.css`) rather than
+  designed, so three things here are bijlesbeta.nl's and shouldn't be tidied:
+  the body runs in *Plus Jakarta Sans*, not Open Sans — the widget overrides
+  the global text family onto the Secondary one; `h2` carries 32px of space
+  above it and nothing decorative; and body links are the deep ink with a
+  plain underline rather than the amber every other link on the site takes.
 */
 @utility article-prose {
+  font-family: var(--font-display);
+
   & :where(h2) {
-    @apply mt-10 mb-3.5 text-[clamp(22px,2.4vw,27px)] font-bold;
+    @apply mt-8 mb-3.5 text-[22px] leading-[44px] font-bold;
   }
   & :where(h3) {
-    @apply mt-8 mb-3 text-[clamp(19px,2vw,22px)] font-medium;
+    @apply mt-6 mb-3 text-[19px] leading-[26px] font-bold;
   }
   & :where(p) {
-    @apply mb-4 text-[13.5px] leading-[1.75] text-ink-700;
+    @apply mb-[1.2rem] text-[15px] leading-[28px];
   }
   & :where(ul, ol) {
-    @apply mb-4 pl-[30px];
+    @apply mb-[1.2rem] pl-[30px];
   }
   & :where(li) {
-    @apply mb-1 text-[13.5px] leading-[1.75];
+    @apply mb-1 text-[15px] leading-[28px];
   }
   & :where(a) {
-    @apply underline underline-offset-2;
+    @apply text-ink-900 underline underline-offset-2 hover:text-ink-900;
   }
   & :where(table) {
     @apply mb-5 w-full border-collapse border border-line-200 text-[13px];

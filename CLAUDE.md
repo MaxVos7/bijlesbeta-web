@@ -73,8 +73,9 @@ parity, so a few things are now deliberate and shouldn't drift back:
 - **One amber.** `brand-500` and `accent-500` are both `#ffbb00`; the live site
   runs no separate accent. `brand-600` (`#f0b000`) is the hover.
 - **Three radii.** Controls round on 4px (`field`, `btn`), surfaces on 8px
-  (`panel`, `tile`, `card`), and three large blocks on 12px (`block`): the
-  header card, the amber closing panel and the `Zo werkt het` photograph. The
+  (`panel`, `tile`, `card`), and the large blocks on 12px (`block`): the
+  header card, the amber closing panel, the `Zo werkt het` photograph and the
+  kennisbank's cards (see the kennisbank note below). The
   five 4/8px names survive so components didn't have to change, but they
   resolve onto those two values — don't reintroduce one-off
   `rounded-[11px]`-style overrides.
@@ -384,11 +385,47 @@ the FAQ's "Neem contact op!" point at `#aanmelden` on the same page (plain
 `<a href>`, matching the pattern in `tarieven.vue`/`werken-bij.vue`), not the
 `/contact` route.
 
-`/kennisbank` had no design to work from and still uses the scaffold's
-`slate-*` greys. When restyling it, replace `slate-*` with `ink-*` / `line-*`
-and take grounds from `cream` / `sand` / `mist` / `ivory` — don't introduce a
-second neutral scale. Keep preferring token and utility changes over
-rewriting page markup.
+`/kennisbank` and `/kennisbank/[slug]` are measured against `post-204.css` and
+`post-169.css` rather than designed, like the header and `/werken-bij`. The
+overview and the article share `ArticleCard`, `AuthorBadge` and
+`ArticleCoverPlaceholder`; both cover art and author avatars are wired to
+local paths under `public/img` and fall back to the placeholder when a file is
+missing, so artwork can land one file at a time. What follows from the
+measurements and shouldn't be tidied:
+
+- **The hero sits on the page's own parchment**, not on a ground of its own,
+  and the white band opens *below* it with an 80px lead-in. That is why the
+  page writes its hero out instead of mounting `PageHero`, which paints
+  `cream` with a rule under it.
+- **Two nested gutters.** The band takes the sitewide 40px and the filter and
+  grid take a further 36px inside it, collapsing to 0 below 768px. The hero's
+  36px does *not* collapse — on a phone its copy is inset further than the
+  cards beneath it, exactly as on the live page.
+- **The kennisbank surfaces round on 12px** (`rounded-block`): the article
+  cards, the article's header card and its content card. They join the header
+  card, the amber closing panel and the `Zo werkt het` photograph as the
+  exceptions to the 4/8px rule; the 176px cover crop inside a card rounds on
+  the 4px control radius, not the 8px one.
+- **`ink-muted` is not `ink-700`.** The live `410adae` global is `#222` at
+  72% and carries the hero intro, every card excerpt and the article meta
+  row; `ink-700` is the deep ink at 55% and belongs to the rest of the site.
+- **The tag pills have no fill.** Amber label on an amber hairline, straight
+  over the photograph — the same parity-over-contrast call as the kicker.
+  They're spans, not links, because this app has no per-category archive.
+- **The two grids behave differently.** The overview lets cards end where
+  their copy ends; the related-articles grid on an article stretches them to
+  a common row height (`grid-auto-rows: 1fr` on the live loop). Both step on
+  Elementor's breakpoints — three columns from `desk:`, two from `md:`.
+- **The article body runs in Plus Jakarta Sans 400**, not Open Sans: the live
+  content widget overrides the global text family onto the Secondary one. Its
+  links are the deep ink with a plain underline rather than the site's amber.
+  `article-prose` carries all of this.
+- **The article stacks at 1025px, not 768** — Elementor's tablet floor — which
+  puts the table of contents below the article rather than above it.
+
+Four paragraphs in the `kruistabel` article still hold raw `$$…$$` LaTeX and
+render literally. Rendering maths needs a decision (KaTeX at build time, or
+images), so it is left visible rather than papered over.
 
 Sections shared across pages are components, not copy-paste: `TrialCta` (the
 amber closing block, with its own short form), `FaqSection`, `StatsBand`,

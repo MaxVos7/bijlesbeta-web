@@ -1,6 +1,21 @@
 <script setup lang="ts">
 import { findArticle, relatedArticles } from '~/data/kennisbank'
 
+/**
+ * Measured against bijlesbeta.nl's article template (`post-169.css`) rather
+ * than designed. Things that are the live page's and shouldn't be tidied:
+ *
+ * - **The H1 is 32px on a 42px line**, the one place the site's 44px leading
+ *   doesn't hold, and it runs at 85% of its column so it wraps early.
+ * - **Two cards, one ground.** The header card is `parchment` with its cover
+ *   bled to the top corners; the content card carries the same 12px radius
+ *   and 28px padding but no fill of its own.
+ * - **The column split is 80/20 with a 22px gutter, and only above 1025px** —
+ *   Elementor stacks it at the tablet floor, which puts the table of contents
+ *   *below* the article rather than above it. That is the live behaviour.
+ * - **The related-articles grid stretches** (`grid-auto-rows: 1fr` on the
+ *   live loop), unlike the overview grid, which doesn't.
+ */
 const route = useRoute()
 const article = findArticle(String(route.params.slug))
 
@@ -15,6 +30,7 @@ useSeoMeta({
 
 const dateFormatter = new Intl.DateTimeFormat('nl-NL', { dateStyle: 'long' })
 const related = relatedArticles(article, 3)
+const coverFailed = ref(false)
 
 /** Deterministic anchor id for a heading, shared between the body and the table of contents. */
 function slugify(text: string) {
@@ -43,8 +59,8 @@ const toc = computed<TocEntry[]>(() => {
 })
 
 // Highlights the heading currently at the top of the viewport in the TOC —
-// the design shows one entry highlighted amber, so this makes that real
-// instead of hard-coding which one.
+// the live widget marks one entry amber, so this makes that real instead of
+// hard-coding which one.
 const activeId = ref('')
 
 const updateActiveHeading = () => {
@@ -68,43 +84,53 @@ onUnmounted(() => {
 
 <template>
   <div v-if="article">
-    <section class="bg-white px-[clamp(16px,4vw,24px)] pt-[clamp(20px,3vw,34px)] pb-[clamp(48px,6vw,72px)]">
-      <div class="mx-auto max-w-[1100px]">
-        <div class="overflow-hidden rounded-panel bg-cream">
-          <img
-            v-if="article.coverImage"
-            :src="article.coverImage"
-            :alt="`Cover: ${article.title}`"
-            class="block aspect-[5.1] w-full object-cover"
-          >
-          <ArticleCoverPlaceholder v-else aspect="5.1" />
+    <!-- White runs from the top of the page to the foot of the article; the
+         related row and the FAQ below it close on the site's own parchment. -->
+    <section class="bg-white px-[clamp(16px,4vw,40px)] pt-[30px] pb-16">
+      <div class="mx-auto flex max-w-[1100px] flex-col gap-[22px] desk:flex-row">
+        <div class="flex min-w-0 flex-col gap-10 desk:w-4/5 desk:pl-9">
+          <!-- Header card -->
+          <header class="overflow-hidden rounded-block bg-parchment">
+            <img
+              v-if="article.coverImage && !coverFailed"
+              :src="article.coverImage"
+              :alt="`Cover: ${article.title}`"
+              class="block h-[200px] w-full object-cover"
+              @error="coverFailed = true"
+            >
+            <ArticleCoverPlaceholder v-else aspect="5.5" class="h-[200px]" />
 
-          <div class="px-[clamp(16px,2vw,22px)] pt-[18px] pb-[22px]">
-            <div class="flex flex-wrap gap-2">
-              <span
-                v-for="tag in article.tags"
-                :key="tag"
-                class="rounded-btn border border-brand-500 px-2.5 py-[5px] text-xs font-semibold whitespace-nowrap text-brand-700"
-              >{{ tag }}</span>
-            </div>
-            <div class="mt-3 flex items-start justify-between gap-6">
-              <div class="min-w-0">
-                <h1 class="text-[clamp(24px,2.9vw,30px)]">{{ article.title }}</h1>
-                <p class="mt-2 flex flex-wrap gap-5 text-[12.5px] text-ink-700">
+            <!-- 70/30 with a 36px gutter above 768px, stacked below it. The two
+                 widths plus the gutter overshoot 100% on purpose — the live
+                 columns are flex children that shrink, not a grid. -->
+            <div class="flex flex-col gap-9 p-7 md:flex-row">
+              <div class="min-w-0 md:w-[70%]">
+                <div class="flex flex-wrap gap-2">
+                  <span
+                    v-for="tag in article.tags"
+                    :key="tag"
+                    class="rounded-btn border border-brand-500 px-3 py-1.5 font-display text-[15px] leading-[21px] font-semibold whitespace-nowrap text-brand-500"
+                  >{{ tag }}</span>
+                </div>
+
+                <h1 class="mt-3 text-[26px] leading-[36px] md:text-[32px] md:leading-[42px] lg:max-w-[85%]">
+                  {{ article.title }}
+                </h1>
+
+                <div class="mt-4 flex flex-wrap items-center gap-4 text-[13px] text-ink-muted">
                   <span>{{ dateFormatter.format(new Date(article.publishedAt)) }}</span>
                   <span>Leestijd: {{ article.readingMinutes }} minuten ({{ article.wordCount }} woorden)</span>
-                </p>
+                </div>
               </div>
-              <div class="flex flex-none items-center gap-2.5">
-                <span class="h-[34px] w-[34px] flex-none rounded-btn bg-line-300" aria-hidden="true" />
-                <span class="text-[13.5px] font-bold">{{ article.author }}</span>
+
+              <div class="flex items-center md:w-[30%]">
+                <AuthorBadge :name="article.author" />
               </div>
             </div>
-          </div>
-        </div>
+          </header>
 
-        <div class="mt-6 grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_220px]">
-          <div class="order-2 min-w-0 lg:order-1">
+          <!-- Content card -->
+          <div class="rounded-block max-md:p-0 md:p-7">
             <div v-if="article.body.length" class="article-prose">
               <template v-for="(block, i) in article.body" :key="i">
                 <component
@@ -135,64 +161,41 @@ onUnmounted(() => {
                 </table>
               </template>
             </div>
-            <p v-else class="max-w-[70ch] text-[15px] leading-relaxed text-ink-700">
+            <p v-else class="article-prose">
               {{ article.excerpt }}
             </p>
           </div>
+        </div>
 
-          <aside v-if="toc.length" class="order-1 rounded-panel bg-cream p-4 lg:sticky lg:top-[100px] lg:order-2">
+        <!-- Table of contents. Below the article at the tablet floor, as on the live page. -->
+        <aside v-if="toc.length" class="desk:w-1/5 desk:pr-9">
+          <div class="rounded-[6px] bg-parchment p-4 desk:sticky desk:top-[100px]">
             <div class="flex items-center justify-between gap-3">
-              <p class="font-display text-[14.5px] font-bold">Inhoudsopgave</p>
+              <p class="font-display text-[16px] font-bold text-ink-900">Inhoudsopgave</p>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="h-[13px] w-[13px]">
                 <path d="M6 15l6-6 6 6" />
               </svg>
             </div>
-            <ol class="mt-3.5 pl-5 text-[11.5px] leading-[1.45]">
+            <ol class="mt-3.5 pl-5 text-[13px] leading-[21px]">
               <li v-for="entry in toc" :key="entry.id" class="mb-2">
-                <a :href="`#${entry.id}`" :class="activeId === entry.id ? 'text-brand-700' : ''">{{ entry.text }}</a>
+                <a :href="`#${entry.id}`" class="hover:underline" :class="activeId === entry.id ? 'text-accent-500' : ''">{{ entry.text }}</a>
                 <ol v-if="entry.children.length" class="mt-2 pl-[18px]">
                   <li v-for="child in entry.children" :key="child.id" class="mb-2">
-                    <a :href="`#${child.id}`" :class="activeId === child.id ? 'text-brand-700' : ''">{{ child.text }}</a>
+                    <a :href="`#${child.id}`" class="hover:underline" :class="activeId === child.id ? 'text-accent-500' : ''">{{ child.text }}</a>
                   </li>
                 </ol>
               </li>
             </ol>
-          </aside>
-        </div>
+          </div>
+        </aside>
       </div>
     </section>
 
-    <section v-if="related.length" class="bg-sand px-[clamp(16px,4vw,24px)] py-[clamp(48px,6vw,72px)]">
-      <div class="mx-auto max-w-[1100px]">
-        <h2 class="mb-[clamp(20px,2.6vw,30px)] text-[clamp(24px,2.9vw,28px)]">Lees ook eens…</h2>
-        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          <article v-for="item in related" :key="item.slug" class="flex flex-col rounded-card bg-white p-3.5">
-            <div class="relative">
-              <img
-                v-if="item.coverImage"
-                :src="item.coverImage"
-                :alt="`Cover: ${item.title}`"
-                class="block aspect-[2.45] w-full rounded-panel object-cover"
-              >
-              <ArticleCoverPlaceholder v-else aspect="2.45" class="rounded-panel" />
-              <div class="pointer-events-none absolute top-3 left-3 flex flex-wrap gap-2">
-                <span
-                  v-for="tag in item.tags"
-                  :key="tag"
-                  class="rounded-btn border border-brand-500 px-2.5 py-[5px] text-xs font-semibold whitespace-nowrap text-brand-700"
-                >{{ tag }}</span>
-              </div>
-            </div>
-            <p class="mt-3.5 text-xs text-ink-700">{{ dateFormatter.format(new Date(item.publishedAt)) }}</p>
-            <h3 class="mt-1 mb-2 text-[17px] tracking-[-0.01em] [line-height:1.3]">
-              <NuxtLink :to="`/kennisbank/${item.slug}`">{{ item.title }}</NuxtLink>
-            </h3>
-            <p class="text-[12.5px] leading-[1.55] text-ink-700">{{ item.excerpt }}</p>
-            <div class="mt-auto flex items-center gap-2.5 pt-[18px]">
-              <span class="h-8 w-8 flex-none rounded-btn bg-line-300" aria-hidden="true" />
-              <span class="text-[13px] font-bold">{{ item.author }}</span>
-            </div>
-          </article>
+    <section v-if="related.length" class="bg-parchment px-[clamp(20px,4vw,40px)] py-12">
+      <div class="mx-auto flex max-w-[1100px] flex-col gap-6">
+        <h2 class="text-[29px]">Lees ook eens…</h2>
+        <div class="grid gap-x-6 gap-y-6 md:grid-cols-2 desk:grid-cols-3">
+          <ArticleCard v-for="item in related" :key="item.slug" :article="item" stretch />
         </div>
       </div>
     </section>

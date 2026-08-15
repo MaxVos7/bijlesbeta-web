@@ -43,7 +43,12 @@ export type Article = {
   publishedAt: string
   readingMinutes: number
   wordCount: number
-  /** Undefined renders the dashed placeholder — no cover art has been supplied yet. */
+  /**
+   * Cover photograph, `/img/kennisbank/<slug>.jpg` by convention. The card and
+   * the article header fall back to the dashed placeholder both when this is
+   * undefined and when the file 404s, so a slug may be listed here before its
+   * artwork lands in `public/img/kennisbank/`.
+   */
   coverImage?: string
   /** Empty for cards that only exist on the overview grid so far — the detail page then shows just the excerpt. */
   body: ArticleBlock[]
@@ -65,6 +70,7 @@ export const articles: Article[] = [
     publishedAt: '2026-02-07',
     readingMinutes: 7,
     wordCount: 1265,
+    coverImage: '/img/kennisbank/kruistabel.jpg',
     body: [
       {
         type: 'paragraph',
@@ -387,6 +393,7 @@ export const articles: Article[] = [
     publishedAt: '2026-02-07',
     readingMinutes: 6,
     wordCount: 1020,
+    coverImage: '/img/kennisbank/effectgrootte.jpg',
     body: [],
   },
   {
@@ -399,6 +406,7 @@ export const articles: Article[] = [
     publishedAt: '2026-02-07',
     readingMinutes: 5,
     wordCount: 850,
+    coverImage: '/img/kennisbank/substitutie.jpg',
     body: [],
   },
   {
@@ -411,6 +419,7 @@ export const articles: Article[] = [
     publishedAt: '2025-12-18',
     readingMinutes: 6,
     wordCount: 1020,
+    coverImage: '/img/kennisbank/lineaire-verbanden.jpg',
     body: [],
   },
   {
@@ -423,6 +432,7 @@ export const articles: Article[] = [
     publishedAt: '2025-12-18',
     readingMinutes: 6,
     wordCount: 1020,
+    coverImage: '/img/kennisbank/rekenen-met-procenten.jpg',
     body: [],
   },
   {
@@ -435,6 +445,7 @@ export const articles: Article[] = [
     publishedAt: '2025-12-18',
     readingMinutes: 6,
     wordCount: 1020,
+    coverImage: '/img/kennisbank/exponentiele-verbanden.jpg',
     body: [],
   },
   {
@@ -447,6 +458,7 @@ export const articles: Article[] = [
     publishedAt: '2025-12-04',
     readingMinutes: 5,
     wordCount: 850,
+    coverImage: '/img/kennisbank/afgeleide-functies.jpg',
     body: [],
   },
   {
@@ -459,6 +471,7 @@ export const articles: Article[] = [
     publishedAt: '2025-12-04',
     readingMinutes: 5,
     wordCount: 850,
+    coverImage: '/img/kennisbank/technieken-voor-differentieren.jpg',
     body: [],
   },
   {
@@ -471,6 +484,7 @@ export const articles: Article[] = [
     publishedAt: '2025-12-04',
     readingMinutes: 5,
     wordCount: 850,
+    coverImage: '/img/kennisbank/periodiek-systeem.jpg',
     body: [],
   },
   {
@@ -483,6 +497,7 @@ export const articles: Article[] = [
     publishedAt: '2025-11-03',
     readingMinutes: 5,
     wordCount: 850,
+    coverImage: '/img/kennisbank/zouten.jpg',
     body: [],
   },
   {
@@ -495,6 +510,7 @@ export const articles: Article[] = [
     publishedAt: '2025-11-03',
     readingMinutes: 5,
     wordCount: 850,
+    coverImage: '/img/kennisbank/radioactief-verval.jpg',
     body: [],
   },
   {
@@ -507,6 +523,7 @@ export const articles: Article[] = [
     publishedAt: '2025-11-03',
     readingMinutes: 5,
     wordCount: 850,
+    coverImage: '/img/kennisbank/ph-berekeningen.jpg',
     body: [],
   },
   {
@@ -519,6 +536,7 @@ export const articles: Article[] = [
     publishedAt: '2025-11-03',
     readingMinutes: 5,
     wordCount: 850,
+    coverImage: '/img/kennisbank/molberekeningen.jpg',
     body: [],
   },
   {
@@ -531,6 +549,7 @@ export const articles: Article[] = [
     publishedAt: '2025-11-03',
     readingMinutes: 5,
     wordCount: 850,
+    coverImage: '/img/kennisbank/snelheid-en-versnelling.jpg',
     body: [],
   },
   {
@@ -543,6 +562,7 @@ export const articles: Article[] = [
     publishedAt: '2025-11-03',
     readingMinutes: 5,
     wordCount: 850,
+    coverImage: '/img/kennisbank/reactievergelijkingen.jpg',
     body: [],
   },
   {
@@ -555,6 +575,7 @@ export const articles: Article[] = [
     publishedAt: '2025-11-03',
     readingMinutes: 5,
     wordCount: 850,
+    coverImage: '/img/kennisbank/elektromagnetisch-spectrum.jpg',
     body: [],
   },
   {
@@ -567,6 +588,7 @@ export const articles: Article[] = [
     publishedAt: '2025-11-03',
     readingMinutes: 5,
     wordCount: 850,
+    coverImage: '/img/kennisbank/wetten-van-newton.jpg',
     body: [],
   },
   {
@@ -579,6 +601,7 @@ export const articles: Article[] = [
     publishedAt: '2025-09-15',
     readingMinutes: 5,
     wordCount: 850,
+    coverImage: '/img/kennisbank/halveringstijd-tsjernobyl.jpg',
     body: [],
   },
   {
@@ -590,6 +613,7 @@ export const articles: Article[] = [
     author: 'Stefan',
     readingMinutes: 4,
     wordCount: 680,
+    coverImage: '/img/kennisbank/effectief-leren-voor-je-wiskundetoets.jpg',
     publishedAt: '2026-01-14',
     body: [
       {
@@ -639,6 +663,7 @@ export const articles: Article[] = [
     author: 'Thomas Smeman',
     readingMinutes: 5,
     wordCount: 850,
+    coverImage: '/img/kennisbank/formules-onthouden-bij-natuurkunde.jpg',
     publishedAt: '2026-02-03',
     body: [
       {
@@ -687,6 +712,7 @@ export const articles: Article[] = [
     author: 'Marieke Spijker',
     readingMinutes: 6,
     wordCount: 1020,
+    coverImage: '/img/kennisbank/rekenen-aan-reacties-scheikunde.jpg',
     publishedAt: '2026-03-11',
     body: [
       {
@@ -728,6 +754,19 @@ export const articles: Article[] = [
     ],
   },
 ]
+
+/**
+ * Author avatars, keyed by the `author` name on an article — the 45px tile in
+ * `AuthorBadge`. Drop the files into `public/img/auteurs/`; until they exist
+ * the badge falls back to the author's initial, so a missing file is a
+ * cosmetic gap rather than a broken image.
+ */
+export const authorAvatars: Record<string, string> = {
+  Stefan: '/img/auteurs/stefan.jpg',
+  'Thomas Smeman': '/img/auteurs/thomas-smeman.jpg',
+  'Marieke Spijker': '/img/auteurs/marieke-spijker.jpg',
+  Max: '/img/auteurs/max.jpg',
+}
 
 /** The kennisbank's filter chips, in the order they render — a fixed vocabulary, not every tag in `articles`. */
 export const filterTags = [
