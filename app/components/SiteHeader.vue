@@ -55,7 +55,7 @@ watch(() => route.fullPath, () => {
     :class="transparent ? 'relative z-10' : ['sticky top-0 z-50', groundClass]"
   >
     <header
-      class="relative mx-auto flex w-full max-w-[1400px] flex-row items-center justify-between gap-3 rounded-[12px] bg-white px-6 py-4 shadow-header md:items-stretch"
+      class="relative mx-auto flex w-full max-w-[1400px] flex-row items-center justify-between gap-3 rounded-[12px] bg-white px-6 py-4 shadow-panel md:items-stretch"
     >
       <!-- Logo column -->
       <div class="order-1 flex w-[30%] flex-none flex-col justify-center md:w-[14%] desk:w-[20%]">
@@ -170,7 +170,7 @@ watch(() => route.fullPath, () => {
       <nav
         v-if="menuOpen"
         id="hoofdmenu-mobiel"
-        class="absolute inset-x-0 top-[calc(100%-13px)] rounded-b-[12px] bg-white shadow-header md:hidden"
+        class="absolute inset-x-0 top-[calc(100%-13px)] rounded-b-[12px] bg-white shadow-panel md:hidden"
         aria-label="Hoofdmenu"
       >
         <NuxtLink

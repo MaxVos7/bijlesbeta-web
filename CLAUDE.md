@@ -192,7 +192,7 @@ The design is applied to `/`, `/over-ons`, `/tarieven`, `/aanmelden`,
 `/contact`, `/werken-bij`, `/zo-werkt-het`, `/bijles-[vak]-[stad]`,
 `/docenten/[slug]`, `/examentraining`, `/het-bedrijf` and the shared chrome,
 from a Claude Design handoff.
-`app/assets/css/main.css` carries the real palette — an amber brand on cream
+`app/assets/css/main.css` carries the real palette — an amber brand on linen
 and sand grounds, with a warm `ink-*` ramp, Plus Jakarta Sans for headings and
 Open Sans for body copy. The tokens are no longer placeholders.
 
@@ -200,7 +200,9 @@ A second handoff (`Tarieven.dc.html`) pulled the tokens to bijlesbeta.nl
 parity, so a few things are now deliberate and shouldn't drift back:
 
 - **One amber.** `brand-500` and `accent-500` are both `#ffbb00`; the live site
-  runs no separate accent. `brand-600` (`#f0b000`) is the hover.
+  runs no separate accent. `brand-600` (`#f0b000`) is the hover. The one
+  exception is `--color-star` (`#fec700`), which the original design does run
+  separately — see the design section below.
 - **Three radii.** Controls round on 4px (`field`, `btn`), surfaces on 8px
   (`panel`, `tile`, `card`), and the large blocks on 12px (`block`): the
   header card, the amber closing panel, the `Zo werkt het` photograph and the
@@ -250,6 +252,82 @@ parity, so a few things are now deliberate and shouldn't drift back:
   That arrow must be `<BtnArrow />` — a 15×14 SVG — and never a `→` character,
   which brings a 28px line box with it and grows the button to 68px.
 
+### The original design, and what was measured back onto it
+
+bijlesbeta.nl was itself built from a set of Figma boards (Home, Wiskunde,
+Over ons and Contact, each in a 1920 and a 480 version). Those boards are the
+authority above the live site for anything the live site didn't deliberately
+change, and they run a far tighter system than either: **8 colours, 2 shadows,
+3 radii, and one type scale that doesn't step at mobile.**
+
+What was already taken from them:
+
+- **Two shadows, and that's the scale.** `shadow-panel`
+  (`0 4px 34px black/10`) under the header bar, the cards, the tiles and the
+  form panels; `shadow-float` (`0 4px 14px black/20`) under anything that
+  overlaps the band behind it. Nothing else. Before this pass there were
+  twelve, nine of them arbitrary `shadow-[…]` literals, four of them amber
+  glows under buttons — no button in any board carries a shadow.
+- **Cards have no hover state.** Not the feature cards, tutor cards, package
+  cards, article cards or step cards. The lift-and-shadow on hover was ours,
+  not the design's. Where a card links somewhere, the design's own affordance
+  is the small arrow chip on `TutorCard` — a 4px linen square that reads as a
+  control — not a moving surface.
+- **Three grounds, not six.** `linen`, `parchment`, `sand`. `cream`, `mist`
+  and `ivory` appeared in no board and are gone; all nineteen call sites
+  resolved onto `linen`, which is the most-used ground in the design. `sand`
+  was corrected from `#f5f1e8` to the design's `#f5f1e5`.
+- **`--color-star` (`#fec700`) is the rating stars, and only those.** 80 star
+  glyphs across the boards, never the `#ffbb00` sitting beside them in the
+  same hero. It is deliberately not folded into `accent-500`, which carries
+  focus rings, radio and checkbox fills and the footer accent across some
+  thirty call sites. `StarRating` renders it and supports a half star; the
+  boards show 4.5, though `rating.stars` stays at the real figure.
+- **`danger` is `#cb2626`** — the exact channel reversal of `success-500`
+  (`#26cb7c`). The comparison table's check and cross are a designed pair.
+- **Hairlines are the ink at 10%** (`line-ink`). The opaque `line-200/300`
+  survive only for rules that sit on white and have to hold their own tone —
+  the comparison table's row dividers, whose design value is a neutral
+  `#e8e8e8`. `line-100` and `line-400` are gone.
+- **`CtaNote` is the reassurance line under a primary CTA.** In the design it
+  sits under *every* one — hero, all four packages, both forms, the closing
+  block — as a 12px two-tone line, bold lead and muted tail. It used to be
+  written out at six call sites in two sizes and five colours.
+
+What the design says and the **WordPress build overruled** — these are open
+decisions, not bugs, and our recreation currently follows Elementor because
+the SEO mandate says to:
+
+- **Card grids run a 1368px band on a 12px gutter, sitewide.** Every card grid
+  on every desktop board starts at x=276 and ends at 1644. In the design 1100px
+  is the prose and closing-CTA width; 1368 is the card width. We treat 1368 as
+  a `/tarieven` exception instead.
+- **The type scale doesn't step at mobile.** Measured off the 480px boards:
+  H1 32px on a 44px line, hero paragraph 16/28, rating 15px — identical to
+  1920. Our H1 → 26px and feature-card title → 16px below 768px are the live
+  site's steps, not the designer's.
+- **The mobile gutter is 36px**, with the header card inset 12px and nested
+  content at 60px. Our `clamp(16px,4vw,40px)` only reaches 36px at a 900px
+  viewport.
+- **Feature cards go two-up at 480px.** `auto-fit,minmax(230px,1fr)` needs
+  472px of content box and gets 448, so ours drop to one column.
+- **Form fields are 52px on a 4px radius**, and the contact panel carries
+  `shadow-panel`. Ours are the live Gravity Forms controls' 42px and flat —
+  see the `field-input-lg` note above, which explains why 42 is right for
+  parity.
+
+Two signature image treatments from the boards are **not built yet**: photos
+masked into the logo's bracket shape with an offset ghost outline of the same
+bracket behind them (the Wiskunde board's "De stelling van wie?" band), and
+portraits in squircle blobs on a `linen` fill with a white border and
+`shadow-float`, clustered around the logo mark. Both are one SVG `clipPath`
+plus a shadow. They are the strongest brand signal in the design and the site
+currently uses plain 8px crops everywhere instead.
+
+Unrelated to this pass but found during it: **the homepage overflows
+horizontally at 360px** — the header row and the hero both clip. It reproduces
+on `main` without any of these changes, so it predates them.
+
 ### The header
 
 `SiteHeader` is a literal reconstruction of the live site's Elementor header
@@ -268,10 +346,10 @@ should not be "tidied":
   and the CTA where they sit; content-width layout gets it visibly wrong.
 - **The strip around the bar has no ground of its own.** The bar floats on the
   page's own band and the page scrolls behind it, so the strip must stay clear
-  rather than repainting `cream` a shade off `parchment`. `headerGround: 'ink'`
+  rather than repainting `linen` a shade off `parchment`. `headerGround: 'ink'`
   is the one override, for a page whose hero opens on the dark band.
 
-The card is 12px, `shadow-header`, 16px/24px padding, and the CTA is the
+The card is 12px, `shadow-panel`, 16px/24px padding, and the CTA is the
 Elementor button rather than `btn`: 15/13/12px by breakpoint with its own
 padding, and it inverts to `ink-900` on hover instead of stepping to
 `brand-600`.
@@ -568,7 +646,7 @@ measurements and shouldn't be tidied:
 - **The hero sits on the page's own parchment**, not on a ground of its own,
   and the white band opens *below* it with an 80px lead-in. That is why the
   page writes its hero out instead of mounting `PageHero`, which paints
-  `cream` with a rule under it.
+  `linen` with a rule under it.
 - **Two nested gutters.** The band takes the sitewide 40px and the filter and
   grid take a further 36px inside it, collapsing to 0 below 768px. The hero's
   36px does *not* collapse — on a phone its copy is inset further than the

@@ -68,7 +68,7 @@ const publishedOn = computed(() => dateFormatter.format(new Date(props.article.p
         <!-- The pills are the live site's `category-button`: amber label on an
              amber hairline with no fill of its own, so the photograph reads
              straight through them. That is parity, not an oversight — the same
-             call as the kicker's amber-on-cream. They link to the category
+             call as the kicker's amber on a light ground. They link to the category
              archive, which exists at the same URL WordPress served. -->
         <div class="absolute top-2 left-3 flex flex-wrap gap-2">
           <NuxtLink

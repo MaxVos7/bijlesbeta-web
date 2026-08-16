@@ -52,7 +52,7 @@ useSeo({
           >
             {{ werkenBij.hero.cta }} <span class="text-lg leading-[11px]" aria-hidden="true">→</span>
           </a>
-          <p class="mt-3 text-[12px] text-white">{{ werkenBij.hero.reassurance }}</p>
+          <CtaNote :text="werkenBij.hero.reassurance" tone="inverse" class="mt-3" />
         </div>
 
         <div class="flex min-w-0 flex-col justify-center">
@@ -127,7 +127,7 @@ useSeo({
           <article
             v-for="(requirement, index) in werkenBij.requirements"
             :key="requirement.title"
-            class="flex flex-col gap-4 rounded-xl border border-ink-900/10 bg-white p-3"
+            class="flex flex-col gap-4 rounded-block border border-line-ink bg-white p-3"
           >
             <img
               :src="requirement.image"

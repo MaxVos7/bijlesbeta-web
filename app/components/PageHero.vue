@@ -7,7 +7,7 @@ defineProps<{
 </script>
 
 <template>
-  <section class="border-b border-line-200 bg-cream">
+  <section class="border-b border-line-200 bg-linen">
     <div class="container-page py-16 sm:py-20">
       <p v-if="eyebrow" class="kicker">
         {{ eyebrow }}

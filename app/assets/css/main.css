@@ -11,25 +11,36 @@
 */
 @theme {
   /* Brand — amber. 500 is the button fill, 600 its hover, 700 the readable
-     text tone (the lighter steps fail contrast for body copy). */
-  --color-brand-50: #fffdf7;
-  --color-brand-100: #fff3cd;
-  --color-brand-200: #ffe08a;
+     text tone (the lighter steps fail contrast for body copy).
+
+     Four steps, not ten. The original design boards run a single amber and a
+     single hover; the full 50–900 ramp came in with the placeholder handoff
+     and six of its steps never reached a call site. Don't restore them —
+     reach for an opacity on 500 if a tint is needed. */
   --color-brand-300: #ffd24d;
-  --color-brand-400: #ffcb2b;
   --color-brand-500: #ffbb00;
   --color-brand-600: #f0b000;
   --color-brand-700: #c98c00;
-  --color-brand-800: #a06f00;
-  --color-brand-900: #6b4a00;
 
-  /* Accent — focus rings, selected controls, the rating stars, the package
-     badges and the stats heading. bijlesbeta.nl runs a single amber rather
-     than a brand/accent pair, so 500 is the same value as `brand-500`; the
-     two names are kept apart only so components don't all have to change. */
+  /* Accent — focus rings, selected controls, the package badges and the stats
+     heading. bijlesbeta.nl runs a single amber rather than a brand/accent
+     pair, so 500 is the same value as `brand-500`; the two names are kept
+     apart only so components don't all have to change. */
   --color-accent-400: #ffe08a;
   --color-accent-500: #ffbb00;
-  --color-accent-600: #c98c00;
+
+  /* The rating stars, and nothing else.
+
+     The original design boards draw every star in #FEC700 — 80 glyphs across
+     the eight artboards, always five to a row, never the brand amber sitting
+     beside them in the same hero. It is a warmer, more saturated yellow that
+     holds its own against #FFBB00 at small sizes.
+
+     It is deliberately *not* folded into `accent-500`: that token carries the
+     focus rings, the radio and checkbox fills, the kickers and the footer
+     accent across some thirty call sites, and repointing it would drag all of
+     them along with the stars. */
+  --color-star: #fec700;
 
   /* Ink — warm greys for text, darkest first.
 
@@ -81,10 +92,8 @@
      light ground; the opaque steps stay for the few rules that sit on top of
      white and have to hold their own tone. */
   --color-line-ink: rgb(29 29 27 / 0.1);
-  --color-line-100: #eeeae2;
   --color-line-200: #eae6dd;
   --color-line-300: #e2ded4;
-  --color-line-400: #d9d4c9;
 
   /* Text on the solid amber CTA block, where ink-* is too cold to sit well. */
   --color-on-brand: #6b5200;
@@ -97,16 +106,24 @@
      reproduce the live page it replaces. Don't reach for it elsewhere. */
   --color-link-wp: #c36;
 
-  /* Grounds. `parchment` is the page ground the live site sets on <body>,
-     and the fill of the highlighted package — a hair warmer than `sand`. */
-  --color-parchment: #f5f3e9;
-  --color-cream: #faf7f0;
-  --color-sand: #f5f1e8;
-  --color-mist: #f8f5ef;
-  --color-ivory: #fffdf7;
-  /* The ground of the form panel inside the amber closing block — the one
-     neutral that has to hold its own against the brand yellow. */
+  /* Grounds. Three, and only three — the design boards use exactly these and
+     no others, so a band that isn't one of them is a mistake rather than a
+     shade.
+
+     `linen` is the workhorse: the lightest of the three and the most used in
+     the design (70 fills), carrying the hero bands, the tinted feature cards,
+     the arrow chips and the form panel inside the amber closing block.
+     `parchment` is the page ground the live site sets on <body>, and the fill
+     of the highlighted package. `sand` is the deepest, a hair cooler than
+     parchment.
+
+     `cream`, `mist` and `ivory` used to sit here too. None of the three
+     appears anywhere in the design — they were placeholder-handoff values,
+     and all nineteen of their call sites resolved onto `linen`. Don't
+     reintroduce a fourth near-white. */
   --color-linen: #f8f6ec;
+  --color-parchment: #f5f3e9;
+  --color-sand: #f5f1e5;
 
   /* Feedback.
 
@@ -114,7 +131,10 @@
      interchangeable: `success-500` (#26CB7C) is the checkmark glyph, `mint`
      (#00B67A) is the darker one the savings pill sets both its label and its
      10% tint in. */
-  --color-danger: #d92d20;
+  /* The design draws the comparison table's cross in #CB2626 — the exact
+     channel reversal of the checkmark's #26CB7C. They are a designed pair,
+     not two separate picks, which is why this is not the usual red. */
+  --color-danger: #cb2626;
   --color-success-50: #e6f6ec;
   --color-success-500: #26cb7c;
   --color-success-900: #166534;
@@ -148,11 +168,27 @@
      closing panel and the `Zo werkt het` photograph all round on 12px. */
   --radius-block: 12px;
 
-  /* Elevation — tuned to the cream ground, not to white. `header` is the
-     live site's own value, on the floating bar and its mobile dropdown. */
-  --shadow-header: 0 4px 34px 0 rgb(0 0 0 / 0.1);
-  --shadow-card: 0 8px 30px rgb(31 29 28 / 0.07);
-  /* The hairline lift under every Gravity Forms control on the live site. */
+  /* Elevation — two steps, which is the entire scale.
+
+     The eight design boards contain exactly two shadow filters, and they
+     repeat unchanged on every page: `panel` under the header bar, the cards,
+     the tiles and the form panels, and `float` under the portrait blobs that
+     overlap the band behind them. There is no third step, no per-component
+     value, and no shadow on any button — the amber CTA is flat in every
+     board it appears in.
+
+     `panel` is also the live site's own header value, so the two agree.
+
+     Before this, twelve distinct shadows were in play: these two, a
+     `shadow-card` nothing in the design matches, and nine arbitrary
+     `shadow-[…]` literals spread over eleven files, four of which were amber
+     glows under primary buttons. If a surface needs to lift, it takes one of
+     these two; if neither fits, the surface probably shouldn't lift. */
+  --shadow-panel: 0 4px 34px 0 rgb(0 0 0 / 0.1);
+  --shadow-float: 0 4px 14px 0 rgb(0 0 0 / 0.2);
+  /* The hairline lift under every Gravity Forms control on the live site.
+     Not part of the scale above — it is the form plugin's, like the
+     `--color-field-*` tones, and is kept for parity with those controls. */
   --shadow-field: 0 1px 4px 0 rgb(18 25 97 / 0.08);
 
   /* Layout rhythm */
@@ -231,9 +267,14 @@
   @apply btn bg-brand-500 text-ink-800 hover:bg-brand-600;
 }
 
+/*
+  The design's second button: white on a black-at-10% hairline with the ink
+  label, the same rule every card and field takes. It carries no shadow and no
+  lift — the ground shifts to `linen` on hover and nothing else moves.
+*/
 @utility btn-secondary {
-  @apply btn border border-line-300 bg-white font-semibold text-ink-800
-    hover:bg-cream;
+  @apply btn border border-black/10 bg-white font-semibold text-ink-800
+    hover:bg-linen;
 }
 
 @utility container-page {
@@ -356,7 +397,7 @@
 
 /* Surface used for the form panel and other raised white cards. */
 @utility panel {
-  @apply rounded-card bg-white shadow-card;
+  @apply rounded-card bg-white shadow-panel;
 }
 
 /*
@@ -403,7 +444,7 @@
     @apply font-bold;
   }
   & :where(tbody tr:nth-child(odd)) {
-    @apply bg-cream;
+    @apply bg-linen;
   }
   & :where(tbody th) {
     @apply text-center font-bold;

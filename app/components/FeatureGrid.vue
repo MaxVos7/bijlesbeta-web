@@ -25,7 +25,7 @@ import { features } from '~/data/site'
       <div
         v-for="feature in features"
         :key="feature.title"
-        class="flex flex-col gap-3 rounded-tile border border-line-200 px-6 py-[26px] transition duration-200 hover:-translate-y-[3px] hover:shadow-[0_12px_28px_rgb(31_29_28_/_0.08)]"
+        class="flex flex-col gap-3 rounded-tile border border-line-ink px-6 py-[26px]"
       >
         <!-- The drawings carry the brand amber themselves, so they sit on the
              card ground rather than in an amber tile. -->

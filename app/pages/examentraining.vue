@@ -32,7 +32,7 @@ function openVideo() {
 <template>
   <div>
     <!-- Hero: rating + promises on the left, the training photo on the right. -->
-    <section class="bg-cream px-[clamp(16px,4vw,24px)] pt-[clamp(24px,3.5vw,44px)] pb-[clamp(40px,6vw,72px)]">
+    <section class="bg-linen px-[clamp(16px,4vw,24px)] pt-[clamp(24px,3.5vw,44px)] pb-[clamp(40px,6vw,72px)]">
       <div
         class="mx-auto grid max-w-[1100px] items-center gap-[clamp(28px,4.5vw,56px)] [grid-template-columns:repeat(auto-fit,minmax(330px,1fr))]"
       >
@@ -80,10 +80,10 @@ function openVideo() {
           <div
             v-for="feature in examentraining.features.items"
             :key="feature.title"
-            class="flex flex-col gap-3 rounded-tile border border-line-200 px-6 py-[26px] transition duration-200 hover:-translate-y-[3px] hover:shadow-[0_12px_28px_rgb(31_29_28_/_0.08)]"
+            class="flex flex-col gap-3 rounded-tile border border-line-ink px-6 py-[26px]"
           >
             <div
-              class="flex h-20 w-20 items-center justify-center rounded-panel border border-dashed border-line-300 bg-mist"
+              class="flex h-20 w-20 items-center justify-center rounded-panel border border-dashed border-line-300 bg-linen"
               aria-hidden="true"
             >
               <svg
@@ -220,7 +220,7 @@ function openVideo() {
             @click="openVideo"
           >
             <svg
-              class="h-[74px] w-[74px] text-line-100"
+              class="h-[74px] w-[74px] text-line-200"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"

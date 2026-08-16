@@ -2,7 +2,6 @@
 import { landingPath } from '~/data/landings'
 import {
   heroPromises,
-  reassurance,
   story,
   subjectCards,
   teamIntro,
@@ -21,7 +20,7 @@ useSeo({
   <div>
     <section
       id="top"
-      class="bg-cream px-[clamp(16px,4vw,24px)] pt-[clamp(24px,4vw,44px)] pb-[clamp(48px,7vw,88px)]"
+      class="bg-linen px-[clamp(16px,4vw,24px)] pt-[clamp(24px,4vw,44px)] pb-[clamp(48px,7vw,88px)]"
     >
       <div
         class="mx-auto grid max-w-[1100px] items-center gap-[clamp(32px,5vw,60px)] [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))]"
@@ -46,11 +45,11 @@ useSeo({
 
           <NuxtLink
             to="/aanmelden"
-            class="btn-primary px-6 py-5 shadow-[0_6px_18px_rgb(255_187_0_/_0.35)] hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgb(255_187_0_/_0.42)]"
+            class="btn-primary px-6 py-5"
           >
             Gratis proefles <span class="text-lg" aria-hidden="true">→</span>
           </NuxtLink>
-          <p class="mt-3.5 text-[12px] text-ink-600">{{ reassurance }}</p>
+          <CtaNote class="mt-3.5" />
         </div>
 
         <div class="min-w-0">
@@ -88,7 +87,7 @@ useSeo({
           <article
             v-for="subject in subjectCards"
             :key="subject.slug"
-            class="flex flex-col overflow-hidden rounded-card border border-line-200 transition duration-200 hover:-translate-y-[3px] hover:shadow-[0_16px_34px_rgb(31_29_28_/_0.10)]"
+            class="flex flex-col overflow-hidden rounded-card border border-line-ink"
           >
             <img
               :src="subject.image"
@@ -122,7 +121,7 @@ useSeo({
           <p class="kicker mb-2">{{ story.kicker }}</p>
           <h2 class="mb-5 text-[clamp(23px,2.5vw,28px)] tracking-[-0.025em]">{{ story.title }}</h2>
           <p class="mb-7 text-base leading-[1.75] text-ink-700">{{ story.body }}</p>
-          <NuxtLink to="/over-ons" class="btn-secondary gap-3 hover:border-brand-500 hover:bg-ivory">
+          <NuxtLink to="/over-ons" class="btn-secondary gap-3 hover:border-brand-500 hover:bg-linen">
             Lees ons verhaal →
           </NuxtLink>
         </div>
@@ -142,7 +141,7 @@ useSeo({
           <p class="kicker mb-2.5">{{ teamIntro.kicker }}</p>
           <h2 class="mb-5 text-[clamp(23px,2.5vw,28px)] tracking-[-0.025em]">{{ teamIntro.title }}</h2>
           <p class="mb-7 max-w-[46ch] text-base leading-[1.75] text-ink-700">{{ teamIntro.body }}</p>
-          <NuxtLink to="/over-ons#team" class="btn-secondary gap-3 hover:border-brand-500 hover:bg-ivory">
+          <NuxtLink to="/over-ons#team" class="btn-secondary gap-3 hover:border-brand-500 hover:bg-linen">
             Ons team →
           </NuxtLink>
         </div>

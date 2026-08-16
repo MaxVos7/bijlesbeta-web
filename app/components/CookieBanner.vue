@@ -42,7 +42,7 @@ const PILL_PLAIN
       v-if="open"
       role="dialog"
       :aria-label="cookieConsent.ariaLabel"
-      class="fixed inset-x-0 bottom-0 z-[999] border-t border-ink-900/10 bg-cream px-2.5 py-3.5 shadow-[0_-2px_40px_rgb(0_0_0_/_0.1)] md:px-12 md:py-[26px]"
+      class="fixed inset-x-0 bottom-0 z-[999] border-t border-ink-900/10 bg-linen px-2.5 py-3.5 shadow-[0_-2px_40px_rgb(0_0_0_/_0.1)] md:px-12 md:py-[26px]"
     >
       <div class="flex flex-col gap-5 md:flex-row md:items-center md:justify-between md:gap-[60px]">
         <div class="min-w-0 md:flex-1">

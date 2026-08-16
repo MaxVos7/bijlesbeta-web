@@ -34,7 +34,7 @@ import { comparison } from '~/data/site'
             <li
               v-for="point in comparison.us.points"
               :key="point"
-              class="flex items-start gap-3 border-b border-line-100 py-3.5 text-[13px] leading-normal last:border-b-0"
+              class="flex items-start gap-3 border-b border-line-200 py-3.5 text-[13px] leading-normal last:border-b-0"
             >
               <svg
                 class="mt-0.5 h-3.5 w-3.5 flex-none text-success-500"
@@ -78,7 +78,7 @@ import { comparison } from '~/data/site'
             <li
               v-for="point in comparison.them.points"
               :key="point"
-              class="flex items-start gap-3 border-b border-line-100 py-3.5 text-[13px] leading-normal last:border-b-0"
+              class="flex items-start gap-3 border-b border-line-200 py-3.5 text-[13px] leading-normal last:border-b-0"
             >
               <svg
                 class="mt-0.5 h-3.5 w-3.5 flex-none text-danger"
@@ -97,7 +97,7 @@ import { comparison } from '~/data/site'
         </div>
 
         <span
-          class="pointer-events-none absolute top-[38%] left-1/2 flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-brand-500 text-[15px] font-extrabold shadow-[0_6px_18px_rgb(255_187_0_/_0.4)]"
+          class="pointer-events-none absolute top-[38%] left-1/2 flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-brand-500 text-[15px] font-extrabold shadow-float"
           aria-hidden="true"
         >VS</span>
       </div>

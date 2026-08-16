@@ -43,7 +43,7 @@ const formatPrice = (value: number) =>
       <div
         v-for="plan in pricingPlans"
         :key="plan.slug"
-        class="flex flex-col rounded-card border p-6 transition duration-200 hover:-translate-y-1 hover:shadow-[0_18px_38px_rgb(31_29_28_/_0.13)]"
+        class="flex flex-col rounded-card border p-6"
         :class="[
           plan.inverted ? 'border-ink-900 bg-ink-900 text-white' : 'border-line-ink text-ink-800',
           // The highlighted package is marked by its ground and an 8px amber
@@ -123,13 +123,7 @@ const formatPrice = (value: number) =>
         <NuxtLink to="/aanmelden" class="btn-primary btn-lg self-start">
           Gratis proefles <BtnArrow />
         </NuxtLink>
-        <p
-          class="mt-3.5 text-[12px] leading-[18px]"
-          :class="plan.inverted ? 'text-ink-300' : 'text-ink-700'"
-        >
-          <strong :class="plan.inverted ? 'text-white' : 'text-ink-800'">100% gratis</strong>,
-          je zit nergens aan vast
-        </p>
+        <CtaNote :tone="plan.inverted ? 'inverse' : 'default'" class="mt-3.5" />
       </div>
     </div>
 

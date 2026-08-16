@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { heroPromises, overOnsBlocks, reassurance } from '~/data/site'
+import { heroPromises, overOnsBlocks } from '~/data/site'
 import { findTutor, tutors } from '~/data/tutors'
 
 useSeo({
@@ -25,7 +25,7 @@ const storyQuote = computed(() => {
 <template>
   <div>
     <section
-      class="bg-cream px-[clamp(16px,4vw,24px)] pt-[clamp(28px,4vw,48px)] pb-[clamp(48px,7vw,84px)]"
+      class="bg-linen px-[clamp(16px,4vw,24px)] pt-[clamp(28px,4vw,48px)] pb-[clamp(48px,7vw,84px)]"
     >
       <div
         class="mx-auto grid max-w-[1100px] items-center gap-[clamp(32px,5vw,60px)] [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))]"
@@ -44,11 +44,11 @@ const storyQuote = computed(() => {
 
           <NuxtLink
             to="/aanmelden"
-            class="btn-primary gap-3.5 px-6 py-[15px] text-[15px] shadow-[0_6px_18px_rgb(255_187_0_/_0.35)] hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgb(255_187_0_/_0.42)]"
+            class="btn-primary gap-3.5 px-6 py-[15px] text-[15px]"
           >
             Direct aanmelden <span class="text-lg" aria-hidden="true">→</span>
           </NuxtLink>
-          <p class="mt-3.5 text-[13px] text-ink-400">{{ reassurance }}</p>
+          <CtaNote class="mt-3.5" />
         </div>
 
         <div class="min-w-0">
@@ -91,7 +91,7 @@ const storyQuote = computed(() => {
             <img
               :src="storyTutor.photo"
               :alt="storyTutor.name"
-              class="block h-11 w-11 flex-none rounded-lg bg-line-200 object-cover"
+              class="block h-11 w-11 flex-none rounded-field bg-linen object-cover"
               loading="lazy"
             >
             <div>

@@ -22,9 +22,7 @@ const leadLabel = computed(() => props.label ?? rating.label)
   >
     <strong class="font-bold">{{ leadLabel }}</strong>
     <span class="sr-only">{{ rating.stars }} van de 5 sterren</span>
-    <span class="text-[15px] tracking-[2px] text-accent-500" aria-hidden="true">
-      {{ '★'.repeat(rating.stars) }}
-    </span>
+    <StarRating :value="rating.stars" />
     <span :class="tone === 'inverse' ? 'text-ink-300' : 'text-ink-500'">{{ rating.count }}</span>
   </p>
 </template>

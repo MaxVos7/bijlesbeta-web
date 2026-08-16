@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { findLanding, landingHeroForm, landingPromises, landingSteps } from '~/data/landings'
-import { reassurance, teamIntro } from '~/data/site'
+import { teamIntro } from '~/data/site'
 
 /**
  * One template for every subject/level/location landing page. These 11 pages
@@ -59,11 +59,11 @@ useSeo({
 
             <NuxtLink
               to="/aanmelden"
-              class="btn-primary gap-3.5 px-[26px] py-4 text-base shadow-[0_6px_18px_rgb(255_187_0_/_0.35)] hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgb(255_187_0_/_0.42)]"
+              class="btn-primary gap-3.5 px-[26px] py-4 text-base"
             >
               Gratis proefles <span class="text-lg" aria-hidden="true">→</span>
             </NuxtLink>
-            <p class="mt-3.5 text-[13px] text-white/65">{{ reassurance }}</p>
+            <CtaNote tone="inverse" class="mt-3.5" />
           </div>
 
           <div
@@ -79,7 +79,7 @@ useSeo({
 
             <LeadForm
               :source="`Aanvraag voor een gratis proefles via de landingspagina ${route.path}.`"
-              class="rounded-tile bg-cream p-[clamp(14px,1.6vw,18px)]"
+              class="rounded-tile bg-linen p-[clamp(14px,1.6vw,18px)]"
             />
           </div>
         </div>
@@ -101,7 +101,7 @@ useSeo({
           <article
             v-for="step in landingSteps.items"
             :key="step.label"
-            class="flex flex-col rounded-tile border border-line-200 p-3.5 pb-[26px] transition duration-200 hover:-translate-y-[3px] hover:shadow-[0_16px_34px_rgb(31_29_28_/_0.10)]"
+            class="flex flex-col rounded-tile border border-line-ink p-3.5 pb-[26px]"
           >
             <img
               :src="step.image"
@@ -110,7 +110,7 @@ useSeo({
               loading="lazy"
             >
             <span
-              class="mb-3.5 self-start rounded-md bg-brand-500 px-2.5 py-[5px] text-[13px] font-bold"
+              class="mb-3.5 self-start rounded-btn bg-brand-500 px-2.5 py-[5px] text-[13px] font-bold"
             >
               {{ step.label }}
             </span>
@@ -220,7 +220,7 @@ useSeo({
           <p class="kicker mb-2.5">{{ teamIntro.kicker }}</p>
           <h2 class="mb-5 text-[clamp(23px,2.5vw,28px)] tracking-[-0.025em]">{{ teamIntro.title }}</h2>
           <p class="mb-7 max-w-[46ch] text-[15px] leading-[1.75] text-ink-700">{{ teamIntro.body }}</p>
-          <NuxtLink to="/over-ons#team" class="btn-secondary gap-3 hover:border-brand-500 hover:bg-ivory">
+          <NuxtLink to="/over-ons#team" class="btn-secondary gap-3 hover:border-brand-500 hover:bg-linen">
             Ons team →
           </NuxtLink>
         </div>

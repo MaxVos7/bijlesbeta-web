@@ -32,7 +32,7 @@ const items = computed(() => {
       v-for="(item, index) in items"
       :key="item.question"
       name="faq"
-      class="group border-b border-line-100"
+      class="group border-b border-line-ink"
       :open="index === 0"
     >
       <!--
@@ -51,7 +51,7 @@ const items = computed(() => {
         {{ item.question }}
         <span
           class="flex flex-none items-center justify-center"
-          :class="size === 'lg' ? 'h-[26px] w-[26px]' : 'h-6 w-6 rounded-full bg-mist'"
+          :class="size === 'lg' ? 'h-[26px] w-[26px]' : 'h-6 w-6 rounded-full bg-linen'"
         >
           <svg
             class="text-ink-600 transition-transform duration-200 group-open:rotate-90"

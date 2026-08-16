@@ -86,7 +86,7 @@ async function submit() {
       <label class="group flex cursor-pointer items-start gap-2.5 text-[12.5px] leading-normal text-ink-700">
         <input v-model="form.consent" class="sr-only" type="checkbox">
         <span
-          class="mt-px flex h-[18px] w-[18px] flex-none items-center justify-center rounded border-[1.5px] border-line-400 bg-white transition group-has-[:checked]:border-accent-500 group-has-[:checked]:bg-accent-400 group-has-[:focus-visible]:outline-2 group-has-[:focus-visible]:outline-offset-2 group-has-[:focus-visible]:outline-accent-500"
+          class="mt-px flex h-[18px] w-[18px] flex-none items-center justify-center rounded border-[1.5px] border-field-line bg-white transition group-has-[:checked]:border-accent-500 group-has-[:checked]:bg-accent-400 group-has-[:focus-visible]:outline-2 group-has-[:focus-visible]:outline-offset-2 group-has-[:focus-visible]:outline-accent-500"
         >
           <svg
             class="h-[11px] w-[11px] opacity-0 group-has-[:checked]:opacity-100"

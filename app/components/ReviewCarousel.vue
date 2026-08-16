@@ -16,7 +16,7 @@ function step(direction: number) {
   <div class="flex items-center justify-center gap-[clamp(10px,1.8vw,22px)]">
     <button
       type="button"
-      class="h-11 w-11 flex-none rounded-btn border border-line-300 bg-white text-base transition hover:border-brand-500 hover:bg-ivory"
+      class="h-11 w-11 flex-none rounded-btn border border-line-300 bg-white text-base transition hover:border-brand-500 hover:bg-linen"
       aria-label="Vorige review"
       @click="step(-1)"
     >←</button>
@@ -50,9 +50,9 @@ function step(direction: number) {
           />
         </svg>
 
-        <p class="mb-2.5 text-sm tracking-[1px] text-accent-500">
+        <p class="mb-2.5">
           <span class="sr-only">{{ review.rating }} van de 5 sterren</span>
-          <span aria-hidden="true">{{ '★'.repeat(review.rating) }}</span>
+          <StarRating :value="review.rating" />
         </p>
 
         <h3 class="mb-2 text-[14.5px] leading-snug">{{ review.title }}</h3>
@@ -70,7 +70,7 @@ function step(direction: number) {
 
     <button
       type="button"
-      class="h-11 w-11 flex-none rounded-btn border border-line-300 bg-white text-base transition hover:border-brand-500 hover:bg-ivory"
+      class="h-11 w-11 flex-none rounded-btn border border-line-300 bg-white text-base transition hover:border-brand-500 hover:bg-linen"
       aria-label="Volgende review"
       @click="step(1)"
     >→</button>

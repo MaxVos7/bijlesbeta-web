@@ -33,7 +33,7 @@ const initial = computed(() => props.name.trim().charAt(0).toUpperCase())
     <span
       v-else
       :style="{ width: box, height: box }"
-      class="flex flex-none items-center justify-center rounded-panel border border-black/10 bg-mist font-display text-[15px] font-bold text-ink-400"
+      class="flex flex-none items-center justify-center rounded-panel border border-black/10 bg-linen font-display text-[15px] font-bold text-ink-400"
       aria-hidden="true"
     >{{ initial }}</span>
     <span class="font-display text-[15px] leading-[26px] font-bold text-ink-850">{{ name }}</span>

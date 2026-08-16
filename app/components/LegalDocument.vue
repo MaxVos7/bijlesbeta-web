@@ -76,7 +76,7 @@ defineProps<{ doc: LegalDocument }>()
           </template>
         </article>
 
-        <aside class="mt-12 rounded-panel border border-line-200 bg-mist p-6 sm:p-8">
+        <aside class="mt-12 rounded-panel border border-line-200 bg-linen p-6 sm:p-8">
           <h2 class="mb-3 text-[clamp(18px,1.8vw,21px)] tracking-[-0.02em]">
             {{ doc.contact.title }}
           </h2>

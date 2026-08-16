@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { heroPromises, pricingNotes, reassurance } from '~/data/site'
+import { heroPromises, pricingNotes } from '~/data/site'
 
 useSeo({
   title: 'Tarieven',
@@ -40,7 +40,7 @@ useSeo({
           <a href="#pakketten" class="btn-primary btn-lg">
             Tarieven bekijken <BtnArrow />
           </a>
-          <p class="mt-3.5 text-[13px] text-ink-700">{{ reassurance }}</p>
+          <CtaNote class="mt-3.5" />
         </div>
 
         <div class="relative min-w-0">

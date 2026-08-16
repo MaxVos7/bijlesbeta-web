@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { heroPromises, reassurance, zoWerktHet } from '~/data/site'
+import { heroPromises, zoWerktHet } from '~/data/site'
 
 useSeo({
   title: 'Zo werkt het',
@@ -52,11 +52,11 @@ useSeo({
               ground with a black/20 hairline, the same treatment the hero CTA
               on `/werken-bij` takes.
             -->
-            <a href="#stappenplan" class="btn btn-lg border border-black/20 bg-parchment hover:bg-cream">
+            <a href="#stappenplan" class="btn btn-lg border border-black/20 bg-parchment hover:bg-linen">
               {{ zoWerktHet.secondaryCta }} <BtnArrow />
             </a>
           </div>
-          <p class="text-[12px] text-ink-700">{{ reassurance }}</p>
+          <CtaNote />
         </div>
 
         <div class="min-w-0">

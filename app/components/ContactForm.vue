@@ -112,11 +112,11 @@ async function submit() {
 
     <div
       v-else-if="status === 'success'"
-      class="rounded-xl border border-green-200 bg-green-50 p-6"
+      class="rounded-panel border border-success-500/30 bg-success-50 p-6"
       role="status"
     >
-      <h3 class="text-lg text-green-900">{{ contactFormSuccess.title }}</h3>
-      <p class="mt-2 text-green-800">{{ contactFormSuccess.body }}</p>
+      <h3 class="text-lg text-success-900">{{ contactFormSuccess.title }}</h3>
+      <p class="mt-2 text-ink-800">{{ contactFormSuccess.body }}</p>
     </div>
 
     <form v-else :class="!panel && 'space-y-5'" novalidate @submit.prevent="submit">

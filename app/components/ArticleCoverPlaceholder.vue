@@ -8,7 +8,7 @@ defineProps<{ aspect: string }>()
 
 <template>
   <div
-    class="flex w-full items-center justify-center border border-dashed border-line-300 bg-mist"
+    class="flex w-full items-center justify-center border border-dashed border-line-300 bg-linen"
     :style="{ aspectRatio: aspect }"
     aria-hidden="true"
   >

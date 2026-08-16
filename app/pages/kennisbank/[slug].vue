@@ -173,7 +173,7 @@ onUnmounted(() => {
 
         <!-- Table of contents. Below the article at the tablet floor, as on the live page. -->
         <aside v-if="toc.length" class="desk:w-1/5 desk:pr-9">
-          <div class="rounded-[6px] bg-parchment p-4 desk:sticky desk:top-[100px]">
+          <div class="rounded-panel bg-parchment p-4 desk:sticky desk:top-[100px]">
             <div class="flex items-center justify-between gap-3">
               <p class="font-display text-[16px] font-bold text-ink-900">Inhoudsopgave</p>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="h-[13px] w-[13px]">
