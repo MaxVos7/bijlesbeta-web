@@ -568,6 +568,21 @@ cards fit on one row with 12px between them, `Zo werkt het` runs **1400px**,
 and the stats band narrows to **900px**. Band gutters are 40px, tapering to
 16px on a phone (`px-[clamp(16px,4vw,40px)]`).
 
+**1100px is a per-page override, not the site default.** Elementor's kit
+(`post-6.css`) sets `--container-max-width: 1400px`, and each page's own
+stylesheet narrows it: `post-14`, `-44`, `-46`, `-239`, `-42` and `-1567` all
+declare `--content-width: 1100px`. Two templates never do — **`post-204`
+(`/kennisbank`) and `post-169` (the article)** — so those two run the kit's
+full **1400px**, which is why they are the wide pages and why their bands
+carry `max-w-[1400px]`. Before assuming a band is 1100, grep its page CSS for
+`--content-width`; if it isn't there, the band is 1400.
+
+The padding sits *outside* that cap, which is what makes the nesting work:
+Elementor puts `--padding-left/right` on the outer `.e-con` and caps
+`.e-con-inner` at `--content-width`, so a band's own 40px gutter never eats
+into its 1400, and a container nested inside one starts from the parent's
+inner width instead.
+
 **`/tarieven`'s bands are separated by 80px spacer strips, not by section
 padding** — that is how the live page is built, and it is what lets the hero
 photograph (700px tall, flush to the top of the hero) hang past the bottom of
@@ -762,6 +777,13 @@ measurements and shouldn't be tidied:
   and the white band opens *below* it with an 80px lead-in. That is why the
   page writes its hero out instead of mounting `PageHero`, which paints
   `linen` with a rule under it.
+- **These are the two 1400px pages.** Neither `post-204` nor `post-169` sets
+  `--content-width`, so both inherit the kit's 1400px where every other page
+  narrows to 1100 — see the type-scale section above. Their bands are
+  `max-w-[1400px]`, which is what puts the article grid on the same edges as
+  the header card above it. The one exception on the overview is the feature
+  band at the foot: that is a shared Elementor template rather than part of
+  `post-204`, so it keeps the sitewide 1100.
 - **Two nested gutters.** The band takes the sitewide 40px and the filter and
   grid take a further 36px inside it, collapsing to 0 below 768px. The hero's
   36px does *not* collapse — on a phone its copy is inset further than the

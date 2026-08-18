@@ -93,7 +93,7 @@ onUnmounted(() => {
     <!-- White runs from the top of the page to the foot of the article; the
          related row and the FAQ below it close on the site's own parchment. -->
     <section class="bg-white px-[clamp(16px,4vw,40px)] pt-[30px] pb-16">
-      <div class="mx-auto flex max-w-[1100px] flex-col gap-[22px] desk:flex-row">
+      <div class="mx-auto flex max-w-[1400px] flex-col gap-[22px] desk:flex-row">
         <div class="flex min-w-0 flex-col gap-10 desk:w-4/5 desk:pl-9">
           <!-- Header card -->
           <header class="overflow-hidden rounded-block bg-parchment">
@@ -208,7 +208,7 @@ onUnmounted(() => {
     </section>
 
     <section v-if="related.length" class="bg-parchment px-[clamp(20px,4vw,40px)] py-12">
-      <div class="mx-auto flex max-w-[1100px] flex-col gap-6">
+      <div class="mx-auto flex max-w-[1400px] flex-col gap-6">
         <h2 class="text-[29px]">Lees ook eens…</h2>
         <div class="grid gap-x-6 gap-y-6 md:grid-cols-2 desk:grid-cols-3">
           <ArticleCard v-for="item in related" :key="item.slug" :article="item" stretch />

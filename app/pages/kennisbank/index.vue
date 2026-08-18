@@ -42,7 +42,7 @@ function isFeatured(article: Article) {
 <template>
   <div>
     <section class="px-[clamp(16px,4vw,40px)] pt-[30px] pb-12">
-      <div class="mx-auto max-w-[1100px] p-9">
+      <div class="mx-auto max-w-[1400px] p-9">
         <h1 class="text-[26px] leading-[44px] md:text-[32px]">Onze kennisbank</h1>
         <p class="mt-4 text-[16px] leading-6 text-ink-muted md:max-w-[50%]">
           Op onze kennisbank leggen onze eigen docenten onderwerpen uit aan de hand van een
@@ -52,7 +52,7 @@ function isFeatured(article: Article) {
     </section>
 
     <section class="bg-white px-[clamp(16px,4vw,40px)] pt-20 pb-24">
-      <div class="mx-auto max-w-[1100px] px-9 max-md:px-0">
+      <div class="mx-auto max-w-[1400px] px-9 max-md:px-0">
         <div class="flex flex-wrap gap-x-5 gap-y-6" role="group" aria-label="Filter op categorie">
           <!-- 15px/700 on a flat leading with 14/20 padding — the live filter
                item is 43px tall because the label's own line box sets the
@@ -85,6 +85,9 @@ function isFeatured(article: Article) {
       </div>
     </section>
 
+    <!-- The feature band is a shared Elementor template on the live site, not
+         part of `post-204`, so it keeps the sitewide 1100px column rather than
+         the 1400px the two bands above it run. -->
     <section class="px-[clamp(16px,4vw,40px)] py-12">
       <div class="mx-auto max-w-[1100px]">
         <FeatureGrid />
