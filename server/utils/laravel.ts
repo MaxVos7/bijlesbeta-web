@@ -29,7 +29,21 @@ export async function forwardToLaravel(
   }
 
   try {
-    await $fetch(path, {
+    /*
+      `$fetch.raw` with the status checked by hand, rather than letting ofetch
+      decide. Two things it gets wrong here, and both report a delivery that
+      never happened:
+
+      - It follows redirects. `/api/website/contact` does not exist on the
+        Laravel side, so the POST is redirected to the login page, which
+        answers 200 with HTML — and a resolved promise meant `ok: true`. The
+        visitor was thanked for a message nobody received.
+      - `redirect: 'manual'` alone does not fix it: ofetch resolves the 302
+        rather than throwing, so the status has to be inspected either way.
+
+      A hand-off has succeeded when it answered 2xx and nothing else.
+    */
+    const response = await $fetch.raw(path, {
       baseURL: laravelApiUrl,
       method: 'POST',
       body: payload,
@@ -38,19 +52,32 @@ export async function forwardToLaravel(
         ...(laravelApiToken ? { Authorization: `Bearer ${laravelApiToken}` } : {}),
       },
       timeout: 10_000,
+      redirect: 'manual',
+      ignoreResponseError: true,
     })
+
+    if (response.status < 200 || response.status >= 300) {
+      console.error(`[form] forwarding ${path} to Laravel failed`, {
+        status: response.status,
+        location: response.headers.get('location'),
+      })
+
+      return {
+        ok: false,
+        reason: response.status >= 300 && response.status < 400
+          ? `het portaal stuurde ons door naar ${response.headers.get('location') ?? 'een andere pagina'} — de endpoint bestaat daar niet`
+          : `het portaal antwoordde met een fout (${response.status})`,
+      }
+    }
 
     return { ok: true, forwarded: true }
   }
   catch (error: any) {
     console.error(`[form] forwarding ${path} to Laravel failed`, error)
 
-    const status = error?.status ?? error?.statusCode
     return {
       ok: false,
-      reason: status
-        ? `het portaal antwoordde met een fout (${status})`
-        : `het portaal was niet bereikbaar (${error?.message ?? 'onbekende fout'})`,
+      reason: `het portaal was niet bereikbaar (${error?.message ?? 'onbekende fout'})`,
     }
   }
 }

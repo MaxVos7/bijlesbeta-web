@@ -81,6 +81,26 @@ function describe(error: any): string {
   return `het portaal was niet bereikbaar (${error?.message ?? 'onbekende fout'})`
 }
 
+/** The same, for a response we inspected rather than an error we caught. */
+function describeResponse(response: {
+  status: number
+  headers: Headers
+  _data?: any
+}): string {
+  if (response.status >= 300 && response.status < 400) {
+    return `het portaal stuurde ons door naar ${response.headers.get('location') ?? 'een andere pagina'}`
+  }
+  if (response.status === 401) return 'het portaal weigerde onze sleutel (401)'
+  if (response.status === 422) {
+    const fields = Object.keys(response._data?.errors ?? {})
+    const detail = fields.length
+      ? ` (${fields.join(', ')})`
+      : response._data?.message ? ` (${response._data.message})` : ''
+    return `het portaal wees de gegevens af${detail}`
+  }
+  return `het portaal antwoordde met een fout (${response.status})`
+}
+
 /**
  * Posts a JSON payload to one of the external-registration endpoints.
  *
@@ -98,20 +118,39 @@ export async function postToPortal(
   if (!configured.config) return { ok: true, forwarded: false }
 
   try {
-    await $fetch(path, {
+    /*
+      The status is checked by hand rather than left to ofetch, which follows
+      redirects and then resolves — so a 302 reads as a delivery. These routes
+      live in `routes/auth.php` inside a `guest` middleware group, so a
+      redirect is a shape they really can return, and treating one as success
+      would thank the visitor for a submission nobody received.
+    */
+    const response = await $fetch.raw(path, {
       baseURL: configured.config.url,
       method: 'POST',
       body: payload,
       headers: { Accept: 'application/json', 'X-Secret-Key': configured.config.key },
       timeout: 15_000,
+      redirect: 'manual',
+      ignoreResponseError: true,
     })
+
+    if (response.status < 200 || response.status >= 300) {
+      console.error(`[form] posting ${path} to the portal failed`, {
+        status: response.status,
+        location: response.headers.get('location'),
+        // The portal returns { message, errors } on a 422 — both matter here.
+        body: response._data,
+      })
+
+      return { ok: false, reason: describeResponse(response) }
+    }
 
     return { ok: true, forwarded: true }
   }
   catch (error: any) {
     console.error(`[form] posting ${path} to the portal failed`, {
       status: error?.status ?? error?.statusCode,
-      // The portal returns { message, errors } on a 422 — both matter here.
       body: error?.data,
     })
 
@@ -159,19 +198,33 @@ export async function uploadResume(
   body.append('file', new Blob([file.data as BlobPart], { type: file.type }), file.filename)
 
   try {
-    const response = await $fetch<{ url?: string }>(path, {
+    const response = await $fetch.raw<{ url?: string }>(path, {
       baseURL: configured.config.url,
       method: 'POST',
       body,
       headers: { Accept: 'application/json', 'X-Secret-Key': configured.config.key },
       timeout: 30_000,
+      redirect: 'manual',
+      ignoreResponseError: true,
     })
 
-    if (!response?.url) {
+    if (response.status < 200 || response.status >= 300) {
+      console.error('[form] uploading the CV to the portal failed', {
+        status: response.status,
+        location: response.headers.get('location'),
+        body: response._data,
+      })
+
+      return { ok: false, reason: `het CV kon niet worden geupload — ${describeResponse(response)}` }
+    }
+
+    // A 2xx that isn't the documented body is still a failure: `resume_url` is
+    // required, and posting the application without it loses the CV.
+    if (!response._data?.url) {
       return { ok: false, reason: 'het uploaden van het CV leverde geen URL op' }
     }
 
-    return { ok: true, url: response.url }
+    return { ok: true, url: response._data.url }
   }
   catch (error: any) {
     console.error('[form] uploading the CV to the portal failed', {
