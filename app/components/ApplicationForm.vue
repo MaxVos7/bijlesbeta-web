@@ -115,7 +115,15 @@ async function submit() {
   if (cvFile.value) body.append('cv', cvFile.value, cvFile.value.name)
 
   try {
-    await $fetch('/api/solliciteren', { method: 'POST', body })
+    const result = await $fetch('/api/solliciteren', { method: 'POST', body })
+
+    // 200 with `ok: false` when it reached nobody — see `deliveryResult`.
+    if (result.ok === false) {
+      status.value = 'error'
+      errorMessage.value = result.message
+      return
+    }
+
     status.value = 'success'
   }
   catch (error: any) {

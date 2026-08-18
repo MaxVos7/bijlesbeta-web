@@ -99,7 +99,9 @@ export default defineEventHandler(async (event) => {
 
   // Silently accept honeypot hits so bots get no signal.
   if (isSpam({ website })) {
-    return { ok: true }
+    // `as const`, or `ok` widens to boolean and the result stops being a
+    // discriminated union the forms can branch on.
+    return { ok: true as const }
   }
 
   const handoff = await postToPortal(
@@ -121,13 +123,9 @@ export default defineEventHandler(async (event) => {
     rows: signupRows(answers),
   })
 
-  requireDelivery(
-    handoff,
-    delivered,
+  return deliveryResult(handoff, delivered,
     'We konden je aanmelding niet versturen. Bel of app ons even, dan plannen we je proefles direct in.',
   )
-
-  return { ok: true }
 })
 
 type Answers = Omit<z.infer<typeof schema>, 'website'>

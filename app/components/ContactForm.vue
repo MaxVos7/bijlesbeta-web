@@ -76,7 +76,7 @@ async function submit() {
   errorMessage.value = ''
 
   try {
-    await $fetch('/api/contact', {
+    const result = await $fetch('/api/contact', {
       method: 'POST',
       body: {
         name: fullName(),
@@ -87,6 +87,19 @@ async function submit() {
         subject: props.subject,
       },
     })
+
+    /*
+      A submission that reached nobody answers 200 with `ok: false` rather than
+      a 502, because Cloudflare replaces an origin 502 with its own page and
+      the message telling the visitor to call never arrives. See
+      `deliveryResult`.
+    */
+    if (result.ok === false) {
+      status.value = 'error'
+      errorMessage.value = result.message
+      return
+    }
+
     status.value = 'success'
   } catch (error: any) {
     status.value = 'error'

@@ -92,26 +92,33 @@ export async function sendOfficeCopy(
   })
 }
 
+/** What the route answers with. Always HTTP 200 — see `deliveryResult`. */
+export type DeliveryResult = { ok: true } | { ok: false, message: string }
+
 /**
- * Ends the request with an error only when the submission reached nobody.
+ * Reports whether the submission reached anybody.
  *
- * This is the whole of the new contract. The portal refusing a submission is
- * no longer the visitor's problem: if the office has the answers, the
- * submission exists and somebody will act on it, so the visitor is told it
- * arrived — because it did. Only when both the hand-off and the copy failed is
- * there genuinely nothing left, and then they are told to call rather than
- * being thanked for something that vanished.
+ * This is the whole of the contract. The portal refusing a submission is not
+ * the visitor's problem: if the office has the answers, the submission exists
+ * and somebody will act on it, so the visitor is told it arrived — because it
+ * did. Only when the hand-off *and* the copy both failed is there nothing
+ * left, and then they are told to call rather than thanked for something that
+ * vanished.
+ *
+ * **It answers 200 with `ok: false` rather than throwing a 502**, which is not
+ * squeamishness about status codes. Cloudflare sits in front of this site and
+ * replaces an origin 502 with its own branded error page, so the Dutch
+ * sentence telling the visitor to call was being thrown away and the form fell
+ * back to a generic "er ging iets mis". The one moment we most need to reach
+ * the visitor is the one a gateway error is most likely to swallow. A 4xx from
+ * zod validation is passed through untouched and still throws.
  */
-export function requireDelivery(
+export function deliveryResult(
   handoff: { ok: boolean },
   delivered: boolean,
   message = 'We konden je bericht niet versturen. Bel of mail ons even, dan pakken we het direct op.',
-): void {
-  if (handoff.ok || delivered) return
+): DeliveryResult {
+  if (handoff.ok || delivered) return { ok: true }
 
-  throw createError({
-    statusCode: 502,
-    statusMessage: 'Submission could not be delivered',
-    data: { message },
-  })
+  return { ok: false, message }
 }

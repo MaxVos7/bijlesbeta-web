@@ -99,6 +99,13 @@ export default defineNuxtConfig({
     */
     officeEmail: 'contact@bijlesbeta.nl',
     applicationsEmail: 'info@bijlesbeta.nl',
+    /*
+      Unlocks `GET /api/_diagnose?key=…`, which reports which variables the
+      process can actually see and what the SMTP server says when we connect.
+      Empty by default, and the route 404s without it — so it does not exist on
+      a deploy that hasn't opted in. Unset it once a deploy is healthy.
+    */
+    diagnoseKey: '',
     public: {
       siteUrl: 'https://bijlesbeta.nl',
       portalUrl: 'https://mijn.bijlesbeta.nl',

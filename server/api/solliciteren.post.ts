@@ -89,7 +89,9 @@ export default defineEventHandler(async (event) => {
 
   // Silently accept honeypot hits so bots get no signal.
   if (isSpam({ website })) {
-    return { ok: true }
+    // `as const`, or `ok` widens to boolean and the result stops being a
+    // discriminated union the forms can branch on.
+    return { ok: true as const }
   }
 
   if (!cv) invalid('Voeg je CV toe om te solliciteren.')
@@ -153,11 +155,7 @@ export default defineEventHandler(async (event) => {
     attachments: [{ filename: cv.filename, content: cv.data, contentType: cv.type }],
   })
 
-  requireDelivery(
-    handoff,
-    delivered,
+  return deliveryResult(handoff, delivered,
     'We konden je sollicitatie niet versturen. Mail je CV en motivatie naar ons, dan pakken we het direct op.',
   )
-
-  return { ok: true }
 })

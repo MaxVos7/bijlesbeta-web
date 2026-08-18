@@ -251,7 +251,15 @@ async function submit() {
   errorMessage.value = ''
 
   try {
-    await $fetch('/api/aanmelden', { method: 'POST', body: { ...values } })
+    const result = await $fetch('/api/aanmelden', { method: 'POST', body: { ...values } })
+
+    // 200 with `ok: false` when it reached nobody — see `deliveryResult`.
+    if (result.ok === false) {
+      status.value = 'error'
+      errorMessage.value = result.message
+      return
+    }
+
     status.value = 'success'
   } catch (error: any) {
     status.value = 'error'

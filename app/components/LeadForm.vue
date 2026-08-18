@@ -43,7 +43,7 @@ async function submit() {
   message.value = ''
 
   try {
-    await $fetch('/api/contact', {
+    const result = await $fetch('/api/contact', {
       method: 'POST',
       body: {
         name: form.name,
@@ -54,6 +54,14 @@ async function submit() {
         website: form.website,
       },
     })
+
+    // 200 with `ok: false` when it reached nobody — see `deliveryResult`.
+    if (result.ok === false) {
+      status.value = 'error'
+      message.value = result.message
+      return
+    }
+
     status.value = 'success'
   } catch (error: any) {
     status.value = 'error'

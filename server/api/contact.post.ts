@@ -35,7 +35,9 @@ export default defineEventHandler(async (event) => {
 
   // Silently accept honeypot hits so bots get no signal.
   if (isSpam({ website })) {
-    return { ok: true }
+    // `as const`, or `ok` widens to boolean and the result stops being a
+    // discriminated union the forms can branch on.
+    return { ok: true as const }
   }
 
   const handoff = await forwardToLaravel(event, '/api/website/contact', payload)
@@ -58,7 +60,5 @@ export default defineEventHandler(async (event) => {
     ],
   })
 
-  requireDelivery(handoff, delivered)
-
-  return { ok: true }
+  return deliveryResult(handoff, delivered)
 })
