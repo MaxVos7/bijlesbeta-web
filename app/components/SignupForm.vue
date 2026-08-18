@@ -95,6 +95,15 @@ function textProblem(field: Extract<SignupField, { kind: 'text' }>): string {
     return signupCopy.invalidEmail
   }
 
+  /*
+    The portal refuses a phone number with a space or a dash in it and rejects
+    the whole submission for it, so it is checked under the field rather than
+    four steps later. `normalisePhone` accepts what the portal accepts.
+  */
+  if (field.inputType === 'tel' && normalisePhone(raw) === null) {
+    return signupCopy.invalidPhone
+  }
+
   if (raw.length > SIGNUP_MAX[field.name]) return signupCopy.tooLong(SIGNUP_MAX[field.name])
 
   return ''

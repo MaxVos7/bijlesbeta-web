@@ -12,25 +12,37 @@ import type { H3Event } from 'h3'
  * and they answer 201 on success, 401 on a bad key and 422 on validation.
  *
  * Configure with NUXT_PORTAL_API_URL + NUXT_PORTAL_SECRET_KEY. With either
- * unset, submissions are logged in development so the forms stay testable and
- * refused in production, the same contract `forwardToLaravel` keeps — a broken
- * hand-off must never look like a success.
+ * unset, submissions are logged in development so the forms stay testable, and
+ * in production the hand-off is reported as failed rather than refused — the
+ * route then mails the office the submission instead of losing it. Nothing in
+ * here throws; see `PortalResult`.
  */
-
-/** What the visitor is told when the hand-off fails. Never the upstream error. */
-const UNAVAILABLE
-  = 'Het formulier is tijdelijk niet beschikbaar. Bel of mail ons, dan helpen we je direct.'
-const FAILED
-  = 'We konden je aanmelding niet versturen. Probeer het zo nog eens, of bel ons even.'
 
 type PortalConfig = { url: string, key: string }
 
-/** Returns the config, or throws the 503 the visitor should see. */
-function portalConfig(event: H3Event, path: string, payload: unknown): PortalConfig | null {
+/**
+ * What happened to a hand-off.
+ *
+ * Nothing here throws any more. A failed hand-off used to end the request with
+ * a 502 and the submission with it; now the route hears about it, mails the
+ * office the whole submission marked `NIET VERWERKT`, and only turns it into
+ * an error for the visitor if that copy could not be sent either. `reason` is
+ * for the office and the log — it is never shown to the visitor.
+ */
+export type PortalResult =
+  | { ok: true, forwarded: boolean }
+  | { ok: false, reason: string }
+
+/** The config, or the reason there isn't one. */
+function portalConfig(
+  event: H3Event,
+  path: string,
+  payload: unknown,
+): { ok: true, config: PortalConfig } | { ok: true, config: null } | { ok: false, reason: string } {
   const { portalApiUrl, portalSecretKey } = useRuntimeConfig(event)
 
   if (portalApiUrl && portalSecretKey) {
-    return { url: portalApiUrl, key: portalSecretKey }
+    return { ok: true, config: { url: portalApiUrl, key: portalSecretKey } }
   }
 
   if (import.meta.dev) {
@@ -38,38 +50,59 @@ function portalConfig(event: H3Event, path: string, payload: unknown): PortalCon
       `[form] ${path} (NUXT_PORTAL_API_URL / NUXT_PORTAL_SECRET_KEY not set, not forwarded)`,
       payload,
     )
-    return null
+    return { ok: true, config: null }
   }
 
-  throw createError({
-    statusCode: 503,
-    statusMessage: 'Portal endpoint not configured',
-    data: { message: UNAVAILABLE },
-  })
+  // Not a throw any more. An unconfigured portal on a live deploy is the one
+  // outage that lasts until somebody notices, so it is exactly the case the
+  // office copy exists for.
+  return { ok: false, reason: 'de koppeling met het portaal is niet geconfigureerd' }
+}
+
+/**
+ * Turns a failed request into a sentence the office can act on.
+ *
+ * A 422 is ours, not the visitor's: it means the portal was reachable and
+ * refused what we sent. Naming the fields it complained about is what makes
+ * the difference between "something went wrong" and a five-minute fix.
+ */
+function describe(error: any): string {
+  const status = error?.status ?? error?.statusCode
+  const message = error?.data?.message
+
+  if (status === 401) return 'het portaal weigerde onze sleutel (401)'
+  if (status === 422) {
+    const fields = Object.keys(error?.data?.errors ?? {})
+    const detail = fields.length ? ` (${fields.join(', ')})` : message ? ` (${message})` : ''
+    return `het portaal wees de gegevens af${detail}`
+  }
+  if (status) return `het portaal antwoordde met een fout (${status})`
+
+  return `het portaal was niet bereikbaar (${error?.message ?? 'onbekende fout'})`
 }
 
 /**
  * Posts a JSON payload to one of the external-registration endpoints.
  *
- * A 422 from the portal means our mapping sent something it wouldn't take —
- * that is our bug, not the visitor's, so it is logged in full and reported as
- * a generic failure rather than surfaced as field errors the form can't
- * attach to anything.
+ * Reports rather than throws: see `PortalResult`. A 422 is logged in full,
+ * because it means our mapping sent something the portal wouldn't take, which
+ * is a bug on this side.
  */
 export async function postToPortal(
   event: H3Event,
   path: string,
   payload: Record<string, unknown>,
-) {
-  const config = portalConfig(event, path, payload)
-  if (!config) return { ok: true, forwarded: false }
+): Promise<PortalResult> {
+  const configured = portalConfig(event, path, payload)
+  if (!configured.ok) return configured
+  if (!configured.config) return { ok: true, forwarded: false }
 
   try {
     await $fetch(path, {
-      baseURL: config.url,
+      baseURL: configured.config.url,
       method: 'POST',
       body: payload,
-      headers: { Accept: 'application/json', 'X-Secret-Key': config.key },
+      headers: { Accept: 'application/json', 'X-Secret-Key': configured.config.key },
       timeout: 15_000,
     })
 
@@ -82,11 +115,7 @@ export async function postToPortal(
       body: error?.data,
     })
 
-    throw createError({
-      statusCode: 502,
-      statusMessage: 'Upstream request failed',
-      data: { message: FAILED },
-    })
+    return { ok: false, reason: describe(error) }
   }
 }
 
@@ -96,27 +125,33 @@ export async function postToPortal(
  * `register-external-applicant` takes `resume_url` and hands it to a job that
  * does a plain `Http::get`, so the file has to live somewhere public before
  * the application is posted. Gravity Forms had WordPress host it; this app
- * cannot (no runtime filesystem writes), so the portal takes the upload.
- *
- * Expected contract, which the portal side has to provide:
+ * cannot (no runtime filesystem writes), so the portal takes the upload —
+ * `ExternalResumeController` parks it on a private disk and hands back a
+ * signed URL good for seven days.
  *
  *   POST /upload-external-resume
  *   X-Secret-Key: <the same shared key>
- *   multipart/form-data, one `file` part
- *   201/200 -> { "url": "https://…" }   publicly fetchable
+ *   multipart/form-data, one `file` part (pdf/doc/docx, <= 10 MB)
+ *   201 -> { "url": "https://…" }
  *
- * Anything else is treated as a failure and the application is not sent, so a
- * candidate is never recorded without the CV they attached.
+ * Reports rather than throws. A failed upload means the application cannot be
+ * posted — the portal requires `resume_url` — but the file is still in memory
+ * at that point, so the route attaches it to the office copy instead. That is
+ * the only remaining copy of it, and it is why this must not end the request.
  */
 export async function uploadResume(
   event: H3Event,
   // `Uint8Array` rather than `Buffer`, which isn't in this project's types —
   // h3 hands back a Buffer and it satisfies both this and `Blob`.
   file: { data: Uint8Array, filename: string, type: string },
-) {
+): Promise<{ ok: true, url: string | null } | { ok: false, reason: string }> {
   const path = '/upload-external-resume'
-  const config = portalConfig(event, path, { filename: file.filename, bytes: file.data.length })
-  if (!config) return null
+  const configured = portalConfig(event, path, {
+    filename: file.filename,
+    bytes: file.data.length,
+  })
+  if (!configured.ok) return configured
+  if (!configured.config) return { ok: true, url: null }
 
   const body = new FormData()
   // h3 hands back a Buffer, which is a valid BlobPart at runtime; its type is
@@ -125,18 +160,18 @@ export async function uploadResume(
 
   try {
     const response = await $fetch<{ url?: string }>(path, {
-      baseURL: config.url,
+      baseURL: configured.config.url,
       method: 'POST',
       body,
-      headers: { Accept: 'application/json', 'X-Secret-Key': config.key },
+      headers: { Accept: 'application/json', 'X-Secret-Key': configured.config.key },
       timeout: 30_000,
     })
 
     if (!response?.url) {
-      throw new Error('upload succeeded but returned no url')
+      return { ok: false, reason: 'het uploaden van het CV leverde geen URL op' }
     }
 
-    return response.url
+    return { ok: true, url: response.url }
   }
   catch (error: any) {
     console.error('[form] uploading the CV to the portal failed', {
@@ -145,28 +180,30 @@ export async function uploadResume(
       message: error?.message,
     })
 
-    throw createError({
-      statusCode: 502,
-      statusMessage: 'Resume upload failed',
-      data: {
-        message:
-          'We konden je CV niet uploaden. Probeer het zo nog eens, of mail je sollicitatie naar ons.',
-      },
-    })
+    return { ok: false, reason: `het CV kon niet worden geupload — ${describe(error)}` }
   }
 }
 
 /**
  * Subject ids, from the portal's `SubjectsSeeder`. The endpoints take
  * `subjects` as a comma-separated list of numeric ids and discard anything
- * non-numeric, so a name that isn't in this map is dropped rather than sent.
+ * non-numeric, so a name that isn't in this map is dropped *silently* — the
+ * submission still succeeds, just without the subjects on it.
  *
- * Both forms label the two split maths as `Wiskunde A` / `Wiskunde B`, which
- * are the portal's `Wiskunde A/C` and `Wiskunde B/D`.
+ * That is why the two split maths are keyed twice. The signup wizard labels
+ * them `Wiskunde A` / `Wiskunde B`; `/werken-bij` uses the portal's own
+ * `Wiskunde A/C` / `Wiskunde B/D`, which are the live site's labels on that
+ * form and shouldn't be reworded for our convenience. Both spellings are
+ * accepted here rather than either form being changed.
+ *
+ * Add a new subject to this map *and* to the portal's seeder, or it is dropped
+ * without an error.
  */
 const SUBJECT_IDS: Record<string, number> = {
   'Wiskunde A': 1,
+  'Wiskunde A/C': 1,
   'Wiskunde B': 2,
+  'Wiskunde B/D': 2,
   'Wiskunde': 3,
   'Natuurkunde': 4,
   'Scheikunde': 5,
@@ -200,3 +237,4 @@ export function compact(payload: Record<string, unknown>) {
     Object.entries(payload).filter(([, value]) => value !== '' && value !== undefined && value !== null),
   )
 }
+

@@ -110,13 +110,15 @@ export const SIGNUP_MAX: Record<SignupTextKey, number> = {
   contactFirstName: 120,
   contactLastName: 120,
   email: 180,
-  postalCode: 20,
-  houseNumber: 20,
+  // `account_postcode` and `account_housenumber` are `max:10` on the portal.
+  postalCode: 10,
+  houseNumber: 10,
   street: 200,
   city: 120,
   cityCode: 10,
   municipalityCode: 10,
-  addressNote: 500,
+  // `account_address_comment` is `max:255` on the portal.
+  addressNote: 255,
   contactPhone: 40,
   heardAbout: 200,
   website: 200,
@@ -335,11 +337,13 @@ export const signupSteps: SignupStep[] = [
             that — so on bijlesbeta.nl a 7 or 8 silently fails. Capped here so
             the visitor is told before submitting rather than after.
           */
-          hint: 'Voer een getal kleiner dan of gelijk aan 6 in.',
+          hint: 'Voer een getal tussen 1 en 6 in.',
           required: true,
           placeholder: 'Schooljaar',
           inputType: 'number',
-          min: 0,
+          // `student_year` is `min:1` as well as `max:6` on the portal, and a 0
+          // fails the whole submission just as an 8 does.
+          min: 1,
           max: 6,
         },
         {
@@ -546,6 +550,8 @@ export const signupCopy = {
   numberMin: (min: number) => `Voer een getal groter dan of gelijk aan ${min} in.`,
   wholeNumber: 'Voer een heel getal in.',
   invalidEmail: 'Vul een geldig e-mailadres in.',
+  /* The portal only accepts `0612345678` or `+31612345678`; see `normalisePhone`. */
+  invalidPhone: 'Vul een geldig Nederlands telefoonnummer in, bijvoorbeeld 0612345678.',
   tooLong: (max: number) => `Dit antwoord is te lang. Gebruik maximaal ${max} tekens.`,
   requiredMark: '(Vereist)',
   consentPrefix: 'Ik ga akkoord met de',

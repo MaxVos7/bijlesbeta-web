@@ -4,15 +4,19 @@ import type { H3Event } from 'h3'
  * Forwards a public form submission to the existing Laravel application, which
  * owns mail delivery and lead storage. This app deliberately holds no database.
  *
- * Configure with NUXT_LARAVEL_API_URL (+ NUXT_LARAVEL_API_TOKEN). Until that is
- * set, submissions are logged in development so the forms stay testable, and
- * rejected in production so a broken hand-off is never silently swallowed.
+ * Configure with NUXT_LARAVEL_API_URL (+ NUXT_LARAVEL_API_TOKEN).
+ *
+ * **The contact endpoint does not exist on the Laravel side yet.** Until it
+ * does, this reports every contact submission as un-forwarded and the office
+ * copy is the delivery — which is what bijlesbeta.nl does today anyway, where
+ * the contact form is a Gravity Forms notification and nothing more. Nothing
+ * here throws: a submission that can't be forwarded must still reach somebody.
  */
 export async function forwardToLaravel(
   event: H3Event,
   path: string,
   payload: Record<string, unknown>,
-) {
+): Promise<{ ok: true, forwarded: boolean } | { ok: false, reason: string }> {
   const { laravelApiUrl, laravelApiToken } = useRuntimeConfig(event)
 
   if (!laravelApiUrl) {
@@ -21,14 +25,7 @@ export async function forwardToLaravel(
       return { ok: true, forwarded: false }
     }
 
-    throw createError({
-      statusCode: 503,
-      statusMessage: 'Form endpoint not configured',
-      data: {
-        message:
-          'Het formulier is tijdelijk niet beschikbaar. Bel of mail ons, dan helpen we je direct.',
-      },
-    })
+    return { ok: false, reason: 'er is geen koppeling met het portaal geconfigureerd' }
   }
 
   try {
@@ -44,17 +41,17 @@ export async function forwardToLaravel(
     })
 
     return { ok: true, forwarded: true }
-  } catch (error) {
+  }
+  catch (error: any) {
     console.error(`[form] forwarding ${path} to Laravel failed`, error)
 
-    throw createError({
-      statusCode: 502,
-      statusMessage: 'Upstream request failed',
-      data: {
-        message:
-          'We konden je bericht niet versturen. Probeer het zo nog eens, of bel ons even.',
-      },
-    })
+    const status = error?.status ?? error?.statusCode
+    return {
+      ok: false,
+      reason: status
+        ? `het portaal antwoordde met een fout (${status})`
+        : `het portaal was niet bereikbaar (${error?.message ?? 'onbekende fout'})`,
+    }
   }
 }
 

@@ -46,15 +46,23 @@ Both must pass. There is no test suite yet.
 ## Forms
 
 All three form routes validate with zod, silently accept honeypot hits, and
-forward to the Laravel side. When the relevant environment variables are unset
-they log in dev and return 503 in production — that 503 is intentional. Do not
-make them silently succeed.
+forward to the Laravel side.
+
+**Nothing in the hand-off throws any more, and a failed hand-off is no longer
+the visitor's problem.** Every submission is also mailed to the office, and the
+route only returns an error when *both* the hand-off and that mail failed — see
+"The office copy" below. Read that before changing any of the three routes: the
+old contract, where an unconfigured or unreachable portal returned 503/502 and
+the submission was lost with it, is what this replaced.
 
 Two different Laravel surfaces are in play, with two different credentials:
 
 - `server/api/contact.post.ts` posts through `forwardToLaravel`
   (`NUXT_LARAVEL_API_URL` + a bearer token). **That endpoint doesn't exist
-  yet.**
+  yet**, and there is no contact route, model or notification on the portal at
+  all — so for contact the office copy *is* the delivery, which is also all
+  bijlesbeta.nl does (a Gravity Forms notification and nothing more). The
+  forward is attempted anyway, so it starts working the day the endpoint lands.
 - `server/api/aanmelden.post.ts` and `server/api/solliciteren.post.ts` post
   through `server/utils/portal.ts` to the portal's external-registration
   endpoints — the same ones the Gravity Forms webhooks on bijlesbeta.nl use
@@ -69,17 +77,33 @@ Things the portal's contract forces, which look arbitrary otherwise:
   `server/utils/portal.ts` and come from the portal's `SubjectsSeeder` and
   `LevelsSeeder`. The endpoints take `subjects` as a comma-separated id list
   and *silently discard* anything non-numeric, so a label missing from the map
-  is dropped without an error — add new subjects to both sides.
+  is dropped without an error and the submission still succeeds — add new
+  subjects to both sides. The two split maths are keyed twice for this reason:
+  the wizard says `Wiskunde A`/`Wiskunde B` and `/werken-bij` says the portal's
+  own `Wiskunde A/C`/`Wiskunde B/D` (the live site's labels on that form), and
+  for a while the second pair matched nothing, so an applicant who ticked only
+  those was recorded with no subjects at all.
 - **`student_subjects_1` is the only subject key we send.** The controller
   reads the first non-empty of `_1.._3`, so the other two are noise.
 - **The hours question splits across two mutually exclusive keys**:
   `student_weekly_amount_indication` as a `basis`/`standard`/`premium` band for
   weekly lessons, `student_incidental_amount_indication` as a plain count
   otherwise.
-- **`student_year` is capped at 6**, because the portal validates `max:6` and
-  rejects the whole submission above it. The live Gravity Form allows 8, so a 7
-  or 8 fails silently on bijlesbeta.nl today; `app/data/signup.ts` caps at 6 so
-  the visitor is told first.
+- **`student_year` runs 1 to 6**, because the portal validates
+  `integer|min:1|max:6` and rejects the whole submission outside it. The live
+  Gravity Form allows 8, so a 7 or 8 fails silently on bijlesbeta.nl today;
+  `app/data/signup.ts` and the zod schema both cap at 1–6 so the visitor is
+  told first.
+- **Phone numbers must be `0612345678` or `+31612345678`.** The portal's
+  `PhoneNumber` rule takes nothing else — not `06 12 34 56 78`, not
+  `06-12345678` — and refuses the entire submission for it. `normalisePhone`
+  in `shared/utils/phone.ts` is the one definition of that shape: both forms
+  check it before the visitor can move on, and both routes normalise on the
+  way out. It lives in `shared/` precisely so the two halves can't drift.
+- **Three fields are capped tighter than they look.** `account_postcode` and
+  `account_housenumber` are `max:10` and `account_address_comment` is
+  `max:255` on the portal, so `SIGNUP_MAX` and the zod schema match those
+  rather than the wizard's own generous limits.
 - **Five wizard answers have no field on the endpoint** — school, contact
   method, and the "Anders, namelijk…" wording behind lesson kind, level and
   subject. They are appended to `location_indication` under labels, which is
@@ -93,16 +117,71 @@ The CV on `/solliciteren` is a real upload: `register-external-applicant`
 requires `resume_url` and hands it to a job that does a plain `Http::get`, so
 the file must be publicly fetchable before the application is posted. The route
 uploads first and only posts the application once that returns a URL — an
-applicant is never recorded without the CV they attached. **The upload endpoint
-still has to be built on the portal:**
+applicant is never recorded without the CV they attached. The endpoint exists
+now (`ExternalResumeController` + `StagedResumeStorage` in `../bijlesbeta`):
 
     POST /upload-external-resume
     X-Secret-Key: <the same shared key>
     multipart/form-data, one `file` part (pdf/doc/docx, ≤10 MB)
-    200/201 -> { "url": "https://…" }   publicly fetchable by the queue worker
+    201 -> { "url": "https://…" }   a signed URL, good for seven days
 
-Until it exists, `/solliciteren` returns a 502 and tells the applicant to mail
-their application instead.
+If the upload fails the application is not posted — the portal requires
+`resume_url` — but the file is still in memory at that point, so it goes out as
+an attachment on the office copy instead. That is then the only copy of it in
+existence, which is why neither step may end the request: you cannot ask
+somebody for their CV twice.
+
+### The office copy
+
+Every submission is mailed to the office, whether or not the portal took it.
+`server/utils/mail.ts` sends it and `server/utils/office-copy.ts` builds it.
+
+This is not a second notification channel competing with the portal, and it
+should not become one. The portal owns the transactional mail to the *visitor*
+— the password-set link on a signup, the confirmation on an application — and
+it does that far better than this app could, from database-backed templates
+with a notification log and a queue behind them. Do not send the visitor mail
+from here.
+
+What the portal does not do is put the answers anywhere the office can read
+without opening it. `SendUserRegisteredNotification` interpolates only the
+params the listener passes, and `makeReplaceArray` can substitute nothing else:
+`STUDENT_REGISTERED_TO_ADMIN` gets a first name, a last name and an account
+name, and `JOB_APPLICATION_CREATED_TO_ADMIN` gets none at all. bijlesbeta.nl's
+Gravity Forms notification carried the whole form, so without this copy the
+cutover would quietly take that away.
+
+The reasoning that shaped it, so it isn't undone by halves:
+
+- **It is sent on every submission, not only on a failure.** That way it does
+  not depend on classifying a failure correctly, and the office gets the
+  answers in the ordinary case too. The outcome is stamped at the top —
+  `VERWERKT` or `NIET VERWERKT` with the reason — so an inbox reads as a work
+  queue rather than a pile of duplicates.
+- **The likely loss is not an outage.** It is the portal being up and saying
+  no: a phone number with a space in it, a school year of 0, an applicant whose
+  email already exists. `describe()` in `portal.ts` turns those into a sentence
+  naming the fields, because "something went wrong" is not something anybody
+  can act on.
+- **`requireDelivery` is the whole contract.** A submission that reached the
+  office exists, so the visitor is told it arrived — because it did. Only when
+  the hand-off *and* the copy both failed is there nothing left, and then they
+  are told to call rather than thanked for something that vanished. Do not
+  restore the old behaviour of erroring whenever the portal refused.
+- **The CV is always attached**, not only on a failure. The portal's staged
+  copy is deleted once the queue has fetched it, so the mail is the office's
+  own lasting copy — and if the upload failed, the only one.
+- **SMTP, reusing the portal's own credentials** (`NUXT_MAIL_*`), so there is
+  one sending domain and one set of SPF/DKIM records rather than two. Unset,
+  nothing is sent: dev logs the copy, production reports it as not sent, and
+  with no portal *and* no mail the visitor is honestly told to call.
+- **The label maps in `aanmelden.post.ts` mirror `app/data/signup.ts`.** They
+  translate the portal's codes — `premium`, `at_school`, a bare `2` for havo —
+  into what the visitor actually chose. If a question's options change, change
+  them in both places or the copy describes an answer nobody was offered.
+
+`shared/utils/phone.ts` is shared between the forms and the routes for the same
+reason: the two halves must not disagree about what the portal will accept.
 
 The signup wizard is data-driven: `app/data/signup.ts` defines the steps and
 returns each step's fields as a function of the answers so far, mirroring the

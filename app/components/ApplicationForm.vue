@@ -66,6 +66,11 @@ function validate() {
   if (!form.firstName.trim()) next.firstName = 'Vul je voornaam in.'
   if (!form.lastName.trim()) next.lastName = 'Vul je achternaam in.'
   if (!form.phone.trim()) next.phone = 'Vul je telefoonnummer in.'
+  // The portal refuses a number with a separator in it and rejects the whole
+  // application for it, so the shape is checked before the applicant submits.
+  else if (normalisePhone(form.phone) === null) {
+    next.phone = 'Vul een geldig Nederlands telefoonnummer in, bijvoorbeeld 0612345678.'
+  }
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(form.email)) next.email = 'Vul een geldig e-mailadres in.'
   if (form.subjects.length === 0) next.subjects = 'Kies minimaal één vak.'
   if (!form.study.trim()) next.study = 'Vul je studie in.'

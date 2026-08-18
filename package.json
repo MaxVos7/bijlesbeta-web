@@ -12,6 +12,8 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.3",
+    "katex": "^0.18.4",
+    "nodemailer": "^9.0.5",
     "nuxt": "^4.5.1",
     "tailwindcss": "^4.3.3",
     "vue": "^3.5.40",
@@ -19,6 +21,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@types/nodemailer": "^8.0.1",
     "typescript": "~5.9",
     "vue-tsc": "^3.3.9"
   }

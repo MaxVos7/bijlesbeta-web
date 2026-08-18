@@ -77,6 +77,28 @@ export default defineNuxtConfig({
     // NUXT_PORTAL_SECRET_KEY — never commit the key.
     portalApiUrl: '',
     portalSecretKey: '',
+    /*
+      SMTP for the office copy of every form submission. The portal owns the
+      mail to the visitor; this is the copy that survives the portal being
+      down, or refusing a field. Set via NUXT_MAIL_HOST / NUXT_MAIL_PORT /
+      NUXT_MAIL_USER / NUXT_MAIL_PASSWORD / NUXT_MAIL_FROM — reuse the
+      portal's own SMTP credentials so there is one sending domain, not two.
+
+      Unset, nothing is sent and the forms fall back to telling the visitor to
+      call: with no portal and no mail there is nowhere for a submission to go,
+      and claiming otherwise would lose it.
+    */
+    mailHost: '',
+    mailPort: '587',
+    mailUser: '',
+    mailPassword: '',
+    mailFrom: 'Bijles Beta <contact@bijlesbeta.nl>',
+    /*
+      Where the copies land. Sollicitaties go to the separate mailbox the live
+      site names beside that form; everything else to the contact address.
+    */
+    officeEmail: 'contact@bijlesbeta.nl',
+    applicationsEmail: 'info@bijlesbeta.nl',
     public: {
       siteUrl: 'https://bijlesbeta.nl',
       portalUrl: 'https://mijn.bijlesbeta.nl',

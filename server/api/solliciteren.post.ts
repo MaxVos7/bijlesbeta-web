@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import type { Row } from '../utils/office-copy'
 
 /**
  * Docent applications, posted to the portal's `register-external-applicant` —
@@ -9,13 +10,26 @@ import { z } from 'zod'
  * over HTTP, so the file has to be somewhere public before the application is
  * posted: the CV is uploaded first, and the application is only sent once that
  * returns a URL. An applicant is never recorded without the CV they attached.
+ *
+ * If either step fails, the application is not lost with it — the office gets
+ * the answers *and the CV as an attachment*, which at that moment is the only
+ * copy of the file in existence. That is the one thing this route must never
+ * get wrong: somebody's CV cannot be asked for twice.
  */
 
 /** Matches the portal's own rules, so a submission it would reject fails here. */
 const schema = z.object({
   firstName: z.string().trim().min(1).max(255),
   lastName: z.string().trim().min(1).max(255),
-  phone: z.string().trim().min(1).max(40),
+  /* See `normalisePhone`: the portal refuses anything with a separator in it. */
+  phone: z
+    .string()
+    .trim()
+    .min(1)
+    .max(40)
+    .refine((value) => normalisePhone(value) !== null, {
+      message: 'phone must be a Dutch phone number',
+    }),
   email: z.string().trim().email().max(255),
   subjects: z.array(z.string().trim().max(60)).min(1).max(10),
   study: z.string().trim().min(1).max(255),
@@ -82,26 +96,67 @@ export default defineEventHandler(async (event) => {
   if (cv.data.length > MAX_CV_BYTES) invalid('Je CV is te groot. Gebruik een bestand van maximaal 10 MB.')
   if (!ALLOWED_CV_TYPES.includes(cv.type)) invalid('Gebruik een pdf- of Word-bestand voor je CV.')
 
-  const resumeUrl = await uploadResume(event, cv)
+  /*
+    The upload and the application are two calls to a portal that may be down
+    for both. Neither ends the request any more: whatever happened, the office
+    gets the application with the CV attached, and the applicant is told it
+    arrived unless it reached nobody at all.
+  */
+  const upload = await uploadResume(event, cv)
 
-  await postToPortal(
-    event,
-    '/register-external-applicant',
-    compact({
-      first_name: v.firstName,
-      last_name: v.lastName,
-      phone_number: v.phone,
-      email: v.email,
-      subjects: subjectIds(v.subjects),
-      study: v.study,
-      motivation: v.motivation,
-      // Absent only when the portal isn't configured, which is dev-only — the
-      // upload throws rather than returning nothing in every other case.
-      resume_url: resumeUrl ?? '',
-      postcode: v.postalCode,
-      housenumber: v.houseNumber,
-      known_via: v.heardFrom,
-    }),
+  const handoff = upload.ok
+    ? await postToPortal(
+        event,
+        '/register-external-applicant',
+        compact({
+          first_name: v.firstName,
+          last_name: v.lastName,
+          phone_number: normalisePhone(v.phone) ?? v.phone,
+          email: v.email,
+          subjects: subjectIds(v.subjects),
+          study: v.study,
+          motivation: v.motivation,
+          // Absent only when the portal isn't configured, which is dev-only —
+          // the upload reports a failure rather than a null url otherwise.
+          resume_url: upload.url ?? '',
+          postcode: v.postalCode,
+          housenumber: v.houseNumber,
+          known_via: v.heardFrom,
+        }),
+      )
+    : upload
+
+  const { applicationsEmail } = useRuntimeConfig(event)
+
+  const delivered = await sendOfficeCopy(event, {
+    to: applicationsEmail,
+    kind: 'Sollicitatie',
+    from: { name: `${v.firstName} ${v.lastName}`.trim(), email: v.email },
+    outcome: handoff.ok ? { ok: true } : { ok: false, reason: handoff.reason },
+    rows: [
+      ['Naam', `${v.firstName} ${v.lastName}`.trim()],
+      ['E-mailadres', v.email],
+      ['Telefoonnummer', normalisePhone(v.phone) ?? v.phone],
+      ['Postcode en huisnummer', `${v.postalCode} ${v.houseNumber}`.trim()],
+      ['Vakken', v.subjects],
+      ['Studie', v.study],
+      ['Motivatie', v.motivation],
+      ['Ken ons van', v.heardFrom],
+      ['CV', cv.filename],
+    ] satisfies Row[],
+    /*
+      Always attached, not only on a failure. The portal keeps the staged
+      upload for seven days and deletes it once the queue has fetched it, so
+      the mail is the office's own lasting copy — and if the upload failed, it
+      is the only one.
+    */
+    attachments: [{ filename: cv.filename, content: cv.data, contentType: cv.type }],
+  })
+
+  requireDelivery(
+    handoff,
+    delivered,
+    'We konden je sollicitatie niet versturen. Mail je CV en motivatie naar ons, dan pakken we het direct op.',
   )
 
   return { ok: true }
