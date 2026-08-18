@@ -11,20 +11,29 @@
  */
 import type { Run } from '~/data/kennisbank'
 
+type StyledRun = Extract<Run, { text: string }>
+
 defineProps<{ runs: readonly Run[] }>()
 
 const isInternal = (href: string) => href.startsWith('/')
+const isTex = (run: Run): run is { tex: string } => typeof run === 'object' && 'tex' in run
+const isBreak = (run: Run): run is { br: true } => typeof run === 'object' && 'br' in run
+const styled = (run: Run): StyledRun | null =>
+  typeof run === 'object' && 'text' in run ? run : null
 </script>
 
 <template>
   <template v-for="(run, i) in runs" :key="i">
-    <template v-if="typeof run === 'object' && run.link">
-      <NuxtLink v-if="isInternal(run.link)" :to="run.link">{{ run.text }}</NuxtLink>
-      <a v-else :href="run.link">{{ run.text }}</a>
+    <TeX v-if="isTex(run)" :tex="run.tex" />
+    <br v-else-if="isBreak(run)">
+    <template v-else-if="styled(run)?.link">
+      <NuxtLink v-if="isInternal(styled(run)!.link!)" :to="styled(run)!.link">{{ styled(run)!.text }}</NuxtLink>
+      <a v-else :href="styled(run)!.link">{{ styled(run)!.text }}</a>
     </template>
-    <strong v-else-if="typeof run === 'object' && run.bold">{{ run.text }}</strong>
-    <em v-else-if="typeof run === 'object' && run.em">{{ run.text }}</em>
-    <sub v-else-if="typeof run === 'object' && run.sub">{{ run.text }}</sub>
-    <template v-else>{{ typeof run === 'string' ? run : run.text }}</template>
+    <strong v-else-if="styled(run)?.bold">{{ styled(run)!.text }}</strong>
+    <em v-else-if="styled(run)?.em">{{ styled(run)!.text }}</em>
+    <sub v-else-if="styled(run)?.sub">{{ styled(run)!.text }}</sub>
+    <sup v-else-if="styled(run)?.sup">{{ styled(run)!.text }}</sup>
+    <template v-else>{{ typeof run === 'string' ? run : styled(run)?.text }}</template>
   </template>
 </template>

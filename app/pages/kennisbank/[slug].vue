@@ -48,10 +48,12 @@ function slugify(text: string) {
 
 type TocEntry = { id: string; text: string; children: TocEntry[] }
 
+// The live widget is set to `headings_by_tags: ["h2", "h3"]`, so the h4s inside
+// a worked example ("Uitwerking:", "Opdracht") stay out of the contents.
 const toc = computed<TocEntry[]>(() => {
   const entries: TocEntry[] = []
   for (const block of article.body) {
-    if (block.type !== 'heading') continue
+    if (block.type !== 'heading' || block.level === 4) continue
     const entry: TocEntry = { id: slugify(block.text), text: block.text, children: [] }
     if (block.level === 3 && entries.length > 0) {
       entries[entries.length - 1]!.children.push(entry)
@@ -70,7 +72,7 @@ const activeId = ref('')
 const updateActiveHeading = () => {
   let current = ''
   for (const block of article.body) {
-    if (block.type !== 'heading') continue
+    if (block.type !== 'heading' || block.level === 4) continue
     const el = document.getElementById(slugify(block.text))
     if (el && el.getBoundingClientRect().top <= 130) current = el.id
   }
@@ -98,7 +100,7 @@ onUnmounted(() => {
             <img
               v-if="article.coverImage && !coverFailed"
               :src="article.coverImage"
-              :alt="`Cover: ${article.title}`"
+              :alt="article.coverAlt || `Cover: ${article.title}`"
               class="block h-[200px] w-full object-cover"
               @error="coverFailed = true"
             >
@@ -146,9 +148,19 @@ onUnmounted(() => {
 
                 <p v-else-if="block.type === 'paragraph'"><ArticleRuns :runs="block.text" /></p>
 
-                <component :is="block.ordered ? 'ol' : 'ul'" v-else-if="block.type === 'list'" :class="block.ordered ? 'list-decimal' : 'list-disc'">
-                  <li v-for="(item, li) in block.items" :key="li"><ArticleRuns :runs="item" /></li>
-                </component>
+                <ArticleList v-else-if="block.type === 'list'" :list="block" />
+
+                <TeX v-else-if="block.type === 'formula'" :tex="block.tex" display class="article-formula" />
+
+                <img
+                  v-else-if="block.type === 'image'"
+                  :src="block.src"
+                  :alt="block.alt"
+                  class="mb-5 block h-auto w-full rounded-panel"
+                  loading="lazy"
+                >
+
+                <hr v-else-if="block.type === 'divider'" class="mb-5 border-0 border-t border-line-ink">
 
                 <table v-else-if="block.type === 'table'">
                   <thead>
@@ -173,7 +185,7 @@ onUnmounted(() => {
 
         <!-- Table of contents. Below the article at the tablet floor, as on the live page. -->
         <aside v-if="toc.length" class="desk:w-1/5 desk:pr-9">
-          <div class="rounded-panel bg-parchment p-4 desk:sticky desk:top-[100px]">
+          <div class="rounded-block bg-parchment p-4 desk:sticky desk:top-[100px]">
             <div class="flex items-center justify-between gap-3">
               <p class="font-display text-[16px] font-bold text-ink-900">Inhoudsopgave</p>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="h-[13px] w-[13px]">
@@ -207,3 +219,15 @@ onUnmounted(() => {
     <FaqSection />
   </div>
 </template>
+
+<style>
+/*
+  KaTeX's own stylesheet, which its markup depends on entirely — without it a
+  rendered formula collapses into a run of unpositioned characters. It is
+  imported here rather than in `main.css` so it lands in this route's own CSS
+  chunk: the kennisbank article is the only page with maths on it, and every
+  other page would otherwise carry ~23 KB it never uses. Vite bundles the font
+  files it references, so nothing is fetched from a CDN.
+*/
+@import 'katex/dist/katex.min.css';
+</style>

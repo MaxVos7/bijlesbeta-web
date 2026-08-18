@@ -422,14 +422,36 @@
   & :where(h3) {
     @apply mt-6 mb-3 text-[19px] leading-[26px] font-bold;
   }
+  /* The step inside a worked example — "Uitwerking:", "Opdracht". It sits
+     below the card heading and stays out of the table of contents. */
+  & :where(h4) {
+    @apply mt-5 mb-2.5 text-[16px] leading-[24px] font-bold;
+  }
   & :where(p) {
     @apply mb-[1.2rem] text-[15px] leading-[28px];
   }
   & :where(ul, ol) {
     @apply mb-[1.2rem] pl-[30px];
   }
+  /* A nested list closes up against its parent item rather than opening the
+     usual paragraph gap. */
+  & :where(li ul, li ol) {
+    @apply mt-1 mb-0;
+  }
   & :where(li) {
     @apply mb-1 text-[15px] leading-[28px];
+  }
+  /*
+    Displayed maths. The formula sits on its own centred line with the same
+    rhythm a paragraph carries, and scrolls inside itself rather than pushing
+    the article sideways — several of the worked examples are wider than the
+    column on a phone.
+  */
+  & :where(.article-formula) {
+    @apply mb-[1.2rem] overflow-x-auto overflow-y-hidden py-1;
+  }
+  & :where(.katex) {
+    @apply text-[1.05em];
   }
   & :where(a) {
     @apply text-ink-900 underline underline-offset-2 hover:text-ink-900;

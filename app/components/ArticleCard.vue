@@ -53,7 +53,7 @@ const publishedOn = computed(() => dateFormatter.format(new Date(props.article.p
         <img
           v-if="article.coverImage && !coverFailed"
           :src="article.coverImage"
-          :alt="`Cover: ${article.title}`"
+          :alt="article.coverAlt || `Cover: ${article.title}`"
           class="block w-full rounded-btn object-cover"
           :class="wide ? 'h-full' : 'h-44'"
           loading="lazy"

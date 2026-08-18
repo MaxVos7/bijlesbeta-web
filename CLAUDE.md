@@ -333,11 +333,21 @@ parity, so a few things are now deliberate and shouldn't drift back:
 
 ### The original design, and what was measured back onto it
 
-bijlesbeta.nl was itself built from a set of Figma boards (Home, Wiskunde,
-Over ons and Contact, each in a 1920 and a 480 version). Those boards are the
-authority above the live site for anything the live site didn't deliberately
-change, and they run a far tighter system than either: **8 colours, 2 shadows,
-3 radii, and one type scale that doesn't step at mobile.**
+bijlesbeta.nl was itself built from a set of Figma boards — Home, Wiskunde,
+Over ons and Contact each in a 1920 and a 480 version, plus the kennisbank
+overview and article in both. Those boards are the authority above the live
+site for anything the live site didn't deliberately change, and they run a far
+tighter system than either: **8 colours, 2 shadows, 3 radii.**
+
+Two cautions when reading them. The boards are not internally perfect —
+`#F6F4EA` turns up six times as a two-point-off slip of `linen` (which appears
+70 times), and the two newest mobile boards give the header card a
+`4px 4px 10px` offset shadow where every other board uses the flat
+`0 4px 34px`. Take the value that repeats, not the one you happened to open.
+And the *page* type scale holds 32px/44px from 1920 down to 480 on the Home
+board, but the kennisbank article H1 measures ~34px on a 46px line and steps
+down on its mobile board, so "the scale never steps" is true of the marketing
+pages and not of the article template.
 
 What was already taken from them:
 
@@ -377,14 +387,19 @@ What the design says and the **WordPress build overruled** — these are open
 decisions, not bugs, and our recreation currently follows Elementor because
 the SEO mandate says to:
 
-- **Card grids run a 1368px band on a 12px gutter, sitewide.** Every card grid
-  on every desktop board starts at x=276 and ends at 1644. In the design 1100px
-  is the prose and closing-CTA width; 1368 is the card width. We treat 1368 as
-  a `/tarieven` exception instead.
-- **The type scale doesn't step at mobile.** Measured off the 480px boards:
-  H1 32px on a 44px line, hero paragraph 16/28, rating 15px — identical to
-  1920. Our H1 → 26px and feature-card title → 16px below 768px are the live
-  site's steps, not the designer's.
+- **Card grids are always wider than the 1100px prose column.** 1368px
+  (x=276→1644) on Home, Over ons and the Wiskunde landing; 1296px
+  (x=312→1608) on the kennisbank overview. Gutters are 12px on the 4-up and
+  3-up rows and 24px on the kennisbank grids, and the article board is
+  internally inconsistent — its header card starts at 312 and its related
+  grid at 276. So there is no single card band to copy; the rule that does
+  hold is that 1100 is the prose and closing-CTA width and no card grid uses
+  it. We treat 1368 as a `/tarieven` exception instead.
+- **The marketing pages' type scale doesn't step at mobile.** Measured off the
+  480px Home board: H1 32px on a 44px line, hero paragraph 16/28, rating 15px
+  — identical to 1920. Our H1 → 26px and feature-card title → 16px below
+  768px are the live site's steps, not the designer's. (The kennisbank
+  article is the exception — see the caution above.)
 - **The mobile gutter is 36px**, with the header card inset 12px and nested
   content at 60px. Our `clamp(16px,4vw,40px)` only reaches 36px at a 900px
   viewport.
@@ -394,6 +409,27 @@ the SEO mandate says to:
   `shadow-panel`. Ours are the live Gravity Forms controls' 42px and flat —
   see the `field-input-lg` note above, which explains why 42 is right for
   parity.
+
+The kennisbank boards mostly confirm what was already measured off
+`post-204.css` and `post-169.css` — 12px card surfaces, a 176px cover crop on
+the 4px control radius inset by the card's own 12px, amber outline tag pills
+over the photograph, the filter chip row, the wide featured tile, and the
+reading-time-plus-word-count meta line are all there and all already built.
+Three things differ:
+
+- **Every kennisbank board carries a breadcrumb** and the site has none.
+  `‹ Home / Blogs` on the overview, `‹ Blogs / Alle artikelen / <title>` on the
+  article, with the first crumb in full ink and the rest muted. On mobile it
+  scrolls rather than wraps. Adding it would change what Google sees, so it is
+  a decision, not a cleanup — but a `BreadcrumbList` is one of the few
+  additions that is unambiguously good for search.
+- **The article's cover photo is flush to its header card**, not inset. The
+  card is a 12px `linen` surface with a 200px cover bleeding to its top and
+  side edges, and only the tags, title, author and meta row are padded. The
+  overview cards keep the 12px inset — the two are deliberately different.
+- **The TOC panel truncates.** It ends in a `Toon meer ⌄` control, its items
+  are marked with `›` rather than numbered, and the active entry is amber,
+  bold *and* underlined. Ours numbers them and colours the active one only.
 
 Two signature image treatments from the boards are **not built yet**: photos
 masked into the logo's bracket shape with an offset ghost outline of the same
@@ -752,9 +788,77 @@ measurements and shouldn't be tidied:
 - **The article stacks at 1025px, not 768** — Elementor's tablet floor — which
   puts the table of contents below the article rather than above it.
 
-Four paragraphs in the `kruistabel` article still hold raw `$$…$$` LaTeX and
-render literally. Rendering maths needs a decision (KaTeX at build time, or
-images), so it is left visible rather than papered over.
+### The kennisbank articles, and their maths
+
+The eighteen articles bijlesbeta.nl publishes are **transcribed from its
+WordPress export, not retyped**. Seventeen of the eighteen now match the live
+page word for word; the eighteenth is `kruistabel`, and the difference is
+deliberate — see below. Keep the authors' own spelling: "Netwon" in a live
+*title* was corrected (`wetten-van-newton`), but nothing inside a body was.
+
+If an article changes on bijlesbeta.nl, **re-export and re-run
+`scripts/import-kennisbank.py`** rather than editing the copy here by hand. It
+takes the WordPress export and prints the `body: [...]` literal for each post;
+running it against the export this data came from reproduces all eighteen
+bodies byte for byte, so a diff against it also tells you what has drifted.
+
+The maths is the reason this is not just copy. bijlesbeta.nl writes its
+formulas as LaTeX and hands them to the **QuickLaTeX** plugin, which renders
+each one to a PNG on quicklatex.com and drops an `<img>` into the post — 429
+of them across sixteen articles. **We keep the LaTeX and render it with
+KaTeX**, in `TeX.vue`, which follows the same principle as the rest of the
+content: the source of truth is the author's own markup, not a picture of it.
+
+- **`$…$` becomes a `tex` run, `$$…$$` a `formula` block.** That split is
+  QuickLaTeX's own: it renders `$$…$$` as a displayed equation on its own
+  line wherever it appears, so a `$$` ends the paragraph it sits in even when
+  the author wrote no blank line around it.
+- **KaTeX renders on the server**, so a formula is in the HTML rather than
+  appearing once a script has run, and it hydrates without a mismatch because
+  `renderToString` is deterministic. `output: 'htmlAndMathml'` keeps the
+  MathML layer a screen reader needs — the live PNGs carry only the LaTeX
+  source as alt text, so this is the one place the maths reads *better* here
+  than there.
+- **`throwOnError: false` on purpose.** All 435 formulas parse today; the
+  option is there so a typo in a future article renders in red rather than
+  500ing the page.
+- **KaTeX's stylesheet is imported in `[slug].vue`, not in `main.css`**, so
+  its ~23 KB and its fonts land in that route's chunk. It is the only page
+  with maths on it; every other page would otherwise carry the weight. Nuxt
+  inlines route styles, so the head of an article still carries it and there
+  is no unstyled flash.
+
+Two live bugs are **fixed rather than reproduced**, which is where the parity
+mandate stops:
+
+- **`kruistabel` and `substitutie` are missing the `[latexpage]` shortcode**,
+  so every formula in them prints as raw dollar-sign LaTeX on bijlesbeta.nl
+  today. Ours renders. That is the whole of the remaining word-level
+  difference against the live pages.
+- **One `$$…$$` block in `elektromagnetisch-spectrum` uses `&=` alignment
+  with no environment around it**, which QuickLaTeX renders as an error image.
+  The stray `&` is dropped so the equation renders. Fix these on bijlesbeta.nl
+  and the two sides converge again.
+
+Everything else about the transcription follows WordPress' own rendering:
+`wpautop` turns a blank line into a paragraph and a single newline into a
+`<br>` (hence the `br` run), `wptexturize` turns `--` into an en dash and
+straight quotes into curly ones, and stray `<div>`/`<p>` tags the editor left
+unbalanced are dropped the way WordPress drops them.
+
+Two other things the transcription surfaced:
+
+- **`readingMinutes` and `wordCount` are the live figures**, from the
+  `Leestijd: N minuten (M woorden)` shortcode. Every `wordCount` was verified
+  against a word-level diff of the two rendered pages, so they are the real
+  counts and not an estimate — recompute them if a body changes.
+- **The table of contents lists h2 and h3 only.** The live Elementor widget is
+  set to `headings_by_tags: ["h2", "h3"]`, so the h4s inside a worked example
+  ("Uitwerking:", "Opdracht") are rendered but stay out of the contents.
+
+`/kennisbank/technieken-voor-differentieren` is the one article with a **nested
+list** — a `<ul>` of sub-steps under the second item of an `<ol>` — which is
+why `ArticleList.vue` is recursive and `ArticleListItem` is a union.
 
 ### /het-bedrijf
 
