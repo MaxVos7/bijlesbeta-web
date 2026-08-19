@@ -473,6 +473,30 @@ Nav items are `ink-900`, going amber on hover *and* on the current page — the
 live rule groups `:hover`, `:focus` and `.elementor-item-active` onto the one
 accent colour, so `active-class` is part of the parity, not decoration.
 
+One thing in the header is **not** from bijlesbeta.nl: the `Home` item and the
+subject mega-menu behind it, which came from a Claude Design handoff
+(`Landing.dc.html`, adopting the `Beeldbanner` option of the three in
+`Dropdown options.dc.html`). It hangs off the header *card*, not off the
+label — `absolute inset-x-0` inside the card's own `relative`, 10px below it,
+repeating the card's 12px radius and `shadow-panel` — so it spans the full
+1400px. Three photo columns (150px cover, 19px name with the level tag riding
+its baseline in `accent-500`, a 13.5px line in `ink-600`, `Kijk verder →` in
+`brand-700`) over a `linen` strip. Its copy is `subjectCards` and
+`subjectMenu` in `app/data/site.ts`; the dropdown's `menuBody` is a shorter
+line than the homepage card's `body` because its column is narrower, so the
+two are separate fields rather than one truncated.
+
+It opens on hover **and on focus**, and closes on the header's `mouseleave`,
+on Escape and on navigation. The focus half is not decoration: a hover-only
+disclosure is unreachable from the keyboard. `mouseleave` on the header rather
+than on the trigger is what lets the pointer travel into the panel. Below
+768px there is no mega-menu — `Home` is simply the first row of the mobile
+dropdown, since the horizontal nav that triggers it doesn't exist there.
+
+`Home` is deliberately kept out of the `nav` array: `SiteFooter` renders its
+Navigatie column from that same list, and the design's footer has no Home
+entry.
+
 ### Checking against bijlesbeta.nl
 
 Don't measure from screenshots — the live site's real values are readable

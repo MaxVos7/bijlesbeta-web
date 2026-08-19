@@ -183,29 +183,49 @@ export const features = [
 ] as const
 
 /** Blurb and photo per subject, for the cards on the homepage. */
+/*
+  The three subjects, rendered twice: as the homepage's `Onze vakken op een
+  rijtje` cards and as the header's Home dropdown. `tag` and `menuBody` belong
+  to the dropdown alone — its column is narrower than the card, so the design
+  gives it its own shorter line rather than truncating `body`.
+*/
 export const subjectCards = [
   {
     slug: 'wiskunde-groningen',
     name: 'Wiskunde',
+    tag: 'A · B · D',
     image: '/img/wiskunde.jpg',
     alt: 'Bijles wiskunde Groningen',
     body: 'Wiskunde is geen mysterie. Soms heb je alleen een klein duwtje in de rug nodig om het te zien.',
+    menuBody: 'Soms heb je alleen een klein duwtje in de rug nodig om het te zien.',
   },
   {
     slug: 'natuurkunde-groningen',
     name: 'Natuurkunde',
+    tag: 'NaSk · vwo',
     image: '/img/natuurkunde.jpg',
     alt: 'Bijles natuurkunde Groningen',
     body: 'Achter elke formule zit een idee. Zodra je dat begrijpt, wordt natuurkunde echt interessant.',
+    menuBody: 'Achter elke formule zit een idee. Zodra je dat begrijpt, wordt het interessant.',
   },
   {
     slug: 'scheikunde-groningen',
     name: 'Scheikunde',
+    tag: 'BINAS · mol',
     image: '/img/scheikunde.jpg',
     alt: 'Bijles scheikunde Groningen',
     body: 'In scheikunde hangt alles samen als moleculen in een reactie. Begrijp het geheel, wij helpen je!',
+    menuBody: 'Alles hangt samen als moleculen in een reactie. Begrijp het geheel.',
   },
 ] as const
+
+/** The strip that closes the header's Home dropdown, under the three cards. */
+export const subjectMenu = {
+  label: 'Home',
+  cardCta: 'Kijk verder →',
+  note: 'Bijles aan huis in Groningen · 22+ docenten beschikbaar',
+  link: { label: 'Alle vakken', to: '/#vakken' },
+} as const
 
 export const story = {
   kicker: 'Al 7 jaar een begrip in de bèta Bijles',
