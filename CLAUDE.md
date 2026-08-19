@@ -55,21 +55,14 @@ route only returns an error when *both* the hand-off and that mail failed — se
 old contract, where an unconfigured or unreachable portal returned 503/502 and
 the submission was lost with it, is what this replaced.
 
-Two different Laravel surfaces are in play, with two different credentials:
-
-- `server/api/contact.post.ts` posts through `forwardToLaravel`
-  (`NUXT_LARAVEL_API_URL` + a bearer token). **That endpoint doesn't exist
-  yet**, and there is no contact route, model or notification on the portal at
-  all — so for contact the office copy *is* the delivery, which is also all
-  bijlesbeta.nl does (a Gravity Forms notification and nothing more). The
-  forward is attempted anyway, so it starts working the day the endpoint lands.
-- `server/api/aanmelden.post.ts` and `server/api/solliciteren.post.ts` post
-  through `server/utils/portal.ts` to the portal's external-registration
-  endpoints — the same ones the Gravity Forms webhooks on bijlesbeta.nl use
-  today, authenticating with an `X-Secret-Key` header
-  (`NUXT_PORTAL_API_URL` + `NUXT_PORTAL_SECRET_KEY`). These **do** exist; see
-  `RegisteredUserController::storeExternalFull` / `storeExternalApplicant` in
-  `../bijlesbeta`.
+All three post through `server/utils/portal.ts` to the portal's external
+endpoints, authenticating with an `X-Secret-Key` header (`NUXT_PORTAL_API_URL`
++ `NUXT_PORTAL_SECRET_KEY`). `/aanmelden` and `/solliciteren` use the same
+endpoints the Gravity Forms webhooks on bijlesbeta.nl use today — see
+`RegisteredUserController::storeExternalFull` / `storeExternalApplicant` in
+`../bijlesbeta`. `/contact` posts to `register-external-contact`, which was
+built for this app (`ExternalContactController` + the `ContactRequest` model);
+there is no second credential and no bearer token anywhere any more.
 
 Things the portal's contract forces, which look arbitrary otherwise:
 
@@ -143,14 +136,9 @@ it does that far better than this app could, from database-backed templates
 with a notification log and a queue behind them. Do not send the visitor mail
 from here.
 
-**`/contact` is the single exception**, because the portal has no contact
-request to send anything about: no route, no model, no notification. So
-`server/utils/confirmation.ts` sends the sender one short "Bedankt voor je
-bericht" — and only once the submission has actually reached somebody, since
-thanking a visitor for a message that went nowhere is the one thing this whole
-design exists to prevent. It deliberately does not quote their message back:
-a form that mails attacker-supplied text to an attacker-supplied address is a
-spam relay, so the body is fixed and only the first name varies.
+The portal now owns the contact confirmation too, from
+`CONTACT_REQUEST_TO_SENDER`. This app briefly sent that itself, when contact had
+nowhere else to go; it does not any more, and it should not start again.
 
 What the portal does not do is put the answers anywhere the office can read
 without opening it. `SendUserRegisteredNotification` interpolates only the
@@ -162,11 +150,15 @@ cutover would quietly take that away.
 
 The reasoning that shaped it, so it isn't undone by halves:
 
-- **It is sent on every submission, not only on a failure.** That way it does
-  not depend on classifying a failure correctly, and the office gets the
-  answers in the ordinary case too. The outcome is stamped at the top —
-  `VERWERKT` or `NIET VERWERKT` with the reason — so an inbox reads as a work
-  queue rather than a pile of duplicates.
+- **It is sent on every submission of `/aanmelden` and `/solliciteren`, not
+  only on a failure.** That way it does not depend on classifying a failure
+  correctly, and the office gets the answers in the ordinary case too. The
+  outcome is stamped at the top — `VERWERKT` or `NIET VERWERKT` with the
+  reason — so an inbox reads as a work queue rather than a pile of duplicates.
+- **`/contact` is the exception: it sends the copy only on a failure.** The
+  portal's `CONTACT_REQUEST_TO_ADMIN` already carries the whole message, so on
+  success this would duplicate a better mail. The other two have no such
+  notification, which is the entire reason the copy exists.
 - **The likely loss is not an outage.** It is the portal being up and saying
   no: a phone number with a space in it, a school year of 0, an applicant whose
   email already exists. `describe()` in `portal.ts` turns those into a sentence

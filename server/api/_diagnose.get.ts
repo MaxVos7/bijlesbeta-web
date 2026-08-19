@@ -74,7 +74,6 @@ export default defineEventHandler(async (event) => {
     NUXT_APPLICATIONS_EMAIL: config.applicationsEmail || 'MISSING',
     NUXT_PORTAL_API_URL: set(config.portalApiUrl),
     NUXT_PORTAL_SECRET_KEY: set(config.portalSecretKey),
-    NUXT_LARAVEL_API_URL: set(config.laravelApiUrl),
   }
 
   /*
@@ -128,6 +127,7 @@ export default defineEventHandler(async (event) => {
     */
     note: smtp.ok
       ? 'Mail works. A failing form is then the portal hand-off, and the office copy will say so.'
-      : 'Mail does not work. /contact has no other delivery route, so it will fail until this is fixed.',
+      : 'Mail does not work. Every form still works while the portal takes it, but a submission '
+        + 'the portal refuses would reach nobody.',
   }
 })
