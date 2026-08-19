@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { nav } from '~/data/site'
+import { nav, subjectCards, subjectMenu } from '~/data/site'
+import { landingPath } from '~/data/landings'
 
 withDefaults(
   defineProps<{
@@ -44,8 +45,22 @@ const groundClass = computed(() =>
 */
 const menuOpen = ref(false)
 
+/*
+  `Home` carries the subject mega-menu — the Beeldbanner variant of the three
+  the handoff offered: three photo columns over a linen strip, the full width
+  of the header card. It opens on hover *and* on focus, so it is reachable
+  from the keyboard rather than being a pointer-only disclosure; the header's
+  own mouseleave and Escape close it again.
+
+  It exists from the tablet floor up, because that is where the horizontal nav
+  that triggers it exists. Below 768px `Home` is an ordinary row in the mobile
+  dropdown.
+*/
+const subjectsOpen = ref(false)
+
 watch(() => route.fullPath, () => {
   menuOpen.value = false
+  subjectsOpen.value = false
 })
 </script>
 
@@ -56,6 +71,8 @@ watch(() => route.fullPath, () => {
   >
     <header
       class="relative mx-auto flex w-full max-w-[1400px] flex-row items-center justify-between gap-3 rounded-[12px] bg-white px-6 py-4 shadow-panel md:items-stretch"
+      @mouseleave="subjectsOpen = false"
+      @keydown.escape="subjectsOpen = false"
     >
       <!-- Logo column -->
       <div class="order-1 flex w-[30%] flex-none flex-col justify-center md:w-[14%] desk:w-[20%]">
@@ -78,9 +95,32 @@ watch(() => route.fullPath, () => {
         class="order-3 flex w-[13%] flex-none flex-row items-center justify-center md:order-2 md:w-[64%] desk:w-[53%] desk:flex-col desk:items-end"
       >
         <nav
-          class="hidden flex-wrap gap-x-[14px] md:flex desk:gap-x-0"
+          class="hidden flex-wrap items-center gap-x-[14px] md:flex desk:gap-x-0"
           aria-label="Hoofdmenu"
         >
+          <NuxtLink
+            to="/"
+            class="inline-flex items-center gap-[7px] font-display text-[13px] leading-normal font-bold transition-colors duration-300 hover:text-brand-500 desk:px-4 desk:py-2 desk:text-[15px]"
+            :class="subjectsOpen ? 'text-brand-500' : 'text-ink-900'"
+            active-class="text-brand-500"
+            aria-haspopup="true"
+            :aria-expanded="subjectsOpen"
+            aria-controls="vakkenmenu"
+            @mouseenter="subjectsOpen = true"
+            @focus="subjectsOpen = true"
+          >
+            {{ subjectMenu.label }}
+            <svg width="11" height="7" viewBox="0 0 12 8" fill="none" aria-hidden="true">
+              <path
+                d="M1.5 1.5L6 6L10.5 1.5"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </NuxtLink>
+
           <NuxtLink
             v-for="item in nav"
             :key="item.to"
@@ -163,6 +203,66 @@ watch(() => route.fullPath, () => {
       </div>
 
       <!--
+        The panel spans the card because it hangs off the card, not off the
+        `Home` label: it repeats the header's own 12px radius and `shadow-panel`
+        and sits 10px below it. `overflow-hidden` is what clips the three
+        photographs and the linen strip to that radius.
+      -->
+      <div
+        v-if="subjectsOpen"
+        id="vakkenmenu"
+        class="absolute inset-x-0 top-[calc(100%+10px)] z-[60] overflow-hidden rounded-block bg-white shadow-panel"
+      >
+        <div class="grid grid-cols-3">
+          <NuxtLink
+            v-for="(subject, index) in subjectCards"
+            :key="subject.slug"
+            :to="landingPath(subject.slug)"
+            class="flex flex-col text-ink-800 transition-colors duration-200 hover:bg-linen"
+            :class="index < subjectCards.length - 1 && 'border-r border-line-ink'"
+            @click="subjectsOpen = false"
+          >
+            <img
+              :src="subject.image"
+              alt=""
+              aria-hidden="true"
+              class="block h-[150px] w-full object-cover"
+              loading="lazy"
+            >
+            <span class="flex flex-col gap-2 p-6">
+              <span class="flex items-baseline gap-2.5">
+                <span class="font-display text-[19px] font-bold tracking-[-0.02em]">
+                  {{ subject.name }}
+                </span>
+                <!-- The level tag rides the subject name on the baseline, in
+                     the accent amber rather than the ink. -->
+                <span class="font-display text-[13px] font-bold text-accent-500">
+                  {{ subject.tag }}
+                </span>
+              </span>
+              <span class="text-[13.5px] leading-[1.6] text-ink-600">{{ subject.menuBody }}</span>
+              <span class="font-display text-[13px] font-bold text-brand-700">
+                {{ subjectMenu.cardCta }}
+              </span>
+            </span>
+          </NuxtLink>
+        </div>
+
+        <div
+          class="flex flex-wrap items-center justify-between gap-4 bg-linen px-6 py-[18px]"
+        >
+          <p class="text-[14px] text-ink-600">{{ subjectMenu.note }}</p>
+          <NuxtLink
+            :to="subjectMenu.link.to"
+            class="border-b-[1.5px] border-ink-900 pb-[3px] text-[15px] font-semibold"
+            @click="subjectsOpen = false"
+          >
+            {{ subjectMenu.link.label }}&nbsp;&nbsp;→
+          </NuxtLink>
+        </div>
+      </div>
+
+      <!--
         The mobile dropdown overlays the page rather than pushing it, and
         starts 13px above the card's bottom edge so its white runs into the
         card's without a seam — the live site's geometry.
@@ -173,6 +273,15 @@ watch(() => route.fullPath, () => {
         class="absolute inset-x-0 top-[calc(100%-13px)] rounded-b-[12px] bg-white shadow-panel md:hidden"
         aria-label="Hoofdmenu"
       >
+        <!-- No mega-menu here — below 768px `Home` is just the first row. -->
+        <NuxtLink
+          to="/"
+          class="block p-3 font-display text-[13px] leading-normal font-bold text-ink-900 transition-colors duration-300 hover:text-brand-500"
+          active-class="text-brand-500"
+          @click="menuOpen = false"
+        >
+          {{ subjectMenu.label }}
+        </NuxtLink>
         <NuxtLink
           v-for="item in nav"
           :key="item.to"

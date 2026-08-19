@@ -135,7 +135,7 @@ useSeo({
           <p
             v-for="(paragraph, index) in landing.seoParagraphs"
             :key="index"
-            class="text-[15px] leading-[1.85]"
+            class="mb-4 text-[15px] leading-[1.85]"
           >
             <template v-for="(segment, segIndex) in paragraph" :key="segIndex">
               <NuxtLink
@@ -202,12 +202,14 @@ useSeo({
 
     <TrialCta class="pt-[clamp(56px,7vw,88px)]" />
 
+    <!-- No 1100px wrapper: PricingSection sets its own widths — a 1100px
+         heading over a 1368px packages grid, as on /tarieven. Capping the
+         section at 1100 dropped the fourth package onto a second row. -->
     <section
+      id="tarieven"
       class="bg-white px-[clamp(16px,4vw,24px)] pt-[clamp(24px,3vw,40px)] pb-[clamp(40px,5vw,60px)]"
     >
-      <div class="mx-auto max-w-[1100px]">
-        <PricingSection />
-      </div>
+      <PricingSection />
     </section>
 
     <section
