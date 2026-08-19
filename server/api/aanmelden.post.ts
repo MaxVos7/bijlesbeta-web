@@ -142,14 +142,17 @@ type Answers = Omit<z.infer<typeof schema>, 'website'>
  * one of two mutually exclusive keys depending on the lesson kind — weekly as
  * a `basis`/`standard`/`premium` band, anything else as a plain count.
  *
- * Five answers the wizard asks for have no field on the endpoint at all: the
- * school name, the preferred contact method, and the "Anders, namelijk…"
- * wording behind lesson kind, level and subject. They are appended to
- * `location_indication` under labels rather than dropped — it is the only
- * free-text key with no length cap, and it already carries the visitor's own
- * notes about how the lessons should work. They do not belong in
- * `account_known_via`, which means "how did you hear about us", so that key
- * carries only the answer to that question.
+ * Four answers the wizard asks for still have no field on the endpoint: the
+ * preferred contact method, and the "Anders, namelijk…" wording behind lesson
+ * kind, level and subject. They are appended to `location_indication` under
+ * labels rather than dropped — it is the only free-text key with no length cap,
+ * and it already carries the visitor's own notes about how the lessons should
+ * work. They do not belong in `account_known_via`, which means "how did you
+ * hear about us", so that key carries only the answer to that question.
+ *
+ * The school used to be squeezed in there too. It has its own column on the
+ * portal and its own field on the endpoint now, so it is sent properly and the
+ * office sees it where the admin person form shows it.
  *
  * The right fix is for the endpoint to grow fields for them, or for the wizard
  * to stop asking; see the note in CLAUDE.md.
@@ -159,12 +162,11 @@ type Answers = Omit<z.infer<typeof schema>, 'website'>
  */
 function signupPayload(v: Answers) {
   const notes = [
-    v.location,
+    // The label, not the code. `location_indication` is an editable field on
+    // the portal's person page, so an admin was reading `at_home` off a form
+    // meant for the visitor's own words.
+    label(LOCATIONS, v.location),
     v.location === 'anders' && v.locationNote && `Toelichting: ${v.locationNote}`,
-    // Guarded like the other conditional notes: the question is only asked
-    // when the lessons happen at school, and switching away from that answer
-    // used to leave the school name in the payload.
-    v.location === 'at_school' && v.school && `School: ${v.school}`,
     v.contactMethod && `Contact via: ${v.contactMethod}`,
     v.level === 'different' && v.levelOther && `Niveau: ${v.levelOther}`,
     v.subjectOther && `Ander vak: ${v.subjectOther}`,
@@ -177,6 +179,13 @@ function signupPayload(v: Answers) {
     student_level: levelId(v.level),
     student_subjects_1: subjectIds(v.subjects),
     student_year: v.schoolYear,
+    /*
+      A real field on the endpoint since `register-external-full` learned about
+      `receiver_information.school`. Guarded on the answer it belongs to: the
+      question is only asked when the lessons happen at school, and switching
+      away from that answer used to leave a stale school name in the payload.
+    */
+    student_school: v.location === 'at_school' ? v.school : '',
 
     student_interval_type: v.lessonKind,
     // Only one of these two is ever asked, and the portal prefers the band.
