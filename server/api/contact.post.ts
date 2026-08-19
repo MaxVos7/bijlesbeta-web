@@ -8,6 +8,10 @@ import { z } from 'zod'
  * contact form is a Gravity Forms notification and nothing more. So the mail
  * to the office *is* the delivery here, not a fallback; the forward is
  * attempted anyway so this starts working the moment that endpoint exists.
+ *
+ * It is also the only route that mails the *visitor*, for the same reason —
+ * the portal has no contact request to send a confirmation about. See
+ * `sendContactConfirmation`.
  */
 const schema = z.object({
   name: z.string().trim().min(1).max(120),
@@ -60,5 +64,18 @@ export default defineEventHandler(async (event) => {
     ],
   })
 
-  return deliveryResult(handoff, delivered)
+  const result = deliveryResult(handoff, delivered)
+
+  /*
+    Only once the submission has actually reached somebody. If both the
+    hand-off and the office copy failed the visitor is told to call, and
+    thanking them for a message that went nowhere would be the one thing this
+    whole route exists to avoid. Awaited but ignored: the confirmation is a
+    courtesy on top of a delivery that already happened.
+  */
+  if (result.ok) {
+    await sendContactConfirmation(event, { name: payload.name, email: payload.email })
+  }
+
+  return result
 })
