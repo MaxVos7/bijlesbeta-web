@@ -39,7 +39,12 @@ function portalConfig(
   path: string,
   payload: unknown,
 ): { ok: true, config: PortalConfig } | { ok: true, config: null } | { ok: false, reason: string } {
-  const { portalApiUrl, portalSecretKey } = useRuntimeConfig(event)
+  const config = useRuntimeConfig(event)
+
+  // Coerced: Nitro's `destr` turns an all-digit secret into a number, and it
+  // goes out as an HTTP header.
+  const portalApiUrl = String(config.portalApiUrl ?? '')
+  const portalSecretKey = String(config.portalSecretKey ?? '')
 
   if (portalApiUrl && portalSecretKey) {
     return { ok: true, config: { url: portalApiUrl, key: portalSecretKey } }

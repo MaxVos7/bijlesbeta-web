@@ -53,7 +53,12 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  if (getQuery(event).key !== key) {
+  /*
+    Compared as strings on purpose. Nitro parses env overrides with `destr`, so
+    NUXT_DIAGNOSE_KEY=123 arrives as the *number* 123 while the query string is
+    always "123" — and a strict !== rejected the correct key.
+  */
+  if (String(getQuery(event).key ?? '') !== String(key)) {
     throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
   }
 
