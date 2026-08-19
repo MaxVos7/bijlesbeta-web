@@ -95,7 +95,17 @@ function getTransport(config: {
  * on Forge is the last copy of it that exists.
  */
 export async function sendMail(event: H3Event, message: MailMessage): Promise<boolean> {
-  const { mailHost, mailPort, mailUser, mailPassword, mailFrom } = useRuntimeConfig(event)
+  const config = useRuntimeConfig(event)
+
+  /*
+    Coerced, because Nitro parses env overrides with `destr`: an all-digit
+    password or host arrives as a number, and nodemailer would reject it.
+  */
+  const mailHost = String(config.mailHost ?? '')
+  const mailPort = String(config.mailPort ?? '')
+  const mailUser = String(config.mailUser ?? '')
+  const mailPassword = String(config.mailPassword ?? '')
+  const mailFrom = String(config.mailFrom ?? '')
 
   if (!mailHost) {
     if (import.meta.dev) {

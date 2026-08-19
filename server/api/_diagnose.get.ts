@@ -12,12 +12,18 @@ import nodemailer from 'nodemailer'
  *
  *   GET /api/_diagnose?key=<NUXT_DIAGNOSE_KEY>
  *
- * It **404s unless `NUXT_DIAGNOSE_KEY` is set**, so it does not exist at all
- * on a deploy that hasn't opted in — and that 404 is itself the first useful
- * signal: if you set the key in Forge and still get one, the environment is
- * not reaching the Node process, which is the failure this was written for.
- * (The daemon needs `node --env-file=.env`; Nitro does not read `.env` on its
- * own. See README.)
+ * Every answer distinguishes itself, because the first version returned 404
+ * both when the route wasn't deployed and when the key wasn't set, which are
+ * different problems with the same fix-finding cost:
+ *
+ *   404 (the site's own page) the build is older than this route — deploy
+ *   503                       deployed, but NUXT_DIAGNOSE_KEY is not visible
+ *                             to the process: the daemon has not been
+ *                             restarted since `.env` changed, or it is not
+ *                             started with `node --env-file=.env` (Nitro does
+ *                             not read `.env` on its own — see README)
+ *   401                       deployed and configured; wrong key
+ *   200                       the report
  *
  * It reports whether each value is *present*, never what it is. The one thing
  * it echoes back is the SMTP server's own error text, which names the problem
@@ -28,11 +34,32 @@ export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig(event)
   const key = config.diagnoseKey
 
-  // Not configured means not present. No hint that the route exists.
-  if (!key) throw createError({ statusCode: 404, statusMessage: 'Not Found' })
+  /*
+    A 503 rather than a 404, so that reaching this at all proves the build is
+    current and narrows the problem to the environment. It names no variable
+    values and lists nothing — an unauthenticated caller learns only that the
+    route exists and is switched off.
+  */
+  if (!key) {
+    throw createError({
+      statusCode: 503,
+      statusMessage: 'Diagnostics not enabled',
+      data: {
+        message:
+          'NUXT_DIAGNOSE_KEY is not set in this process. The route is deployed, so the '
+          + 'environment is what is missing: restart the daemon after changing .env, and '
+          + 'check it runs `node --env-file=.env` — Nitro does not read .env by itself.',
+      },
+    })
+  }
 
-  if (getQuery(event).key !== key) {
-    throw createError({ statusCode: 404, statusMessage: 'Not Found' })
+  /*
+    Compared as strings on purpose. Nitro parses env overrides with `destr`, so
+    NUXT_DIAGNOSE_KEY=123 arrives as the *number* 123 while the query string is
+    always "123" — and a strict !== rejected the correct key.
+  */
+  if (String(getQuery(event).key ?? '') !== String(key)) {
+    throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
   }
 
   const set = (value: unknown) => (typeof value === 'string' && value !== '' ? 'set' : 'MISSING')

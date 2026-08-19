@@ -17,7 +17,11 @@ export async function forwardToLaravel(
   path: string,
   payload: Record<string, unknown>,
 ): Promise<{ ok: true, forwarded: boolean } | { ok: false, reason: string }> {
-  const { laravelApiUrl, laravelApiToken } = useRuntimeConfig(event)
+  const config = useRuntimeConfig(event)
+
+  // Coerced: see the note in `portal.ts` — `destr` numifies all-digit values.
+  const laravelApiUrl = String(config.laravelApiUrl ?? '')
+  const laravelApiToken = String(config.laravelApiToken ?? '')
 
   if (!laravelApiUrl) {
     if (import.meta.dev) {

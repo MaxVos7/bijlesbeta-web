@@ -143,6 +143,15 @@ it does that far better than this app could, from database-backed templates
 with a notification log and a queue behind them. Do not send the visitor mail
 from here.
 
+**`/contact` is the single exception**, because the portal has no contact
+request to send anything about: no route, no model, no notification. So
+`server/utils/confirmation.ts` sends the sender one short "Bedankt voor je
+bericht" — and only once the submission has actually reached somebody, since
+thanking a visitor for a message that went nowhere is the one thing this whole
+design exists to prevent. It deliberately does not quote their message back:
+a form that mails attacker-supplied text to an attacker-supplied address is a
+spam relay, so the body is fixed and only the first name varies.
+
 What the portal does not do is put the answers anywhere the office can read
 without opening it. `SendUserRegisteredNotification` interpolates only the
 params the listener passes, and `makeReplaceArray` can substitute nothing else:
