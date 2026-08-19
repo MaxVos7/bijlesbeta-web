@@ -809,7 +809,6 @@ export const examentraining = {
 } as const
 
 export const nav = [
-  { label: 'Home', to: '/' },
   { label: 'Over ons', to: '/over-ons' },
   { label: 'Tarieven', to: '/tarieven' },
   { label: 'Kennisbank', to: '/kennisbank' },
