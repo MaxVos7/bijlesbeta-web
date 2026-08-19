@@ -812,7 +812,7 @@ export const nav = [
   { label: 'Home', to: '/' },
   { label: 'Over ons', to: '/over-ons' },
   { label: 'Tarieven', to: '/tarieven' },
-  { label: 'Kennisbank', to: '/kennisbank' },
+  { label: 'Zo werkt het', to: '/zo-werkt-het' },
   { label: 'Werken bij', to: '/werken-bij' },
   { label: 'Contact', to: '/contact' },
 ] as const
