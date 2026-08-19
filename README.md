@@ -27,7 +27,7 @@ cp .env.example .env
 npm run dev            # http://localhost:3000
 ```
 
-With `NUXT_LARAVEL_API_URL` empty, form submissions are logged to the console
+With `NUXT_PORTAL_API_URL` empty, form submissions are logged to the console
 instead of being sent anywhere — so the forms stay testable locally.
 
 ## Scripts
@@ -107,23 +107,30 @@ swap in `@nuxt/content`; the page components only depend on the `Article` type.
 Note: in Tailwind v4 a class you want to `@apply` must be declared with
 `@utility`, not inside `@layer components`.
 
-## Forms → Laravel
+## Forms → the portal
 
-Both form endpoints validate with zod, drop honeypot submissions silently, then
-POST to the Laravel app:
+All three form routes validate with zod, drop honeypot submissions silently,
+then POST to the portal (`mijn.bijlesbeta.nl`) behind an `X-Secret-Key` header:
 
-| Nuxt route          | Laravel endpoint          |
-| ------------------- | ------------------------- |
-| `/api/contact`      | `/api/website/contact`    |
-| `/api/aanmelden`    | `/api/website/aanmelden`  |
+| Nuxt route            | Portal endpoint                  |
+| --------------------- | -------------------------------- |
+| `/api/contact`        | `/register-external-contact`     |
+| `/api/aanmelden`      | `/register-external-full`        |
+| `/api/solliciteren`   | `/register-external-applicant` + `/upload-external-resume` |
 
 (`/api/adres` is not part of this — it reads from PDOK and stores nothing.)
 
-**These Laravel endpoints do not exist yet** — they need to be added to the
-`bijlesbeta` app (or the paths in `server/api/*.post.ts` pointed at whatever
-they end up being called). Until `NUXT_LARAVEL_API_URL` is configured, the
-endpoints return a 503 with a Dutch message telling visitors to call instead —
-deliberately loud rather than silently discarding leads.
+**Nothing in the hand-off throws.** Every submission is also mailed to the
+office, so a portal that is down, unconfigured, or refusing a field costs a log
+line rather than a lead; the visitor only sees an error when the hand-off *and*
+that mail both failed. `/contact` is the exception that sends the office copy
+only on failure, because the portal's own admin notification for a contact
+request already carries the whole message. See "Forms" and "The office copy" in
+`CLAUDE.md` before changing any of this.
+
+`GET /api/_diagnose?key=<NUXT_DIAGNOSE_KEY>` reports which variables the running
+process can see and what the SMTP server says when we connect. It 404s while
+that key is unset.
 
 ## Environment variables
 
@@ -133,8 +140,13 @@ See `.env.example`. On Forge these go in the site's **Environment** tab.
 | ------------------------ | ---------------------------------------------- |
 | `NUXT_PUBLIC_SITE_URL`   | Canonical base URL                             |
 | `NUXT_PUBLIC_PORTAL_URL` | Link target for the "Inloggen" button          |
-| `NUXT_LARAVEL_API_URL`   | Base URL of the Laravel app receiving forms    |
-| `NUXT_LARAVEL_API_TOKEN` | Optional bearer token for those requests       |
+| `NUXT_PORTAL_API_URL`    | Base URL of the portal receiving all three forms |
+| `NUXT_PORTAL_SECRET_KEY` | Shared secret for those endpoints              |
+| `NUXT_MAIL_*`            | SMTP for the office copy — see `.env.example`  |
+| `NUXT_OFFICE_EMAIL`      | Where contact + signup copies land             |
+| `NUXT_APPLICATIONS_EMAIL`| Where application copies land                  |
+| `NUXT_DIAGNOSE_KEY`      | Unlocks `/api/_diagnose`; leave empty in normal operation |
+| `NUXT_PUBLIC_GTM_ID`     | Tag Manager container; empty loads nothing     |
 | `PORT`                   | Port the Node server listens on                |
 
 ## Deploying on Laravel Forge
@@ -153,28 +165,65 @@ if needed.
 
 **3. Deploy script**
 
+Forge runs the app under **PM2**, not Supervisor — a JS site has no entry under
+Processes → Background processes, and the start command lives in the ecosystem
+file the deploy script writes:
+
 ```bash
-cd /home/forge/bijlesbeta.nl
-git pull origin $FORGE_SITE_BRANCH
-npm ci
+$CREATE_RELEASE()
+
+cd $FORGE_RELEASE_DIRECTORY
+
+npm ci || npm install
 npm run build
-sudo -S supervisorctl restart daemon-XXXXXX:*
+
+$ACTIVATE_RELEASE()
+
+# PM2 config, rewritten every deploy so changes here take effect...
+mkdir -p /home/forge/.pm2-conf
+cat <<'EOF' > /home/forge/.pm2-conf/site-XXXXXXX.json
+{
+    name: "site-XXXXXXX",
+    cwd: "/home/forge/bijlesbeta.nl/current",
+    script: "./.output/server/index.mjs",
+    node_args: "--env-file=/home/forge/bijlesbeta.nl/.env",
+    instances: "max",
+    exec_mode: "cluster",
+    port: "3000",
+}
+EOF
+
+# Start or restart the PM2 process from that config...
+pm2 startOrRestart /home/forge/.pm2-conf/site-XXXXXXX.json --update-env
+pm2 save
 ```
 
-Replace `daemon-XXXXXX` with the supervisor name of the daemon from step 4
-(visible under the daemon in Forge, or via `sudo supervisorctl status`).
+Three things there are the result of getting them wrong first, and should not be
+tidied back:
 
-**4. Daemon**
+- **`node_args: "--env-file=..."` is what gets the environment into the
+  process.** Nitro does not read `.env` itself in production, and Forge's
+  generated config passes no node arguments — so without this the app runs with
+  *no* configuration at all: no portal URL, no SMTP, and forms that silently
+  reach nobody.
+- **The path must be absolute.** Node reads the env file during bootstrap,
+  before PM2 applies the app's `cwd`, so a relative `--env-file=.env` resolves
+  against the PM2 daemon's own directory, fails, and puts the app in a crash
+  loop that takes the site down.
+- **`pm2 startOrRestart <file>`, not `pm2 reload <name>`.** Reloading by name
+  uses PM2's stored config and never re-reads the JSON, so config changes appear
+  to do nothing. Forge's generated script also guards the file with
+  `if [ ! -f ... ]`, which means it is written once and never updated — drop the
+  guard.
 
-Add a daemon on the server:
+Check `PORT` in the Environment tab before the first deploy with this. Until the
+env file loads, Nitro defaults to 3000 and nginx proxies there; the moment it
+loads, whatever `PORT` says takes effect.
 
-- **Command:** `node --env-file=.env .output/server/index.mjs`
-- **Directory:** `/home/forge/bijlesbeta.nl`
-- **User:** `forge`
+**4. Environment**
 
-`--env-file` is what gets the environment into the process — Nitro does not read
-`.env` itself in production. Make sure `.env` exists on the server with at least
-`PORT` and `NUXT_LARAVEL_API_URL`.
+Settings → Environment writes `.env` for the site; the deploy script links it
+into each release. Nothing reads it unless step 3 is in place.
 
 **5. Nginx**
 
@@ -208,9 +257,6 @@ so the forms would have to post to Laravel directly (and CORS gets involved).
 - **`/algemene-voorwaarden` and `/privacy` do not exist yet** — the footer and
   the signup consent checkbox both link to them, so those links 404 today. The
   consent link is the urgent one.
-- Laravel endpoints for contact + signup, and pointing `NUXT_LARAVEL_API_URL` at
-  them. The signup payload now matches the Gravity Form's field set — see
-  `server/api/aanmelden.post.ts` for its shape.
 - Spam protection on signup is the honeypot only. The Gravity Form also runs
   Cloudflare Turnstile; adding it here needs a site key and a secret.
 - `/contact`, `/werken-bij` and `/kennisbank` have no design in the handoff, so

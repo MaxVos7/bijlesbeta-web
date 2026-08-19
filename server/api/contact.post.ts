@@ -3,15 +3,12 @@ import { z } from 'zod'
 /**
  * The contact form, and the short callback form in the amber closing block.
  *
- * There is no contact endpoint on the Laravel side — the portal has no route,
- * no model and no notification for a contact request, and bijlesbeta.nl's own
- * contact form is a Gravity Forms notification and nothing more. So the mail
- * to the office *is* the delivery here, not a fallback; the forward is
- * attempted anyway so this starts working the moment that endpoint exists.
- *
- * It is also the only route that mails the *visitor*, for the same reason —
- * the portal has no contact request to send a confirmation about. See
- * `sendContactConfirmation`.
+ * Posts to the portal's `register-external-contact`, alongside the other two
+ * forms and behind the same `X-Secret-Key`. The portal stores the request,
+ * mails the office the whole message and confirms receipt to the sender, all
+ * from templates the office can edit — so this app sends the visitor nothing.
+ * Everything it used to do here is gone: the bearer-token forward to an
+ * endpoint that never existed, and the confirmation mail it sent itself.
  */
 const schema = z.object({
   name: z.string().trim().min(1).max(120),
@@ -44,38 +41,33 @@ export default defineEventHandler(async (event) => {
     return { ok: true as const }
   }
 
-  const handoff = await forwardToLaravel(event, '/api/website/contact', payload)
-
-  const { officeEmail } = useRuntimeConfig(event)
-
-  const delivered = await sendOfficeCopy(event, {
-    to: officeEmail,
-    kind: `Contact — ${payload.subject}`,
-    from: { name: payload.name, email: payload.email },
-    outcome: handoff.ok
-      ? { ok: true }
-      : { ok: false, reason: handoff.reason },
-    rows: [
-      ['Naam', payload.name],
-      ['E-mailadres', payload.email],
-      ['Telefoonnummer', payload.phone],
-      ['Onderwerp', payload.subject],
-      ['Bericht', payload.message],
-    ],
-  })
-
-  const result = deliveryResult(handoff, delivered)
+  const handoff = await postToPortal(event, '/register-external-contact', compact(payload))
 
   /*
-    Only once the submission has actually reached somebody. If both the
-    hand-off and the office copy failed the visitor is told to call, and
-    thanking them for a message that went nowhere would be the one thing this
-    whole route exists to avoid. Awaited but ignored: the confirmation is a
-    courtesy on top of a delivery that already happened.
-  */
-  if (result.ok) {
-    await sendContactConfirmation(event, { name: payload.name, email: payload.email })
-  }
+    The office copy is now the fallback it was always meant to be, rather than
+    the delivery. `CONTACT_REQUEST_TO_ADMIN` carries the whole message, so on
+    success this would be a duplicate of a better mail — while a submission the
+    portal did not take still has to reach somebody.
 
-  return result
+    `/aanmelden` and `/solliciteren` keep sending it on every submission,
+    because the portal's admin notifications for those carry a name and nothing
+    else. See "The office copy" in CLAUDE.md.
+  */
+  const delivered = handoff.ok
+    ? false
+    : await sendOfficeCopy(event, {
+        to: useRuntimeConfig(event).officeEmail,
+        kind: `Contact — ${payload.subject}`,
+        from: { name: payload.name, email: payload.email },
+        outcome: { ok: false, reason: handoff.reason },
+        rows: [
+          ['Naam', payload.name],
+          ['E-mailadres', payload.email],
+          ['Telefoonnummer', payload.phone],
+          ['Onderwerp', payload.subject],
+          ['Bericht', payload.message],
+        ],
+      })
+
+  return deliveryResult(handoff, delivered)
 })
