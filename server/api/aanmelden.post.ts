@@ -161,6 +161,8 @@ type Answers = Omit<z.infer<typeof schema>, 'website'>
  * portal re-derives the address from postcode and house number in its own job.
  */
 function signupPayload(v: Answers) {
+  const { ids, unknown } = mapSubjects(v.subjects)
+
   const notes = [
     // The label, not the code. `location_indication` is an editable field on
     // the portal's person page, so an admin was reading `at_home` off a form
@@ -170,6 +172,12 @@ function signupPayload(v: Answers) {
     v.contactMethod && `Contact via: ${v.contactMethod}`,
     v.level === 'different' && v.levelOther && `Niveau: ${v.levelOther}`,
     v.subjectOther && `Ander vak: ${v.subjectOther}`,
+    /*
+      A subject the portal has no id for is discarded there without an error,
+      so it is written out here instead. The visitor picked it; the office
+      should see it even when the two sides disagree about what exists.
+    */
+    unknown.length > 0 && `Vakken zonder koppeling: ${unknown.join(', ')}`,
     v.lessonKind === 'different' && v.lessonKindNote && `Soort bijles: ${v.lessonKindNote}`,
   ].filter(Boolean)
 
@@ -177,7 +185,7 @@ function signupPayload(v: Answers) {
     student_first_name: v.studentFirstName,
     student_phone_number: normalisePhone(v.studentPhone) ?? v.studentPhone,
     student_level: levelId(v.level),
-    student_subjects_1: subjectIds(v.subjects),
+    student_subjects_1: ids,
     student_year: v.schoolYear,
     /*
       A real field on the endpoint since `register-external-full` learned about
@@ -275,6 +283,8 @@ function signupRows(v: Answers): Row[] {
     ['Niveau', label(LEVELS, v.level)],
     ['Ander niveau', v.levelOther],
     ['Bijlesvakken', v.subjects],
+    // Only present when the two sides disagree — see `mapSubjects`.
+    ['Vakken die het portaal niet kent', mapSubjects(v.subjects).unknown],
     ['Ander vak', v.subjectOther],
 
     ['Voornaam leerling', v.studentFirstName],

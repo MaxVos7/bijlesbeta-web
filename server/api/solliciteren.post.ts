@@ -104,6 +104,8 @@ export default defineEventHandler(async (event) => {
     gets the application with the CV attached, and the applicant is told it
     arrived unless it reached nobody at all.
   */
+  const subjects = mapSubjects(v.subjects)
+
   const upload = await uploadResume(event, cv)
 
   const handoff = upload.ok
@@ -115,7 +117,7 @@ export default defineEventHandler(async (event) => {
           last_name: v.lastName,
           phone_number: normalisePhone(v.phone) ?? v.phone,
           email: v.email,
-          subjects: subjectIds(v.subjects),
+          subjects: subjects.ids,
           study: v.study,
           motivation: v.motivation,
           // Absent only when the portal isn't configured, which is dev-only —
@@ -141,6 +143,9 @@ export default defineEventHandler(async (event) => {
       ['Telefoonnummer', normalisePhone(v.phone) ?? v.phone],
       ['Postcode en huisnummer', `${v.postalCode} ${v.houseNumber}`.trim()],
       ['Vakken', v.subjects],
+      // Only present when the two sides disagree — see `mapSubjects`. This is
+      // the form where a silent drop already cost real data.
+      ['Vakken die het portaal niet kent', subjects.unknown],
       ['Studie', v.study],
       ['Motivatie', v.motivation],
       ['Ken ons van', v.heardFrom],

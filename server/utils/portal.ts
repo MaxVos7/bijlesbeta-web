@@ -268,13 +268,45 @@ const SUBJECT_IDS: Record<string, number> = {
   'NaSk': 6,
 }
 
-/** Maps subject labels onto the comma-separated id list the portal expects. */
-export function subjectIds(subjects: readonly string[]): string {
-  const ids = subjects
-    .map((subject) => SUBJECT_IDS[subject.trim()])
-    .filter((id): id is number => typeof id === 'number')
+/**
+ * Resolves subject labels to the id list the portal expects, and reports what
+ * it could not resolve.
+ *
+ * The `unknown` half is the point. The endpoints take `subjects` as a string
+ * and run `array_filter($ids, 'is_numeric')` over it, so an id they do not
+ * recognise is discarded without an error and the submission succeeds with
+ * fewer subjects than the person chose — a 201 that quietly lost an answer.
+ * That is exactly how applicants who ticked only `Wiskunde A/C` came to be
+ * recorded with no subjects at all.
+ *
+ * A dropped label is never made fatal: refusing the submission would cost the
+ * whole lead over one checkbox. It is carried into the office copy, and into
+ * the portal's own free-text note where the form has one, so a subject that
+ * exists on one side and not the other is visible the first time somebody
+ * picks it rather than after a quarter of bad data.
+ */
+export function mapSubjects(subjects: readonly string[]): { ids: string, unknown: string[] } {
+  const ids: number[] = []
+  const unknown: string[] = []
 
-  return [...new Set(ids)].join(',')
+  for (const subject of subjects) {
+    const trimmed = subject.trim()
+    const id = SUBJECT_IDS[trimmed]
+
+    if (typeof id === 'number') ids.push(id)
+    else if (trimmed) unknown.push(trimmed)
+  }
+
+  const dropped = [...new Set(unknown)]
+
+  if (dropped.length > 0) {
+    console.warn('[form] the portal has no subject id for', dropped)
+  }
+
+  return {
+    ids: [...new Set(ids)].join(','),
+    unknown: dropped,
+  }
 }
 
 /**
