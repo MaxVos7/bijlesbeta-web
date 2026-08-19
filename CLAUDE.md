@@ -8,7 +8,7 @@ The public marketing site for Bijles Bèta, a tutoring company in Groningen
 (wiskunde, natuurkunde, scheikunde). It replaces the front end of the older
 Laravel app that lives at `../bijlesbeta`.
 
-Nuxt 4 (Vue 3, SSR) + Tailwind CSS v4. No database.
+Nuxt 4 (Vue 3, SSR) + Tailwind CSS v4. No database. hoi 
 
 ## Node version
 

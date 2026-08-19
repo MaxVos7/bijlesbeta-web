@@ -7,8 +7,8 @@ const config = useRuntimeConfig()
 // The only way back to the banner once a choice is stored.
 const { reopen } = useCookieConsent()
 
-// The live site's footer omits Kennisbank — it's a header-only link there.
-const footerNav = nav.filter((item) => item.label !== 'Kennisbank')
+// The live site's footer omits Kennisbank and Home — both are header-only there.
+const footerNav = nav.filter((item) => item.label !== 'Kennisbank' && item.label !== 'Home')
 
 /**
  * The "Vakken" column on bijlesbeta.nl is its own hand-built menu rather than
