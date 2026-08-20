@@ -41,7 +41,7 @@ useSeo({
 
       <div class="relative px-[clamp(12px,3vw,24px)] pt-[clamp(36px,5vw,72px)]">
         <div
-          class="mx-auto grid max-w-[1100px] items-center gap-[clamp(32px,5vw,60px)] [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))]"
+          class="mx-auto grid max-w-[1200px] items-center gap-[clamp(32px,5vw,60px)] [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))]"
         >
           <div class="min-w-0 text-white">
             <RatingLine tone="inverse" class="mb-[18px]" />
@@ -55,7 +55,7 @@ useSeo({
               {{ landing.intro }}
             </p>
 
-            <CheckList :items="landingPromises" class="mb-8 font-semibold" />
+            <CheckList :items="landingPromises" tone="inverse" class="mb-8 font-semibold" />
 
             <NuxtLink
               to="/aanmelden"
@@ -77,8 +77,10 @@ useSeo({
               {{ landingHeroForm.body }}
             </p>
 
+            <!-- The landing mounts the block twice, so this one names itself
+                 to tell the two apart in the office's mail. -->
             <LeadForm
-              :source="`Aanvraag voor een gratis proefles via de landingspagina ${route.path}.`"
+              :source="`${route.path} (hero)`"
               class="rounded-tile bg-linen p-[clamp(14px,1.6vw,18px)]"
             />
           </div>
@@ -89,7 +91,7 @@ useSeo({
     <section
       class="bg-white px-[clamp(16px,4vw,24px)] pt-[clamp(48px,6vw,80px)] pb-[clamp(40px,5vw,64px)]"
     >
-      <div class="mx-auto max-w-[1100px]">
+      <div class="mx-auto max-w-[1400px]">
         <div class="mb-[clamp(28px,3.5vw,42px)] text-center">
           <p class="kicker mb-2">{{ landingSteps.kicker }}</p>
           <h2 class="text-[clamp(24px,2.8vw,28px)] tracking-[-0.025em]">{{ landingSteps.title }}</h2>
@@ -171,13 +173,13 @@ useSeo({
     <section
       class="bg-white px-[clamp(16px,4vw,24px)] pt-[clamp(40px,5vw,64px)] pb-[clamp(56px,7vw,90px)]"
     >
-      <div class="mx-auto max-w-[1100px]">
+      <div class="mx-auto max-w-[1400px]">
         <FeatureGrid />
       </div>
     </section>
 
     <section class="bg-sand px-[clamp(16px,4vw,24px)] py-[clamp(56px,7vw,88px)]">
-      <div class="mx-auto max-w-[1100px]">
+      <div class="mx-auto max-w-[1000px]">
         <div class="mb-[clamp(26px,3.5vw,38px)] text-center">
           <RatingLine centered class="mb-3" />
           <h2 class="text-[clamp(23px,2.6vw,28px)] tracking-[-0.025em]">
@@ -205,7 +207,7 @@ useSeo({
     <section
       class="bg-white px-[clamp(16px,4vw,24px)] pt-[clamp(24px,3vw,40px)] pb-[clamp(40px,5vw,60px)]"
     >
-      <div class="mx-auto max-w-[1100px]">
+      <div class="mx-auto max-w-[1400px]">
         <PricingSection />
       </div>
     </section>
@@ -214,7 +216,7 @@ useSeo({
       class="bg-white px-[clamp(16px,4vw,24px)] pt-[clamp(48px,6vw,80px)] pb-[clamp(64px,8vw,100px)]"
     >
       <div
-        class="mx-auto grid max-w-[1080px] items-center gap-[clamp(28px,4vw,56px)] [grid-template-columns:repeat(auto-fit,minmax(300px,1fr))]"
+        class="mx-auto grid max-w-[1180px] items-center gap-[clamp(28px,4vw,56px)] [grid-template-columns:repeat(auto-fit,minmax(300px,1fr))]"
       >
         <div class="min-w-0">
           <p class="kicker mb-2.5">{{ teamIntro.kicker }}</p>

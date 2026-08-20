@@ -38,7 +38,8 @@ useSeo({
 
           <CheckList
             :items="werkenBij.hero.promises"
-            class="mt-3 mb-6 font-semibold text-white"
+            tone="inverse"
+            class="mt-3 mb-6 font-semibold"
           />
 
           <!--
@@ -69,7 +70,7 @@ useSeo({
 
     <!-- Perks. One white band carries this and the requirements below it. -->
     <section class="bg-white px-5 pt-20 md:px-10">
-      <div class="mx-auto max-w-[1200px] md:px-9">
+      <div class="mx-auto max-w-[1400px] md:px-9">
         <div class="mb-8 flex flex-col gap-2 text-center">
           <p class="kicker text-[19px]">{{ werkenBij.perksIntro.kicker }}</p>
           <h2 class="text-[28px] leading-[44px] tracking-[-0.025em]">
@@ -115,7 +116,7 @@ useSeo({
       around a 176px-tall crop.
     -->
     <section class="bg-white px-5 py-20 md:px-10">
-      <div class="mx-auto max-w-[1200px]">
+      <div class="mx-auto max-w-[1400px]">
         <div class="mb-5 text-center">
           <p class="kicker">{{ werkenBij.requirementsIntro.kicker }}</p>
           <h2 class="text-[28px] leading-[44px] tracking-[-0.025em]">

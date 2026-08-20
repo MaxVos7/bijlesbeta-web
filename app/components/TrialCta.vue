@@ -55,7 +55,7 @@ withDefaults(
           <div class="min-w-0">
             <p class="text-[13px] leading-[19.5px] font-semibold text-ink-800">Sneller contact?</p>
             <p class="text-[19px] leading-[28.5px] font-semibold text-ink-800">
-              {{ contact.whatsapp }}
+              {{ contact.phone }}
             </p>
             <a
               :href="contact.whatsappHref"

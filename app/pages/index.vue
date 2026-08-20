@@ -18,9 +18,12 @@ useSeo({
 
 <template>
   <div>
+    <!-- The hero has no ground of its own: it sits on the page's own
+         parchment, so the header strip above it continues the same band
+         rather than cutting a paler line across the top of the page. -->
     <section
       id="top"
-      class="bg-linen px-[clamp(16px,4vw,24px)] pt-[clamp(24px,4vw,44px)] pb-[clamp(48px,7vw,88px)]"
+      class="px-[clamp(16px,4vw,24px)] pt-[clamp(24px,4vw,44px)] pb-[clamp(48px,7vw,88px)]"
     >
       <div
         class="mx-auto grid max-w-[1100px] items-center gap-[clamp(32px,5vw,60px)] [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))]"
@@ -66,7 +69,7 @@ useSeo({
       id="over"
       class="bg-white px-[clamp(16px,4vw,24px)] pt-[clamp(56px,7vw,96px)] pb-[clamp(24px,3vw,40px)]"
     >
-      <div class="mx-auto max-w-[1100px]">
+      <div class="mx-auto max-w-[1400px]">
         <FeatureGrid />
       </div>
     </section>
@@ -75,7 +78,7 @@ useSeo({
       id="vakken"
       class="bg-white px-[clamp(16px,4vw,24px)] pt-[clamp(48px,6vw,76px)] pb-[clamp(56px,7vw,90px)]"
     >
-      <div class="mx-auto max-w-[1100px]">
+      <div class="mx-auto max-w-[1400px]">
         <div class="mb-[clamp(28px,3.5vw,42px)] text-center">
           <p class="kicker mb-2.5">Specialisten in Bèta</p>
           <h2 class="text-[28px] leading-[44px] tracking-[-0.025em]">Onze vakken op een rijtje</h2>
@@ -109,7 +112,7 @@ useSeo({
 
     <section id="verhaal" class="bg-white px-[clamp(16px,4vw,24px)] pb-[clamp(56px,7vw,90px)]">
       <div
-        class="mx-auto grid max-w-[1040px] overflow-hidden rounded-card bg-sand [grid-template-columns:repeat(auto-fit,minmax(300px,1fr))]"
+        class="mx-auto grid max-w-[1100px] overflow-hidden rounded-card bg-sand [grid-template-columns:repeat(auto-fit,minmax(300px,1fr))]"
       >
         <img
           src="/img/studenten.png"
@@ -135,7 +138,7 @@ useSeo({
       class="bg-white px-[clamp(16px,4vw,24px)] pt-[clamp(24px,3vw,40px)] pb-[clamp(64px,8vw,100px)]"
     >
       <div
-        class="mx-auto grid max-w-[1080px] items-center gap-[clamp(32px,5vw,60px)] [grid-template-columns:repeat(auto-fit,minmax(300px,1fr))]"
+        class="mx-auto grid max-w-[1180px] items-center gap-[clamp(32px,5vw,60px)] [grid-template-columns:repeat(auto-fit,minmax(300px,1fr))]"
       >
         <div class="min-w-0">
           <p class="kicker mb-2.5">{{ teamIntro.kicker }}</p>
@@ -157,7 +160,7 @@ useSeo({
     </section>
 
     <section id="reviews" class="bg-sand px-[clamp(16px,4vw,24px)] py-[clamp(56px,7vw,88px)]">
-      <div class="mx-auto max-w-[1100px]">
+      <div class="mx-auto max-w-[1000px]">
         <div class="mb-[clamp(26px,3.5vw,38px)] text-center">
           <RatingLine centered class="mb-3" />
           <h2 class="text-[clamp(23px,2.6vw,28px)] tracking-[-0.025em]">Wat vinden onze leerlingen?</h2>

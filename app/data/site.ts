@@ -7,17 +7,17 @@
  */
 
 import type { Run } from '~/data/kennisbank'
+import { phone } from '~/data/phone'
 
 export const tagline = 'Maakt het antwoord logisch.'
 
 export const contact = {
-  phone: '085 820 1900',
-  phoneHref: 'tel:+31858201900',
-  whatsapp: '06 382 60 623',
-  whatsappHref: 'https://wa.me/31638260623',
-  /** `/aanmelden` links the landline at WhatsApp rather than at `tel:`, as
-      bijlesbeta.nl does — the 085 number is a WhatsApp Business line. */
-  phoneWhatsappHref: 'https://wa.me/31858201900',
+  /** The number lives in `phone.ts`; edit it there, not here. */
+  phone: phone.display,
+  phoneHref: phone.telHref,
+  /** The same number: it is a WhatsApp Business line, which is why several
+      pages link it at WhatsApp rather than at `tel:`, as bijlesbeta.nl does. */
+  whatsappHref: phone.whatsappHref,
   email: 'contact@bijlesbeta.nl',
   emailHref: 'mailto:contact@bijlesbeta.nl',
   /** Sollicitaties go to a separate mailbox — shown beside the form on Werken bij. */
@@ -295,8 +295,8 @@ export const zoWerktHet = {
   title: 'Zo werkt het',
   intro:
     'Krijg snel de juiste match met een professionele bijles docent. Leer elkaar kennen tijdens de proefles en maak een plan voor de bijlessen.',
-  /** Scrolls to the stappenplan below rather than leaving the page. */
-  secondaryCta: 'Kennismaking',
+  /** The second hero button, pointing at `/over-ons`. */
+  secondaryCta: 'Over ons',
   stepsIntro: {
     kicker: 'Zo werkt het',
     title: 'Het stappenplan',
@@ -479,7 +479,7 @@ export const hetBedrijf: HetBedrijf = {
       ],
       /** The live button points at `/over-ons`, not at its team anchor. */
       cta: { label: 'Ons team', to: '/over-ons' },
-      image: '/img/het-bedrijf-team.jpg',
+      image: '/img/teamuitje.jpg',
       imageAlt: 'Het team van Bijles Bèta tijdens een teamavond',
     },
   ],

@@ -4,8 +4,12 @@ withDefaults(
     items: readonly string[]
     /** `tight` is the compact variant used inside the yellow trial block. */
     variant?: 'default' | 'tight'
+    /** `inverse` is the list on a dark band — `/werken-bij`'s hero and the
+        landings'. The label colour sits on the `<li>`, so a `text-white` on
+        the wrapper can't reach it; this is how it is set. */
+    tone?: 'default' | 'inverse'
   }>(),
-  { variant: 'default' },
+  { variant: 'default', tone: 'default' },
 )
 </script>
 
@@ -26,7 +30,10 @@ withDefaults(
       :class="
         variant === 'tight'
           ? 'items-center gap-2.5 text-[14.5px] font-medium'
-          : 'items-start gap-3.5 pb-[5px] text-[15px] leading-[22.5px] font-semibold text-ink-800'
+          : [
+              'items-start gap-3.5 pb-[5px] text-[15px] leading-[22.5px] font-semibold',
+              tone === 'inverse' ? 'text-white' : 'text-ink-800',
+            ]
       "
     >
       <svg

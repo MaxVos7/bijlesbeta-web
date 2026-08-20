@@ -13,6 +13,8 @@
  *     link: { label: 'bijlesbeta.nl/privacy', href: '/privacy' }, after: '.' }
  */
 
+import { phone } from '~/data/phone'
+
 export type LegalItem = {
   /** Set in bold in front of `text`, e.g. a defined term. */
   lead?: string
@@ -133,7 +135,7 @@ export const terms: LegalDocument = {
             text: 'De opdrachtgever heeft het recht om binnen 14 dagen na het sluiten van de overeenkomst, zonder opgave van redenen, de overeenkomst te herroepen.',
           },
           {
-            text: 'Om het herroepingsrecht uit te oefenen, stuurt de opdrachtgever een ondubbelzinnige verklaring naar info@bijlesbeta.nl of via WhatsApp naar 06 38 26 06 23.',
+            text: `Om het herroepingsrecht uit te oefenen, stuurt de opdrachtgever een ondubbelzinnige verklaring naar info@bijlesbeta.nl of via WhatsApp naar ${phone.display}.`,
           },
           {
             text: 'Indien de opdrachtgever het herroepingsrecht uitoefent nadat de dienstverlening reeds is aangevangen, is de opdrachtgever een bedrag verschuldigd dat evenredig is aan het deel van de overeenkomst dat op het moment van herroeping reeds is uitgevoerd.',
@@ -306,7 +308,7 @@ export const terms: LegalDocument = {
       blocks: [
         ol([
           {
-            text: 'Klachten over de uitvoering van de overeenkomst dienen binnen 14 dagen na constatering schriftelijk aan Bijles Bèta te worden gemeld via info@bijlesbeta.nl of 06 38 26 06 23.',
+            text: `Klachten over de uitvoering van de overeenkomst dienen binnen 14 dagen na constatering schriftelijk aan Bijles Bèta te worden gemeld via info@bijlesbeta.nl of ${phone.display}.`,
           },
           {
             text: 'Bijles Bèta zal de klacht binnen 5 werkdagen inhoudelijk behandelen en zo spoedig mogelijk afhandelen.',
@@ -613,9 +615,9 @@ export const privacy: LegalDocument = {
 }
 
 /**
- * Registration details shown in the legal pages' contact panel. The address,
- * phone and e-mail come from `site.ts`; only the statutory name and the KvK
- * number are specific to these documents.
+ * Registration details shown in the legal pages' contact panel. The address
+ * comes from `site.ts` and the number from `phone.ts`; only the statutory
+ * name, the mailbox and the KvK number are specific to these documents.
  */
 export const company = {
   legalName: 'Bijles Bèta V.O.F.',
@@ -623,8 +625,8 @@ export const company = {
   /** The mailbox the documents themselves name, not the general contact one. */
   email: 'info@bijlesbeta.nl',
   emailHref: 'mailto:info@bijlesbeta.nl',
-  phone: '06 38 26 06 23',
-  phoneHref: 'tel:+31638260623',
+  phone: phone.display,
+  phoneHref: phone.telHref,
 } as const
 
 /** The PDF offered at the top of the algemene voorwaarden. */

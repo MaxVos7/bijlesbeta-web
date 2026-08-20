@@ -52,9 +52,9 @@ useSeo({
               ground with a black/20 hairline, the same treatment the hero CTA
               on `/werken-bij` takes.
             -->
-            <a href="#stappenplan" class="btn btn-lg border border-black/20 bg-parchment hover:bg-linen">
+            <NuxtLink to="/over-ons" class="btn btn-lg border border-black/20 bg-parchment hover:bg-linen">
               {{ zoWerktHet.secondaryCta }} <BtnArrow />
-            </a>
+            </NuxtLink>
           </div>
           <CtaNote />
         </div>
@@ -77,7 +77,8 @@ useSeo({
     <!--
       The stappenplan, also off `post-42.css`:
 
-      - A further 36px of gutter inside the 1100px column, collapsing to 0
+      - The band runs the kit's 1400px (only the hero above it declares
+        1100), with a further 36px of gutter inside it, collapsing to 0
         below 768px.
       - This page runs the 19px kicker rather than the sitewide 18px, and its
         section title is the 28px step — not the 32px `Zo werkt het` uses on
@@ -87,7 +88,7 @@ useSeo({
       - The two 32px spacers around the grid halve to 16px below 1025px.
     -->
     <section id="stappenplan" class="bg-white px-[clamp(16px,4vw,40px)] pb-20">
-      <div class="mx-auto max-w-[1100px] px-9 max-md:px-0">
+      <div class="mx-auto max-w-[1400px] px-9 max-md:px-0">
         <p class="kicker mb-3 text-center text-[19px]">{{ zoWerktHet.stepsIntro.kicker }}</p>
         <h2 class="mb-8 text-center text-[28px] leading-[44px] tracking-[-0.025em] max-desk:mb-4">
           {{ zoWerktHet.stepsIntro.title }}

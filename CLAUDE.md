@@ -46,7 +46,9 @@ Both must pass. There is no test suite yet.
 ## Forms
 
 All three form routes validate with zod, silently accept honeypot hits, and
-forward to the Laravel side.
+forward to the Laravel side. A fourth, `/api/lead`, is the odd one out: it
+mails the office and posts nothing to the portal — see "The proefles block"
+below for why.
 
 **Nothing in the hand-off throws any more, and a failed hand-off is no longer
 the visitor's problem.** Every submission is also mailed to the office, and the
@@ -123,6 +125,57 @@ If the upload fails the application is not posted — the portal requires
 an attachment on the office copy instead. That is then the only copy of it in
 existence, which is why neither step may end the request: you cannot ask
 somebody for their CV twice.
+
+### The proefles block
+
+The amber closing panel's short form (`LeadForm`, inside `TrialCta`, and again
+in the landings' hero) is **not a contact form**, though it looks like one and
+was built as one to begin with. On bijlesbeta.nl it is Gravity Forms form 1,
+"Gratis proefles kort", and it does two things:
+
+- its confirmation is a **redirect**, not a message —
+  `/aanmelden/?naam={Naam:1}&telefoon={Telefoon:4}&e-mailadres={E-mailadres:3}`,
+  where the long form prefills from those three parameters; and
+- it notifies `{admin_email}` with `{all_fields}` on every submission,
+  including a hidden field naming the page the block was on.
+
+The redirect is the point. The block asks for the three answers a visitor is
+most likely to abandon the wizard over, then hands them to the wizard with
+those already filled in — it is the top of the funnel, not the end of it. The
+mail is the safety net for the ones who still don't finish: a name and a phone
+number is enough to ring back, and without it that visitor is simply lost.
+Both halves have to stay, and neither may block the other.
+
+Our version, and what shouldn't be undone:
+
+- **`/api/lead`, not `/api/contact`.** Nothing goes to the portal from here. A
+  lead is not a `ContactRequest`, and `register-external-contact` would fire
+  `CONTACT_REQUEST_TO_SENDER` at somebody we are in the middle of sending to
+  the aanmeldformulier — a confirmation for a conversation they didn't start —
+  and would file every completed signup twice. The real submission is the
+  wizard's, a minute later. Live form 1 has one notification and no sender
+  mail; this matches it.
+- **The mail is not an office *copy*.** `sendLeadCopy` is deliberately separate
+  from `sendOfficeCopy`, whose banner tells the office a submission is missing
+  from the portal and must be entered by hand. Most leads land in the portal
+  by themselves a minute later; stamping them `NIET VERWERKT` would fill the
+  work queue with work nobody has to do.
+- **The POST is not awaited and cannot stop the redirect.** The visitor's next
+  step is the wizard; a mail that didn't leave is our problem, and their
+  answers travel in the URL either way.
+- **Name and phone are required, e-mail is not.** That is the reverse of what
+  this form asked for at first, and it is live form 1's own rule
+  (`gfield_contains_required` on fields 1 and 4, not on 3). The number is what
+  the office rings when somebody drops out, so it is the field that must not
+  be missing. The number is normalised through `shared/utils/phone.ts` before
+  it goes in the query string, so the wizard accepts what it is handed.
+- **The query parameter names are bijlesbeta.nl's**, not ours — `naam`,
+  `telefoon`, `e-mailadres`, hyphen and all. Keeping them means a link built
+  against the live site prefills here too. `SignupForm` reads them once at
+  setup, not in a watcher: it seeds the form, it doesn't own it.
+
+Live also runs a Cloudflare Turnstile on this form (`field_1_7`). We have the
+honeypot and the per-IP rate limit instead.
 
 ### The office copy
 
@@ -395,7 +448,9 @@ the SEO mandate says to:
   internally inconsistent — its header card starts at 312 and its related
   grid at 276. So there is no single card band to copy; the rule that does
   hold is that 1100 is the prose and closing-CTA width and no card grid uses
-  it. We treat 1368 as a `/tarieven` exception instead.
+  it. The live build agrees with the boards on this — its card bands run the
+  kit's 1400 — so this is no longer a place the two disagree; see the band
+  table in the type-scale section.
 - **The marketing pages' type scale doesn't step at mobile.** Measured off the
   480px Home board: H1 32px on a 44px line, hero paragraph 16/28, rating 15px
   — identical to 1920. Our H1 → 26px and feature-card title → 16px below
@@ -561,22 +616,45 @@ het`, `Bijles Bèta in cijfers` and `Moeilijke vragen bestaan niet!` are all
 32px on the live pages. Measure the one you're touching rather than assuming
 the step.
 
-The content column is **1100px** (`container-page`, and the `max-w-[1100px]`
-on the pages that don't use it), which is the `--content-width` the live
-containers actually set. Three bands on `/tarieven` deliberately don't use it
-and shouldn't be pulled back in: the packages grid runs **1368px** so four
-cards fit on one row with 12px between them, `Zo werkt het` runs **1400px**,
-and the stats band narrows to **900px**. Band gutters are 40px, tapering to
-16px on a phone (`px-[clamp(16px,4vw,40px)]`).
+**The default band is 1400px, and 1100 is a per-*band* exception.** This was
+read wrong once and the mistake spread across most of the site, so read the
+mechanism before touching a width. Elementor's `frontend.min.css` declares
 
-**1100px is a per-page override, not the site default.** Elementor's kit
-(`post-6.css`) sets `--container-max-width: 1400px`, and each page's own
-stylesheet narrows it: `post-14`, `-44`, `-46`, `-239`, `-42` and `-1567` all
-declare `--content-width: 1100px`. Two templates never do — **`post-204`
-(`/kennisbank`) and `post-169` (the article)** — so those two run the kit's
-full **1400px**, which is why they are the wide pages and why their bands
-carry `max-w-[1400px]`. Before assuming a band is 1100, grep its page CSS for
-`--content-width`; if it isn't there, the band is 1400.
+    .e-con { --content-width: min(100%, var(--container-max-width, 1140px)); }
+
+on **every** container, and the kit (`post-6.css`) sets
+`--container-max-width: 1400px`. Because that custom property is re-declared
+on each `.e-con`, it does *not* inherit down: a band is 1400px unless it names
+its own width. `post-14`, `-44`, `-46`, `-239`, `-42` and `-1567` do each
+declare `--content-width: 1100px` — but only on **one** element apiece, and in
+every case that element is the page's hero. Everything below the hero runs the
+full 1400. Before assuming a band is 1100, grep the page CSS for its own
+element id; if it isn't there, the band is 1400.
+
+The narrow widths that do exist live in the shared template stylesheets rather
+than in the page's own, which is why grepping only `post-<page>.css` misses
+them. The full set:
+
+| band | id | width | ours |
+|---|---|---|---|
+| hero | per page | 1100 (1200 on `/werken-bij` and the landings) | page file |
+| packages grid | `5d48e98b` | 1368 | `PricingSection` |
+| stats | `125bf870` | 900 | `StatsBand` |
+| closing CTA | `73f40b97` | 1100 | `TrialCta` |
+| reviews | `2efc0a89` | 1000 | the band that mounts `ReviewCarousel` |
+| team block | `3b507aa8` | 1180 | `/` and the landings |
+| FAQ block | `b8fc3e6` | 728 | `FaqSection` |
+| comparison cards | `4121888b` | 800, 600 at 768–1024 | `ComparisonTable` |
+| home story | `af0e6c4` | 1100 | `/` |
+| landing intro | `aeeb51e` | 1100 | `/bijles-[vak]-[stad]` |
+| `/werken-bij` apply | `dd3e9f4` | 1200 | `/werken-bij` |
+| everything else | — | **1400** | — |
+
+Band gutters are 40px, tapering to 16px on a phone
+(`px-[clamp(16px,4vw,40px)]`).
+
+`container-page` still caps at 1100 and is now only right for a hero or a
+prose column — don't reach for it on a card band.
 
 The padding sits *outside* that cap, which is what makes the nesting work:
 Elementor puts `--padding-left/right` on the outer `.e-con` and caps
@@ -641,9 +719,11 @@ of answers; it still posts through `/api/contact` with a fixed subject.
 Its layout is measured against `post-45.css` rather than designed, so a few
 things there are the live site's and shouldn't be tidied:
 
-- **Its bands run 1200px, not 1100.** The hero splits 50/50 on a 100px gutter
-  with the copy column padded 72px over 92px; the apply band splits 34/66 on a
-  63px gutter and sits on `parchment`, not `sand`. The live hero also carries
+- **Its hero and its apply band run 1200px**, where every other page's hero
+  is 1100 — the two white bands between them take the kit's 1400 like anywhere
+  else. The hero splits 50/50 on a 100px gutter with the copy column padded
+  72px over 92px; the apply band splits 34/66 on a 63px gutter and sits on
+  `parchment`, not `sand`. The live hero also carries
   192px of top padding because its header floats over the band — ours is in
   flow, so that space lives in the header strip instead.
 - **The hero CTA is not `btn-primary`.** It inverts on the dark band: parchment
@@ -724,9 +804,10 @@ the live page's numbers:
   `kruiwagenZWARTWITpng-min-2`, a 984 KB cut-out PNG; `fiets.png` stands in
   for it until that file lands in `public/img`.
 - **The stappenplan runs a 19px kicker** (like `/contact`) over the 28px
-  section title, and takes a further **36px** of gutter inside the 1100px
-  column, collapsing to 0 below 768px — the same nested-gutter pattern as
-  `/kennisbank`.
+  section title, and takes a further **36px** of gutter inside its band,
+  collapsing to 0 below 768px — the same nested-gutter pattern as
+  `/kennisbank`. The band itself is the kit's 1400: only the hero above it
+  declares 1100.
 - **The four cards are equal columns on a 12px gap**, two-up from 1025px down,
   with 24px of padding (12px below 768px), the `line-ink` hairline and the
   8px radius. Their titles are the 19px/26px card heading, stepping to 16px
@@ -766,6 +847,15 @@ the FAQ's "Neem contact op!" point at `#aanmelden` on the same page (plain
 `<a href>`, matching the pattern in `tarieven.vue`/`werken-bij.vue`), not the
 `/contact` route.
 
+**It was left out of the band-width pass**, deliberately. Every other page was
+put onto the live widths in the table above, but this one is a design handoff
+rather than a measurement of `post-2180`, and its sections don't correspond:
+the live page has no promo video and no levels notice, and ours has none of
+its subject-link band. Its bands all still run 1100. The live widths, if the
+page is ever measured back onto them, are hero 1100, then 1368 for `Wat kost
+dat?!`, the docenten band and `Ga direct naar de juiste pagina`, and 1200 for
+`Meld je direct aan`, with 1400 wrappers between.
+
 `/kennisbank` and `/kennisbank/[slug]` are measured against `post-204.css` and
 `post-169.css` rather than designed, like the header and `/werken-bij`. The
 overview and the article share `ArticleCard`, `AuthorBadge` and
@@ -778,13 +868,13 @@ measurements and shouldn't be tidied:
   and the white band opens *below* it with an 80px lead-in. That is why the
   page writes its hero out instead of mounting `PageHero`, which paints
   `linen` with a rule under it.
-- **These are the two 1400px pages.** Neither `post-204` nor `post-169` sets
-  `--content-width`, so both inherit the kit's 1400px where every other page
-  narrows to 1100 — see the type-scale section above. Their bands are
-  `max-w-[1400px]`, which is what puts the article grid on the same edges as
-  the header card above it. The one exception on the overview is the feature
-  band at the foot: that is a shared Elementor template rather than part of
-  `post-204`, so it keeps the sitewide 1100.
+- **These are the two pages with no 1100 band at all.** Neither `post-204`
+  nor `post-169` declares `--content-width` anywhere, so even their heroes
+  take the kit's 1400 — every other page narrows its hero and nothing else.
+  Their bands are `max-w-[1400px]`, which is what puts the article grid on the
+  same edges as the header card above it. The feature band at the foot is a
+  shared template (`45ff7e9f`) and declares no width either, so it is 1400
+  too — it is not the narrow exception this once claimed.
 - **Two nested gutters.** The band takes the sitewide 40px and the filter and
   grid take a further 36px inside it, collapsing to 0 below 768px. The hero's
   36px does *not* collapse — on a phone its copy is inset further than the
@@ -939,6 +1029,32 @@ gone.
 Sections shared across pages are components, not copy-paste: `TrialCta` (the
 amber closing block, with its own short form), `FaqSection`, `StatsBand`,
 `ReviewCarousel`, `TutorCard`, `CheckList` and `RatingLine`.
+
+### The docenten grid on /over-ons
+
+The live roster is one Elementor loop grid (`ce60d92`) with a **fixed column
+count**, not a fluid track: **4** columns on desktop, **2** on Elementor's
+tablet step and **1** on a phone, on a flat 24px gap both ways. Don't put it
+back on `auto-fill`/`auto-fit` — a `minmax(215px,1fr)` track lands on six
+columns once the band runs its real 1400px, and the portraits shrink to
+thumbnails.
+
+The card itself (`loop-296`, element `2a1767d`) is measured too: a 12px-padded
+8px surface on a **2px** `line-ink` rule, 20px between the photograph and the
+meta row, the name at 16px/700 on a 26px line in `ink-850` and the study at
+13px in `ink-600`. The photograph is a flat **300px-tall** crop at whatever
+width the column gives it — an aspect ratio is wrong here, because the height
+is what the live page pins.
+
+Our roster is split into three runs (`firstRun`, the story tile, `secondRun`,
+the photo band, `rest`) where the live page runs one grid whose story tile
+spans `min(2, columns)` and whose teamuitje photo spans `min(4, columns)`.
+The runs are sized for a four-column row, so the split only reads correctly at
+four — another reason not to make the track fluid.
+
+One live detail not copied: the arrow chip is a parchment 44px button that
+goes amber on hover. Ours stays the design boards' 34px linen square with a
+hairline, which is what the "cards have no hover state" note above describes.
 
 Watch flex children that hold an `auto-fit` grid — they need `min-w-0` or the
 grid refuses to shrink and the page overflows on a phone. Check new pages at

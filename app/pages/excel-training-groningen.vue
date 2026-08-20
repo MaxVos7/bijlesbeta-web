@@ -55,7 +55,7 @@ useFaqJsonLd(excelTraining.faq.items)
     </section>
 
     <section class="bg-white px-[clamp(16px,4vw,40px)] py-20">
-      <div class="mx-auto max-w-[1100px]">
+      <div class="mx-auto max-w-[1400px]">
         <div class="mx-auto max-w-[62ch] text-center">
           <h2 class="text-[28px] leading-[44px] tracking-[-0.025em]">
             {{ excelTraining.intro.title }}
@@ -78,7 +78,7 @@ useFaqJsonLd(excelTraining.faq.items)
     </section>
 
     <section class="bg-white px-[clamp(16px,4vw,40px)] pb-20">
-      <div class="mx-auto grid max-w-[1100px] items-center gap-[clamp(32px,5vw,60px)] md:grid-cols-2">
+      <div class="mx-auto grid max-w-[1400px] items-center gap-[clamp(32px,5vw,60px)] md:grid-cols-2">
         <div class="min-w-0">
           <h2 class="mb-5 text-[28px] leading-[44px] tracking-[-0.025em]">
             {{ excelTraining.pains.title }}

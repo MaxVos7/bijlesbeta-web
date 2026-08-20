@@ -92,6 +92,53 @@ export async function sendOfficeCopy(
   })
 }
 
+/**
+ * The short proefles block's mail to the office.
+ *
+ * Deliberately *not* a `sendOfficeCopy` with a failure outcome, though it
+ * looks like one. That mail's banner tells the office a submission is missing
+ * from the portal and has to be entered by hand; this one is a lead that is
+ * on its way to `/aanmelden` under its own steam, and most of them arrive
+ * there a minute later as a real registration. Stamping it `NIET VERWERKT`
+ * would put work in the queue that nobody needs to do.
+ *
+ * It exists because the other half of the block — the redirect — only pays off
+ * if the visitor finishes the wizard. This is the copy for the ones who don't:
+ * a name and a phone number is enough to follow up on, and without it that
+ * visitor is simply lost. Gravity Forms form 1 sends exactly this and nothing
+ * else, from a `{all_fields}` notification to `{admin_email}`.
+ */
+export async function sendLeadCopy(
+  event: H3Event,
+  options: {
+    to: string
+    /** Who sent it, for the subject line and the reply-to. */
+    from: { name: string, email: string }
+    rows: Row[]
+  },
+): Promise<boolean> {
+  const { to, from, rows } = options
+
+  const body = [
+    'NIEUWE LEAD via het proefles-blok. Deze persoon is doorgestuurd naar het',
+    'aanmeldformulier — als daar niets binnenkomt, bel of app deze gegevens na.',
+    '',
+    '─'.repeat(48),
+    '',
+    formatRows(rows),
+    '',
+    '─'.repeat(48),
+    'Verstuurd via het formulier op bijlesbeta.nl.',
+  ].join('\n')
+
+  return sendMail(event, {
+    to,
+    subject: `Gratis proefles: ${from.name}`,
+    text: body,
+    replyTo: from.email || undefined,
+  })
+}
+
 /** What the route answers with. Always HTTP 200 — see `deliveryResult`. */
 export type DeliveryResult = { ok: true } | { ok: false, message: string }
 

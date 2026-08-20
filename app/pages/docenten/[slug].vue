@@ -56,7 +56,7 @@ if (tutor.value) usePersonJsonLd(tutor.value)
     <div class="h-[30px]" />
 
     <section class="px-[clamp(16px,4vw,40px)]">
-      <div class="mx-auto max-w-[1100px]">
+      <div class="mx-auto max-w-[1400px]">
         <!-- The 36px inset column; flat on tablet and below. -->
         <div class="desk:px-9">
           <!-- The 12px block. No ground of its own — see the note above. -->

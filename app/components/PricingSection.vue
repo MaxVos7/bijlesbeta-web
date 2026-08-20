@@ -21,7 +21,7 @@ const formatPrice = (value: number) =>
 
 <template>
   <div>
-    <div class="mx-auto mb-[clamp(30px,4vw,48px)] max-w-[1100px] text-center">
+    <div class="mx-auto mb-[clamp(30px,4vw,48px)] max-w-[1368px] text-center">
       <p class="kicker mb-3 text-[19px]">{{ pricingIntro.kicker }}</p>
       <h2 class="mb-3 text-[clamp(24px,2.9vw,28px)] leading-[44px] tracking-[-0.025em]">
         {{ pricingIntro.title }}

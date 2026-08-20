@@ -31,6 +31,26 @@ const fileInput = ref<HTMLInputElement | null>(null)
 const cvFile = ref<File | null>(null)
 const cvFileName = computed(() => cvFile.value?.name ?? '')
 
+/** `1,2 MB` / `340 KB`, in the Dutch decimal comma. */
+const cvFileSize = computed(() => {
+  const bytes = cvFile.value?.size ?? 0
+  if (!bytes) return ''
+  const mb = bytes / 1024 / 1024
+  return mb >= 1 ? `${mb.toFixed(1).replace('.', ',')} MB` : `${Math.max(1, Math.round(bytes / 1024))} KB`
+})
+
+/** A chosen file the checks accept — the state the drop zone confirms. */
+const cvAccepted = computed(() => Boolean(cvFile.value) && !errors.value.cv)
+
+function clearCv() {
+  cvFile.value = null
+  // The input keeps its value, so without this the applicant can't re-pick the
+  // same file: choosing it again would fire no `change` event.
+  if (fileInput.value) fileInput.value.value = ''
+  const { cv, ...rest } = errors.value
+  errors.value = rest
+}
+
 /** What the portal's resume job can read back, mirrored in the API route. */
 const CV_TYPES = [
   'application/pdf',
@@ -290,10 +310,40 @@ async function submit() {
         <span class="field-label mb-2">
           CV uploaden <span class="text-brand-700">(Vereist)</span>
         </span>
+        <!--
+          The chosen file has to be unmistakable: an attached CV that looks like
+          an empty drop zone gets attached twice or not at all. So the accepted
+          state changes the whole panel — a green wash and rule, a check rather
+          than the upload cloud, and the name in full ink over its size — and
+          offers a way back out.
+        -->
         <div
-          class="flex flex-col items-center justify-center gap-3 rounded-field border border-dashed border-ink-300 bg-white px-5 py-[34px]"
+          class="flex flex-col items-center justify-center gap-3 rounded-field border border-dashed px-5 py-[34px]"
+          :class="
+            cvAccepted
+              ? 'border-success-500 bg-success-50'
+              : errors.cv
+                ? 'border-danger bg-white'
+                : 'border-ink-300 bg-white'
+          "
         >
           <svg
+            v-if="cvAccepted"
+            class="h-[30px] w-[30px] text-success-900"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.7"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8l-5-5z" />
+            <path d="M14 3v5h5" />
+            <path d="M9.5 14l2 2 3.5-3.5" />
+          </svg>
+          <svg
+            v-else
             class="h-[30px] w-[30px] text-brand-700"
             viewBox="0 0 24 24"
             fill="none"
@@ -306,9 +356,17 @@ async function submit() {
             <path d="M16.5 18H18a3.5 3.5 0 000-7 5 5 0 00-9.6-1.4A4 4 0 006.5 18H8" />
             <path d="M12 21V11M8.5 14.5L12 11l3.5 3.5" />
           </svg>
-          <p class="text-[13.5px] text-ink-600">
+
+          <div v-if="cvAccepted" class="flex max-w-full flex-col items-center gap-1">
+            <p class="max-w-full truncate text-[13.5px] font-semibold text-ink-800">
+              {{ cvFileName }}
+            </p>
+            <p class="text-[12.5px] text-success-900">{{ cvFileSize }} · toegevoegd</p>
+          </div>
+          <p v-else class="max-w-full truncate text-[13.5px] text-ink-600">
             {{ cvFileName || 'Sleep bestanden hierheen of' }}
           </p>
+
           <input
             ref="fileInput"
             type="file"
@@ -317,9 +375,19 @@ async function submit() {
             :aria-invalid="Boolean(errors.cv)"
             @change="onFileChange"
           >
-          <button type="button" class="btn-primary text-[13.5px]" @click="fileInput?.click()">
-            Selecteer bestanden
-          </button>
+          <div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
+            <button type="button" class="btn-primary text-[13.5px]" @click="fileInput?.click()">
+              {{ cvFile ? 'Ander bestand kiezen' : 'Selecteer bestanden' }}
+            </button>
+            <button
+              v-if="cvFile"
+              type="button"
+              class="text-[13px] font-semibold text-ink-600 underline transition hover:text-ink-800"
+              @click="clearCv"
+            >
+              Verwijderen
+            </button>
+          </div>
         </div>
         <!-- Sized off the constant so the promise and the check can't drift. -->
         <p class="mt-2.5 text-[12.5px] text-ink-500">

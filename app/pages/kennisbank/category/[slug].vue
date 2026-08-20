@@ -36,7 +36,7 @@ const others = computed(() => kennisbankCategories.filter((c) => c.slug !== slug
 <template>
   <div v-if="category">
     <section class="px-[clamp(16px,4vw,40px)] pt-[30px] pb-12">
-      <div class="mx-auto max-w-[1100px] p-9">
+      <div class="mx-auto max-w-[1400px] p-9">
         <p class="kicker mb-2 text-[19px] leading-[19px]">
           <NuxtLink to="/kennisbank">Kennisbank</NuxtLink>
         </p>
@@ -49,7 +49,7 @@ const others = computed(() => kennisbankCategories.filter((c) => c.slug !== slug
     </section>
 
     <section class="bg-white px-[clamp(16px,4vw,40px)] pt-20 pb-24">
-      <div class="mx-auto max-w-[1100px] px-9 max-md:px-0">
+      <div class="mx-auto max-w-[1400px] px-9 max-md:px-0">
         <div class="grid gap-6 md:grid-cols-2 desk:grid-cols-3">
           <ArticleCard v-for="article in posts" :key="article.slug" :article="article" stretch />
         </div>

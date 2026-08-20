@@ -50,7 +50,7 @@ const review = featuredReview
           <ul class="flex flex-col gap-2">
             <li v-for="row in [
               {
-                href: contact.phoneWhatsappHref,
+                href: contact.whatsappHref,
                 label: contact.phone,
                 external: true,
                 icon: 'whatsapp',

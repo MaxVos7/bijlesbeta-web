@@ -1,22 +1,31 @@
 <script setup lang="ts">
 /**
- * The short callback form: name, phone, email, consent.
+ * The short proefles form: name, phone, email, consent.
  *
  * Used twice on a landing page — once in the hero, once in TrialCta — so the
  * field ids are namespaced with `useId()` rather than hard-coded.
  *
- * It collects only three fields, so it synthesises the message body that
- * /api/contact requires: the request itself is the message.
+ * **It does not end in a thank-you.** On the live site this is Gravity Forms
+ * form 1, whose confirmation is a redirect to
+ * `/aanmelden/?naam=…&telefoon=…&e-mailadres=…` — the block collects the three
+ * fields that are most likely to be abandoned halfway through the wizard, and
+ * then hands the visitor to the wizard with them already filled in. Turning
+ * that back into a success message would strand every visitor one step short
+ * of an actual registration.
+ *
+ * `/api/lead` mails the office in parallel, for the ones who still don't
+ * finish. See "The proefles block" in CLAUDE.md before changing either half.
  */
 const props = withDefaults(
   defineProps<{
-    /** Sent to /api/contact so we can tell the landing hero from the closing block. */
+    /** Where the block sits, mailed to the office as form 1's page field is. */
     source?: string
   }>(),
-  { source: 'Aanvraag voor een gratis proefles via de website.' },
+  { source: '' },
 )
 
 const uid = useId()
+const route = useRoute()
 
 const form = reactive({
   name: '',
@@ -27,61 +36,76 @@ const form = reactive({
   website: '',
 })
 
-const status = ref<'idle' | 'pending' | 'success' | 'error'>('idle')
+const status = ref<'idle' | 'pending' | 'error'>('idle')
 const message = ref('')
 
-async function submit() {
+/*
+  Live form 1 requires the name and the phone number and leaves the e-mail
+  optional — the reverse of what this form used to ask for. The number is what
+  the office rings when somebody drops out of the wizard, so it is the field
+  that must not be missing, and the address is the one that can be.
+*/
+function submit() {
   if (status.value === 'pending') return
 
-  if (!form.name.trim() || !form.email.trim() || !form.consent) {
+  if (!form.name.trim() || !form.phone.trim() || !form.consent) {
     status.value = 'error'
-    message.value = 'Vul je naam en e-mailadres in en ga akkoord met het privacybeleid.'
+    message.value = 'Vul je naam en telefoonnummer in en ga akkoord met het privacybeleid.'
+    return
+  }
+
+  // Checked here as well as on the way out, so the number that lands in the
+  // query string is one `/aanmelden` will accept — see `shared/utils/phone.ts`.
+  if (!normalisePhone(form.phone)) {
+    status.value = 'error'
+    message.value = 'Vul een geldig telefoonnummer in, bijvoorbeeld 0612345678.'
     return
   }
 
   status.value = 'pending'
   message.value = ''
 
-  try {
-    const result = await $fetch('/api/contact', {
-      method: 'POST',
-      body: {
-        name: form.name,
-        email: form.email,
-        phone: form.phone,
-        subject: 'Gratis proefles',
-        message: props.source,
-        website: form.website,
-      },
-    })
+  handOff()
+}
 
-    // 200 with `ok: false` when it reached nobody — see `deliveryResult`.
-    if (result.ok === false) {
-      status.value = 'error'
-      message.value = result.message
-      return
-    }
+async function handOff() {
+  /*
+    Deliberately not awaited before the redirect, and deliberately not allowed
+    to stop it. The visitor's next step is the wizard; a mail that didn't leave
+    is our problem, and their details travel in the URL either way. `catch`
+    swallows rather than reports for the same reason — there is nothing the
+    visitor could do about it, and they are already on the next page.
+  */
+  $fetch('/api/lead', {
+    method: 'POST',
+    body: {
+      name: form.name,
+      phone: form.phone,
+      email: form.email,
+      page: props.source || route.path,
+      website: form.website,
+    },
+  }).catch(() => {})
 
-    status.value = 'success'
-  } catch (error: any) {
-    status.value = 'error'
-    message.value =
-      error?.data?.data?.message ??
-      'Er ging iets mis bij het versturen. Probeer het later opnieuw of bel ons.'
-  }
+  /*
+    The same three parameter names the live confirmation uses, so links and
+    bookmarks that were built against bijlesbeta.nl still prefill here. The
+    trailing slash is the canonical form — see the SEO section in CLAUDE.md.
+  */
+  await navigateTo({
+    path: '/aanmelden/',
+    query: {
+      naam: form.name.trim(),
+      telefoon: normalisePhone(form.phone) ?? form.phone.trim(),
+      ...(form.email.trim() ? { 'e-mailadres': form.email.trim() } : {}),
+    },
+  })
 }
 </script>
 
 <template>
   <div>
-    <div v-if="status === 'success'" class="py-6 text-center" role="status">
-      <h3 class="text-[17px]">Bedankt voor je bericht!</h3>
-      <p class="mt-2 text-[15px] leading-relaxed text-ink-700">
-        We nemen snel contact met je op om de proefles in te plannen.
-      </p>
-    </div>
-
-    <form v-else class="flex flex-col gap-3.5" novalidate @submit.prevent="submit">
+    <form class="flex flex-col gap-3.5" novalidate @submit.prevent="submit">
       <label class="sr-only" :for="`${uid}-name`">Naam</label>
       <input :id="`${uid}-name`" v-model="form.name" class="field-input mt-0" type="text" placeholder="Naam" autocomplete="name">
 
@@ -126,7 +150,7 @@ async function submit() {
         class="btn-primary w-full py-[17px] leading-[15px]"
         :disabled="status === 'pending'"
       >
-        {{ status === 'pending' ? 'Versturen…' : 'Proefles claimen' }}
+        {{ status === 'pending' ? 'Even geduld…' : 'Proefles claimen' }}
       </button>
     </form>
   </div>

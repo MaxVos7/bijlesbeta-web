@@ -12,21 +12,25 @@ import { comparison } from '~/data/site'
   <section
     class="bg-white px-[clamp(16px,4vw,24px)] pt-[clamp(30px,4vw,50px)] pb-[clamp(56px,7vw,90px)]"
   >
-    <div class="mx-auto max-w-[1100px]">
+    <!-- The band runs the kit's 1400px; only the pair of cards is narrowed,
+         to 800px on desktop and 600px on Elementor's tablet step. -->
+    <div class="mx-auto max-w-[1400px]">
       <div class="mb-[clamp(28px,3.5vw,44px)] text-center">
         <p class="kicker mb-2.5">{{ comparison.kicker }}</p>
         <h2 class="text-[clamp(24px,2.9vw,28px)] tracking-[-0.025em]">{{ comparison.title }}</h2>
       </div>
 
       <div
-        class="relative mx-auto grid max-w-[840px] gap-[clamp(14px,2vw,22px)] [grid-template-columns:repeat(auto-fit,minmax(280px,1fr))]"
+        class="relative mx-auto grid max-w-[800px] gap-[clamp(14px,2vw,22px)] [grid-template-columns:repeat(auto-fit,minmax(280px,1fr))] max-desk:max-w-[600px] max-md:max-w-none"
       >
         <div class="overflow-hidden rounded-tile border border-line-200 bg-white">
           <div class="bg-sand px-6 py-[26px] text-center">
-            <span
-              class="mb-3.5 inline-flex h-[38px] w-[38px] items-center justify-center rounded-btn bg-ink-900 text-lg font-extrabold text-brand-500"
-              aria-hidden="true"
-            >B</span>
+            <!-- The real mark, at the same 38px as the neutral glyph opposite.
+                 `logo-mark.svg` rather than `favicon.svg`: the favicon inverts
+                 its ink on a dark browser theme, which this band must not do. -->
+            <span class="mb-3.5 inline-flex h-[38px] w-[38px] items-center justify-center">
+              <img src="/img/logo-mark.svg" alt="" width="32" height="32" class="h-8 w-8">
+            </span>
             <h3 class="mb-2 text-[17px]">{{ comparison.us.title }}</h3>
             <p class="text-[13px] leading-[1.55] text-ink-600">{{ comparison.us.body }}</p>
           </div>

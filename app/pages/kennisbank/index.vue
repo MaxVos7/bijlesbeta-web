@@ -85,11 +85,11 @@ function isFeatured(article: Article) {
       </div>
     </section>
 
-    <!-- The feature band is a shared Elementor template on the live site, not
-         part of `post-204`, so it keeps the sitewide 1100px column rather than
-         the 1400px the two bands above it run. -->
+    <!-- The feature band is a shared Elementor template (`45ff7e9f`), and it
+         declares no width of its own on any page that mounts it, so it takes
+         the kit's 1400px like the two bands above it. -->
     <section class="px-[clamp(16px,4vw,40px)] py-12">
-      <div class="mx-auto max-w-[1100px]">
+      <div class="mx-auto max-w-[1400px]">
         <FeatureGrid />
       </div>
     </section>

@@ -32,7 +32,7 @@ function openVideo() {
 <template>
   <div>
     <!-- Hero: rating + promises on the left, the training photo on the right. -->
-    <section class="bg-linen px-[clamp(16px,4vw,24px)] pt-[clamp(24px,3.5vw,44px)] pb-[clamp(40px,6vw,72px)]">
+    <section class="px-[clamp(16px,4vw,24px)] pt-[clamp(24px,3.5vw,44px)] pb-[clamp(40px,6vw,72px)]">
       <div
         class="mx-auto grid max-w-[1100px] items-center gap-[clamp(28px,4.5vw,56px)] [grid-template-columns:repeat(auto-fit,minmax(330px,1fr))]"
       >
@@ -300,7 +300,7 @@ function openVideo() {
                   />
                 </svg>
               </span>
-              {{ contact.whatsapp }}
+              {{ contact.phone }}
             </a>
             <a
               :href="contact.applicationsEmailHref"
