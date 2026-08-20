@@ -35,7 +35,7 @@ export function useSeo(meta: {
   )
 
   const image = computed(() => {
-    const src = meta.image ?? '/img/team-collage.png'
+    const src = meta.image ?? '/img/team-collage.webp'
     return src.startsWith('http') ? src : `${String(siteUrl).replace(/\/$/, '')}${src}`
   })
 

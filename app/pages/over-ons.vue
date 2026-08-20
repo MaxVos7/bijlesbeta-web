@@ -55,7 +55,7 @@ const storyQuote = computed(() => {
 
         <div class="min-w-0">
           <img
-            src="/img/team-collage.png"
+            src="/img/team-collage.webp"
             alt="Ons team"
             class="mx-auto block h-auto w-full max-w-[480px]"
           >
@@ -113,7 +113,7 @@ const storyQuote = computed(() => {
              pulled up to where the team stands rather than centred on the
              shuffleboard table. -->
         <img
-          src="/img/teamuitje.jpg"
+          src="/img/teamuitje.webp"
           alt="Het team van Bijles Bèta tijdens het teamuitje"
           class="block aspect-[16/5] w-full object-cover object-[center_12%]"
           loading="lazy"

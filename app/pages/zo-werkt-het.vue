@@ -61,7 +61,7 @@ useSeo({
 
         <div class="min-w-0">
           <img
-            src="/img/fiets.png"
+            src="/img/fiets.webp"
             alt="Docent op de fiets in Groningen"
             class="block h-[550px] w-full rounded-panel object-cover object-top"
           >

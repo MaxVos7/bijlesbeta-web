@@ -45,7 +45,7 @@ useSeo({
 
         <div class="relative min-w-0">
           <img
-            src="/img/fiets.png"
+            src="/img/fiets.webp"
             alt="Docent op de fiets in Groningen"
             class="block w-full rounded-panel object-cover max-desk:aspect-[5/7] desk:absolute desk:inset-x-0 desk:top-0 desk:h-[700px]"
           >
@@ -70,7 +70,7 @@ useSeo({
       >
         <div
           class="min-h-[333px] w-full min-w-0 rounded-block bg-cover bg-center max-desk:aspect-[665/377]"
-          style="background-image: url('/img/bord.png')"
+          style="background-image: url('/img/bord.webp')"
           role="img"
           aria-label="Docent schrijft natuurkundeformules op een schoolbord"
         />

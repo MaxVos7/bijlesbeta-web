@@ -187,21 +187,21 @@ export const subjectCards = [
   {
     slug: 'wiskunde-groningen',
     name: 'Wiskunde',
-    image: '/img/wiskunde.jpg',
+    image: '/img/wiskunde.webp',
     alt: 'Bijles wiskunde Groningen',
     body: 'Wiskunde is geen mysterie. Soms heb je alleen een klein duwtje in de rug nodig om het te zien.',
   },
   {
     slug: 'natuurkunde-groningen',
     name: 'Natuurkunde',
-    image: '/img/natuurkunde.jpg',
+    image: '/img/natuurkunde.webp',
     alt: 'Bijles natuurkunde Groningen',
     body: 'Achter elke formule zit een idee. Zodra je dat begrijpt, wordt natuurkunde echt interessant.',
   },
   {
     slug: 'scheikunde-groningen',
     name: 'Scheikunde',
-    image: '/img/scheikunde.jpg',
+    image: '/img/scheikunde.webp',
     alt: 'Bijles scheikunde Groningen',
     body: 'In scheikunde hangt alles samen als moleculen in een reactie. Begrijp het geheel, wij helpen je!',
   },
@@ -416,7 +416,7 @@ export const hetBedrijf: HetBedrijf = {
     /** The live label is missing a `t`; `#het-onstaan` is its href, so the
         first band carries that id rather than the spelling being corrected. */
     cta: { label: 'Het onstaan', href: '#het-onstaan' },
-    image: '/img/bord.png',
+    image: '/img/bord.webp',
     imageAlt: 'Twee docenten van Bijles Bèta aan het schoolbord',
   },
 
@@ -434,7 +434,7 @@ export const hetBedrijf: HetBedrijf = {
           'Bijles kan hét hulpmiddel zijn om een leerling weer mee te laten komen op school. In 2017 zagen Mathijn en Max, beiden met een passie voor de exacte vakken, dit als een unieke kans. Vanuit Groningen richtten zij Bijles Bèta op met een duidelijke visie: wij laten leerlingen zien hoe je bèta vakken aanpakt en wanneer je dat eenmaal ziet, wordt een bèta vak ontzettend leuk!',
         ],
       ],
-      image: '/img/het-bedrijf-verhaal.png',
+      image: '/img/het-bedrijf-verhaal.webp',
       imageAlt: 'Twee docenten van Bijles Bèta met een kruiwagen',
     },
     {
@@ -461,7 +461,7 @@ export const hetBedrijf: HetBedrijf = {
         ],
       ],
       cta: { label: 'Meld je aan', to: '/aanmelden' },
-      image: '/img/studenten.png',
+      image: '/img/studenten.webp',
       imageAlt: 'Twee leerlingen werken samen aan wiskunde',
     },
     {
@@ -479,7 +479,7 @@ export const hetBedrijf: HetBedrijf = {
       ],
       /** The live button points at `/over-ons`, not at its team anchor. */
       cta: { label: 'Ons team', to: '/over-ons' },
-      image: '/img/teamuitje.jpg',
+      image: '/img/teamuitje.webp',
       imageAlt: 'Het team van Bijles Bèta tijdens een teamavond',
     },
   ],
@@ -551,14 +551,14 @@ export const overOnsBlocks = [
   {
     title: 'Persoonlijk contact',
     body: 'We kennen onze leerlingen, hun ouders én onze docenten persoonlijk. Dat maakt ons flexibel en zorgt dat we snel kunnen schakelen als dat nodig is. We denken actief mee en creëren een fijne sfeer, omdat je alleen goed leert als je je op je gemak voelt. Onze passie voor bèta-vakken proberen we in elke les over te brengen.',
-    image: '/img/persoonlijk.png',
+    image: '/img/persoonlijk.webp',
     alt: 'Onze docent',
     cta: { label: 'Ons verhaal', to: '/#verhaal' },
   },
   {
     title: 'Vlot en efficiënt',
     body: 'We zijn klein, flexibel en reageren vlot. Geen ingewikkelde structuren of trage communicatie, maar bijles wanneer jij die nodig hebt. Contact gaat snel en makkelijk: via mail, telefoon of gewoon via WhatsApp. En omdat we efficiënt werken, blijven de kosten laag.',
-    image: '/img/studenten.png',
+    image: '/img/studenten.webp',
     alt: 'Leerlingen aan het werk',
     cta: { label: 'Meld je aan', to: '/aanmelden' },
   },
@@ -603,7 +603,7 @@ export const werkenBij = {
     ],
     cta: 'Direct solliciteren',
     reassurance: 'We nemen zo snel mogelijk contact op.',
-    image: '/img/werken-bij-hero.png',
+    image: '/img/werken-bij-hero.webp',
     imageAlt: 'Docent legt natuurkunde uit aan een leerling voor het schoolbord',
   },
   perksIntro: {
@@ -649,20 +649,20 @@ export const werkenBij = {
     {
       title: 'Science & Engineering',
       body: 'Bijles Bèta wordt volledig gerund vanuit de faculteit Science & Engineering aan de Rijksuniversiteit in Groningen. Wij willen dit graag houden en zoeken naar docenten die hier een opleiding volgen.',
-      image: '/img/werken-bij-science.jpg',
+      image: '/img/werken-bij-science.webp',
       alt: 'Student van de faculteit Science & Engineering in het lab',
     },
     {
       title: 'Goed in Bèta',
       body: 'Je bent goed in bèta. Bij voorkeur heb je op vwo een mooi cijfer gehaald voor het vak waarin jij bijles wil geven. Dit hoeft alleen dus niet per se, en ook niet in elk vak te zijn.',
-      image: '/img/bord.png',
+      image: '/img/bord.webp',
       alt: 'Docent schrijft natuurkundeformules op het schoolbord',
     },
     {
       title: 'Plezier en passie',
       /* The live page reads "Je vindt ziet het" — two verbs collided there. */
       body: 'Je ziet het als een uitdaging om middelbare scholieren, die bèta misschien niet zo leuk vinden, te laten inzien dat bèta wél heel leuk kan zijn. Hiervoor moet je een passie hebben voor het vak!',
-      image: '/img/proefles.png',
+      image: '/img/proefles.webp',
       alt: 'Twee leerlingen lachen tijdens het samen huiswerk maken',
     },
   ],
@@ -701,7 +701,7 @@ export const examentraining = {
       'Kleine klas van maximaal 8 leerlingen',
     ],
     cta: 'Meld je direct aan',
-    image: '/img/examentraining-hero.jpg',
+    image: '/img/examentraining-hero.webp',
     imageAlt: 'Docent voor het bord tijdens de examentraining',
   },
   /**

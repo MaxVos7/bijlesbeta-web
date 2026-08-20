@@ -115,7 +115,7 @@ useSeo({
         class="mx-auto grid max-w-[1100px] overflow-hidden rounded-card bg-sand [grid-template-columns:repeat(auto-fit,minmax(300px,1fr))]"
       >
         <img
-          src="/img/studenten.png"
+          src="/img/studenten.webp"
           alt="Leerlingen aan tafel tijdens de bijles"
           class="block h-full min-h-[340px] w-full object-cover"
           loading="lazy"
@@ -150,7 +150,7 @@ useSeo({
         </div>
         <div class="min-w-0">
           <img
-            src="/img/team-collage.png"
+            src="/img/team-collage.webp"
             alt="Het team van Bijles Bèta"
             class="mx-auto block h-auto w-full max-w-[520px]"
             loading="lazy"

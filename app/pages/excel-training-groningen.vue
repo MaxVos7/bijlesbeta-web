@@ -45,7 +45,7 @@ useFaqJsonLd(excelTraining.faq.items)
 
         <div class="min-w-0">
           <img
-            src="/img/uitleg-b.png"
+            src="/img/uitleg-b.webp"
             alt="Excel training bij jou op kantoor"
             class="block h-[350px] w-full rounded-panel object-cover object-center md:h-[450px]"
             loading="lazy"

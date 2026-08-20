@@ -45,7 +45,7 @@ withDefaults(
              read through it, as it does on the live block. -->
         <div class="flex max-w-[360px] items-center gap-3 rounded-tile bg-white/30 px-3 py-[13.5px]">
           <img
-            src="/img/persoonlijk.png"
+            src="/img/persoonlijk.webp"
             alt=""
             class="h-[78px] w-[78px] flex-none rounded object-cover"
             width="78"

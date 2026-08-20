@@ -142,7 +142,7 @@ export const articles: Article[] = [
     publishedAt: '2026-02-07',
     readingMinutes: 7,
     wordCount: 1265,
-    coverImage: '/img/kennisbank/kruistabel.jpg',
+    coverImage: '/img/kennisbank/kruistabel.webp',
     coverAlt: 'kruistabel',
     body: [
       {
@@ -483,7 +483,7 @@ export const articles: Article[] = [
     publishedAt: '2026-02-07',
     readingMinutes: 3,
     wordCount: 595,
-    coverImage: '/img/kennisbank/effectgrootte.jpg',
+    coverImage: '/img/kennisbank/effectgrootte.webp',
     coverAlt: 'statistiek weergeven door een grafiek',
     body: [
       { type: 'heading', text: 'Statistiek: Werken met de Effectgrootte' },
@@ -665,7 +665,7 @@ export const articles: Article[] = [
     publishedAt: '2026-02-07',
     readingMinutes: 3,
     wordCount: 409,
-    coverImage: '/img/kennisbank/substitutie.jpg',
+    coverImage: '/img/kennisbank/substitutie.webp',
     coverAlt: 'De substitutie van getallen',
     body: [
       { type: 'heading', text: 'Statistiek: Werken met de Kruistabel' },
@@ -1120,7 +1120,7 @@ export const articles: Article[] = [
     publishedAt: '2025-12-18',
     readingMinutes: 5,
     wordCount: 972,
-    coverImage: '/img/kennisbank/rekenen-met-procenten.jpg',
+    coverImage: '/img/kennisbank/rekenen-met-procenten.webp',
     body: [
       { type: 'heading', text: 'Rekenen met procenten' },
       { type: 'paragraph', text: [em('(Wiskunde A Havo Bovenbouw)')] },
@@ -1393,7 +1393,7 @@ export const articles: Article[] = [
     publishedAt: '2025-12-18',
     readingMinutes: 4,
     wordCount: 761,
-    coverImage: '/img/kennisbank/exponentiele-verbanden.jpeg',
+    coverImage: '/img/kennisbank/exponentiele-verbanden.webp',
     body: [
       { type: 'heading', text: 'Exponentiële verbanden: wat gebeurt er als de tijd verandert?' },
       { type: 'paragraph', text: [em('(Wiskunde A Havo Bovenbouw)')] },
@@ -1617,7 +1617,7 @@ export const articles: Article[] = [
     publishedAt: '2025-12-04',
     readingMinutes: 2,
     wordCount: 321,
-    coverImage: '/img/kennisbank/afgeleide-functies.jpg',
+    coverImage: '/img/kennisbank/afgeleide-functies.webp',
     body: [
       { type: 'heading', text: 'Afgeleide functies — wat betekent dat eigenlijk?' },
       {
@@ -2005,7 +2005,7 @@ export const articles: Article[] = [
     publishedAt: '2025-12-04',
     readingMinutes: 5,
     wordCount: 893,
-    coverImage: '/img/kennisbank/periodiek-systeem.jpg',
+    coverImage: '/img/kennisbank/periodiek-systeem.webp',
     body: [
       { type: 'heading', text: 'Het periodiek systeem' },
       {
@@ -2022,7 +2022,7 @@ export const articles: Article[] = [
           'In de volgende vragen onderzoeken we stap voor stap hoe het periodiek systeem is opgebouwd en hoe je verbanden kunt leggen tussen de eigenschappen van verschillende elementen.',
         ],
       },
-      { type: 'image', src: '/img/kennisbank/periodiek-systeem-tabel.jpg', alt: 'Periodiek systeem' },
+      { type: 'image', src: '/img/kennisbank/periodiek-systeem-tabel.webp', alt: 'Periodiek systeem' },
       { type: 'heading', level: 3, text: 'Vraag 1: Beschrijf de verschillende bekende groepen in het periodiek systeem.' },
       { type: 'heading', level: 4, text: 'Uitwerking:' },
       {
@@ -2214,7 +2214,7 @@ export const articles: Article[] = [
     publishedAt: '2025-11-03',
     readingMinutes: 2,
     wordCount: 327,
-    coverImage: '/img/kennisbank/zouten.jpg',
+    coverImage: '/img/kennisbank/zouten.webp',
     coverAlt: 'Het zout van een chemische vergelijking',
     body: [
       { type: 'heading', text: 'Ionen en zouten' },
@@ -2455,7 +2455,7 @@ export const articles: Article[] = [
     publishedAt: '2025-11-03',
     readingMinutes: 2,
     wordCount: 229,
-    coverImage: '/img/kennisbank/ph-berekeningen.jpg',
+    coverImage: '/img/kennisbank/ph-berekeningen.webp',
     coverAlt: 'Een limoen om het zuur van een ph berekening uit te beelden',
     body: [
       { type: 'heading', text: 'pH-berekeningen' },
@@ -3025,7 +3025,7 @@ export const articles: Article[] = [
     publishedAt: '2025-11-03',
     readingMinutes: 3,
     wordCount: 428,
-    coverImage: '/img/kennisbank/elektromagnetisch-spectrum.jpg',
+    coverImage: '/img/kennisbank/elektromagnetisch-spectrum.webp',
     coverAlt: 'Electromagnetisch spectrum gevisualieerd door een regenboog',
     body: [
       { type: 'heading', text: 'Het elektromagnetisch spectrum' },
@@ -3231,7 +3231,7 @@ export const articles: Article[] = [
     publishedAt: '2025-11-03',
     readingMinutes: 2,
     wordCount: 337,
-    coverImage: '/img/kennisbank/wetten-van-newton.jpg',
+    coverImage: '/img/kennisbank/wetten-van-newton.webp',
     coverAlt: 'De 2de wet van newton gevisualiseerd met een newton pendel.',
     body: [
       { type: 'heading', text: 'De drie wetten van Newton stap voor stap' },
@@ -3334,7 +3334,7 @@ export const articles: Article[] = [
     publishedAt: '2025-09-15',
     readingMinutes: 2,
     wordCount: 317,
-    coverImage: '/img/kennisbank/halveringstijd-tsjernobyl.jpg',
+    coverImage: '/img/kennisbank/halveringstijd-tsjernobyl.webp',
     body: [
       { type: 'heading', text: 'Oefenvraag: Terug naar Tsjernobyl – Hoe lang blijft jodium-131 gevaarlijk?' },
       {

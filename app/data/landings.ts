@@ -53,7 +53,7 @@ export const landings: LandingPage[] = [
     seoTitle: 'Het kwartje moet vallen',
     seoDescription:
       'Zoek je bijles wiskunde in Groningen? Onze RUG-studenten komen bij je thuis. Van wiskunde A tot B, alle niveaus. ✓ Gratis proefles',
-    image: '/img/uitleg-b.png',
+    image: '/img/uitleg-b.webp',
     imageAlt: 'Bijles wiskunde in Groningen',
     seoParagraphs: [
       [{ text: 'Zoek je bijles wiskunde in Groningen? Bij Bijles Bèta krijg je persoonlijke begeleiding van studenten die zelf wiskunde of een bèta-studie volgen aan de Rijksuniversiteit Groningen. Ze snappen de stof én weten hoe ze het moeten uitleggen.' }],
@@ -71,7 +71,7 @@ export const landings: LandingPage[] = [
     seoTitle: 'Data en kansen onder controle',
     seoDescription:
       'Bijles wiskunde A in Groningen. Statistiek, kansrekening en je grafische rekenmachine - onze docenten maken het helder. ✓ Gratis proefles ✓ Aan huis',
-    image: '/img/uitleg-b.png',
+    image: '/img/uitleg-b.webp',
     imageAlt: 'Docent legt wiskunde A uit tijdens de bijles',
     seoParagraphs: [
       [{ text: 'Wiskunde A draait om statistiek, kansrekening en data-analyse. Normale verdelingen, hypothesetoetsen, exponentiële groei - het kan behoorlijk abstract zijn. Bij Bijles Bèta krijg je bijles wiskunde A van studenten die de stof helder kunnen uitleggen.' }],
@@ -89,7 +89,7 @@ export const landings: LandingPage[] = [
     seoTitle: 'Wiskunde B onder de knie',
     seoDescription:
       'Bijles wiskunde B in Groningen van RUG-studenten. Differentiëren, integreren, goniometrie - wij maken het begrijpelijk. ✓ Gratis proefles ✓ Aan huis',
-    image: '/img/bord.png',
+    image: '/img/bord.webp',
     imageAlt: 'Docent werkt een wiskunde B-opgave uit op het bord',
     seoParagraphs: [
       [{ text: 'Wiskunde B is het technische profiel. Differentiëren, integreren, limieten, complexe functies - het is abstract en veeleisend. Bij Bijles Bèta krijg je bijles wiskunde B van studenten die deze stof dagelijks gebruiken in hun eigen studie aan de RUG.' }],
@@ -107,7 +107,7 @@ export const landings: LandingPage[] = [
     seoTitle: 'Eerst snappen, dan rekenen',
     seoDescription:
       'Bijles natuurkunde in Groningen door RUG-studenten. Van mechanica tot elektriciteit - wij maken het logisch. ✓ Gratis proefles ✓ Aan huis ✓ Alle niveaus',
-    image: '/img/natuurkunde.jpg',
+    image: '/img/natuurkunde.webp',
     imageAlt: 'Bijles natuurkunde in Groningen',
     seoParagraphs: [
       [{ text: 'Zoek je bijles natuurkunde in Groningen? Natuurkunde is overal om je heen, maar het vak kan behoorlijk abstract zijn. Formules, eenheden, berekeningen - bij Bijles Bèta maken we het weer logisch.' }],
@@ -125,7 +125,7 @@ export const landings: LandingPage[] = [
     seoTitle: 'Scheikunde stap voor stap',
     seoDescription:
       'Bijles scheikunde in Groningen door RUG-studenten. Mol rekenen, BINAS, organische chemie - wij helpen je verder. ✓ Gratis proefles ✓ Aan huis',
-    image: '/img/lab.jpg',
+    image: '/img/lab.webp',
     imageAlt: 'Bijles scheikunde in Groningen',
     seoParagraphs: [
       [{ text: 'Zoek je bijles scheikunde in Groningen? Scheikunde is het vak van moleculen, reacties en berekeningen. Mol rekenen, reactievergelijkingen balanceren, organische structuren - er komt veel bij kijken. Bij Bijles Bèta krijg je begeleiding van studenten die het vak zelf studeren aan de RUG.' }],
@@ -143,7 +143,7 @@ export const landings: LandingPage[] = [
     seoTitle: "Bèta bijles voor vmbo'ers",
     seoDescription:
       'Bijles voor vmbo leerlingen in Groningen. Wiskunde, natuurkunde en scheikunde - aangepast aan jouw niveau. ✓ Gratis proefles ✓ Aan huis',
-    image: '/img/studenten.png',
+    image: '/img/studenten.webp',
     imageAlt: 'Leerlingen aan tafel tijdens de bijles',
     seoParagraphs: [
       [{ text: 'Zoek je bijles vmbo in Groningen? Op het vmbo kunnen ' }, { text: 'wiskunde', to: '/bijles-wiskunde-groningen' }, { text: ', ' }, { text: 'natuurkunde', to: '/bijles-natuurkunde-groningen' }, { text: ' en ' }, { text: 'scheikunde', to: '/bijles-scheikunde-groningen' }, { text: ' pittige vakken zijn. De stof gaat snel en er wordt veel van je verwacht. Soms is wat extra uitleg precies wat je nodig hebt.' }],
@@ -162,7 +162,7 @@ export const landings: LandingPage[] = [
     seoTitle: 'Havo bijles die werkt',
     seoDescription:
       'Bijles voor havo leerlingen in Groningen. Van 4 havo tot examenklas - onze RUG-studenten helpen je met wiskunde, natuurkunde en scheikunde. ✓ Gratis proefles',
-    image: '/img/persoonlijk.png',
+    image: '/img/persoonlijk.webp',
     imageAlt: 'Docent legt de stof uit tijdens de bijles havo',
     seoParagraphs: [
       [{ text: 'Zoek je bijles havo in Groningen? De havo is een stevige opleiding. De bèta vakken vragen veel van je: abstracte concepten, complexe berekeningen en een flinke dosis doorzettingsvermogen. Soms heb je daar wat hulp bij nodig.' }],
@@ -180,7 +180,7 @@ export const landings: LandingPage[] = [
     seoTitle: 'VWO bijles van experts',
     seoDescription:
       'Bijles voor vwo leerlingen in Groningen. Wiskunde B, natuurkunde, scheikunde - onze RUG-studenten maken het begrijpelijk. ✓ Gratis proefles ✓ Aan huis',
-    image: '/img/uitleg-b.png',
+    image: '/img/uitleg-b.webp',
     imageAlt: 'Docent legt de stof uit tijdens de bijles vwo',
     seoParagraphs: [
       [{ text: 'Zoek je bijles vwo in Groningen? Het vwo vraagt veel van je. De bèta vakken zijn abstract, de stof gaat diep en het tempo ligt hoog. Zelfs als je slim bent, kan het een uitdaging zijn om alles bij te houden.' }],
@@ -199,7 +199,7 @@ export const landings: LandingPage[] = [
     seoTitle: 'Leren in je eigen omgeving',
     // The source page never had a meta description set — write one before shipping.
     seoDescription: '',
-    image: '/img/fiets.png',
+    image: '/img/fiets.webp',
     imageAlt: 'Docent op de fiets onderweg naar de bijles aan huis',
     seoParagraphs: [
       [{ text: 'Zoek je bijles aan huis in Groningen? Bij Bijles Bèta komen onze docenten naar jou toe. Geen reistijd naar een bijlesinstituut, geen wachten in een overvolle studiezaal. Gewoon thuis, aan je eigen bureau, met al je boeken binnen handbereik.' }],
@@ -241,7 +241,7 @@ export const landings: LandingPage[] = [
     seoTitle: 'Bijles aan huis in Utrecht',
     seoDescription:
       'Bijles aan huis in Utrecht voor wiskunde, natuurkunde en scheikunde. Ervaren bètastudenten aan huis, wekelijks op een vast moment. Plan nu een proefles!',
-    image: '/img/fiets.png',
+    image: '/img/fiets.webp',
     imageAlt: 'Docent op de fiets onderweg naar de bijles aan huis in Utrecht',
     seoParagraphs: [
       [{ text: 'Zoek je bijles aan huis in Utrecht? Bij Bijles Bèta komen onze docenten naar jou toe. Geen reistijd naar een bijlesinstituut, geen wachten in een overvolle studiezaal. Gewoon thuis, aan je eigen bureau, met al je boeken binnen handbereik.' }],
@@ -279,21 +279,21 @@ export const landingSteps = {
       label: 'Stap 1.',
       title: 'Proefles',
       body: 'Leer je docent kennen en maak samen een plan voor de bijles.',
-      image: '/img/proefles.png',
+      image: '/img/proefles.webp',
       alt: 'Twee leerlingen werken samen tijdens de proefles',
     },
     {
       label: 'Stap 2.',
       title: 'Kies het juiste pakket',
       body: 'Bepaal samen met je docent hoeveel bijlessen je nodig hebt en kies het juiste pakket.',
-      image: '/img/bord.png',
+      image: '/img/bord.webp',
       alt: 'Docent werkt een natuurkundeopgave uit op het bord',
     },
     {
       label: 'Stap 3.',
       title: 'Wordt een Bèta pro',
       body: 'Ontdek hoe de bijles jou laat zien hoe leuk de bèta vakken eigenlijk zijn.',
-      image: '/img/fiets.png',
+      image: '/img/fiets.webp',
       alt: 'Docent op de fiets onderweg naar de bijles',
     },
   ],

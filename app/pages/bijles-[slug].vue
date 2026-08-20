@@ -30,7 +30,7 @@ useSeo({
   <div>
     <section class="relative overflow-hidden bg-ink-900 pb-[clamp(48px,7vw,88px)]">
       <img
-        src="/img/studenten.png"
+        src="/img/studenten.webp"
         alt=""
         class="absolute inset-0 h-full w-full object-cover"
         aria-hidden="true"
@@ -228,7 +228,7 @@ useSeo({
         </div>
         <div class="min-w-0">
           <img
-            src="/img/team-collage.png"
+            src="/img/team-collage.webp"
             alt="Het team van Bijles Bèta"
             class="mx-auto block h-auto w-full max-w-[420px]"
             loading="lazy"
