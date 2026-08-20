@@ -503,11 +503,20 @@ function reset() {
               </option>
             </select>
 
+            <!--
+              Bound by hand rather than with `v-model`, because `v-model` on an
+              `<input type="number">` casts the value to a number — silently,
+              and regardless of `SignupValues` typing every answer as a string.
+              `schoolYear` then left as `4` rather than `"4"`, and the endpoint's
+              `z.string()` refused the whole submission with a 422 at the end of
+              the wizard.
+            -->
             <input
               v-else
               :id="fieldId(field.name)"
-              v-model="values[field.name]"
+              :value="values[field.name]"
               class="field-input-lg"
+              @input="values[field.name] = ($event.target as HTMLInputElement).value"
               :type="field.inputType ?? 'text'"
               :placeholder="field.placeholder"
               :autocomplete="field.autocomplete"
