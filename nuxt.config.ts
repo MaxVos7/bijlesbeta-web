@@ -125,8 +125,32 @@ export default defineNuxtConfig({
     defaults: { nuxtLink: { trailingSlash: 'append' } },
   },
 
-  // 301s from the WordPress URLs this app replaces. See `redirects.ts`.
-  routeRules: legacyRedirects,
+  routeRules: {
+    // 301s from the WordPress URLs this app replaces. See `redirects.ts`.
+    ...legacyRedirects,
+
+    /*
+      Everything in `public/` is served by Nitro, which sends an `ETag` and a
+      `Last-Modified` and no `Cache-Control` at all — so a returning visitor
+      revalidates every image individually before anything paints. Ten round
+      trips on the homepage, more on the landings. The hashed `/_nuxt/` assets
+      already get a year and `immutable` from Nitro itself; this is the gap
+      beside them.
+
+      Thirty days rather than the year `/_nuxt/` takes, because these filenames
+      carry no content hash. A year of `immutable` would mean a swapped
+      photograph never reaching anyone who had already seen the old one, with
+      no way to push it — and these are marketing photographs, which do get
+      swapped. Thirty days bounds that: no request at all for a month, then it
+      self-heals. Going longer means adopting a rename-on-change rule for
+      `public/img`, which is a decision, not a tuning.
+    */
+    '/img/**': { headers: { 'cache-control': 'public, max-age=2592000, immutable' } },
+    '/logo.svg': { headers: { 'cache-control': 'public, max-age=2592000, immutable' } },
+    '/favicon.svg': { headers: { 'cache-control': 'public, max-age=2592000, immutable' } },
+    '/favicon.ico': { headers: { 'cache-control': 'public, max-age=2592000, immutable' } },
+    '/apple-touch-icon.png': { headers: { 'cache-control': 'public, max-age=2592000, immutable' } },
+  },
 
   nitro: {
     compressPublicAssets: true,

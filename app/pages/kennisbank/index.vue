@@ -72,10 +72,11 @@ function isFeatured(article: Article) {
 
         <div class="mt-8 grid gap-6 md:grid-cols-2 desk:grid-cols-3">
           <ArticleCard
-            v-for="article in visibleArticles"
+            v-for="(article, i) in visibleArticles"
             :key="article.slug"
             :article="article"
             :variant="isFeatured(article) ? 'wide' : 'standard'"
+            :eager="i === 0"
           />
         </div>
 

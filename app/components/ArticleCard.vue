@@ -25,8 +25,20 @@ const props = withDefaults(
     variant?: 'standard' | 'wide'
     /** Fill the grid row's height — the related-articles grid stretches, the overview grid doesn't. */
     stretch?: boolean
+    /**
+     * Load the cover eagerly and at high priority, for the one card that opens
+     * a grid above the fold.
+     *
+     * Lighthouse caught the category pages telling the browser to defer the
+     * very image their LCP is measured on: the first card's cover is the
+     * largest thing in the viewport, and it carried `loading="lazy"` like
+     * every other card. Lazy is right for the rest — and for the whole
+     * related-articles row under an article, which is never in the first
+     * viewport — so this is opt-in per call site rather than a default.
+     */
+    eager?: boolean
   }>(),
-  { variant: 'standard', stretch: false },
+  { variant: 'standard', stretch: false, eager: false },
 )
 
 const wide = computed(() => props.variant === 'wide')
@@ -56,7 +68,8 @@ const publishedOn = computed(() => dateFormatter.format(new Date(props.article.p
           :alt="article.coverAlt || `Cover: ${article.title}`"
           class="block w-full rounded-btn object-cover"
           :class="wide ? 'h-full' : 'h-44'"
-          loading="lazy"
+          :loading="eager ? 'eager' : 'lazy'"
+          :fetchpriority="eager ? 'high' : undefined"
           @error="coverFailed = true"
         >
         <ArticleCoverPlaceholder

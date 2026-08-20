@@ -51,7 +51,13 @@ const others = computed(() => kennisbankCategories.filter((c) => c.slug !== slug
     <section class="bg-white px-[clamp(16px,4vw,40px)] pt-20 pb-24">
       <div class="mx-auto max-w-[1400px] px-9 max-md:px-0">
         <div class="grid gap-6 md:grid-cols-2 desk:grid-cols-3">
-          <ArticleCard v-for="article in posts" :key="article.slug" :article="article" stretch />
+          <ArticleCard
+            v-for="(article, i) in posts"
+            :key="article.slug"
+            :article="article"
+            stretch
+            :eager="i === 0"
+          />
         </div>
 
         <p v-if="posts.length === 0" class="text-ink-muted">
