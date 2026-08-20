@@ -1,6 +1,75 @@
 @import 'tailwindcss';
 
 /*
+  The two families, served from this origin.
+
+  They came from fonts.googleapis.com until a Lighthouse pass over all 81 URLs
+  put first contentful paint between 2.9s and 4.1s on every one of them, with
+  roughly 878ms of that attributed to the stylesheet request itself. A font
+  stylesheet on another origin is render-blocking by definition: text cannot be
+  laid out until it has been fetched and parsed and the faces it names fetched
+  in turn — a DNS lookup, a connection and a TLS handshake ahead of the first
+  byte of CSS. The two `preconnect` hints that used to sit in
+  `nuxt.config.ts` warmed that connection but could not remove the round trip,
+  which is why they went with it.
+
+  These are the variable builds, one file per family per subset rather than one
+  per weight. The site asks for five weights of Plus Jakarta Sans and three of
+  Open Sans; as static faces that is 16 files and 455 KB across the two Latin
+  subsets, as variable faces 4 files and 120 KB. Only `latin` is fetched for
+  Dutch copy — `latin-ext` sits behind its own unicode-range and loads only
+  when a character needs it.
+
+  No italic face, deliberately. The Google Fonts request never asked for one
+  either, so every `italic` on the site — the four lines on /examentraining —
+  has always been the browser's synthetic slant. Shipping real italics would
+  change how those render rather than reproduce them.
+
+  `font-display: swap` is what the old request asked for and what the files
+  keep: copy paints immediately in the fallback and reflows once the face
+  arrives.
+
+  The files are committed rather than fetched at build time, so a deploy never
+  depends on Google being reachable from the build host.
+*/
+
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  font-style: normal;
+  font-weight: 200 800;
+  font-display: swap;
+  src: url('/fonts/plus-jakarta-sans-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  font-style: normal;
+  font-weight: 200 800;
+  font-display: swap;
+  src: url('/fonts/plus-jakarta-sans-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 300 800;
+  font-display: swap;
+  src: url('/fonts/open-sans-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 300 800;
+  font-display: swap;
+  src: url('/fonts/open-sans-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/*
   Design tokens.
 
   Taken from the Claude Design handoff (`Aanmelden.dc.html`). Components read

@@ -23,29 +23,14 @@ export default defineNuxtConfig({
         { name: 'theme-color', content: '#ffc107' },
       ],
       /*
-        Google Consent Mode v2 defaults, matching bijlesbeta.nl exactly: every
-        storage denied except the two a site can't function without, and a
-        500ms window for the visitor's stored choice to arrive before tags act.
-
-        This has to run before Tag Manager, which is why it sits here as inline
-        head script rather than in the analytics plugin — the defaults are
-        worthless if a tag has already read them. `useCookieConsent` only ever
-        sends `update`s on top of this.
+        Google Consent Mode v2 defaults are *not* here any more. They have to
+        carry a returning visitor's stored choice, which is only knowable from
+        the request, so they render from `app/plugins/consent.ts` instead —
+        still inline in <head>, still at `tagPriority: 10`, still ahead of the
+        Tag Manager loader at 20. Read the note in that file before moving them
+        back: a default that lands after the container is a default nothing
+        reads, and one that ignores the cookie under-counts every return visit.
       */
-      script: [
-        {
-          innerHTML:
-            'window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}'
-            + "gtag('consent','default',{"
-            + "'ad_storage':'denied','ad_user_data':'denied','ad_personalization':'denied',"
-            + "'analytics_storage':'denied','functionality_storage':'granted',"
-            + "'personalization_storage':'denied','security_storage':'granted',"
-            + "'wait_for_update':500});",
-          tagPosition: 'head',
-          // Ahead of the Tag Manager loader, which sits at 20.
-          tagPriority: 10,
-        },
-      ],
       link: [
         /*
           Three icons, which is the smallest set that covers everything:
@@ -58,11 +43,36 @@ export default defineNuxtConfig({
         { rel: 'icon', href: '/favicon.ico', sizes: '48x48' },
         { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
         { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },
-        { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
-        { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
+        /*
+          The two families are self-hosted — the `@font-face` block at the top
+          of `app/assets/css/main.css` has the reasoning, and the two
+          `preconnect` hints at fonts.googleapis.com and fonts.gstatic.com went
+          with the stylesheet they were warming up for.
+
+          Only the `latin` files are preloaded. They are needed for every page
+          of a Dutch site, and they are discovered late otherwise: the browser
+          has to fetch and parse the CSS before it learns a font exists.
+          `latin-ext` is deliberately absent — it sits behind its own
+          unicode-range and most pages never ask for it, so preloading it would
+          buy 50 KB of nothing.
+
+          `crossorigin` is required even though these are same-origin: font
+          fetches are made in CORS mode, and a preload without it is a second,
+          unused request rather than a warm cache entry.
+        */
         {
-          rel: 'stylesheet',
-          href: 'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Open+Sans:wght@400;600;700&display=swap',
+          rel: 'preload',
+          as: 'font',
+          type: 'font/woff2',
+          href: '/fonts/plus-jakarta-sans-latin.woff2',
+          crossorigin: '',
+        },
+        {
+          rel: 'preload',
+          as: 'font',
+          type: 'font/woff2',
+          href: '/fonts/open-sans-latin.woff2',
+          crossorigin: '',
         },
       ],
     },
@@ -150,6 +160,13 @@ export default defineNuxtConfig({
     '/favicon.svg': { headers: { 'cache-control': 'public, max-age=2592000, immutable' } },
     '/favicon.ico': { headers: { 'cache-control': 'public, max-age=2592000, immutable' } },
     '/apple-touch-icon.png': { headers: { 'cache-control': 'public, max-age=2592000, immutable' } },
+
+    /*
+      The fonts take the full year the images don't. A typeface is not
+      content: these files change when the family changes, and that means a new
+      filename, so there is no stale-photograph problem to bound here.
+    */
+    '/fonts/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } },
   },
 
   nitro: {
