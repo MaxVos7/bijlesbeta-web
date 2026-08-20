@@ -289,10 +289,32 @@ export function levelId(level: string): number | undefined {
   return Number.isInteger(id) && id > 0 ? id : undefined
 }
 
-/** Drops empty values so the portal's `nullable` rules see absent, not ''. */
-export function compact(payload: Record<string, unknown>) {
+/**
+ * The payload with every key present, blanks included.
+ *
+ * This used to be `compact`, which dropped empty values "so the portal's
+ * `nullable` rules see absent, not ''". That was backwards, and it took
+ * `/aanmelden` down in production: a visitor who left the optional
+ * contactpersoon phone number blank had no `account_phone_number` key sent at
+ * all, and `RegisteredUserController::storeExternalFull` reads that one
+ * straight out of `$validator->validated()` with no `??` behind it. An
+ * undefined array key is an `ErrorException` under Laravel's error handler, so
+ * the endpoint answered 500 and the aanmelding only existed in the office copy.
+ *
+ * An empty string was never the problem it was written to avoid. The portal
+ * runs `ConvertEmptyStringsToNull` in its global middleware, so `''` arrives
+ * there *as* null and every `nullable` rule passes — while the key stays in
+ * `validated()`, which is the part the controller depends on. That is also why
+ * the Gravity Forms webhook never hit this: it posts every field of the form,
+ * every time, and so do we now.
+ *
+ * `undefined` still goes, and becomes an explicit `null` rather than a missing
+ * key: it means a value we decided not to send (`levelId('different')` has no
+ * id to send), and JSON would drop the key silently otherwise.
+ */
+export function portalPayload(payload: Record<string, unknown>) {
   return Object.fromEntries(
-    Object.entries(payload).filter(([, value]) => value !== '' && value !== undefined && value !== null),
+    Object.entries(payload).map(([key, value]) => [key, value ?? null]),
   )
 }
 

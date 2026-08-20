@@ -101,7 +101,7 @@ export default defineEventHandler(async (event) => {
     ? await postToPortal(
         event,
         '/register-external-applicant',
-        compact({
+        portalPayload({
           first_name: v.firstName,
           last_name: v.lastName,
           phone_number: normalisePhone(v.phone) ?? v.phone,

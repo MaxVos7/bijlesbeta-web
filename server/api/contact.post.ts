@@ -41,7 +41,7 @@ export default defineEventHandler(async (event) => {
     return { ok: true as const }
   }
 
-  const handoff = await postToPortal(event, '/register-external-contact', compact(payload))
+  const handoff = await postToPortal(event, '/register-external-contact', portalPayload(payload))
 
   /*
     The office copy is now the fallback it was always meant to be, rather than

@@ -92,7 +92,31 @@ corpus of awkward values and reports any case where the form and its endpoint
 disagree — 2905 pairs, currently none. Run it after touching a rule table or
 the zod bridge, which is the one place a rule could still be mistranslated.
 
+**An address the portal already knows is no longer refused.** Both
+`register-external-full` and `register-external-applicant` used to answer 422
+on an email they recognised — any email at all on the applicant one — so the
+registration of everybody who had ever filled in one of our forms was thrown
+away and mailed to the office as `NIET VERWERKT` to be typed in by hand: the
+parent who signed a child up and now wants to tutor, the docent signing up a
+family member, the applicant applying twice. There was nothing for the visitor
+to correct and no way to resubmit it differently. Both endpoints now hang the
+new person off the account that exists; only a staff account is still refused.
+Don't build anything here on the old behaviour returning.
+
 Things the portal's contract forces, which look arbitrary otherwise:
+
+- **Every key goes out on every submission, blanks included** — that is what
+  `portalPayload` is for, and it is why it must not go back to dropping empty
+  values the way the old `compact` did. The endpoints read several keys
+  straight out of `$validator->validated()` with no `??` behind them
+  (`account_phone_number` at `RegisteredUserController:228`, `known_via` in
+  the applicant branch), so a key we leave out is an undefined array index,
+  which Laravel's error handler turns into a 500. A blank one is harmless:
+  the portal runs `ConvertEmptyStringsToNull`, so `''` arrives as null, every
+  `nullable` rule passes and the key still exists. The Gravity Forms webhook
+  posts the whole form every time, which is why the live site never hit this
+  and we did — a visitor who left the optional contactpersoon phone number
+  blank got a 500 and an aanmelding that lived only in the office copy.
 
 - **Subjects and levels travel as numeric ids, not names.** The id maps live in
   `server/utils/portal.ts` and come from the portal's `SubjectsSeeder` and

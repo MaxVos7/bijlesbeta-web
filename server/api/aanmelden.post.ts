@@ -113,7 +113,7 @@ function signupPayload(v: Answers) {
     v.lessonKind === 'different' && v.lessonKindNote && `Soort bijles: ${v.lessonKindNote}`,
   ].filter(Boolean)
 
-  return compact({
+  return portalPayload({
     student_first_name: v.studentFirstName,
     student_phone_number: normalisePhone(v.studentPhone) ?? v.studentPhone,
     student_level: levelId(v.level),
