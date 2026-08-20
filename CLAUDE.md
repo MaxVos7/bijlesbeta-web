@@ -336,14 +336,35 @@ that is deliberately dropped.
 Reproduced from bijlesbeta.nl, which hand-rolls this rather than running a
 consent plugin. Three pieces, and the order between them is the whole point:
 
-1. **Consent Mode v2 defaults**, inline in `<head>` from `nuxt.config.ts`.
-   Everything denied except `functionality_storage` and `security_storage`,
-   with `wait_for_update: 500`. These are the live site's values.
+1. **Consent Mode v2 defaults**, inline in `<head>` from
+   `app/plugins/consent.ts`. Everything denied except `functionality_storage`
+   and `security_storage`, with `wait_for_update: 500` — the live site's
+   values, and what a first-time visitor gets. **A returning visitor's stored
+   choice is baked into the `default` call instead**, from the request's
+   cookie, and `wait_for_update` is dropped with it: there is nothing pending
+   to hold the tags for. That is why this is a plugin rather than static
+   `app.head` config, and it is the reason no route that renders the site
+   chrome may take an `swr`/`isr` rule — the HTML now varies per visitor.
 2. **Google Tag Manager**, loaded by `app/plugins/gtm.ts` at `tagPriority: 20`
    so it always lands *after* the defaults at 10. Defaults that render after
    the container are defaults nothing reads, and nothing about the page would
    look wrong — check the order in the rendered `<head>` if you touch either.
 3. **The banner** (`CookieBanner`), which only ever sends `consent` *updates*.
+
+**A gtag command goes out through `window.gtag`, never as
+`dataLayer.push([...])`.** Tag Manager accepts a command only when the pushed
+value is an `arguments` object — its dispatch tests
+`toString.call(v) === '[object Arguments]'`, and an Array fails it, falling
+into a legacy branch that tries `window.consent(...)`, throws, and swallows
+the error. `push()` in `useCookieConsent` was an array for a while and the
+failure was completely silent: the banner animated away, the cookie was
+written, and Consent Mode never heard a thing, so `analytics_storage` stayed
+denied for everybody who pressed *Alles accepteren* and GA4 ran on cookieless
+pings. Nothing in the UI can show you this — read the rendered `dataLayer`.
+
+`restore()` looks redundant now that the defaults carry the stored choice and
+must not be removed: the `cookie_consent_update` event it pushes is the only
+trigger the live container fires its GA4 and PostHog tags on.
 
 The container is `NUXT_PUBLIC_GTM_ID`, **empty by default**. Nothing loads at
 all until it is set, so staging never reports into the live property. The live

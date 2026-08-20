@@ -20,11 +20,11 @@
 
 export type ConsentLevel = 'deny' | 'analytics' | 'accept'
 
-const COOKIE_NAME = 'cookie_consent'
-const COOKIE_MAX_AGE = 60 * 60 * 24 * 180
+export const COOKIE_NAME = 'cookie_consent'
+export const COOKIE_MAX_AGE = 60 * 60 * 24 * 180
 
 /** Google Consent Mode signals per level. Mirrors the live site's map. */
-const SIGNALS: Record<ConsentLevel, Record<string, 'granted' | 'denied'>> = {
+export const SIGNALS: Record<ConsentLevel, Record<string, 'granted' | 'denied'>> = {
   accept: {
     ad_storage: 'granted',
     ad_user_data: 'granted',
@@ -56,14 +56,40 @@ const SIGNALS: Record<ConsentLevel, Record<string, 'granted' | 'denied'>> = {
  */
 const KEEP = [COOKIE_NAME]
 
-function isLevel(value: unknown): value is ConsentLevel {
+export function isLevel(value: unknown): value is ConsentLevel {
   return value === 'deny' || value === 'analytics' || value === 'accept'
 }
 
+/**
+ * Sends a gtag command, through the global `gtag` the consent-defaults script
+ * puts in <head>.
+ *
+ * It must not be `dataLayer.push([...])`. Tag Manager recognises a gtag
+ * command only when the pushed value is an `arguments` object — its dispatch
+ * tests `Object.prototype.toString.call(v) === '[object Arguments]'`, and a
+ * real Array fails it. An array instead falls into the legacy
+ * call-a-global-by-name branch, which tries `window.consent(...)`, throws, and
+ * swallows the error. That is silent: the banner looks like it worked, the
+ * cookie is written, and Consent Mode never hears about it, so
+ * `analytics_storage` stays denied for everybody who pressed accept and GA4
+ * runs on cookieless pings. It was written that way once; don't write it back.
+ */
 function push(...args: unknown[]) {
-  const w = window as unknown as { dataLayer?: unknown[] }
+  const w = window as unknown as {
+    dataLayer?: unknown[]
+    gtag?: (...args: unknown[]) => void
+  }
   w.dataLayer = w.dataLayer ?? []
-  w.dataLayer.push(args)
+
+  if (typeof w.gtag === 'function') {
+    w.gtag(...args)
+    return
+  }
+
+  // The head script hasn't run — do what it does. `arguments` is still bound
+  // in a function declaration, rest parameter and all; an arrow function here
+  // would not have one.
+  w.dataLayer.push(arguments)
 }
 
 /** Clears every cookie the visitor hasn't consented to, on both host forms. */
@@ -116,7 +142,14 @@ export function useCookieConsent() {
     open.value = false
   }
 
-  /** Re-applies a stored choice on load, so tags see it before they fire. */
+  /**
+   * Re-asserts a stored choice on load. The defaults rendered by
+   * `app/plugins/consent.ts` already carry it, so this no longer races
+   * `wait_for_update` to be the first thing Consent Mode hears — but it is
+   * still what pushes the `cookie_consent_update` event, which is the trigger
+   * the live container fires its GA4 and PostHog tags on. Removing it stops
+   * analytics for every returning visitor.
+   */
   function restore() {
     if (level.value) apply(level.value)
   }
