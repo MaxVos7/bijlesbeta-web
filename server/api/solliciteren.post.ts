@@ -17,28 +17,19 @@ import type { Row } from '../utils/office-copy'
  * get wrong: somebody's CV cannot be asked for twice.
  */
 
-/** Matches the portal's own rules, so a submission it would reject fails here. */
+/**
+ * Matches the portal's own rules, so a submission it would refuse fails here.
+ *
+ * The rules are `APPLICATION_RULES` in `shared/utils/form-rules.ts`, which
+ * `ApplicationForm` checks against before it posts — this route used to spell
+ * them out a second time, and the two halves drifted: the form checked the
+ * phone number and nothing else's length, so a long motivation or a mistyped
+ * e-mail cost the applicant everything they had typed, CV included.
+ */
 const schema = z.object({
-  firstName: z.string().trim().min(1).max(255),
-  lastName: z.string().trim().min(1).max(255),
-  /* See `normalisePhone`: the portal refuses anything with a separator in it. */
-  phone: z
-    .string()
-    .trim()
-    .min(1)
-    .max(40)
-    .refine((value) => normalisePhone(value) !== null, {
-      message: 'phone must be a Dutch phone number',
-    }),
-  email: z.string().trim().email().max(255),
-  subjects: z.array(z.string().trim().max(60)).min(1).max(10),
-  study: z.string().trim().min(1).max(255),
-  motivation: z.string().trim().min(10).max(5000),
-  postalCode: z.string().trim().min(1).max(10),
-  houseNumber: z.string().trim().min(1).max(10),
-  heardFrom: z.string().trim().max(255).optional().default(''),
+  ...ruleFields(APPLICATION_RULES),
+  subjects: ruleList(APPLICATION_SUBJECTS_RULE),
   privacy: z.literal(true),
-  website: z.string().max(200).optional().default(''),
 })
 
 /** What the portal's resume job can actually read back. */

@@ -73,78 +73,115 @@ function filled(name: SignupTextKey) {
 }
 
 /**
+ * The body that would be posted.
+ *
+ * Every answer the rules know about is forced to a string on the way out.
+ * `SignupValues` types them all as strings, but `v-model` on an
+ * `<input type="number">` casts silently and typing can't see it: `schoolYear`
+ * left here as the number `4`, the endpoint's `z.string()` refused it, and the
+ * visitor lost four steps of answers to a generic red line. The binding no
+ * longer casts — see the `<input>` below — and this makes it impossible for
+ * the same thing to happen again by a different route.
+ */
+function payload(): Record<string, unknown> {
+  const body: Record<string, unknown> = { ...values }
+  for (const name of Object.keys(SIGNUP_RULES) as SignupTextKey[]) {
+    body[name] = String(values[name] ?? '')
+  }
+  return body
+}
+
+/**
+ * Everything the endpoint would refuse, over that body — the same rule table
+ * `server/api/aanmelden.post.ts` builds its schema from, so the wizard cannot
+ * accept an answer the endpoint won't. Fields the visitor hasn't reached yet
+ * are in here too; only the ones on the current step are ever shown.
+ */
+const problems = computed(() => checkForm(SIGNUP_RULES, payload()))
+const subjectsProblem = computed(() => checkList(SIGNUP_SUBJECTS_RULE, values.subjects))
+
+/** The wizard's own wording for a problem, where it has one. */
+function say(problem: FieldProblem | null | undefined): string {
+  if (!problem) return ''
+
+  switch (problem.kind) {
+    case 'required': return signupCopy.fieldRequired
+    case 'tooLong': return signupCopy.tooLong(problem.limit)
+    case 'email': return signupCopy.invalidEmail
+    case 'phone': return signupCopy.invalidPhone
+    case 'wholeNumber': return signupCopy.wholeNumber
+    case 'numberMin': return signupCopy.numberMin(problem.limit)
+    case 'numberMax': return signupCopy.numberRange(problem.limit)
+    default: return describeProblem(problem)
+  }
+}
+
+/**
+ * What's wrong with a field on screen, or `null`.
+ *
+ * The wizard asks for more than the endpoint insists on, and deliberately: a
+ * conditional question is required *here* while the endpoint has to accept it
+ * blank, because only the wizard knows which questions were put to this
+ * visitor. So its own `required` is checked first, and everything else comes
+ * from the shared rules.
+ */
+function problemFor(field: SignupField): FieldProblem | null {
+  if (field.kind === 'checkbox') {
+    if (field.required && values.subjects.length === 0) return { kind: 'required' }
+    return subjectsProblem.value
+  }
+
+  if (field.kind === 'name') {
+    if (field.required && field.parts.some((part) => !filled(part.name))) {
+      return { kind: 'required' }
+    }
+    return field.parts.map((part) => problems.value[part.name]).find(Boolean) ?? null
+  }
+
+  if (field.required && !filled(field.name)) return { kind: 'required' }
+
+  return problems.value[field.name] ?? null
+}
+
+/**
  * The message under a field, or `''` while it is fine. Gravity Forms validates
  * a page at a time and prints its complaint under the offending field, so
  * these only appear once the visitor has tried to move on.
  */
 function errorFor(field: SignupField): string {
-  if (!showError.value) return ''
-
-  if (field.kind === 'checkbox') {
-    return field.required && values.subjects.length === 0 ? signupCopy.fieldRequired : ''
-  }
-
-  if (field.kind === 'name') {
-    return field.required && field.parts.some((part) => !filled(part.name))
-      ? signupCopy.fieldRequired
-      : ''
-  }
-
-  if (field.required && !filled(field.name)) return signupCopy.fieldRequired
-
-  return field.kind === 'text' ? textProblem(field) : ''
-}
-
-/**
- * What's wrong with a filled text field, or `''`.
- *
- * These rules mirror the server's, so a typo is caught under the field rather
- * than by a generic message at the bottom of the form after four steps.
- */
-function textProblem(field: Extract<SignupField, { kind: 'text' }>): string {
-  if (!filled(field.name)) return ''
-  const raw = String(values[field.name] ?? '').trim()
-
-  if (field.inputType === 'number') {
-    const entered = Number(raw)
-    // `min` was declared on the field but never enforced, so -5 and 3.5 both
-    // passed the wizard and the server, and only the portal refused them.
-    if (!Number.isInteger(entered)) return signupCopy.wholeNumber
-    if (field.max !== undefined && entered > field.max) return signupCopy.numberRange(field.max)
-    if (field.min !== undefined && entered < field.min) return signupCopy.numberMin(field.min)
-    return ''
-  }
-
-  if (field.inputType === 'email' && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(raw)) {
-    return signupCopy.invalidEmail
-  }
-
-  /*
-    The portal refuses a phone number with a space or a dash in it and rejects
-    the whole submission for it, so it is checked under the field rather than
-    four steps later. `normalisePhone` accepts what the portal accepts.
-  */
-  if (field.inputType === 'tel' && normalisePhone(raw) === null) {
-    return signupCopy.invalidPhone
-  }
-
-  if (raw.length > SIGNUP_MAX[field.name]) return signupCopy.tooLong(SIGNUP_MAX[field.name])
-
-  return ''
+  return showError.value ? say(problemFor(field)) : ''
 }
 
 /** Every field on this step that would fail validation, in document order. */
-const invalid = computed(() =>
-  fields.value.filter((field) => {
-    if (field.kind === 'checkbox') return field.required && values.subjects.length === 0
-    if (field.kind === 'name') {
-      return field.required && field.parts.some((part) => !filled(part.name))
-    }
-    if (field.required && !filled(field.name)) return true
-    if (field.kind === 'text') return textProblem(field) !== ''
-    return false
-  }),
-)
+const invalid = computed(() => fields.value.filter((field) => problemFor(field) !== null))
+
+/**
+ * The first answer in the whole payload the endpoint would refuse, whichever
+ * step asked for it — the guard that runs before the submit, since a step's
+ * own checks can only see the questions it put on screen.
+ */
+function outstanding(): { name: SignupTextKey | 'subjects', problem: FieldProblem } | null {
+  for (const name of Object.keys(SIGNUP_RULES) as SignupTextKey[]) {
+    const problem = problems.value[name]
+    if (problem) return { name, problem }
+  }
+
+  return subjectsProblem.value ? { name: 'subjects', problem: subjectsProblem.value } : null
+}
+
+/** Which step asks for a field, or `null` if none of them do. */
+function stepOf(name: SignupTextKey | 'subjects'): number | null {
+  for (const [index, candidate] of signupSteps.entries()) {
+    const asked = candidate.fields(values).some((field) =>
+      field.kind === 'name'
+        ? field.parts.some((part) => part.name === name)
+        : field.name === name,
+    )
+    if (asked) return index + 1
+  }
+
+  return null
+}
 
 const consentMissing = computed(() => isLastStep.value && !values.consent)
 
@@ -248,6 +285,32 @@ async function advance() {
     return
   }
 
+  /*
+    Nothing leaves this form that the endpoint would refuse. The step's own
+    checks have passed, so this only ever catches an answer given on an
+    earlier step — one that a later answer invalidated, or that was never the
+    shape the endpoint takes. The visitor is sent back to the question rather
+    than told, at the end of four steps, that something somewhere is wrong.
+  */
+  const blocking = outstanding()
+
+  if (blocking) {
+    showError.value = true
+    const owner = stepOf(blocking.name)
+
+    if (owner === null) {
+      // No step asks for it, so there is nothing to send the visitor back to.
+      // Says what is wrong rather than posting a submission that would fail.
+      errorMessage.value = say(blocking.problem)
+      return
+    }
+
+    step.value = owner
+    await nextTick()
+    await focusFirstInvalid()
+    return
+  }
+
   await submit()
 }
 
@@ -275,7 +338,7 @@ async function submit() {
   errorMessage.value = ''
 
   try {
-    const result = await $fetch('/api/aanmelden', { method: 'POST', body: { ...values } })
+    const result = await $fetch('/api/aanmelden', { method: 'POST', body: payload() })
 
     // 200 with `ok: false` when it reached nobody — see `deliveryResult`.
     if (result.ok === false) {
@@ -473,6 +536,7 @@ function reset() {
                 v-model="values[part.name]"
                 class="field-input-lg"
                 type="text"
+                :maxlength="SIGNUP_MAX[part.name]"
                 :placeholder="part.placeholder"
                 :autocomplete="part.autocomplete"
                 :aria-label="part.placeholder"

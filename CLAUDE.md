@@ -66,6 +66,32 @@ endpoints the Gravity Forms webhooks on bijlesbeta.nl use today — see
 built for this app (`ExternalContactController` + the `ContactRequest` model);
 there is no second credential and no bearer token anywhere any more.
 
+**The rules live in `shared/utils/form-rules.ts`, once, and neither half may
+restate them.** A table per form (`SIGNUP_RULES`, `CONTACT_RULES`,
+`APPLICATION_RULES`, `LEAD_RULES`) gives each field its required-ness, its
+lengths and its shape. `server/utils/schema.ts` turns a table into the zod
+schema the route parses with, and the component checks the visitor's answers
+against the same table — over the body it is about to post, not over whichever
+questions are on screen — so a submit that the endpoint would refuse cannot be
+reached. `SIGNUP_MAX` and the `maxlength` on every control are read off the
+same table, and `app/data/signup.ts` carries two one-line type assertions that
+fail the build if a wizard question has no rule or a rule no question.
+
+This exists because the two halves drifted, repeatedly and silently, and every
+drift cost a real submission: an e-mail the form accepted and zod refused, name
+and message fields with no cap on the client, a `LeadForm` that never checked
+an address at all — and a `schoolYear` that left the wizard as the number `4`
+rather than `"4"`, because `v-model` on an `<input type="number">` casts and
+`SignupValues` typing it as a string could not see it. That is also why the
+wizard binds its text inputs by hand rather than with `v-model`, and why its
+payload is built through an explicit `String()`. Validation belongs in front of
+the button; the endpoint's 422 is the backstop for callers that aren't ours.
+
+`node scripts/check-form-rules.mjs` walks every field of every form over a
+corpus of awkward values and reports any case where the form and its endpoint
+disagree — 2905 pairs, currently none. Run it after touching a rule table or
+the zod bridge, which is the one place a rule could still be mistranslated.
+
 Things the portal's contract forces, which look arbitrary otherwise:
 
 - **Subjects and levels travel as numeric ids, not names.** The id maps live in
@@ -87,8 +113,8 @@ Things the portal's contract forces, which look arbitrary otherwise:
 - **`student_year` runs 1 to 6**, because the portal validates
   `integer|min:1|max:6` and rejects the whole submission outside it. The live
   Gravity Form allows 8, so a 7 or 8 fails silently on bijlesbeta.nl today;
-  `app/data/signup.ts` and the zod schema both cap at 1–6 so the visitor is
-  told first.
+  `SIGNUP_RULES` caps it at 1–6, so the wizard and the endpoint both do and
+  the visitor is told first.
 - **Phone numbers must be `0612345678` or `+31612345678`.** The portal's
   `PhoneNumber` rule takes nothing else — not `06 12 34 56 78`, not
   `06-12345678` — and refuses the entire submission for it. `normalisePhone`
@@ -97,8 +123,9 @@ Things the portal's contract forces, which look arbitrary otherwise:
   way out. It lives in `shared/` precisely so the two halves can't drift.
 - **Three fields are capped tighter than they look.** `account_postcode` and
   `account_housenumber` are `max:10` and `account_address_comment` is
-  `max:255` on the portal, so `SIGNUP_MAX` and the zod schema match those
-  rather than the wizard's own generous limits.
+  `max:255` on the portal, so `SIGNUP_RULES` matches those rather than the
+  wizard's own generous limits — and the `maxlength` on the control follows,
+  since it is read off the same rule.
 - **Five wizard answers have no field on the endpoint** — school, contact
   method, and the "Anders, namelijk…" wording behind lesson kind, level and
   subject. They are appended to `location_indication` under labels, which is

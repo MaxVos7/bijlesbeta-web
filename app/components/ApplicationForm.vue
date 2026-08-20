@@ -81,24 +81,49 @@ function onFileChange(event: Event) {
   }
 }
 
-function validate() {
-  const next: Record<string, string> = {}
-  if (!form.firstName.trim()) next.firstName = 'Vul je voornaam in.'
-  if (!form.lastName.trim()) next.lastName = 'Vul je achternaam in.'
-  if (!form.phone.trim()) next.phone = 'Vul je telefoonnummer in.'
-  // The portal refuses a number with a separator in it and rejects the whole
-  // application for it, so the shape is checked before the applicant submits.
-  else if (normalisePhone(form.phone) === null) {
-    next.phone = 'Vul een geldig Nederlands telefoonnummer in, bijvoorbeeld 0612345678.'
+/** Caps on the controls themselves, from the same rules the checks read. */
+const APPLICATION_MAX = maxLengths(APPLICATION_RULES)
+
+/** The answers as they are posted: every text field trimmed. */
+function trimmed(): Record<string, string> {
+  const answers: Record<string, string> = {}
+  for (const name of Object.keys(APPLICATION_RULES) as (keyof typeof APPLICATION_RULES)[]) {
+    answers[name] = String(form[name] ?? '').trim()
   }
-  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(form.email)) next.email = 'Vul een geldig e-mailadres in.'
-  if (form.subjects.length === 0) next.subjects = 'Kies minimaal één vak.'
-  if (!form.study.trim()) next.study = 'Vul je studie in.'
-  if (form.motivation.trim().length < 10) {
+  return answers
+}
+
+/**
+ * Checked against `APPLICATION_RULES`, the same table `/api/solliciteren`
+ * builds its schema from, so nothing this form accepts can be refused by the
+ * endpoint. It used to check the phone number and the presence of an answer
+ * and nothing else — a motivation over 5000 characters or an e-mail zod
+ * refuses cost the applicant everything they had typed, CV and all.
+ *
+ * The wording per field is kept where the shared copy would be blander; only
+ * the rules are shared, not the Dutch.
+ */
+function validate() {
+  // Trimmed exactly as `submit` trims them, so the check and the submission
+  // see the same answers.
+  const problems = checkForm(APPLICATION_RULES, trimmed())
+
+  const next: Record<string, string> = {}
+  for (const [name, problem] of Object.entries(problems)) next[name] = describeProblem(problem!)
+
+  if (problems.firstName?.kind === 'required') next.firstName = 'Vul je voornaam in.'
+  if (problems.lastName?.kind === 'required') next.lastName = 'Vul je achternaam in.'
+  if (problems.phone?.kind === 'required') next.phone = 'Vul je telefoonnummer in.'
+  if (problems.study?.kind === 'required') next.study = 'Vul je studie in.'
+  if (problems.postalCode?.kind === 'required') next.postalCode = 'Vul je postcode in.'
+  if (problems.houseNumber?.kind === 'required') next.houseNumber = 'Vul je huisnummer in.'
+  if (problems.motivation?.kind === 'tooShort') {
     next.motivation = 'Vertel ons iets meer (minimaal 10 tekens).'
   }
-  if (!form.postalCode.trim()) next.postalCode = 'Vul je postcode in.'
-  if (!form.houseNumber.trim()) next.houseNumber = 'Vul je huisnummer in.'
+
+  const subjects = checkList(APPLICATION_SUBJECTS_RULE, form.subjects)
+  if (subjects) next.subjects = subjects.kind === 'tooFew' ? 'Kies minimaal één vak.' : describeProblem(subjects)
+
   if (!cvFile.value) next.cv = 'Voeg je CV toe om te solliciteren.'
   else if (cvFile.value.size > MAX_CV_BYTES) {
     next.cv = 'Je CV is te groot. Gebruik een bestand van maximaal 10 MB.'
@@ -117,19 +142,12 @@ async function submit() {
   status.value = 'pending'
   errorMessage.value = ''
 
-  // Multipart rather than JSON, so the CV travels with the answers.
+  // Multipart rather than JSON, so the CV travels with the answers. The text
+  // parts are the ones `validate` just checked, rather than a second reading
+  // of the form — the two can't describe different answers.
   const body = new FormData()
-  body.append('firstName', form.firstName.trim())
-  body.append('lastName', form.lastName.trim())
-  body.append('phone', form.phone.trim())
-  body.append('email', form.email.trim())
-  body.append('study', form.study.trim())
-  body.append('motivation', form.motivation.trim())
-  body.append('postalCode', form.postalCode.trim())
-  body.append('houseNumber', form.houseNumber.trim())
-  body.append('heardFrom', form.heardFrom.trim())
+  for (const [name, value] of Object.entries(trimmed())) body.append(name, value)
   body.append('privacy', String(form.privacy))
-  body.append('website', form.website)
   // One part per checked box; the route collects them back into an array.
   for (const subject of form.subjects) body.append('subjects', subject)
   if (cvFile.value) body.append('cv', cvFile.value, cvFile.value.name)
@@ -191,6 +209,7 @@ async function submit() {
             <input
               id="sollicitatie-voornaam"
               v-model="form.firstName"
+              :maxlength="APPLICATION_MAX.firstName"
               type="text"
               placeholder="Voornaam"
               autocomplete="given-name"
@@ -206,6 +225,7 @@ async function submit() {
             <input
               id="sollicitatie-achternaam"
               v-model="form.lastName"
+              :maxlength="APPLICATION_MAX.lastName"
               type="text"
               placeholder="Achternaam"
               autocomplete="family-name"
@@ -227,6 +247,7 @@ async function submit() {
         <input
           id="sollicitatie-telefoon"
           v-model="form.phone"
+          :maxlength="APPLICATION_MAX.phone"
           type="tel"
           placeholder="Telefoonnummer"
           autocomplete="tel"
@@ -243,6 +264,7 @@ async function submit() {
         <input
           id="sollicitatie-email"
           v-model="form.email"
+          :maxlength="APPLICATION_MAX.email"
           type="email"
           placeholder="E-mailadres"
           autocomplete="email"
@@ -283,6 +305,7 @@ async function submit() {
         <input
           id="sollicitatie-studie"
           v-model="form.study"
+          :maxlength="APPLICATION_MAX.study"
           type="text"
           placeholder="Mijn studie"
           class="field-input-lg"
@@ -298,6 +321,7 @@ async function submit() {
         <textarea
           id="sollicitatie-motivatie"
           v-model="form.motivation"
+          :maxlength="APPLICATION_MAX.motivation"
           rows="6"
           placeholder="Mijn motivatie"
           class="field-input-lg resize-y py-0"
@@ -404,6 +428,7 @@ async function submit() {
           <input
             id="sollicitatie-postcode"
             v-model="form.postalCode"
+            :maxlength="APPLICATION_MAX.postalCode"
             type="text"
             placeholder="1234AB"
             autocomplete="postal-code"
@@ -419,6 +444,7 @@ async function submit() {
           <input
             id="sollicitatie-huisnummer"
             v-model="form.houseNumber"
+            :maxlength="APPLICATION_MAX.houseNumber"
             type="text"
             placeholder="1A"
             class="field-input-lg"
@@ -433,10 +459,13 @@ async function submit() {
         <input
           id="sollicitatie-bron"
           v-model="form.heardFrom"
+          :maxlength="APPLICATION_MAX.heardFrom"
           type="text"
           placeholder="Ik ken jullie van"
           class="field-input-lg"
+          :aria-invalid="Boolean(errors.heardFrom)"
         >
+        <p v-if="errors.heardFrom" class="field-error">{{ errors.heardFrom }}</p>
       </div>
 
       <div aria-hidden="true" class="absolute left-[-9999px]">

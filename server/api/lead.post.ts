@@ -23,17 +23,23 @@ import { z } from 'zod'
  * confirmation for a conversation they didn't start. The real submission is
  * the wizard's, a minute later.
  */
-const schema = z.object({
-  // Live form 1 requires the name and the phone number and leaves the e-mail
-  // optional, which is the opposite of what this form used to enforce. The
-  // number is what the office follows up on, so it is the one that matters.
-  name: z.string().trim().min(1).max(120),
-  phone: z.string().trim().min(1).max(40),
-  email: z.string().trim().email().max(180).optional().or(z.literal('')).default(''),
-  /** Which page's block this was, mirroring form 1's hidden page field. */
-  page: z.string().trim().max(200).optional().default(''),
-  website: z.string().max(200).optional().default(''),
-})
+/*
+  `LEAD_RULES` in `shared/utils/form-rules.ts`, which `LeadForm` checks
+  against before it posts. Live form 1 requires the name and the phone number
+  and leaves the e-mail optional, which is the opposite of what this form used
+  to enforce; the number is what the office follows up on, so it is the one
+  that matters. `page` mirrors form 1's hidden page field.
+
+  The e-mail is where this route lost leads. It was
+  `.email().optional().or(z.literal('')).default('')`, and the literal is
+  matched against the *untrimmed* input, so a field holding a single space —
+  or any typo, since `LeadForm` never checked the address at all — 422'd the
+  whole request. Nobody saw it: the visitor is redirected to the wizard either
+  way and the POST's result is deliberately ignored, so the safety-net mail
+  simply never arrived. A blank e-mail is now blank, and a filled one is
+  checked in the form first.
+*/
+const schema = z.object(ruleFields(LEAD_RULES))
 
 export default defineEventHandler(async (event) => {
   rateLimit(event)

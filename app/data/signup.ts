@@ -84,45 +84,25 @@ export type SignupTextKey = Exclude<keyof SignupValues, 'subjects' | 'consent'>
 type Option = { label: string; value: string }
 
 /**
- * Per-field length caps, shared with `server/api/aanmelden.post.ts` so the
- * wizard and the endpoint can't disagree about what fits.
+ * Per-field length caps, for `maxlength` on the controls.
  *
- * They were only enforced server-side, which meant a 600-character answer
- * passed all four steps and was rejected on submit, at the bottom of a long
- * form. The client now caps the input and says so under the field.
+ * Read off `SIGNUP_RULES`, which `server/api/aanmelden.post.ts` builds its
+ * schema from, so the wizard and the endpoint can't disagree about what fits.
+ * They were once written out here a second time — and before that only
+ * enforced server-side, which meant a 600-character answer passed all four
+ * steps and was rejected on submit, at the bottom of a long form.
  */
-export const SIGNUP_MAX: Record<SignupTextKey, number> = {
-  lessonKind: 40,
-  lessonKindNote: 2000,
-  weeklyHours: 40,
-  totalHours: 40,
-  availability: 500,
-  location: 40,
-  locationNote: 500,
-  school: 200,
-  schoolYear: 20,
-  level: 40,
-  levelOther: 120,
-  subjectOther: 200,
-  studentFirstName: 120,
-  studentPhone: 40,
-  contactMethod: 60,
-  contactFirstName: 120,
-  contactLastName: 120,
-  email: 180,
-  // `account_postcode` and `account_housenumber` are `max:10` on the portal.
-  postalCode: 10,
-  houseNumber: 10,
-  street: 200,
-  city: 120,
-  cityCode: 10,
-  municipalityCode: 10,
-  // `account_address_comment` is `max:255` on the portal.
-  addressNote: 255,
-  contactPhone: 40,
-  heardAbout: 200,
-  website: 200,
-}
+export const SIGNUP_MAX: Record<SignupTextKey, number> = maxLengths(SIGNUP_RULES)
+
+/*
+  The two halves of that agreement, checked by the compiler rather than by
+  eye: a question the rules don't cover, or a rule no question asks for, stops
+  the build instead of surfacing as a 422 at the end of the wizard.
+*/
+const _everyFieldHasARule: Record<SignupTextKey, FieldRule> = SIGNUP_RULES
+const _everyRuleHasAField: Record<keyof typeof SIGNUP_RULES, unknown> = emptySignupValues()
+void _everyFieldHasARule
+void _everyRuleHasAField
 
 export type SignupField =
   | {
@@ -341,8 +321,13 @@ export const signupSteps: SignupStep[] = [
           required: true,
           placeholder: 'Schooljaar',
           inputType: 'number',
-          // `student_year` is `min:1` as well as `max:6` on the portal, and a 0
-          // fails the whole submission just as an 8 does.
+          /*
+            `student_year` is `min:1` as well as `max:6` on the portal, and a 0
+            fails the whole submission just as an 8 does. These two are the
+            control's own attributes; the range that is *enforced* — for the
+            wizard and the endpoint alike — is `SIGNUP_RULES.schoolYear`, so
+            change it there as well if it ever moves.
+          */
           min: 1,
           max: 6,
         },

@@ -6,80 +6,20 @@ import type { Row } from '../utils/office-copy'
  * runs on bijlesbeta.nl. See `app/data/signup.ts` for the Gravity Forms field
  * id behind each key.
  *
- * Fields that the wizard only reveals conditionally are optional here — the
+ * The rules themselves are `SIGNUP_RULES` in `shared/utils/form-rules.ts`,
+ * where the wizard reads them too — every length and shape here is the
+ * portal's, and the two halves must not disagree about them. This route no
+ * longer spells them out a second time; `ruleFields` turns the table into the
+ * schema it used to be written out as.
+ *
+ * Fields that the wizard only reveals conditionally are optional there — the
  * client decides which ones apply, and rejecting a submission because an
  * unasked question is blank would strand the visitor.
  */
-const optional = (max: number) => z.string().trim().max(max).optional().default('')
-
 const schema = z.object({
-  // Step 1 — Bijles
-  lessonKind: z.string().trim().min(1).max(40),
-  lessonKindNote: optional(2000),
-  weeklyHours: optional(40),
-  totalHours: optional(40),
-  availability: z.string().trim().min(1).max(500),
-  location: z.string().trim().min(1).max(40),
-  locationNote: optional(500),
-  school: optional(200),
-
-  // Step 2 — Vak en niveau.
-  // The portal validates `integer|min:1|max:6` and refuses the *whole*
-  // submission outside that, so "abc", "3.5", "0" and "-5" have to fail here
-  // rather than at the portal.
-  schoolYear: z
-    .string()
-    .trim()
-    .min(1)
-    .max(20)
-    .refine((value) => Number.isInteger(Number(value)) && Number(value) >= 1 && Number(value) <= 6, {
-      message: 'schoolYear must be a whole number between 1 and 6',
-    }),
-  level: z.string().trim().min(1).max(40),
-  levelOther: optional(120),
-  subjects: z.array(z.string().trim().max(60)).min(1).max(10),
-  subjectOther: optional(200),
-
-  // Step 3 — Kennismaking en proefles
-  studentFirstName: z.string().trim().min(1).max(120),
-  /*
-    The portal's `PhoneNumber` rule takes `0612345678` or `+31612345678` and
-    refuses anything with a space or a dash in it, rejecting the entire
-    submission. Checked here so the visitor is told which field is wrong,
-    rather than losing four steps of answers to a 422.
-  */
-  studentPhone: z
-    .string()
-    .trim()
-    .min(1)
-    .max(40)
-    .refine((value) => normalisePhone(value) !== null, {
-      message: 'studentPhone must be a Dutch phone number',
-    }),
-  contactMethod: z.string().trim().min(1).max(60),
-
-  // Step 4 — Factuurgegevens
-  contactFirstName: z.string().trim().min(1).max(120),
-  contactLastName: z.string().trim().min(1).max(120),
-  email: z.string().trim().email().max(180),
-  // `account_postcode` and `account_housenumber` are `max:10` on the portal.
-  postalCode: z.string().trim().min(1).max(10),
-  houseNumber: z.string().trim().min(1).max(10),
-  street: z.string().trim().min(1).max(200),
-  city: z.string().trim().min(1).max(120),
-  // Filled by the PDOK lookup, not by the visitor — absent if it didn't resolve.
-  cityCode: optional(10),
-  municipalityCode: optional(10),
-  // `account_address_comment` is `max:255` on the portal.
-  addressNote: optional(255),
-  contactPhone: optional(40).refine((value) => value === '' || normalisePhone(value) !== null, {
-    message: 'contactPhone must be a Dutch phone number',
-  }),
-  heardAbout: z.string().trim().min(1).max(200),
-
+  ...ruleFields(SIGNUP_RULES),
+  subjects: ruleList(SIGNUP_SUBJECTS_RULE),
   consent: z.literal(true),
-
-  website: z.string().max(200).optional().default(''),
 })
 
 export default defineEventHandler(async (event) => {

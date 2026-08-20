@@ -47,25 +47,71 @@ const errorMessage = ref('')
 const panelInput =
   'field-input mt-0 h-[42px] border-black/10 py-0 font-display leading-[44px]'
 
+/** Caps on the controls themselves, from the same rules the checks read. */
+const CONTACT_MAX = maxLengths(CONTACT_RULES)
+
+/**
+ * Fields with a message slot of their own. A problem with anything else — the
+ * subject, which comes from a prop, or the honeypot — goes to the line under
+ * the button instead, so a refused submit is never silent.
+ */
+const SHOWN = new Set(['name', 'firstName', 'lastName', 'email', 'phone', 'message', 'privacy'])
+
 /** The endpoint takes one name field, whichever way the form collects it. */
 const fullName = () =>
   panel.value ? `${form.firstName.trim()} ${form.lastName.trim()}`.trim() : form.name.trim()
 
+/** The body that would be posted — checked before it is, never after. */
+const payload = () => ({
+  name: fullName(),
+  email: form.email,
+  phone: form.phone,
+  message: form.message,
+  website: form.website,
+  subject: props.subject,
+})
+
+/**
+ * Checked against `CONTACT_RULES`, the same table `/api/contact` builds its
+ * schema from, so this form cannot accept a message the endpoint refuses. It
+ * used to carry its own e-mail regex and no length checks at all: an address
+ * zod rejects, or a message over 5000 characters, came back as a 422 with a
+ * message that named no field.
+ */
 function validate() {
+  const problems = checkForm(CONTACT_RULES, payload())
   const next: Record<string, string> = {}
 
+  for (const [name, problem] of Object.entries(problems)) {
+    next[name] = describeProblem(problem!)
+  }
+
+  // A message that is merely short reads better as an invitation.
+  if (problems.message?.kind === 'tooShort') {
+    next.message = 'Vertel ons iets meer (minimaal 10 tekens).'
+  }
+
   if (panel.value) {
+    // The endpoint takes one name; the panel collects two halves of it, so the
+    // shared rule's complaint has to land on whichever half is at fault.
+    delete next.name
     if (!form.firstName.trim()) next.firstName = 'Vul je voornaam in.'
     if (!form.lastName.trim()) next.lastName = 'Vul je achternaam in.'
+    if (problems.name?.kind === 'tooLong') next.lastName = describeProblem(problems.name)
     if (!form.privacy) next.privacy = 'Ga akkoord met het privacybeleid om te versturen.'
-  } else if (!form.name.trim()) {
+  }
+  else if (problems.name?.kind === 'required') {
     next.name = 'Vul je naam in.'
   }
 
-  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(form.email)) next.email = 'Vul een geldig e-mailadres in.'
-  if (form.message.trim().length < 10) next.message = 'Vertel ons iets meer (minimaal 10 tekens).'
-
   errors.value = next
+
+  const unshown = Object.entries(next).find(([name]) => !SHOWN.has(name))
+  if (unshown) {
+    status.value = 'error'
+    errorMessage.value = unshown[1]
+  }
+
   return Object.keys(next).length === 0
 }
 
@@ -78,14 +124,7 @@ async function submit() {
   try {
     const result = await $fetch('/api/contact', {
       method: 'POST',
-      body: {
-        name: fullName(),
-        email: form.email,
-        phone: form.phone,
-        message: form.message,
-        website: form.website,
-        subject: props.subject,
-      },
+      body: payload(),
     })
 
     /*
@@ -152,6 +191,7 @@ async function submit() {
               v-model="form.firstName"
               type="text"
               autocomplete="given-name"
+              :maxlength="CONTACT_MAX.name"
               :placeholder="copy.firstName"
               :aria-label="copy.firstName"
               :aria-invalid="Boolean(errors.firstName)"
@@ -165,6 +205,7 @@ async function submit() {
               v-model="form.lastName"
               type="text"
               autocomplete="family-name"
+              :maxlength="CONTACT_MAX.name"
               :placeholder="copy.lastName"
               :aria-label="copy.lastName"
               :aria-invalid="Boolean(errors.lastName)"
@@ -179,6 +220,7 @@ async function submit() {
             v-model="form.email"
             type="email"
             autocomplete="email"
+            :maxlength="CONTACT_MAX.email"
             :placeholder="copy.email"
             :aria-label="copy.email"
             :aria-invalid="Boolean(errors.email)"
@@ -191,6 +233,7 @@ async function submit() {
         <div class="mt-2">
           <textarea
             v-model="form.message"
+            :maxlength="CONTACT_MAX.message"
             :placeholder="copy.message"
             :aria-label="copy.message"
             :aria-invalid="Boolean(errors.message)"
@@ -209,6 +252,7 @@ async function submit() {
               v-model="form.name"
               type="text"
               autocomplete="name"
+              :maxlength="CONTACT_MAX.name"
               class="field-input"
               :aria-invalid="Boolean(errors.name)"
             >
@@ -222,6 +266,7 @@ async function submit() {
               v-model="form.email"
               type="email"
               autocomplete="email"
+              :maxlength="CONTACT_MAX.email"
               class="field-input"
               :aria-invalid="Boolean(errors.email)"
             >
@@ -238,8 +283,11 @@ async function submit() {
             v-model="form.phone"
             type="tel"
             autocomplete="tel"
+            :maxlength="CONTACT_MAX.phone"
             class="field-input"
+            :aria-invalid="Boolean(errors.phone)"
           >
+          <p v-if="errors.phone" class="field-error">{{ errors.phone }}</p>
         </div>
 
         <div>
@@ -248,6 +296,7 @@ async function submit() {
             id="contact-message"
             v-model="form.message"
             rows="5"
+            :maxlength="CONTACT_MAX.message"
             class="field-input"
             :aria-invalid="Boolean(errors.message)"
           />

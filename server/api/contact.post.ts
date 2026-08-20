@@ -11,12 +11,12 @@ import { z } from 'zod'
  * endpoint that never existed, and the confirmation mail it sent itself.
  */
 const schema = z.object({
-  name: z.string().trim().min(1).max(120),
-  email: z.string().trim().email().max(180),
-  phone: z.string().trim().max(40).optional().default(''),
-  subject: z.string().trim().max(120).optional().default('Algemene vraag'),
-  message: z.string().trim().min(10).max(5000),
-  website: z.string().max(200).optional().default(''),
+  // `CONTACT_RULES` in `shared/utils/form-rules.ts`, which `ContactForm`
+  // checks the visitor's answers against before it posts them.
+  ...ruleFields(CONTACT_RULES),
+  // The one field the visitor doesn't fill in — it comes from the component's
+  // `subject` prop — so a missing one is the general enquiry, not a blank.
+  subject: ruleField(CONTACT_RULES.subject).default('Algemene vraag'),
 })
 
 export default defineEventHandler(async (event) => {

@@ -36,8 +36,20 @@ const form = reactive({
   website: '',
 })
 
+/** Caps on the controls themselves, from the same rules the checks read. */
+const LEAD_MAX = maxLengths(LEAD_RULES)
+
 const status = ref<'idle' | 'pending' | 'error'>('idle')
 const message = ref('')
+
+/** The body that would be posted, and what `LEAD_RULES` is checked against. */
+const payload = () => ({
+  name: form.name,
+  phone: form.phone,
+  email: form.email,
+  page: props.source || route.path,
+  website: form.website,
+})
 
 /*
   Live form 1 requires the name and the phone number and leaves the e-mail
@@ -54,11 +66,21 @@ function submit() {
     return
   }
 
-  // Checked here as well as on the way out, so the number that lands in the
-  // query string is one `/aanmelden` will accept — see `shared/utils/phone.ts`.
-  if (!normalisePhone(form.phone)) {
+  /*
+    Checked against the same `LEAD_RULES` the route parses with — the number so
+    that what lands in the query string is one `/aanmelden` will accept (see
+    `shared/utils/phone.ts`), and the address because this form checked it
+    nowhere at all. A typo there used to 422 the POST, and nobody ever found
+    out: the visitor is redirected regardless and the result is ignored, so the
+    lead mail the office follows up on simply never arrived.
+  */
+  const problem = Object.values(checkForm(LEAD_RULES, payload()))[0]
+
+  if (problem) {
     status.value = 'error'
-    message.value = 'Vul een geldig telefoonnummer in, bijvoorbeeld 0612345678.'
+    message.value = problem.kind === 'phone'
+      ? 'Vul een geldig telefoonnummer in, bijvoorbeeld 0612345678.'
+      : describeProblem(problem)
     return
   }
 
@@ -76,16 +98,7 @@ async function handOff() {
     swallows rather than reports for the same reason — there is nothing the
     visitor could do about it, and they are already on the next page.
   */
-  $fetch('/api/lead', {
-    method: 'POST',
-    body: {
-      name: form.name,
-      phone: form.phone,
-      email: form.email,
-      page: props.source || route.path,
-      website: form.website,
-    },
-  }).catch(() => {})
+  $fetch('/api/lead', { method: 'POST', body: payload() }).catch(() => {})
 
   /*
     The same three parameter names the live confirmation uses, so links and
@@ -107,13 +120,13 @@ async function handOff() {
   <div>
     <form class="flex flex-col gap-3.5" novalidate @submit.prevent="submit">
       <label class="sr-only" :for="`${uid}-name`">Naam</label>
-      <input :id="`${uid}-name`" v-model="form.name" class="field-input mt-0" type="text" placeholder="Naam" autocomplete="name">
+      <input :id="`${uid}-name`" v-model="form.name" :maxlength="LEAD_MAX.name" class="field-input mt-0" type="text" placeholder="Naam" autocomplete="name">
 
       <label class="sr-only" :for="`${uid}-phone`">Telefoonnummer</label>
-      <input :id="`${uid}-phone`" v-model="form.phone" class="field-input mt-0" type="tel" placeholder="Telefoonnummer" autocomplete="tel">
+      <input :id="`${uid}-phone`" v-model="form.phone" :maxlength="LEAD_MAX.phone" class="field-input mt-0" type="tel" placeholder="Telefoonnummer" autocomplete="tel">
 
       <label class="sr-only" :for="`${uid}-email`">E-mailadres</label>
-      <input :id="`${uid}-email`" v-model="form.email" class="field-input mt-0" type="email" placeholder="E-mailadres" autocomplete="email">
+      <input :id="`${uid}-email`" v-model="form.email" :maxlength="LEAD_MAX.email" class="field-input mt-0" type="email" placeholder="E-mailadres" autocomplete="email">
 
       <label class="group flex cursor-pointer items-start gap-2.5 text-[12.5px] leading-normal text-ink-700">
         <input v-model="form.consent" class="sr-only" type="checkbox">
