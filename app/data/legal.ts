@@ -66,7 +66,7 @@ export const terms: LegalDocument = {
         ol([
           {
             lead: 'Bijles Bèta:',
-            text: 'Bijles Bèta V.O.F., ingeschreven bij de Kamer van Koophandel onder nummer 70706158, gevestigd aan De Brink 34, 9723AM te Groningen.',
+            text: 'Bijles Bèta V.O.F., ingeschreven bij de Kamer van Koophandel onder nummer 70706158, gevestigd aan Noorderhaven 46, 9712VL te Groningen.',
           },
           {
             lead: 'Dienst:',
