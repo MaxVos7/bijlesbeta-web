@@ -24,8 +24,8 @@ export const contact = {
   applicationsEmail: 'info@bijlesbeta.nl',
   applicationsEmailHref: 'mailto:info@bijlesbeta.nl',
   address: {
-    street: 'De Brink 34',
-    postalCode: '9723 AM',
+    street: 'Noorderhaven 46',
+    postalCode: '9712 VL',
     city: 'Groningen',
   },
   openingHours: 'Maandag t/m zaterdag, 10:00 – 18:00',
