@@ -37,7 +37,7 @@ useSeo({
           <h1
             class="mb-[18px] max-w-[25ch] text-[26px] leading-[44px] tracking-[-0.025em] text-pretty md:text-[32px]"
           >
-            Bijles wiskunde, natuurkunde en scheikunde in Groningen
+            Bijles in wiskunde, natuurkunde en scheikunde
           </h1>
           <p class="mb-7 max-w-[46ch] text-base leading-[1.7] text-ink-600">
             Krijg weer grip op bètavakken met persoonlijke begeleiding van onze topdocenten van de
