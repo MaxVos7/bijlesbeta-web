@@ -848,8 +848,6 @@ export type PricingPlan = {
   blurb: string
   /** Highlighted with an amber border and a soft glow. */
   featured: boolean
-  /** Rendered as ink-on-white inverted — the design gives this to the flexible plan. */
-  inverted: boolean
   features: string[]
 }
 
@@ -863,7 +861,6 @@ export const pricingPlans: PricingPlan[] = [
     savingsLabel: '-€8 euro korting',
     blurb: 'Krijg de bèta vakken weer volledig onder controle!',
     featured: false,
-    inverted: false,
     features: [
       'Wis-, natuur- en scheikunde',
       'Geen servicekosten',
@@ -880,7 +877,6 @@ export const pricingPlans: PricingPlan[] = [
     savingsLabel: '-€6 euro korting',
     blurb: 'Structurele bijles voor beter begrip en een stevige basis in het vak.',
     featured: true,
-    inverted: false,
     features: [
       'Wis-, natuur- en scheikunde',
       'Geen servicekosten',
@@ -897,7 +893,6 @@ export const pricingPlans: PricingPlan[] = [
     savingsLabel: '-€3 euro korting',
     blurb: 'Krijg een steuntje in de rug voor jouw volgende toets.',
     featured: false,
-    inverted: false,
     features: [
       'Wis-, natuur- en scheikunde',
       'Geen servicekosten',
@@ -905,19 +900,20 @@ export const pricingPlans: PricingPlan[] = [
       'Extra uren voor €30/uur',
     ],
   },
-  {
-    slug: 'losse-lessen',
-    name: 'Losse lessen',
-    hoursLabel: 'Flexibel',
-    price: 33,
-    regularPrice: 33,
-    savingsLabel: null,
-    blurb: 'Flexibele bijles op maat, wanneer jij extra hulp nodig hebt.',
-    featured: false,
-    inverted: true,
-    features: ['Wis-, natuur- en scheikunde', 'Geen servicekosten', 'Gratis proefles'],
-  },
 ]
+
+/**
+ * Losse lessen — the flexible, no-package rate. Kept out of `pricingPlans`
+ * deliberately: bijlesbeta.nl wants fewer students landing here instead of on
+ * a package, so `PricingSection` renders it as a single quiet line below the
+ * three cards rather than as a fourth card competing with them.
+ */
+export const looseLesson = {
+  name: 'Losse lessen',
+  blurb: 'Flexibele bijles op maat, wanneer jij extra hulp nodig hebt.',
+  price: 36,
+  cta: 'Gratis proefles',
+} as const
 
 export const faqs = [
   {

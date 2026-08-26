@@ -710,7 +710,7 @@ them. The full set:
 | band | id | width | ours |
 |---|---|---|---|
 | hero | per page | 1100 (1200 on `/werken-bij` and the landings) | page file |
-| packages grid | `5d48e98b` | 1368 | `PricingSection` |
+| packages grid | `5d48e98b` | 1368 live, **1026** here — a later `Tarieven.dc.html` handoff cut Losse lessen from a fourth card to 3 packages and narrowed the band so the cards keep their live width | `PricingSection` |
 | stats | `125bf870` | 900 | `StatsBand` |
 | closing CTA | `73f40b97` | 1100 | `TrialCta` |
 | reviews | `2efc0a89` | 1000 | the band that mounts `ReviewCarousel` |
