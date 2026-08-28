@@ -11,6 +11,13 @@ import { company } from '~/data/legal'
 import { contact } from '~/data/site'
 
 defineProps<{ doc: LegalDocument }>()
+
+/**
+ * Internal links go through `NuxtLink` so they pick up the trailing slash
+ * `nuxtLink.trailingSlash` appends; a bare `<a>` would link at the
+ * redirecting form. Same rule as `ArticleRuns`.
+ */
+const isInternal = (href: string) => href.startsWith('/')
 </script>
 
 <template>
@@ -47,8 +54,13 @@ defineProps<{ doc: LegalDocument }>()
               <template v-for="(item, k) in block.items" :key="k">
                 <strong v-if="item.lead" class="font-bold text-ink-800">{{ item.lead }} </strong>
                 <span>{{ item.text }}</span>
+                <NuxtLink
+                  v-if="item.link && isInternal(item.link.href)"
+                  :to="item.link.href"
+                  class="font-medium text-brand-700 underline decoration-brand-300 underline-offset-2 hover:decoration-brand-700"
+                >{{ item.link.label }}</NuxtLink>
                 <a
-                  v-if="item.link"
+                  v-else-if="item.link"
                   :href="item.link.href"
                   class="font-medium text-brand-700 underline decoration-brand-300 underline-offset-2 hover:decoration-brand-700"
                 >{{ item.link.label }}</a>
@@ -65,8 +77,13 @@ defineProps<{ doc: LegalDocument }>()
               <li v-for="(item, k) in block.items" :key="k" class="pl-1">
                 <strong v-if="item.lead" class="font-bold text-ink-800">{{ item.lead }} </strong>
                 <span>{{ item.text }}</span>
+                <NuxtLink
+                  v-if="item.link && isInternal(item.link.href)"
+                  :to="item.link.href"
+                  class="font-medium text-brand-700 underline decoration-brand-300 underline-offset-2 hover:decoration-brand-700"
+                >{{ item.link.label }}</NuxtLink>
                 <a
-                  v-if="item.link"
+                  v-else-if="item.link"
                   :href="item.link.href"
                   class="font-medium text-brand-700 underline decoration-brand-300 underline-offset-2 hover:decoration-brand-700"
                 >{{ item.link.label }}</a>

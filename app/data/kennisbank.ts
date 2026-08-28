@@ -3419,7 +3419,8 @@ export const articles: Article[] = [
     publishedAt: '2026-01-14',
     readingMinutes: 4,
     wordCount: 680,
-    coverImage: '/img/kennisbank/effectief-leren-voor-je-wiskundetoets.jpg',
+    coverAlt: 'Wiskunde uitwerken op papier',
+    coverImage: '/img/wiskunde.webp',
     body: [
       {
         type: 'paragraph',
@@ -3468,7 +3469,8 @@ export const articles: Article[] = [
     publishedAt: '2026-02-03',
     readingMinutes: 5,
     wordCount: 850,
-    coverImage: '/img/kennisbank/formules-onthouden-bij-natuurkunde.jpg',
+    coverAlt: 'Natuurkunde in de praktijk',
+    coverImage: '/img/natuurkunde.webp',
     body: [
       {
         type: 'paragraph',
@@ -3517,7 +3519,8 @@ export const articles: Article[] = [
     publishedAt: '2026-03-11',
     readingMinutes: 6,
     wordCount: 1020,
-    coverImage: '/img/kennisbank/rekenen-aan-reacties-scheikunde.jpg',
+    coverAlt: 'Scheikunde in het lab',
+    coverImage: '/img/scheikunde.webp',
     body: [
       {
         type: 'paragraph',
@@ -3561,16 +3564,15 @@ export const articles: Article[] = [
 
 /**
  * Author avatars, keyed by the `author` name on an article — the 45px tile in
- * `AuthorBadge`. Drop the files into `public/img/auteurs/`; until they exist
- * the badge falls back to the author's initial, so a missing file is a
- * cosmetic gap rather than a broken image.
+ * `AuthorBadge`. An unmapped author falls back to their initial.
+ *
+ * Deliberately empty: the four portraits this named were never drawn, so every
+ * badge asked the browser for a file that 404s. The `@error` fallback hid that
+ * from visitors but not from a crawler, which read seven missing files across
+ * thirty pages as broken images. Add a name back here only together with the
+ * file — see `public/img/auteurs/README.md` for the expected shape.
  */
-export const authorAvatars: Record<string, string> = {
-  Stefan: '/img/auteurs/stefan.jpg',
-  'Thomas Smeman': '/img/auteurs/thomas-smeman.jpg',
-  'Marieke Spijker': '/img/auteurs/marieke-spijker.jpg',
-  Max: '/img/auteurs/max.jpg',
-}
+export const authorAvatars: Record<string, string> = {}
 
 /** The kennisbank's filter chips, in the order they render — a fixed vocabulary, not every tag in `articles`. */
 export const filterTags = [

@@ -172,7 +172,7 @@ const subjectLinks = [
                 <span class="fb-btn__text">Aanmelden</span>
               </span>
             </NuxtLink>
-            <a :href="config.public.portalUrl" class="fb-btn fb-btn--secondary">
+            <a :href="`${config.public.portalUrl}/login`" class="fb-btn fb-btn--secondary">
               <span class="fb-btn__inner">
                 <span class="fb-btn__icon">
                   <svg

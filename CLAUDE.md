@@ -933,8 +933,19 @@ dat?!`, the docenten band and `Ga direct naar de juiste pagina`, and 1200 for
 overview and the article share `ArticleCard`, `AuthorBadge` and
 `ArticleCoverPlaceholder`; both cover art and author avatars are wired to
 local paths under `public/img` and fall back to the placeholder when a file is
-missing, so artwork can land one file at a time. What follows from the
-measurements and shouldn't be tidied:
+missing, so artwork can land one file at a time.
+
+**That fallback is `@error`, though, so it hides a missing file from visitors
+and not from a crawler.** A path named in `coverImage` or `authorAvatars` with
+no file behind it is a 404 the browser still requests, and Ahrefs reads it as a
+broken image on every page the article is listed on — the 2026-08-27 crawl
+found seven such files across thirty pages. So a path in either place must
+name a file that exists: `authorAvatars` is empty rather than naming four
+portraits nobody drew, and the three articles whose covers were never drawn
+point at the subject photographs (`/img/wiskunde.webp` and friends) instead.
+Artwork can still land one file at a time; the reference lands with it.
+
+What follows from the measurements and shouldn't be tidied:
 
 - **The hero sits on the page's own parchment**, not on a ground of its own,
   and the white band opens *below* it with an 80px lead-in. That is why the
