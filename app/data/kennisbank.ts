@@ -2000,7 +2000,7 @@ export const articles: Article[] = [
     title: 'Het Periodiek Systeem – Verdiepende Vragen en Uitwerkingen',
     tags: ['Natuurkunde', 'Scheikunde'],
     excerpt:
-      'Het periodiek systeem uitgelegd: groepen, perioden en elektronenstructuur. Van alkalimetalen tot edelgassen met praktische vragen over bindingen en atoomnummers.',
+      'Het periodiek systeem uitgelegd: groepen, perioden en elektronenstructuur. Van alkalimetalen tot edelgassen, met vragen over bindingen en atoomnummers.',
     author: 'Thomas Smeman',
     publishedAt: '2025-12-04',
     readingMinutes: 5,
@@ -2347,7 +2347,7 @@ export const articles: Article[] = [
     title: 'Radioactief verval',
     tags: ['Natuurkunde'],
     excerpt:
-      'Radioactief verval berekenen: bepaal de benodigde massa I-125 voor medische behandeling. Stap-voor-stap uitleg met halveringstijd, activiteit en vervalconstante.',
+      'Radioactief verval berekenen: bepaal de massa I-125 voor een medische behandeling. Stap voor stap met halveringstijd, activiteit en vervalconstante.',
     author: 'Marieke Spijker',
     publishedAt: '2025-11-03',
     readingMinutes: 2,

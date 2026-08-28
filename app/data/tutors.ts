@@ -377,7 +377,7 @@ export const tutors: Tutor[] = [
   {
     "slug": "thijs-noordover",
     "name": "Thijs Noordover",
-    "study": "Student sterrenkunde & theoretische natuurkunde",
+    "study": "Sterrenkunde & theoretische natuurkunde",
     "expertise": [
       "Wiskunde",
       "Natuurkunde",

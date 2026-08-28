@@ -270,7 +270,12 @@ export const contactPage = {
  */
 export const aanmeldenPage = {
   kicker: 'Aanmelden',
-  title: 'Zo kan je ons bereiken',
+  /**
+   * The page's only h1, so it describes the page rather than the contact rows
+   * beneath it. It read 'Zo kan je ons bereiken' — copied from `contactPage`
+   * — which left /aanmelden and /contact serving Google the same h1.
+   */
+  title: 'Meld je aan voor een gratis proefles',
   reviewsTitle: 'Wat mensen over ons zeggen',
   faq: {
     title: 'Veelgestelde vragen (FAQ)',
