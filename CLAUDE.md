@@ -294,6 +294,77 @@ Gravity Form's conditional logic. Change questions, options and rules there, not
 in `SignupForm.vue`. `server/api/adres.get.ts` is a read-only PDOK proxy for the
 postcode lookup — it stores nothing and never throws at its caller.
 
+## The reviews
+
+The rating line under every hero (`RatingLine`) and the carousel
+(`ReviewCarousel`) are live Google reviews, through `useReviews()` →
+`/api/reviews` → `server/utils/google-reviews.ts`. That is Place Details of the
+Places API (New), asked for `rating,userRatingCount,reviews` with an
+`X-Goog-Api-Key` header: the average, every rating the place has, and the at
+most five reviews Google picks.
+
+**The transcribed reviews in `app/data/site.ts` are the floor, not dead copy.**
+With `NUXT_GOOGLE_PLACES_API_KEY` or `NUXT_GOOGLE_PLACE_ID` unset — which is
+the default, and every local checkout — nothing is called and the site renders
+exactly as it did before this existed. The same happens when Google errors
+before any answer has been cached. Both sets are `Review`s from
+`shared/utils/reviews.ts` and go through the same components, so there is no
+second layout to keep alive; a Google review carries a profile link and a
+relative date where a transcribed one carries a title and a role, and the card
+renders each line only when the review has it. Don't delete the static set to
+"clean up" — it is what stands between a spent quota and a hero with no stars
+in it.
+
+Things that look arbitrary and aren't:
+
+- **The cache is in the process, not in `routeRules`.** Most pages carry a
+  `RatingLine`, and Place Details with `reviews` in the mask is billed per
+  request, so the answer is held for six hours — four calls a day whatever the
+  traffic. It is deliberately not an `swr`/`isr` rule: those cache rendered
+  HTML, and no route that renders the site chrome may take one, because the
+  consent defaults make that HTML vary per visitor. Memory rather than
+  `defineCachedFunction`'s storage because the deploy has no writable
+  filesystem and there is one Node process behind nginx.
+- **Stale data is served while the refresh runs, and kept when it fails.** Only
+  the first caller after a restart waits on Google, and `server/plugins/
+  google-reviews.ts` warms the cache at boot so that caller is usually the
+  process itself rather than a visitor. A failure moves the retry window five
+  minutes and leaves the previous answer in place.
+- **A 200 with no rating is treated as a failure.** A place id that no longer
+  resolves, or a key without Places enabled, answers with an empty object;
+  caching that for six hours would hide a misconfiguration behind a page that
+  looks unchanged. `/api/_diagnose` reports the last outcome and Google's own
+  error text.
+- **`Uitstekend` does not come from Google.** Only the stars and the count do.
+  It is the live site's own label and `/zo-werkt-het` uses it as a meta
+  description, so a word computed from the score would change what Google
+  indexes the day the average moves. The count is written out by
+  `formatReviewCount` — `34 Reviews`, in the live line's shape.
+- **The key never reaches the browser.** It is a server credential precisely so
+  it can be restricted to this server's IP and to the Places API; the proxy
+  also means one cache in front of Google rather than one per visitor.
+- **Reviews are shown as Google gives them** — unedited, in Google's order,
+  with the author's name linking to their profile where there is one.
+  Attribution is a condition of using the content. The only ones dropped are
+  those with no text at all: they still count towards `userRatingCount`, so
+  they are already represented in the number beside the stars, but there is
+  nothing to put in a quote card. Don't add a filter that keeps only the
+  five-star ones.
+- **The carousel opens at index 2 on the transcribed set and 0 on Google's.**
+  Two is the trio the live site shows; Google's five arrive in its own
+  relevance order, so there is nothing to skip past.
+- **`/aanmelden`'s single featured review is still the static one.** It is a
+  deliberate parity pick (`featuredReview`, the live page's own), and its panel
+  is measured around a title line that a Google review doesn't have. Wiring it
+  to the live set is a decision, not a cleanup.
+- **No `aggregateRating` markup was added.** Google's structured-data rules do
+  not allow marking up ratings a business collected about itself or pulled from
+  a third party, and the cutover's mandate is to change what Google sees as
+  little as possible.
+
+`node --env-file=.env scripts/find-place-id.mjs` resolves the place id from a
+name — it is not visible anywhere in the Business Profile UI.
+
 ## SEO and the WordPress cutover
 
 This app replaces bijlesbeta.nl, which is still WordPress. The whole search

@@ -1,20 +1,44 @@
 <script setup lang="ts">
-import { reviews } from '~/data/site'
+/**
+ * Three reviews at a time, wrapping in both directions.
+ *
+ * The set is whatever `useReviews()` hands over: Google's own reviews when the
+ * lookup is configured and answering, the transcribed ones from
+ * `app/data/site.ts` otherwise. A Google review has no title and its subtitle
+ * is Google's relative date ("3 maanden geleden") rather than a role, so both
+ * lines render only when the review carries them.
+ */
+const { reviews, live } = useReviews()
 
-/** Three reviews at a time, wrapping in both directions. */
-const start = ref(2)
+/*
+  Google's five come in its own relevance order, so the carousel opens on the
+  first of them. The transcribed set opens at 2, which is where it opened
+  before this was wired up and which is the trio the live site shows.
+*/
+const start = ref(live.value ? 0 : 2)
+
+/** Three columns, or fewer when Google returned fewer than three reviews. */
+const slots = computed(() => Math.min(3, reviews.value.length))
+
 const visible = computed(() =>
-  [0, 1, 2].map((offset) => reviews[(start.value + offset) % reviews.length]!),
+  Array.from(
+    { length: slots.value },
+    (_, offset) => reviews.value[(start.value + offset) % reviews.value.length]!,
+  ),
 )
 
+/** Nothing to turn when every review is already on screen. */
+const canTurn = computed(() => reviews.value.length > slots.value)
+
 function step(direction: number) {
-  start.value = (start.value + direction + reviews.length) % reviews.length
+  start.value = (start.value + direction + reviews.value.length) % reviews.value.length
 }
 </script>
 
 <template>
   <div class="flex items-center justify-center gap-[clamp(10px,1.8vw,22px)]">
     <button
+      v-if="canTurn"
       type="button"
       class="h-11 w-11 flex-none rounded-btn border border-line-300 bg-white text-base transition hover:border-brand-500 hover:bg-linen"
       aria-label="Vorige review"
@@ -28,7 +52,7 @@ function step(direction: number) {
     >
       <figure
         v-for="review in visible"
-        :key="review.author"
+        :key="review.id"
         class="flex min-h-[320px] flex-col rounded-tile bg-white p-6"
       >
         <svg class="mb-3 block h-[22px] w-[22px]" viewBox="0 0 48 48" aria-hidden="true">
@@ -55,20 +79,33 @@ function step(direction: number) {
           <StarRating :value="review.rating" />
         </p>
 
-        <h3 class="mb-2 text-[14.5px] leading-snug">{{ review.title }}</h3>
+        <h3 v-if="review.title" class="mb-2 text-[14.5px] leading-snug">{{ review.title }}</h3>
         <blockquote class="mb-auto text-[13.5px] leading-[1.68] whitespace-pre-line text-ink-700">
           {{ review.body }}
         </blockquote>
 
-        <!-- No rule above the name: the space alone separates it from the quote. -->
+        <!-- No rule above the name: the space alone separates it from the quote.
+             The name links to the reviewer's Google profile where there is one —
+             attributing a review to its author is a condition of showing it,
+             not a flourish. -->
         <figcaption class="mt-6 pt-4">
-          <span class="block text-[13.5px] font-bold">{{ review.author }}</span>
-          <span class="block text-[12.5px] text-ink-600">{{ review.affiliation }}</span>
+          <a
+            v-if="review.authorUrl"
+            :href="review.authorUrl"
+            target="_blank"
+            rel="noopener nofollow"
+            class="block text-[13.5px] font-bold hover:text-brand-600"
+          >{{ review.author }}</a>
+          <span v-else class="block text-[13.5px] font-bold">{{ review.author }}</span>
+          <span v-if="review.affiliation" class="block text-[12.5px] text-ink-600">
+            {{ review.affiliation }}
+          </span>
         </figcaption>
       </figure>
     </div>
 
     <button
+      v-if="canTurn"
       type="button"
       class="h-11 w-11 flex-none rounded-btn border border-line-300 bg-white text-base transition hover:border-brand-500 hover:bg-linen"
       aria-label="Volgende review"

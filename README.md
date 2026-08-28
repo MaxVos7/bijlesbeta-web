@@ -39,6 +39,9 @@ instead of being sent anywhere — so the forms stay testable locally.
 | `npm run preview`   | Serve the production build locally             |
 | `npm run typecheck` | `vue-tsc` over the whole project               |
 
+One-off helper: `node --env-file=.env scripts/find-place-id.mjs` prints the
+Google place id for `NUXT_GOOGLE_PLACE_ID`.
+
 ## Project layout
 
 ```
@@ -55,6 +58,7 @@ server/
   api/contact.post.ts     Validates + forwards contact form
   api/aanmelden.post.ts   Validates + forwards signup form
   api/adres.get.ts        Postcode → street/city/codes, proxied to PDOK
+  api/reviews.get.ts      Google reviews + rating count, cached in memory
   utils/laravel.ts        Forwarding + honeypot helpers
 ```
 
@@ -132,6 +136,19 @@ request already carries the whole message. See "Forms" and "The office copy" in
 process can see and what the SMTP server says when we connect. It 404s while
 that key is unset.
 
+## Reviews
+
+The rating line under every hero and the review carousel read `/api/reviews`,
+which fetches Place Details from the Google Places API (New) — the average, the
+rating count and up to five reviews — and holds the answer in memory for six
+hours. Stale data is served while a refresh runs and kept if the refresh fails,
+so a Google outage doesn't blank the reviews mid-afternoon.
+
+With `NUXT_GOOGLE_PLACES_API_KEY` or `NUXT_GOOGLE_PLACE_ID` empty, nothing is
+called and the site shows the reviews transcribed in `app/data/site.ts`, which
+is what it showed before this existed. Both sets render through the same
+components. `/api/_diagnose` reports what the lookup last did.
+
 ## Environment variables
 
 See `.env.example`. On Forge these go in the site's **Environment** tab.
@@ -145,6 +162,8 @@ See `.env.example`. On Forge these go in the site's **Environment** tab.
 | `NUXT_MAIL_*`            | SMTP for the office copy — see `.env.example`  |
 | `NUXT_OFFICE_EMAIL`      | Where contact + signup copies land             |
 | `NUXT_APPLICATIONS_EMAIL`| Where application copies land                  |
+| `NUXT_GOOGLE_PLACES_API_KEY` | Places (New) key for the live reviews; empty calls nothing |
+| `NUXT_GOOGLE_PLACE_ID`   | Which place those reviews are of              |
 | `NUXT_DIAGNOSE_KEY`      | Unlocks `/api/_diagnose`; leave empty in normal operation |
 | `NUXT_PUBLIC_GTM_ID`     | Tag Manager container; empty loads nothing     |
 | `PORT`                   | Port the Node server listens on                |

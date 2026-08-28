@@ -107,6 +107,21 @@ export default defineNuxtConfig({
     officeEmail: 'contact@bijlesbeta.nl',
     applicationsEmail: 'info@bijlesbeta.nl',
     /*
+      Google Places (New), behind `/api/reviews`: the review carousel and the
+      `Uitstekend ★★★★★ 34 Reviews` line under every hero.
+
+      Set via NUXT_GOOGLE_PLACES_API_KEY / NUXT_GOOGLE_PLACE_ID. Empty by
+      default and nothing is called at all — the site then shows the reviews
+      transcribed in `app/data/site.ts`, which is what it showed before this
+      existed. The key is a server credential precisely so it can be restricted
+      to this server's IP and to the Places API; it is never sent to the
+      browser, which is why it is not under `public`.
+
+      `node scripts/find-place-id.mjs "<name>"` resolves the place id.
+    */
+    googlePlacesApiKey: '',
+    googlePlaceId: '',
+    /*
       Unlocks `GET /api/_diagnose?key=…`, which reports which variables the
       process can actually see and what the SMTP server says when we connect.
       Empty by default, and the route 404s without it — so it does not exist on

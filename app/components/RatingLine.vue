@@ -1,6 +1,12 @@
 <script setup lang="ts">
-import { rating } from '~/data/site'
+import { formatStars } from '#shared/utils/reviews'
 
+/**
+ * `Uitstekend ★★★★★ 34 Reviews` — the line under most heroes.
+ *
+ * The stars and the count are Google's own, through `useReviews()`; the bold
+ * label is not. See that composable for why.
+ */
 const props = withDefaults(
   defineProps<{
     centered?: boolean
@@ -12,7 +18,9 @@ const props = withDefaults(
   { centered: false, tone: 'default', label: undefined },
 )
 
-const leadLabel = computed(() => props.label ?? rating.label)
+const { summary } = useReviews()
+
+const leadLabel = computed(() => props.label ?? summary.value.label)
 </script>
 
 <template>
@@ -21,8 +29,9 @@ const leadLabel = computed(() => props.label ?? rating.label)
     :class="[centered && 'justify-center', tone === 'inverse' && 'text-white']"
   >
     <strong class="font-bold">{{ leadLabel }}</strong>
-    <span class="sr-only">{{ rating.stars }} van de 5 sterren</span>
-    <StarRating :value="rating.stars" />
-    <span :class="tone === 'inverse' ? 'text-ink-300' : 'text-ink-500'">{{ rating.count }}</span>
+    <!-- A live average is fractional, so this reads "4,8", not "4.8" or "5". -->
+    <span class="sr-only">{{ formatStars(summary.stars) }} van de 5 sterren</span>
+    <StarRating :value="summary.stars" />
+    <span :class="tone === 'inverse' ? 'text-ink-300' : 'text-ink-500'">{{ summary.count }}</span>
   </p>
 </template>

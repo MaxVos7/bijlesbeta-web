@@ -74,6 +74,8 @@ export default defineEventHandler(async (event) => {
     NUXT_APPLICATIONS_EMAIL: config.applicationsEmail || 'MISSING',
     NUXT_PORTAL_API_URL: set(config.portalApiUrl),
     NUXT_PORTAL_SECRET_KEY: set(config.portalSecretKey),
+    NUXT_GOOGLE_PLACES_API_KEY: set(config.googlePlacesApiKey),
+    NUXT_GOOGLE_PLACE_ID: set(config.googlePlaceId),
   }
 
   /*
@@ -120,6 +122,14 @@ export default defineEventHandler(async (event) => {
   return {
     env,
     smtp,
+    /*
+      What the Google reviews lookup is doing. `lastError` is Google's own
+      words — an unenabled API, a referrer-restricted key, a place id that no
+      longer resolves all say so there — and it carries no credential of ours.
+      `reviewsHeld: 0` with no error means the lookup is simply unconfigured
+      and the site is showing the transcribed reviews.
+    */
+    reviews: googleReviewsStatus(),
     /*
       Contact has no endpoint on the portal at all, so for that form the office
       copy is the only delivery there is: no working SMTP means no working

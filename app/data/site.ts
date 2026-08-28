@@ -8,6 +8,7 @@
 
 import type { Run } from '~/data/kennisbank'
 import { phone } from '~/data/phone'
+import type { Review, ReviewSummary } from '#shared/utils/reviews'
 
 export const tagline = 'Maakt het antwoord logisch.'
 
@@ -94,16 +95,21 @@ export const statsIntro = {
   emphasis: 'Rijksuniversiteit Groningen.',
 } as const
 
-export type Review = {
-  rating: number
-  title: string
-  body: string
-  author: string
-  affiliation: string
-}
+/*
+  The fallback reviews, transcribed from the live site.
 
+  These are what the carousel and the rating line show when the Google lookup
+  is unconfigured or failing — `useReviews()` prefers the live ones from
+  `/api/reviews`. Both sets are `Review`s from `#shared/utils/reviews`, so the
+  components can't tell them apart; a transcribed one carries a title and a
+  role where a Google one carries a profile link and "3 maanden geleden".
+
+  Keep them: they are the site's floor, not dead copy. Google answering with
+  nothing is a rating line with no stars in it otherwise.
+*/
 export const reviews: Review[] = [
   {
+    id: 'Marco van der Wal',
     rating: 5,
     title: 'leuke bijles',
     body: 'leuke bijles je leert veel nu eindelijk voldoende gehaald, heel fijn dus.',
@@ -111,6 +117,7 @@ export const reviews: Review[] = [
     affiliation: 'Middelbarescholier',
   },
   {
+    id: 'Janka Klein Entink',
     rating: 5,
     title: 'Roderick heeft mij supergoed geholpen',
     body: 'Mega tevreden bijles-student hier! Roderick heeft mij supergoed geholpen in mijn voorbereiding op mijn pre-masterstudie. Er werd met behulp van maatwerk meegedacht in waar mijn leerbehoefte lag wat ervoor heeft gezorgd dat ik zo veel meer zelfvertrouwen heb gekregen op het gebied van wiskunde en statistiek! Onwijs dankbaar voor. Top!',
@@ -118,6 +125,7 @@ export const reviews: Review[] = [
     affiliation: 'Pre-master student',
   },
   {
+    id: 'Roel Steunenberg',
     rating: 5,
     title: 'Haar cijfers zijn gestegen.',
     body: 'Onze dochter krijgt 1x per week bijles wiskunde van een docent van Bijles Beta. Wij zijn zeer tevreden. Hij legt goed uit, op een manier die onze dochter begrijpt. Haar cijfers zijn gestegen. Ook is de docent altijd op tijd en communiceert goed. Wij raden Bijles Beta zeker aan.',
@@ -125,6 +133,7 @@ export const reviews: Review[] = [
     affiliation: 'Ouder van een middelbare scholier',
   },
   {
+    id: 'Juul de Lange',
     rating: 5,
     title: 'Hij is deskundig en kan goed uitleggen.',
     body: 'Ik heb een paar keer bijles natuurkunde gehad van Sander. Hij is deskundig en kan goed uitleggen.\nVerder is het contact prettig en is hij flexibel in het inplannen van bijles afspraken. Ik ben erg tevreden dus.',
@@ -132,6 +141,7 @@ export const reviews: Review[] = [
     affiliation: 'Middelbare scholier',
   },
   {
+    id: 'Reinier Teekens',
     rating: 5,
     title: 'Erg tevreden!',
     body: 'Sinds een tijdje volgt onze dochter nu bijles voor al haar Beta vakken, en ze heeft er duidelijk profijt van. Met hard werken en de juiste begeleiding helpen ze haar echt verder, waar de reguliere lessen ophouden. Erg tevreden!',
@@ -144,7 +154,12 @@ export const reviews: Review[] = [
 export const featuredReview: Review =
   reviews.find((review) => review.author === 'Juul de Lange') ?? reviews[0]!
 
-export const rating = { label: 'Uitstekend', stars: 5, count: '20+ Reviews' } as const
+/*
+  The fallback rating line. `label` is used live too — only `stars` and `count`
+  are replaced by Google's own figures; see `useReviews()` for why the word
+  stays ours.
+*/
+export const rating: ReviewSummary = { label: 'Uitstekend', stars: 5, count: '20+ Reviews' }
 
 /** The three promises repeated under every hero. */
 export const heroPromises = [
