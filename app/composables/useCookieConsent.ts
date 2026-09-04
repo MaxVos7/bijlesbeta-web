@@ -56,6 +56,20 @@ export const SIGNALS: Record<ConsentLevel, Record<string, 'granted' | 'denied'>>
  */
 const KEEP = [COOKIE_NAME]
 
+/**
+ * Kept as well once the visitor has granted `analytics`.
+ *
+ * PostHog's own cookie is analytics storage, and `analytics` is the level that
+ * grants exactly that — so wiping it here would be purging something the
+ * visitor just consented to. It matters because `purge()` runs on every level
+ * short of `accept`, `analytics` included: without this, choosing "alleen
+ * analytics" deleted `ph_…` a tick before `app/plugins/posthog.client.ts`
+ * opted in, and every such visitor started a new session on every page.
+ *
+ * `deny` still clears it, which is the whole point of the purge.
+ */
+const KEEP_WITH_ANALYTICS = ['ph_']
+
 export function isLevel(value: unknown): value is ConsentLevel {
   return value === 'deny' || value === 'analytics' || value === 'accept'
 }
@@ -93,10 +107,12 @@ function push(...args: unknown[]) {
 }
 
 /** Clears every cookie the visitor hasn't consented to, on both host forms. */
-function purge() {
+function purge(level: ConsentLevel) {
+  const keep = level === 'analytics' ? [...KEEP, ...KEEP_WITH_ANALYTICS] : KEEP
+
   for (const entry of document.cookie.split(';')) {
     const name = entry.split('=')[0]?.trim()
-    if (!name || KEEP.some((keep) => name.startsWith(keep))) continue
+    if (!name || keep.some((prefix) => name.startsWith(prefix))) continue
 
     const expiry = 'expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/'
     document.cookie = `${name}=;${expiry}`
@@ -120,7 +136,29 @@ export function useCookieConsent() {
     default: () => null,
   })
 
-  const level = computed<ConsentLevel | null>(() => (isLevel(stored.value) ? stored.value : null))
+  /*
+    The one channel anything outside the banner listens on.
+
+    It exists because `useCookie` is not shared: Nuxt builds a fresh ref per
+    call (`cookieRef` in its own `useCookie`), so the ref the banner writes to
+    and the ref a plugin reads from are two different objects. A watcher
+    registered anywhere but inside the banner's own component therefore never
+    fires, and the thing waiting on consent — `app/plugins/posthog.client.ts`
+    — would sit opted out for the whole visit while the cookie says otherwise.
+    Nuxt's `BroadcastChannel`/`cookieStore` sync is for *other tabs* and is
+    browser-dependent; it is not something to hang consent on.
+
+    `useState` is keyed, so every caller gets the same ref, and it is
+    serialised into the payload — the value is already correct at hydration
+    rather than one tick late. `stored` stays the source of truth on disk;
+    this mirrors it in memory, and `choose()` writes both.
+  */
+  const current = useState<ConsentLevel | null>(
+    'cookie-consent-level',
+    () => (isLevel(stored.value) ? stored.value : null),
+  )
+
+  const level = computed<ConsentLevel | null>(() => current.value)
 
   /** Open unless a valid choice is already stored. Reopened via `reopen()`. */
   const open = useState('cookie-consent-open', () => level.value === null)
@@ -133,11 +171,14 @@ export function useCookieConsent() {
     w.dataLayer = w.dataLayer ?? []
     w.dataLayer.push({ event: 'cookie_consent_update', cookie_consent_level: next })
 
-    if (next !== 'accept') purge()
+    if (next !== 'accept') purge(next)
   }
 
   function choose(next: ConsentLevel) {
     stored.value = next
+    // Both, always: the cookie is what a later request reads, `current` is
+    // what everything in this document reacts to. See the note on `current`.
+    current.value = next
     apply(next)
     open.value = false
   }

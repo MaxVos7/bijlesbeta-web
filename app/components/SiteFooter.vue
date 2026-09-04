@@ -2,6 +2,11 @@
 import { landingPath } from '~/data/landings'
 import { contact, cookieConsent, legalLinks, nav, portalLinks, socials, tagline } from '~/data/site'
 
+// Bellen and WhatsApp are conversion channels with no form behind them, and
+// autocapture is off — without these two events they are invisible and the
+// visitor reads as a bounce. See `useAnalytics.ts`.
+const analytics = useAnalytics()
+
 const config = useRuntimeConfig()
 
 // The only way back to the banner once a choice is stored.
@@ -118,7 +123,12 @@ const subjectLinks = [
           <div class="fb-stack">
             <div class="fb-text fb-text--sm"><p>Whatsapp of bel ons!</p></div>
             <div class="fb-text fb-text--strong">
-              <p><a :href="contact.phoneHref">{{ contact.phone }}</a></p>
+              <p>
+                <a
+                  :href="contact.phoneHref"
+                  @click="analytics.telefoonGeklikt({ positie: 'footer' })"
+                >{{ contact.phone }}</a>
+              </p>
             </div>
           </div>
           <div class="fb-stack">

@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { aanmeldenPage, contact, featuredReview } from '~/data/site'
 
+// Bellen and WhatsApp are conversion channels with no form behind them, and
+// autocapture is off — without these two events they are invisible and the
+// visitor reads as a bounce. See `useAnalytics.ts`.
+const analytics = useAnalytics()
+
 /**
  * The live page runs without the site chrome — bijlesbeta.nl serves
  * `/aanmelden` as the Elementor page and nothing else, so the wizard has no
@@ -62,6 +67,7 @@ const review = featuredReview
                 :rel="row.external ? 'noopener' : undefined"
                 :target="row.external ? '_blank' : undefined"
                 class="flex items-center"
+                @click="row.icon === 'whatsapp' && analytics.whatsappGeklikt({ positie: 'aanmelden' })"
               >
                 <span
                   class="mr-2 flex h-8 w-8 flex-none items-center justify-center rounded-field bg-accent-500/15 text-accent-500"

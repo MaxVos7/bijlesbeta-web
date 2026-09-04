@@ -2,8 +2,11 @@
 import {
   GRONINGEN_CITY_CODE,
   GRONINGEN_MUNICIPALITY_CODE,
+  LEVEL_OPTIONS,
   SIGNUP_MAX,
+  TOTAL_HOURS_OPTIONS,
   emptySignupValues,
+  optionLabel,
   signupCopy,
   signupSteps,
   type SignupField,
@@ -39,6 +42,21 @@ function prefill(param: string, key: 'contactFirstName' | 'studentPhone' | 'emai
 prefill('naam', 'contactFirstName')
 prefill('telefoon', 'studentPhone')
 prefill('e-mailadres', 'email')
+
+const analytics = useAnalytics()
+
+/*
+  Whether the proefles block handed this visitor over, read once at setup for
+  the same reason the prefill itself is: it describes how they arrived, and it
+  must not change when they edit a field or when a navigation leaves the query
+  string in place. Every wizard event carries it, so the funnel can be split
+  by entry route without a second event.
+*/
+const cameFromLeadForm = Boolean(
+  query.naam || query.telefoon || query['e-mailadres'],
+)
+
+onMounted(() => analytics.aanmeldingGestart({ prefill: cameFromLeadForm }))
 const status = ref<'idle' | 'pending' | 'success' | 'error'>('idle')
 const showError = ref(false)
 const errorMessage = ref('')
@@ -279,6 +297,23 @@ async function advance() {
   showError.value = false
 
   if (!isLastStep.value) {
+    /*
+      Fired once the step's own checks have passed, so it means "cleared this
+      step" rather than "pressed Volgende" — a rejected submit produces no
+      event. Before the counter moves, so the number sent is the step that was
+      just finished.
+
+      This is the funnel. The wizard never changes the URL, so without these
+      four events the only measurable shape is a pageview on /aanmelden/ and a
+      conversion, with the three places people actually give up invisible in
+      between.
+    */
+    analytics.aanmeldingStapVoltooid({
+      stap: step.value,
+      stapNaam: currentStep.value.id,
+      prefill: cameFromLeadForm,
+    })
+
     step.value += 1
     await nextTick()
     heading.value?.focus()
@@ -310,6 +345,14 @@ async function advance() {
     await focusFirstInvalid()
     return
   }
+
+  // The last step, and nothing from an earlier one is outstanding — so this
+  // one is cleared too, and every completed wizard emits all four.
+  analytics.aanmeldingStapVoltooid({
+    stap: step.value,
+    stapNaam: currentStep.value.id,
+    prefill: cameFromLeadForm,
+  })
 
   await submit()
 }
@@ -348,6 +391,30 @@ async function submit() {
     }
 
     status.value = 'success'
+
+    /*
+      On the answer, never on the click. `ok: true` means the aanmelding
+      reached the portal *or* the office copy was delivered — see
+      `deliveryResult` — which is the definition of a conversion that matches
+      what the office can actually act on.
+
+      The honeypot is passed so a bot's submission, which the route answers
+      `ok: true` to on purpose, is not counted as one.
+    */
+    analytics.aanmeldingVoltooid({
+      vak: values.subjects[0] ? slug(values.subjects[0]) : undefined,
+      vakkenAantal: values.subjects.length,
+      niveau: slug(optionLabel(LEVEL_OPTIONS, values.level)),
+      leerjaar: Number(values.schoolYear) || undefined,
+      lesvorm: values.lessonKind,
+      urenIndicatie: values.lessonKind === 'weekly'
+        ? values.weeklyHours
+        : slug(optionLabel(TOTAL_HOURS_OPTIONS, values.totalHours)),
+      locatie: values.location,
+      prefill: cameFromLeadForm,
+      stapTotaal: totalSteps,
+      honeypot: values.website,
+    })
   } catch (error: any) {
     status.value = 'error'
     errorMessage.value =
@@ -407,7 +474,10 @@ function reset() {
       </button>
     </div>
 
-    <form v-else novalidate @submit.prevent="advance">
+    <!-- Blocked from session replay — see `LeadForm.vue` for the reasoning.
+         The four steps are still followable from `aanmelding_stap_voltooid`,
+         which is what the funnel reads anyway. -->
+    <form v-else class="ph-no-capture" novalidate @submit.prevent="advance">
       <!--
         The progress block is only as wide as its own label on the live form —
         a 78px bar, not a full-width one — so the wrapper is sized to content.

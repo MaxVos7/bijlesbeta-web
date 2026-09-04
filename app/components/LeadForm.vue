@@ -20,12 +20,22 @@ const props = withDefaults(
   defineProps<{
     /** Where the block sits, mailed to the office as form 1's page field is. */
     source?: string
+    /**
+     * The same "where", as a stable slug for analytics.
+     *
+     * Separate from `source` on purpose: that one is prose for a human reading
+     * the office mail (`/bijles-wiskunde-groningen/ (hero)`), and slugging it
+     * would start a new series in PostHog every time a page is added. This is
+     * the closed set the funnel breaks down on.
+     */
+    positie?: Positie
   }>(),
-  { source: '' },
+  { source: '', positie: 'trial_cta' },
 )
 
 const uid = useId()
 const route = useRoute()
+const analytics = useAnalytics()
 
 const form = reactive({
   name: '',
@@ -101,6 +111,23 @@ async function handOff() {
   $fetch('/api/lead', { method: 'POST', body: payload() }).catch(() => {})
 
   /*
+    Fired here rather than after the POST, for the same reason the POST isn't
+    awaited: the visitor is leaving for the wizard and nothing analytics does
+    may stand in front of that. So this counts intent — a lead that reached the
+    hand-off — not a delivered office mail. `/api/lead` logs its own outcome
+    server-side so the gap between the two is measurable; see the note on
+    `proeflesAangevraagd` in `useAnalytics.ts`.
+
+    It is before `navigateTo` and not after because `navigateTo` never returns
+    to this function.
+  */
+  analytics.proeflesAangevraagd({
+    bron: props.positie,
+    emailIngevuld: form.email.trim() !== '',
+    honeypot: form.website,
+  })
+
+  /*
     The same three parameter names the live confirmation uses, so links and
     bookmarks that were built against bijlesbeta.nl still prefill here. The
     trailing slash is the canonical form — see the SEO section in CLAUDE.md.
@@ -118,7 +145,15 @@ async function handOff() {
 
 <template>
   <div>
-    <form class="flex flex-col gap-3.5" novalidate @submit.prevent="submit">
+    <!--
+      `ph-no-capture` keeps this block out of session replay entirely: rrweb
+      records a placeholder of the same size instead of the fields. Blocking
+      rather than masking is deliberate — `maskAllInputs` already hides what is
+      typed, but a name and a phone number are the whole content of this form,
+      and a recording of somebody filling it in has no use that justifies
+      holding them. See the note in `app/plugins/posthog.client.ts`.
+    -->
+    <form class="ph-no-capture flex flex-col gap-3.5" novalidate @submit.prevent="submit">
       <label class="sr-only" :for="`${uid}-name`">Naam</label>
       <input :id="`${uid}-name`" v-model="form.name" :maxlength="LEAD_MAX.name" class="field-input mt-0" type="text" placeholder="Naam" autocomplete="name">
 

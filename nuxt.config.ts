@@ -123,6 +123,26 @@ export default defineNuxtConfig({
         site is the one serving that domain.
       */
       gtmId: '',
+      /*
+        PostHog. Empty by default for the same reason `gtmId` is, and for one
+        more that is specific to it: the container GTM-MJCC44HR *already*
+        carries a PostHog tag, which is what sends the `$pageview`s the project
+        collects today. Set this key while that tag still exists and the page
+        runs two PostHog instances against one project — two `$pageview`s per
+        navigation, two session ids, a replay recorded twice.
+
+        So the order at cutover is: remove the PostHog tag from the GTM
+        container first, then set this. Nothing about the page looks wrong in
+        between; you can only see it in the network tab or in PostHog itself.
+
+        The key is the project's *public* token — it ships in the bundle by
+        design and is not a credential. It is still read from the environment
+        rather than written here, so staging and production can differ without
+        a code change.
+      */
+      posthogKey: '',
+      posthogApiHost: 'https://eu.i.posthog.com',
+      posthogUiHost: 'https://eu.posthog.com',
     },
   },
 

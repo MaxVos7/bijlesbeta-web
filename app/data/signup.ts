@@ -157,6 +157,18 @@ export type SignupField =
     }
 
 export type SignupStep = {
+  /**
+   * Stable id for this step, used as the `stap_naam` on
+   * `aanmelding_stap_voltooid`.
+   *
+   * It lives on the step rather than in a list beside it so the two cannot
+   * drift: a fifth step will not compile without one, and a renamed `title`
+   * leaves the funnel alone. `title` is Dutch prose for the visitor and gets
+   * reworded; an analytics id is a key in a chart somebody built six months
+   * ago and must not move. This is the same rule the field/rule assertions
+   * further up enforce for the questions.
+   */
+  id: string
   title: string
   intro: string
   fields: (v: SignupValues) => SignupField[]
@@ -185,8 +197,54 @@ function subjectOptions(v: SignupValues): string[] | null {
   return null
 }
 
+/**
+ * The niveau options, hoisted out of the step so they can be read twice.
+ *
+ * The question needs the labels; analytics needs to turn the stored answer
+ * back into one. `level` is stored as the portal's own numeric code — `'3'`
+ * for vwo — and a bare `3` in PostHog is a number nobody can read six months
+ * later. Looking the label up here rather than writing a second map means a
+ * level added to this list cannot go out unlabelled: there is only one list.
+ *
+ * The labels double as the analytics slugs, which is why they are lowercase.
+ */
+export const LEVEL_OPTIONS: Option[] = [
+  { label: 'Selecteer niveau', value: '' },
+  { label: 'vmbo', value: '1' },
+  { label: 'havo', value: '2' },
+  { label: 'vwo', value: '3' },
+  { label: 'basisschool', value: '4' },
+  { label: 'hbo', value: '5' },
+  { label: 'Anders', value: 'different' },
+]
+
+/**
+ * The "hoeveel bijles denk je nodig te hebben" options, hoisted for the same
+ * reason as `LEVEL_OPTIONS`. Stored as `'1'`/`'2'`/`'3'`, which say nothing on
+ * their own, so `optionLabel` is what turns one back into its question.
+ */
+export const TOTAL_HOURS_OPTIONS: Option[] = [
+  { label: '1 uur', value: '1' },
+  { label: 'tussen de 2 en 5 uur', value: '2' },
+  { label: 'meer dan 5 uur', value: '3' },
+]
+
+/**
+ * The readable form of a stored answer, for analytics.
+ *
+ * Returns the option's own label, so it can only ever describe a choice the
+ * form actually offered. An answer with no matching option — which is what a
+ * removed option leaves behind in a half-finished form — comes back empty
+ * rather than as a stale code.
+ */
+export function optionLabel(options: Option[], value: string): string {
+  if (!value) return ''
+  return options.find((option) => option.value === value)?.label ?? ''
+}
+
 export const signupSteps: SignupStep[] = [
   {
+    id: 'bijles',
     title: 'Bijles',
     intro:
       'We krijgen graag een beeld van wat je zoekt, zodat we zo snel mogelijk de juiste docent kunnen vinden.',
@@ -239,11 +297,7 @@ export const signupSteps: SignupStep[] = [
           name: 'totalHours',
           label: 'Hoeveel bijles denk je nodig te hebben?',
           required: true,
-          options: [
-            { label: '1 uur', value: '1' },
-            { label: 'tussen de 2 en 5 uur', value: '2' },
-            { label: 'meer dan 5 uur', value: '3' },
-          ],
+          options: TOTAL_HOURS_OPTIONS,
         })
       }
 
@@ -303,6 +357,7 @@ export const signupSteps: SignupStep[] = [
   },
 
   {
+    id: 'vak_en_niveau',
     title: 'Vak en niveau',
     intro: 'Vertel ons met welk vak we je kunnen helpen.',
     fields: (v) => {
@@ -336,15 +391,7 @@ export const signupSteps: SignupStep[] = [
           name: 'level',
           label: 'Niveau',
           required: true,
-          options: [
-            { label: 'Selecteer niveau', value: '' },
-            { label: 'vmbo', value: '1' },
-            { label: 'havo', value: '2' },
-            { label: 'vwo', value: '3' },
-            { label: 'basisschool', value: '4' },
-            { label: 'hbo', value: '5' },
-            { label: 'Anders', value: 'different' },
-          ],
+          options: LEVEL_OPTIONS,
         },
       ]
 
@@ -382,6 +429,7 @@ export const signupSteps: SignupStep[] = [
   },
 
   {
+    id: 'kennismaking',
     title: 'Kennismaking en proefles',
     intro:
       'Na je aanmelding neemt een van onze docenten contact met je op om een proefles in te plannen.',
@@ -418,6 +466,7 @@ export const signupSteps: SignupStep[] = [
   },
 
   {
+    id: 'factuurgegevens',
     title: 'Factuurgegevens',
     intro:
       'Bijna klaar, we hebben alleen nog een paar gegevens nodig voor de administratie.',

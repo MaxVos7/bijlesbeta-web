@@ -27,6 +27,8 @@ const form = reactive({
   website: '',
 })
 
+const analytics = useAnalytics()
+
 const fileInput = ref<HTMLInputElement | null>(null)
 const cvFile = ref<File | null>(null)
 const cvFileName = computed(() => cvFile.value?.name ?? '')
@@ -163,6 +165,19 @@ async function submit() {
     }
 
     status.value = 'success'
+
+    /*
+      On the answer, not the click — and under its own name rather than a
+      shared `formulier_verzonden`, so the docent funnel and the leerling
+      funnel can never be filtered into one another. See the note on
+      `sollicitatieVerzonden`.
+    */
+    analytics.sollicitatieVerzonden({
+      vak: form.subjects[0] ? slug(form.subjects[0]) : undefined,
+      vakkenAantal: form.subjects.length,
+      cvMeegestuurd: Boolean(cvFile.value),
+      honeypot: form.website,
+    })
   }
   catch (error: any) {
     status.value = 'error'
@@ -199,7 +214,13 @@ async function submit() {
       </p>
     </div>
 
-    <form v-else class="flex flex-col gap-5" novalidate @submit.prevent="submit">
+    <!--
+      Blocked from session replay — see `LeadForm.vue`. This one also renders
+      the chosen CV's *filename*, which is regularly somebody's own name, and
+      that is plain text rather than an input so `maskAllInputs` would not
+      touch it.
+    -->
+    <form v-else class="ph-no-capture flex flex-col gap-5" novalidate @submit.prevent="submit">
       <div>
         <span class="field-label mb-1.5">
           Naam <span class="text-brand-700">(Vereist)</span>
