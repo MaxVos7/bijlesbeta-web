@@ -39,7 +39,7 @@ const storyQuote = computed(() => {
           </h1>
           <p class="mb-[26px] max-w-[46ch] text-[clamp(15px,1.2vw,16px)] leading-[1.65] text-ink-600">
             Opgericht door een groep ambitieuze studenten met een duidelijke visie: onze passie voor
-            Bèta vakken delen met Groningen.
+            Bèta vakken delen met zoveel mogelijk leerlingen.
           </p>
 
           <CheckList :items="heroPromises" class="mb-[30px]" />
