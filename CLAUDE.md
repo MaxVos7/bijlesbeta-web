@@ -296,9 +296,17 @@ postcode lookup — it stores nothing and never throws at its caller.
 
 ## SEO and the WordPress cutover
 
-This app replaces bijlesbeta.nl, which is still WordPress. The whole search
-index for that domain was built by the old site, so the rule is: change what
-Google sees as little as possible.
+**The cutover has happened.** bijlesbeta.nl serves this app; there is no
+WordPress behind that domain any more, the Elementor stylesheets 404 and so
+does `page-sitemap.xml`. Read the rest of this section, and the measurement
+notes further down, as a record of *why* things are the way they are rather
+than as instructions for work still to come.
+
+What has not changed is the reason for it. The whole search index for that
+domain was built by the old site, so the rule still holds: change what Google
+sees as little as possible. Every constraint below — the trailing slash, the
+verbatim titles, the redirect table — is now load-bearing for rankings that
+exist, not preparation for a switch.
 
 - **URLs carry a trailing slash.** Every indexed URL has one, so
   `/over-ons/` is canonical and `server/middleware/trailing-slash.ts` 301s the
@@ -326,10 +334,13 @@ Google sees as little as possible.
   `FAQPage` rather than each page doing it, so markup can never describe
   questions that aren't rendered.
 
-Before cutover, re-run the inventory check: every URL in the live sitemaps
-plus the 28 docenten profiles must return 200 in at most one hop. The last run
-was 77/78, the exception being `/aanmelden-test/`, a WordPress scratch page
-that is deliberately dropped.
+The inventory check that preceded the cutover — every URL in the old sitemaps
+plus the 28 docenten profiles returning 200 in at most one hop — last ran at
+77/78, the exception being `/aanmelden-test/`, a WordPress scratch page that
+was deliberately dropped. Re-run it after any change to `redirects.ts` or to a
+slug; the old URLs are still what external links and the remaining index
+entries point at, and `/kennisbank/docenten/<slug>/` still 301s correctly
+today.
 
 ## Analytics and cookie consent
 
@@ -390,6 +401,88 @@ Two deliberate departures from the live implementation:
 The footer's "Beheer cookies" is the only way back to it once a choice is
 stored — it is a `<button>` calling `reopen()`, not a link, so `.fb-manage`
 styles the button element.
+
+### PostHog
+
+Conversion tracking, in the app rather than in Tag Manager. Two files own it:
+`app/plugins/posthog.client.ts` initialises the SDK and translates consent into
+an opt-in, and `app/composables/useAnalytics.ts` holds every event the site can
+send. Nothing else imports `posthog-js` — a component that wants to record
+something calls a named function on the composable, so the vocabulary is that
+one file and cannot grow by accident.
+
+It replaced a PostHog tag in the GTM container, which sent `$pageview` and
+nothing else: `$config_defaults` was unset there, so it captured only real page
+loads and never a client-side route change. **Do not add a second PostHog
+anywhere.** One tag plus one SDK against one project means two `$pageview`s per
+navigation, two session ids and a replay recorded twice, and nothing about the
+page looks wrong while it happens.
+
+- **`NUXT_PUBLIC_POSTHOG_KEY` is empty by default**, and empty means nothing
+  runs — no capture, no replay, no cookie. That is the same rule `gtmId`
+  follows and it is what makes the repo safe to deploy at any moment. GTM is
+  still loaded for GA4; only PostHog moved.
+- **The import is dynamic and the plugin is not `async`.** The SDK is ~250 KB;
+  awaiting it in a plugin would hold hydration on a site that measures its own
+  Core Web Vitals. Events raised before the chunk lands are queued in
+  `app/utils/posthog-client.ts` and replayed — without that,
+  `aanmelding_gestart` fires from `onMounted` and was reliably lost on a cold
+  load of `/aanmelden/`, which is the entry step of the funnel.
+- **Consent comes from `useCookieConsent`, not from a second mechanism.** The
+  plugin watches `level` and opts in on `analytics` or `accept`. That watcher
+  only works because the composable publishes the level through a shared
+  `useState`: Nuxt's `useCookie` hands every caller its own ref, so a watcher
+  registered outside the banner would never hear a choice being made.
+- **`opt_out_capturing_by_default` is not enough on its own.** It stops events
+  but not storage, so the SDK still wrote its cookie before the visitor had
+  answered the banner. `opt_out_persistence_by_default` is what closes that,
+  and both lift together on `opt_in_capturing()`.
+- **On withdrawal it is `opt_out_capturing()` and then `reset()`, in that
+  order.** `reset()` clears the stored consent decision, and the state it
+  clears *to* is opted out — so after an opt-out it keeps us opted out, while
+  the same pair around an opt-in would silently stop capturing.
+- **`omgeving` is stamped by `before_send`, not by `register()`.** A super
+  property lives in persistence, which is shut until the opt-in — so a
+  `register()` at init writes nowhere and one after the opt-in is already too
+  late for the `$pageview` that `opt_in_capturing()` itself fires. Measured:
+  with `register()` the first pageview of every session carried
+  `omgeving: undefined`. Its value is read off the hostname rather than an
+  environment variable, because staging runs with
+  `NUXT_PUBLIC_SITE_URL=https://bijlesbeta.nl/` and a variable would have
+  labelled it `productie`.
+- **Autocapture is off**, which is why `telefoon_geklikt` and
+  `whatsapp_geklikt` exist: bellen is a real conversion channel with no form
+  behind it, and without those two events a visitor who calls is a bounce.
+- **The conversion events fire on the API's answer, never on the click** —
+  `ok: true` from `deliveryResult`, meaning the submission reached the portal
+  *or* the office copy. `proefles_aangevraagd` is the single exception and it
+  is documented at its own definition: the POST is deliberately not awaited, so
+  that event measures intent, and `server/api/lead.post.ts` logs every hand-off
+  on success as well as failure so the gap is countable.
+- **`aanmelding_voltooid` also goes into the dataLayer**, under the same name,
+  as a plain `{ event: … }` object — the form Tag Manager takes a custom event
+  in, and not the gtag-command case above. It is what the Meta pixel and any
+  Google Ads conversion tag in the container trigger on. The container's only
+  page trigger is `gtm.js`, a real page load, so the client-side navigation to
+  `/aanmelden/bedankt/` is invisible to it; trigger ad tags on the event, never
+  on that URL. Consent is enforced per tag in the container, through Consent
+  Mode — a Meta tag needs `ad_storage` as its additional consent check.
+- **`/aanmelden/bedankt/` is the confirmation, not a block in the form.**
+  `SignupForm` navigates there on `ok: true`, after the event has fired, so a
+  reload of the page is a pageview and never a second conversion. It is
+  `noindex` and deliberately not in `STATIC_PATHS`.
+- **A filled honeypot suppresses the event.** The endpoints answer `{ ok: true }`
+  to a bot on purpose, so the server's answer can't be used to tell them apart;
+  the form can, because it holds the field.
+- **No PII in a property, ever.** No names, addresses, phone numbers or
+  free-text answers — only the shape of a submission. `ph-no-capture` on the
+  four forms keeps them out of session replay entirely (it is rrweb's default
+  block class, so it applies to any PostHog instance, not just ours).
+
+Nothing calls `identificeer()` and that is correct: this app has no login and
+no user state, so the only identity it ever handles is what somebody just typed
+into a form, and none of that may become a `distinct_id`. The hook exists for
+the day `/api/aanmelden` passes back the account id the portal creates.
 
 ## Design work
 
@@ -602,6 +695,21 @@ live rule groups `:hover`, `:focus` and `.elementor-item-active` onto the one
 accent colour, so `active-class` is part of the parity, not decoration.
 
 ### Checking against bijlesbeta.nl
+
+**This method no longer works, and nothing replaces it.** The Elementor kit it
+depends on went with the WordPress site — `post-14.css`, `post-6.css` and the
+rest all 404 now. Every measurement below was taken while those files were
+still up, and they are kept because they are the *source* of the numbers this
+app is built on: when a value here looks arbitrary, this is the record of
+where it came from and why it is not to be tidied.
+
+What that means in practice: the values in this file are now the authority,
+not a copy of one. There is nothing left to diff against, so a change to a
+measured value is a design decision to be made deliberately rather than a
+correction to be read off the live site. If you need the old files, they may
+still exist in the Wayback Machine.
+
+The original method, for the record:
 
 Don't measure from screenshots — the live site's real values are readable
 straight from its Elementor kit. The homepage's is
@@ -824,7 +932,10 @@ rather than designed, so it has its own set of things that shouldn't be tidied:
 - **It runs without header or footer.** bijlesbeta.nl serves the page as the
   Elementor document and nothing else, so the route sits on `layouts/bare.vue`
   via `definePageMeta`. Adding the chrome back is a product decision, not a
-  cleanup.
+  cleanup. Its confirmation, `/aanmelden/bedankt/`, is not measured against
+  anything — bijlesbeta.nl showed a Gravity Forms message in place — and runs
+  on the default layout, since once a visitor is done a dead end is worse.
+  That child route is why the page file is `aanmelden/index.vue`.
 - **Its bands split 34.237% / the rest on a 63px gutter** inside the 1100px
   column, and the FAQ below splits 40/60 with *no* gutter. Both are the live
   containers' own numbers; an `auto-fit` grid lands on 50/50 and reads

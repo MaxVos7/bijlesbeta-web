@@ -18,6 +18,7 @@ const props = withDefaults(
 
 const panel = computed(() => props.variant === 'panel')
 const copy = contactPage.form
+const analytics = useAnalytics()
 
 const form = reactive({
   name: '',
@@ -140,6 +141,17 @@ async function submit() {
     }
 
     status.value = 'success'
+
+    /*
+      On the answer, not the click. Only the fixed `subject` prop travels with
+      it — never the message, the name or the address, which is the whole of
+      what this form collects.
+    */
+    analytics.contactverzoekVerzonden({
+      onderwerp: props.subject,
+      variant: props.variant,
+      honeypot: form.website,
+    })
   } catch (error: any) {
     status.value = 'error'
     errorMessage.value =
@@ -171,7 +183,8 @@ async function submit() {
       <p class="mt-2 text-ink-800">{{ contactFormSuccess.body }}</p>
     </div>
 
-    <form v-else :class="!panel && 'space-y-5'" novalidate @submit.prevent="submit">
+    <!-- Blocked from session replay — see `LeadForm.vue` for the reasoning. -->
+    <form v-else class="ph-no-capture" :class="!panel && 'space-y-5'" novalidate @submit.prevent="submit">
       <template v-if="panel">
         <!--
           15px kicker and a 22px title on the 44px leading, both centred. The

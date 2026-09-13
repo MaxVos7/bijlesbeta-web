@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { contact, contactPage } from '~/data/site'
 
+// Bellen and WhatsApp are conversion channels with no form behind them, and
+// autocapture is off — without these two events they are invisible and the
+// visitor reads as a bounce. See `useAnalytics.ts`.
+const analytics = useAnalytics()
+
 useSeo({
   title: 'Contact',
   description:
@@ -44,6 +49,7 @@ useSeo({
               <a
                 :href="contact.whatsappHref"
                 rel="noopener"
+                @click="analytics.whatsappGeklikt({ positie: 'contact' })"
                 class="flex items-center gap-3 font-display text-[17px] leading-[1.5] font-semibold transition hover:text-brand-700"
               >
                 <span class="flex w-10 flex-none justify-center text-accent-500">

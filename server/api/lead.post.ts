@@ -77,6 +77,26 @@ export default defineEventHandler(async (event) => {
   })
 
   /*
+    One line per hand-off, on success as well as on failure.
+
+    `mail.ts` already logs when a send fails, but a failure-only log has no
+    denominator: you can see that three mails didn't leave and not whether
+    that was three out of four or three out of four hundred. This is the other
+    half, and it is what makes the ratio readable — count these against the
+    `proefles_aangevraagd` events in PostHog, which fire on every hand-off
+    whether or not the mail left.
+
+    That gap is real and is the price of not awaiting the POST: the visitor is
+    redirected to the wizard regardless, so a failed lead mail is invisible
+    from the browser and from PostHog alike. This log is the only place it
+    surfaces.
+
+    Nothing identifying goes in it — no name, no number, no address. The page
+    is enough to tell which block is failing.
+  */
+  console.info('[lead] proefles hand-off', { delivered, page: lead.page })
+
+  /*
     Reported, but never acted on by the caller: `LeadForm` sends the visitor
     to `/aanmelden` either way. Stopping them at the door over a mail that
     didn't leave would cost the submission this whole block exists to get,

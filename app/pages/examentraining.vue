@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { contact, examentraining, faqIntro } from '~/data/site'
 
+// Bellen and WhatsApp are conversion channels with no form behind them, and
+// autocapture is off — without these two events they are invisible and the
+// visitor reads as a bounce. See `useAnalytics.ts`.
+const analytics = useAnalytics()
+
 useSeo({
   absoluteTitle: true,
   title: 'Examentraining Groningen | Bijles Bèta',
@@ -291,6 +296,7 @@ function openVideo() {
             <a
               :href="contact.whatsappHref"
               rel="noopener"
+              @click="analytics.whatsappGeklikt({ positie: 'examentraining' })"
               class="flex items-center gap-4 text-[15px] font-bold transition hover:text-brand-700"
             >
               <span class="flex h-[34px] w-[34px] flex-none items-center justify-center rounded-full bg-brand-500 text-white">

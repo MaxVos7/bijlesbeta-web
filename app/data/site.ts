@@ -283,6 +283,24 @@ export const aanmeldenPage = {
   },
 } as const
 
+/**
+ * `/aanmelden/bedankt/`, where the wizard sends a visitor once the aanmelding
+ * has reached us. It used to be a small block swapped in over the form, and
+ * people didn't notice they were done.
+ */
+export const aanmeldenBedanktPage = {
+  seoTitle: 'Bedankt voor je aanmelding',
+  seoDescription:
+    'Je aanmelding is binnen. We nemen binnenkort contact met je op om je gratis proefles in te plannen.',
+  kicker: 'Aanmelding ontvangen',
+  title: 'Bedankt voor je aanmelding!',
+  body: 'We hebben je aanmelding goed ontvangen. We nemen binnenkort contact met je op om je gratis proefles in te plannen.',
+  nextTitle: 'Zo gaat het verder',
+  contactPrefix: 'Vragen in de tussentijd? App ons op',
+  contactOr: 'of mail naar',
+  home: 'Terug naar de homepage',
+} as const
+
 /** Shown by both variants of ContactForm once a message is through. */
 export const contactFormSuccess = {
   title: 'Bedankt voor je bericht',
