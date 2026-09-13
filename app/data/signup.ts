@@ -597,8 +597,5 @@ export const signupCopy = {
     'Let op: voor bijles aan huis buiten Groningen rekenen we een extra reisvergoeding.',
   regionWarning:
     'Let op: bijles aan huis buiten de gemeente Groningen is niet altijd mogelijk omdat onze docenten in Groningen wonen. Meld je je toch aan, dan nemen we contact met je op.',
-  successTitle: 'Bedankt voor je bericht!',
-  successBody:
-    'We zullen binnenkort contact met je opnemen om je gratis proefles in te plannen.',
-  successAgain: 'Nieuwe aanmelding',
+  // The confirmation is a page of its own now: `aanmeldenBedanktPage` in site.ts.
 } as const

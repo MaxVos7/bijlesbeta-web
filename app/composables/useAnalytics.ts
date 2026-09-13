@@ -86,19 +86,23 @@ function client() {
 }
 
 /**
- * Sends one event, or doesn't.
- *
- * `undefined` properties are dropped rather than sent as null, so an event
- * from a branch that has no `vak` simply lacks the key instead of carrying an
- * empty one — a filter on "vak is set" then means what it says.
+ * `undefined` and empty properties dropped rather than sent as null, so an
+ * event from a branch that has no `vak` simply lacks the key instead of
+ * carrying an empty one — a filter on "vak is set" then means what it says.
  */
-function capture(event: string, props: EventProps = {}) {
-  if (!import.meta.client) return
-
+function withoutBlanks(props: EventProps): Record<string, string | number | boolean> {
   const clean: Record<string, string | number | boolean> = {}
   for (const [key, value] of Object.entries(props)) {
     if (value !== undefined && value !== '') clean[key] = value
   }
+  return clean
+}
+
+/** Sends one event to PostHog, or doesn't. */
+function capture(event: string, props: EventProps = {}) {
+  if (!import.meta.client) return
+
+  const clean = withoutBlanks(props)
 
   /*
     `withPosthog` rather than a bare null check: on a cold page load the SDK
@@ -115,6 +119,35 @@ function capture(event: string, props: EventProps = {}) {
       // thrown one is a form that didn't submit.
     }
   })
+}
+
+/**
+ * Hands one event to Google Tag Manager, for the ad platforms' conversion tags.
+ *
+ * PostHog is the site's own analytics; Meta and Google Ads live in the
+ * container, and the container cannot see a conversion by itself. Its only
+ * page trigger is `gtm.js` — a real page load — and the wizard reaches
+ * `/aanmelden/bedankt/` with a client-side navigation, so the thank-you page
+ * never arrives in Tag Manager as a pageview. A custom event is what a tag
+ * triggers on instead.
+ *
+ * A plain object with an `event` key, which is how Tag Manager takes a custom
+ * event. That is not the case `useCookieConsent` warns about: a gtag
+ * *command* must be an `arguments` object, and an event must not be one.
+ *
+ * Consent is Tag Manager's to enforce, per tag, through Consent Mode — the push
+ * itself stores nothing. With no container loaded it is an array entry nobody
+ * reads.
+ */
+function pushDataLayer(event: string, props: EventProps = {}) {
+  if (!import.meta.client) return
+
+  try {
+    const w = window as unknown as { dataLayer?: unknown[] }
+    w.dataLayer = w.dataLayer ?? []
+    w.dataLayer.push({ event, ...withoutBlanks(props) })
+  }
+  catch { /* never the visitor's problem */ }
 }
 
 /* -------------------------------------------------------------------------- */
@@ -259,7 +292,8 @@ export function useAnalytics() {
       honeypot?: string
     }) {
       if (isBot(opts.honeypot)) return
-      capture('aanmelding_voltooid', {
+
+      const props = {
         vak: opts.vak,
         vakken_aantal: opts.vakkenAantal,
         niveau: opts.niveau,
@@ -270,7 +304,18 @@ export function useAnalytics() {
         prefill: opts.prefill,
         stap_totaal: opts.stapTotaal,
         pagina: pagina(),
-      })
+      }
+
+      capture('aanmelding_voltooid', props)
+
+      /*
+        The same event, under the same name, for the Meta and Google Ads tags
+        in Tag Manager. Fired here and not from the thank-you page, so an ad
+        platform counts a submission rather than a URL: a reload of
+        `/aanmelden/bedankt/`, or a visit to it from history, is a pageview
+        and never a second lead.
+      */
+      pushDataLayer('aanmelding_voltooid', props)
     },
 
     /* ---------------------------------------------------------------- */

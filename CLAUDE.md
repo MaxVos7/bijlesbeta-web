@@ -459,6 +459,18 @@ page looks wrong while it happens.
   is documented at its own definition: the POST is deliberately not awaited, so
   that event measures intent, and `server/api/lead.post.ts` logs every hand-off
   on success as well as failure so the gap is countable.
+- **`aanmelding_voltooid` also goes into the dataLayer**, under the same name,
+  as a plain `{ event: … }` object — the form Tag Manager takes a custom event
+  in, and not the gtag-command case above. It is what the Meta pixel and any
+  Google Ads conversion tag in the container trigger on. The container's only
+  page trigger is `gtm.js`, a real page load, so the client-side navigation to
+  `/aanmelden/bedankt/` is invisible to it; trigger ad tags on the event, never
+  on that URL. Consent is enforced per tag in the container, through Consent
+  Mode — a Meta tag needs `ad_storage` as its additional consent check.
+- **`/aanmelden/bedankt/` is the confirmation, not a block in the form.**
+  `SignupForm` navigates there on `ok: true`, after the event has fired, so a
+  reload of the page is a pageview and never a second conversion. It is
+  `noindex` and deliberately not in `STATIC_PATHS`.
 - **A filled honeypot suppresses the event.** The endpoints answer `{ ok: true }`
   to a bot on purpose, so the server's answer can't be used to tell them apart;
   the form can, because it holds the field.
@@ -920,7 +932,10 @@ rather than designed, so it has its own set of things that shouldn't be tidied:
 - **It runs without header or footer.** bijlesbeta.nl serves the page as the
   Elementor document and nothing else, so the route sits on `layouts/bare.vue`
   via `definePageMeta`. Adding the chrome back is a product decision, not a
-  cleanup.
+  cleanup. Its confirmation, `/aanmelden/bedankt/`, is not measured against
+  anything — bijlesbeta.nl showed a Gravity Forms message in place — and runs
+  on the default layout, since once a visitor is done a dead end is worse.
+  That child route is why the page file is `aanmelden/index.vue`.
 - **Its bands split 34.237% / the rest on a 63px gutter** inside the 1100px
   column, and the FAQ below splits 40/60 with *no* gutter. Both are the live
   containers' own numbers; an `auto-fit` grid lands on 50/50 and reads

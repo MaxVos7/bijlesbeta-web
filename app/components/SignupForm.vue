@@ -420,15 +420,20 @@ async function submit() {
     errorMessage.value =
       error?.data?.data?.message ??
       'Er ging iets mis bij het versturen. Probeer het later opnieuw of bel ons.'
+    return
   }
-}
 
-function reset() {
-  Object.assign(values, emptySignupValues())
-  step.value = 1
-  status.value = 'idle'
-  showError.value = false
-  errorMessage.value = ''
+  /*
+    The confirmation is its own page, not a block swapped in over the form.
+    Visitors didn't notice the swap had happened — it replaced a panel in the
+    middle of a page that otherwise stayed the same — and a page gives the
+    conversion a URL of its own for PostHog and the ad platforms.
+
+    Outside the `try` so a failed navigation can't be reported as a failed
+    submission. `replace`, so Back doesn't return to an emptied wizard that
+    invites the aanmelding a second time.
+  */
+  await navigateTo('/aanmelden/bedankt/', { replace: true })
 }
 </script>
 
@@ -447,37 +452,11 @@ function reset() {
       {{ signupCopy.title }}
     </h2>
 
-    <!-- Confirmation -->
-    <div v-if="status === 'success'" class="px-2.5 py-[30px] text-center" role="status">
-      <span
-        class="mb-[18px] inline-flex h-[54px] w-[54px] items-center justify-center rounded-full bg-success-50"
-      >
-        <svg
-          class="h-[26px] w-[26px] text-success-900"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="3"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-        >
-          <path d="M4 12l6 6L20 6" />
-        </svg>
-      </span>
-      <h3 class="text-[19px]">{{ signupCopy.successTitle }}</h3>
-      <p class="mx-auto mt-2.5 mb-[22px] text-sm leading-relaxed text-ink-700">
-        {{ signupCopy.successBody }}
-      </p>
-      <button type="button" class="btn-secondary" @click="reset">
-        {{ signupCopy.successAgain }}
-      </button>
-    </div>
-
     <!-- Blocked from session replay — see `LeadForm.vue` for the reasoning.
          The four steps are still followable from `aanmelding_stap_voltooid`,
-         which is what the funnel reads anyway. -->
-    <form v-else class="ph-no-capture" novalidate @submit.prevent="advance">
+         which is what the funnel reads anyway. The confirmation is not here:
+         a successful submit navigates to `/aanmelden/bedankt/`. -->
+    <form class="ph-no-capture" novalidate @submit.prevent="advance">
       <!--
         The progress block is only as wide as its own label on the live form —
         a 78px bar, not a full-width one — so the wrapper is sized to content.
@@ -749,10 +728,10 @@ function reset() {
           <button
             type="submit"
             class="h-[49px] w-full rounded-btn bg-brand-500 font-display text-[15px] leading-[15px] font-bold text-ink-900 shadow-field transition hover:bg-brand-600 disabled:cursor-not-allowed disabled:opacity-60"
-            :disabled="status === 'pending'"
+            :disabled="status === 'pending' || status === 'success'"
           >
             {{
-              status === 'pending'
+              status === 'pending' || status === 'success'
                 ? signupCopy.submitting
                 : isLastStep
                   ? signupCopy.submit
