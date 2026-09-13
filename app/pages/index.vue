@@ -40,8 +40,8 @@ useSeo({
             Bijles in wiskunde, natuurkunde en scheikunde
           </h1>
           <p class="mb-7 max-w-[46ch] text-base leading-[1.7] text-ink-600">
-            Krijg weer grip op bètavakken met persoonlijke begeleiding van onze topdocenten van de
-            Rijksuniversiteit.
+            Krijg weer grip op bètavakken met persoonlijke begeleiding van onze topdocenten:
+            universitaire bèta-studenten.
           </p>
 
           <CheckList :items="heroPromises" class="mb-8" />

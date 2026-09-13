@@ -41,7 +41,11 @@ if (tutor.value) usePersonJsonLd(tutor.value)
     up to the 972px they sit in — that is the live page's arithmetic, so the
     columns are allowed to shrink the last few pixels rather than overflow.
   - **The photograph is a flat 434px crop at every width**, on the 8px surface
-    radius, and it does not step down on a phone.
+    radius, and it does not step down on a phone. It is `extraPhoto`, the
+    portal's full-length portrait, not the square headshot the roster on
+    /over-ons uses — the column is roughly 262px wide, so a 3:4 source loses
+    about a tenth off each side and a square one would lose a third of its
+    height.
   - **The break is Elementor's 1024, not Tailwind's `lg`** — the row stacks and
     the right column widens to 50% between 768 and 1024, so `desk:` (1025px)
     is the switch, with `md:` for the 768 floor.
@@ -93,8 +97,14 @@ if (tutor.value) usePersonJsonLd(tutor.value)
               </div>
 
               <div class="flex min-w-0 flex-col justify-center gap-6 md:w-1/2 desk:w-[27%]">
+                <!--
+                  The full-length portrait, not the roster's headshot: the
+                  portal carries both, and this crop is tall enough for it.
+                  `photo` stays on `TutorCard` and on the og:image, where a
+                  square crops to a face predictably and a 3:4 does not.
+                -->
                 <img
-                  :src="tutor.photo"
+                  :src="tutor.extraPhoto"
                   :alt="tutor.name"
                   class="block h-[434px] w-full rounded-panel bg-sand object-cover object-center"
                 >

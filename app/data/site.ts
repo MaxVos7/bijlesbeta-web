@@ -89,9 +89,9 @@ export const stats = [
 
 export const statsIntro = {
   title: 'Bijles Bèta in cijfers',
-  body: 'Wiskunde, natuurkunde en scheikunde: dát is waar wij goed in zijn. Al onze docenten volgen een bèta-opleiding aan de ',
+  body: 'Wiskunde, natuurkunde en scheikunde: dát is waar wij goed in zijn. Al onze docenten volgen een bèta-opleiding aan een van de ',
   /** Set in bold at the end of `body`. */
-  emphasis: 'Rijksuniversiteit Groningen.',
+  emphasis: 'grootste universiteiten van Nederland.',
 } as const
 
 export type Review = {
@@ -149,7 +149,7 @@ export const rating = { label: 'Uitstekend', stars: 5, count: '20+ Reviews' } as
 /** The three promises repeated under every hero. */
 export const heroPromises = [
   'Altijd een persoonlijke match met de juiste docent',
-  'Enthousiaste bèta-studenten van de Rijksuniversiteit Groningen',
+  'Enthousiaste bèta-studenten van de grootste universiteiten van Nederland',
   'Sneller resultaat met effectieve 1-op-1 aandacht',
 ] as const
 
@@ -210,7 +210,7 @@ export const subjectCards = [
 export const story = {
   kicker: 'Al 7 jaar een begrip in de bèta Bijles',
   title: 'Ons verhaal',
-  body: 'Bijles Bèta is ontstaan vanuit de bèta afdeling van de Rijksuniversiteit Groningen. Een kleine groep met ambitieuze studenten dacht dat het anders moest. De bèta vakken verdienen het om met passie te worden over gedragen.',
+  body: 'Bijles Bèta is ontstaan vanuit de bèta afdeling van de universiteit. Een kleine groep met ambitieuze studenten dacht dat het anders moest. Inmiddels staan onze docenten in meerdere studentensteden voor de klas. De bèta vakken verdienen het om met passie te worden over gedragen.',
 } as const
 
 export const teamIntro = {
@@ -270,7 +270,12 @@ export const contactPage = {
  */
 export const aanmeldenPage = {
   kicker: 'Aanmelden',
-  title: 'Zo kan je ons bereiken',
+  /**
+   * The page's only h1, so it describes the page rather than the contact rows
+   * beneath it. It read 'Zo kan je ons bereiken' — copied from `contactPage`
+   * — which left /aanmelden and /contact serving Google the same h1.
+   */
+  title: 'Meld je aan voor een gratis proefles',
   reviewsTitle: 'Wat mensen over ons zeggen',
   faq: {
     title: 'Veelgestelde vragen (FAQ)',
@@ -848,8 +853,6 @@ export type PricingPlan = {
   blurb: string
   /** Highlighted with an amber border and a soft glow. */
   featured: boolean
-  /** Rendered as ink-on-white inverted — the design gives this to the flexible plan. */
-  inverted: boolean
   features: string[]
 }
 
@@ -863,7 +866,6 @@ export const pricingPlans: PricingPlan[] = [
     savingsLabel: '-€8 euro korting',
     blurb: 'Krijg de bèta vakken weer volledig onder controle!',
     featured: false,
-    inverted: false,
     features: [
       'Wis-, natuur- en scheikunde',
       'Geen servicekosten',
@@ -880,7 +882,6 @@ export const pricingPlans: PricingPlan[] = [
     savingsLabel: '-€6 euro korting',
     blurb: 'Structurele bijles voor beter begrip en een stevige basis in het vak.',
     featured: true,
-    inverted: false,
     features: [
       'Wis-, natuur- en scheikunde',
       'Geen servicekosten',
@@ -897,7 +898,6 @@ export const pricingPlans: PricingPlan[] = [
     savingsLabel: '-€3 euro korting',
     blurb: 'Krijg een steuntje in de rug voor jouw volgende toets.',
     featured: false,
-    inverted: false,
     features: [
       'Wis-, natuur- en scheikunde',
       'Geen servicekosten',
@@ -905,32 +905,33 @@ export const pricingPlans: PricingPlan[] = [
       'Extra uren voor €30/uur',
     ],
   },
-  {
-    slug: 'losse-lessen',
-    name: 'Losse lessen',
-    hoursLabel: 'Flexibel',
-    price: 33,
-    regularPrice: 33,
-    savingsLabel: null,
-    blurb: 'Flexibele bijles op maat, wanneer jij extra hulp nodig hebt.',
-    featured: false,
-    inverted: true,
-    features: ['Wis-, natuur- en scheikunde', 'Geen servicekosten', 'Gratis proefles'],
-  },
 ]
+
+/**
+ * Losse lessen — the flexible, no-package rate. Kept out of `pricingPlans`
+ * deliberately: bijlesbeta.nl wants fewer students landing here instead of on
+ * a package, so `PricingSection` renders it as a single quiet line below the
+ * three cards rather than as a fourth card competing with them.
+ */
+export const looseLesson = {
+  name: 'Losse lessen',
+  blurb: 'Flexibele bijles op maat, wanneer jij extra hulp nodig hebt.',
+  price: 36,
+  cta: 'Gratis proefles',
+} as const
 
 export const faqs = [
   {
     question: 'Hebben jullie op de korte termijn docenten beschikbaar?',
     lead: 'Ja!',
     answer:
-      'Wij hebben vrijwel altijd docenten beschikbaar die op de korte termijn bijles kunnen geven in de Bèta vakken aan huis in Groningen. In drukke periodes laten we tijdig weten op welk termijn we docenten beschikbaar hebben.',
+      'Wij hebben vrijwel altijd docenten beschikbaar die op de korte termijn bijles kunnen geven in de Bèta vakken bij jou aan huis. In drukke periodes laten we tijdig weten op welk termijn we docenten beschikbaar hebben.',
   },
   {
-    question: 'Ik woon buiten Groningen, kan ik ook bijles krijgen van jullie?',
+    question: 'Ik woon buiten de stad, kan ik ook bijles krijgen van jullie?',
     lead: 'Dat kan zeker!',
     answer:
-      'Er valt vrijwel altijd iets te regelen. Leerlingen die buiten de stad wonen spreken vaak af met onze docenten op openbare locaties zoals het forum of de middelbare school. Mocht de afstand te doen zijn per fiets, dan rekenen wij vaak een reiskostenvergoeding van 5 euro per les, die rechtstreeks naar de docent gaat.',
+      'Er valt vrijwel altijd iets te regelen. Leerlingen die buiten de stad wonen spreken vaak af met onze docenten op openbare locaties zoals de bibliotheek of de middelbare school. Mocht de afstand te doen zijn per fiets, dan rekenen wij vaak een reiskostenvergoeding van 5 euro per les, die rechtstreeks naar de docent gaat.',
   },
   {
     question: 'Wanneer en hoe betaal ik voor de bijles?',
@@ -942,7 +943,7 @@ export const faqs = [
     question: 'Ik zit niet op de middelbare school, kan ik ook bijles krijgen van jullie?',
     lead: 'Dat kan zeker!',
     answer:
-      'Onze topdocenten zijn zeer flexibel, door hun brede kennis kunnen we ons makkelijk aanpassen aan jouw bijlesvraag. Al onze docenten zijn student aan de Faculty of Science & Engineering van de Rijksuniversiteit Groningen.',
+      'Onze topdocenten zijn zeer flexibel, door hun brede kennis kunnen we ons makkelijk aanpassen aan jouw bijlesvraag. Al onze docenten zijn universitair bèta-student.',
   },
   {
     question: 'Ik moet de bijles helaas kort van te voren afzeggen, wat gebeurt er dan?',
