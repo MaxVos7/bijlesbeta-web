@@ -28,6 +28,15 @@ const groundClass = computed(() =>
 )
 
 /*
+  A page with `headerOverlay` lets its hero photograph run up behind the bar,
+  so the strip is fixed rather than sticky: sticky still reserves its height
+  in flow, which is exactly the pale band such a page wants gone.
+*/
+const positionClass = computed(() =>
+  route.meta.headerOverlay ? 'fixed inset-x-0 top-0 z-50' : ['sticky top-0 z-50', groundClass.value],
+)
+
+/*
   The bar mirrors bijlesbeta.nl's Elementor header exactly, including its
   breakpoints, which are Elementor's rather than Tailwind's:
 
@@ -52,7 +61,7 @@ watch(() => route.fullPath, () => {
 <template>
   <div
     class="px-5 pt-4 pb-4 md:px-10 md:pt-10 md:pb-6"
-    :class="transparent ? 'relative z-10' : ['sticky top-0 z-50', groundClass]"
+    :class="transparent ? 'relative z-10' : positionClass"
   >
     <header
       class="relative mx-auto flex w-full max-w-[1400px] flex-row items-center justify-between gap-3 rounded-[12px] bg-white px-6 py-4 shadow-panel md:items-stretch"

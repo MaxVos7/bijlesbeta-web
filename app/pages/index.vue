@@ -7,6 +7,9 @@ import {
   teamIntro,
 } from '~/data/site'
 
+// The hero photograph runs up behind the floating header bar.
+definePageMeta({ headerOverlay: true })
+
 useSeo({
   // Absolute: the live homepage is the one page that leads with the brand.
   absoluteTitle: true,
@@ -18,33 +21,51 @@ useSeo({
 
 <template>
   <div>
-    <!-- The hero has no ground of its own: it sits on the page's own
-         parchment, so the header strip above it continues the same band
-         rather than cutting a paler line across the top of the page. -->
+    <!-- The hero sits on a photograph of a lesson, mirrored so the tutor and
+         pupil sit on the right and the copy has the left half to itself. A
+         left-to-right ink wash under the copy keeps white text legible over
+         the bright wall and book stack there; on a phone, where the copy spans
+         the full width, the wash covers the whole picture. The image is an
+         <img> rather than a CSS background so it can be the page's LCP
+         element with a fetch priority. The header is fixed over it (see
+         `headerOverlay`), so the top padding is the header strip's own
+         height — 92px, 131px and 152px at the three header breakpoints —
+         plus the band's own lead-in. -->
     <section
       id="top"
-      class="px-[clamp(16px,4vw,24px)] pt-[clamp(24px,4vw,44px)] pb-[clamp(48px,7vw,88px)]"
+      class="relative isolate overflow-hidden bg-ink-900 px-[clamp(16px,4vw,24px)] pt-[140px] md:pt-[195px] desk:pt-[240px] pb-[clamp(56px,8vw,112px)]"
     >
-      <div
-        class="mx-auto grid max-w-[1100px] items-center gap-[clamp(32px,5vw,60px)] [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))]"
+      <img
+        src="/img/home-hero.jpg"
+        alt=""
+        width="2400"
+        height="1350"
+        fetchpriority="high"
+        class="absolute inset-0 -z-20 h-full w-full object-cover object-[70%_center]"
       >
-        <div class="min-w-0">
-          <RatingLine class="mb-[18px]" />
+      <div
+        class="absolute inset-0 -z-10 bg-ink-900/70 md:bg-transparent md:bg-linear-to-r md:from-ink-900/85 md:via-ink-900/55 md:to-ink-900/0"
+        aria-hidden="true"
+      />
+
+      <div class="mx-auto max-w-[1100px]">
+        <div class="min-w-0 max-w-[560px]">
+          <RatingLine tone="inverse" class="mb-[18px]" />
 
           <!-- 32px over a 25ch measure so the headline breaks over two lines,
                as it does on bijlesbeta.nl — which also drops to 26px below
                768px and holds the 44px leading at both sizes. -->
           <h1
-            class="mb-[18px] max-w-[25ch] text-[26px] leading-[44px] tracking-[-0.025em] text-pretty md:text-[32px]"
+            class="mb-[18px] max-w-[25ch] text-[26px] leading-[44px] tracking-[-0.025em] text-pretty text-white md:text-[32px]"
           >
             Bijles in wiskunde, natuurkunde en scheikunde
           </h1>
-          <p class="mb-7 max-w-[46ch] text-base leading-[1.7] text-ink-600">
+          <p class="mb-7 max-w-[46ch] text-base leading-[1.7] text-white/85">
             Krijg weer grip op bètavakken met persoonlijke begeleiding van onze topdocenten:
             universitaire bèta-studenten.
           </p>
 
-          <CheckList :items="heroPromises" class="mb-8" />
+          <CheckList :items="heroPromises" tone="inverse" class="mb-8" />
 
           <NuxtLink
             to="/aanmelden"
@@ -52,15 +73,7 @@ useSeo({
           >
             Gratis proefles <span class="text-lg" aria-hidden="true">→</span>
           </NuxtLink>
-          <CtaNote class="mt-3.5" />
-        </div>
-
-        <div class="min-w-0">
-          <img
-            src="/img/map.svg"
-            alt="Bijles aan huis in heel Groningen"
-            class="mx-auto block h-auto w-full max-w-[620px]"
-          >
+          <CtaNote tone="inverse" class="mt-3.5" />
         </div>
       </div>
     </section>

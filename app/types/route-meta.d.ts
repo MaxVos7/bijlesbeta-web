@@ -7,6 +7,12 @@ declare module 'vue-router' {
      * instead of cutting a pale line above the hero.
      */
     headerGround?: 'cream' | 'ink'
+    /**
+     * Takes the header out of flow and fixes it over the top of the page, so
+     * the page's hero photograph runs up behind the bar. The page must pad
+     * its hero by the strip's height itself — see `/`'s hero.
+     */
+    headerOverlay?: boolean
   }
 }
 
