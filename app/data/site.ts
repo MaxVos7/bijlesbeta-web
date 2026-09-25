@@ -880,8 +880,8 @@ export const pricingPlans: PricingPlan[] = [
     name: 'Uitgebreid',
     hoursLabel: 'Vanaf 12 uur / maand',
     price: 25,
-    regularPrice: 33,
-    savingsLabel: '-€8 euro korting',
+    regularPrice: 36,
+    savingsLabel: '-€11 euro korting',
     blurb: 'Krijg de bèta vakken weer volledig onder controle!',
     featured: false,
     features: [
@@ -896,8 +896,8 @@ export const pricingPlans: PricingPlan[] = [
     name: 'Standaard',
     hoursLabel: 'Vanaf 8 uur / maand',
     price: 27,
-    regularPrice: 33,
-    savingsLabel: '-€6 euro korting',
+    regularPrice: 36,
+    savingsLabel: '-€9 euro korting',
     blurb: 'Structurele bijles voor beter begrip en een stevige basis in het vak.',
     featured: true,
     features: [
@@ -912,8 +912,8 @@ export const pricingPlans: PricingPlan[] = [
     name: 'Basis',
     hoursLabel: 'Vanaf 4 uur / maand',
     price: 30,
-    regularPrice: 33,
-    savingsLabel: '-€3 euro korting',
+    regularPrice: 36,
+    savingsLabel: '-€6 euro korting',
     blurb: 'Krijg een steuntje in de rug voor jouw volgende toets.',
     featured: false,
     features: [
