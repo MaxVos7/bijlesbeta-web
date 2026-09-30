@@ -27,6 +27,11 @@
  * "would I be comfortable reading this row out loud". The wizard collects a
  * child's first name and phone number; none of it belongs here.
  *
+ * The one exception is not a property and does not go to PostHog: the
+ * `user_data` on the dataLayer's `form_submit`, which carries the e-mail and
+ * phone number SHA-256-hashed for the ad platforms' matching — and only when
+ * the visitor chose *Alles accepteren*. See `formSubmit`.
+ *
  * ## Timing
  *
  * A conversion fires on a confirmed success — after the API answered, never on
@@ -139,15 +144,135 @@ function capture(event: string, props: EventProps = {}) {
  * itself stores nothing. With no container loaded it is an array entry nobody
  * reads.
  */
-function pushDataLayer(event: string, props: EventProps = {}) {
+function pushDataLayer(event: string, props: EventProps = {}, userData?: UserData) {
   if (!import.meta.client) return
 
   try {
     const w = window as unknown as { dataLayer?: unknown[] }
     w.dataLayer = w.dataLayer ?? []
-    w.dataLayer.push({ event, ...withoutBlanks(props) })
+    w.dataLayer.push({ event, ...withoutBlanks(props), ...(userData ? { user_data: userData } : {}) })
   }
   catch { /* never the visitor's problem */ }
+}
+
+/**
+ * The contact details a converting form holds, for advanced matching. Raw
+ * here; they only ever leave this file hashed — see `hashedUserData`.
+ */
+type Contact = { email?: string; phone?: string }
+
+/**
+ * Hashed identifiers for the ad platforms' matching, on the `form_submit`
+ * event only, keyed the way each platform's Tag Manager template reads them:
+ *
+ *   sha256_email_address, sha256_phone_number   Google Ads enhanced conversions
+ *   em, ph                                      Meta advanced matching
+ *
+ * Both platforms want SHA-256 hex of a normalised value, but they normalise the
+ * phone differently — Google E.164 with the `+`, Meta the digits without it —
+ * so the number is hashed twice. The e-mail is trimmed and lowercased for both.
+ */
+type UserData = Partial<Record<'sha256_email_address' | 'sha256_phone_number' | 'em' | 'ph', string>>
+
+/**
+ * Whether the visitor chose *Alles accepteren*, read off the consent cookie at
+ * the moment of the event. Only that level grants `ad_user_data`, and without
+ * it no identifier may go to an ad platform, hashed or not.
+ */
+function adsConsented(): boolean {
+  if (!import.meta.client) return false
+  return /(?:^|;\s*)cookie_consent=accept(?:;|$)/.test(document.cookie)
+}
+
+async function sha256(value: string): Promise<string> {
+  const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(value))
+  return [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, '0')).join('')
+}
+
+/**
+ * `undefined` when there is nothing to hash or no way to hash it
+ * (`crypto.subtle` exists only on https and localhost).
+ *
+ * The phone goes through `normalisePhone`, the same rule the forms enforce,
+ * which yields a Dutch `06…`; that is rewritten to `+316…`. The portal only
+ * accepts Dutch mobile shapes, so assuming +31 is not a guess.
+ */
+async function hashedUserData(contact: Contact): Promise<UserData | undefined> {
+  if (!globalThis.crypto?.subtle) return undefined
+
+  const data: UserData = {}
+  const email = contact.email?.trim().toLowerCase()
+  if (email) {
+    const hash = await sha256(email)
+    data.sha256_email_address = hash
+    data.em = hash
+  }
+
+  const local = contact.phone ? normalisePhone(contact.phone) : null
+  if (local) {
+    const e164 = `+31${local.slice(1)}`
+    data.sha256_phone_number = await sha256(e164)
+    data.ph = await sha256(e164.slice(1))
+  }
+
+  return Object.keys(data).length ? data : undefined
+}
+
+/** The forms that send `form_submit`. */
+export type FormName = 'proefles' | 'aanmelden' | 'contact' | 'sollicitatie'
+
+/**
+ * One `form_submit` in the dataLayer for every form that converted — the one
+ * event the Tag Manager conversion tags (Meta, Google Ads) trigger on.
+ * `form_name` tells the forms apart:
+ *
+ * - `proefles` — the short block (`LeadForm`), on every page that carries it.
+ *   Fires on the click, like `proefles_aangevraagd`: the hand-off is not
+ *   awaited, so this is intent.
+ * - `aanmelden` — the wizard, on the API's `ok: true`. The real lead.
+ * - `contact` — the contact form, on the API's answer.
+ * - `sollicitatie` — a docent applying, on the API's answer. Not a customer:
+ *   keep it out of every ad conversion.
+ *
+ * A visitor who uses the short block and then finishes the wizard sends two,
+ * `proefles` and then `aanmelden`. Count one of them, not both.
+ *
+ * Every push carries `event_id`, unique per submission, so a server-side
+ * Conversions API added later can send the same id and the platform
+ * deduplicates the pair instead of counting it twice. `actie` names the
+ * campaign a visitor came in on (`utrecht`), when there is one.
+ *
+ * `user_data` is added only with full consent, and only hashed. Hashing is
+ * async, so the push may land a few milliseconds after the call — and after a
+ * client-side navigation has started, which is fine: the dataLayer lives on
+ * `window` and outlasts the route. Nothing here is awaited by a caller.
+ */
+function formSubmit(opts: {
+  formName: FormName
+  formLocation: Positie
+  page: string
+  actie?: string
+  contact?: Contact
+}) {
+  if (!import.meta.client) return
+
+  const props: EventProps = {
+    form_name: opts.formName,
+    form_location: opts.formLocation,
+    pagina: opts.page,
+    actie: opts.actie,
+    event_id: globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`,
+  }
+
+  if (!opts.contact || !adsConsented()) {
+    pushDataLayer('form_submit', props)
+    return
+  }
+
+  hashedUserData(opts.contact).then(
+    (userData) => pushDataLayer('form_submit', props, userData),
+    () => pushDataLayer('form_submit', props),
+  )
 }
 
 /* -------------------------------------------------------------------------- */
@@ -184,6 +309,7 @@ export type Positie =
   | 'hero'
   | 'aanmelden'
   | 'examentraining'
+  | 'werken_bij'
 
 export function useAnalytics() {
   const route = useRoute()
@@ -220,12 +346,25 @@ export function useAnalytics() {
           address itself, which is why this is a boolean. */
       emailIngevuld: boolean
       honeypot?: string
+      /** The campaign key the block carries, if any — see `LeadForm`. */
+      actie?: string
+      /** For advanced matching only; never reaches PostHog. */
+      contact?: Contact
     }) {
       if (isBot(opts.honeypot)) return
       capture('proefles_aangevraagd', {
         bron: opts.bron,
         email_ingevuld: opts.emailIngevuld,
         pagina: pagina(),
+      })
+
+      // The shared conversion trigger for Tag Manager — see `formSubmit`.
+      formSubmit({
+        formName: 'proefles',
+        formLocation: opts.bron,
+        page: pagina(),
+        actie: opts.actie,
+        contact: opts.contact,
       })
     },
 
@@ -290,6 +429,10 @@ export function useAnalytics() {
       /** How many steps the wizard had, from `signupSteps.length`. */
       stapTotaal: number
       honeypot?: string
+      /** The campaign the visitor came in on, from `?actie=`. */
+      actie?: string
+      /** For advanced matching only; never reaches PostHog. */
+      contact?: Contact
     }) {
       if (isBot(opts.honeypot)) return
 
@@ -316,6 +459,13 @@ export function useAnalytics() {
         and never a second lead.
       */
       pushDataLayer('aanmelding_voltooid', props)
+      formSubmit({
+        formName: 'aanmelden',
+        formLocation: 'aanmelden',
+        page: pagina(),
+        actie: opts.actie,
+        contact: opts.contact,
+      })
     },
 
     /* ---------------------------------------------------------------- */
@@ -344,6 +494,8 @@ export function useAnalytics() {
         cv_meegestuurd: opts.cvMeegestuurd,
         pagina: pagina(),
       })
+      // No contact details: an applicant is not a customer to match.
+      formSubmit({ formName: 'sollicitatie', formLocation: 'werken_bij', page: pagina() })
     },
 
     /* ---------------------------------------------------------------- */
@@ -360,6 +512,8 @@ export function useAnalytics() {
       onderwerp: string
       variant: 'panel' | 'labelled'
       honeypot?: string
+      /** For advanced matching only; never reaches PostHog. */
+      contact?: Contact
     }) {
       if (isBot(opts.honeypot)) return
       capture('contactverzoek_verzonden', {
@@ -367,6 +521,8 @@ export function useAnalytics() {
         variant: opts.variant,
         pagina: pagina(),
       })
+
+      formSubmit({ formName: 'contact', formLocation: 'contact', page: pagina(), contact: opts.contact })
     },
 
     /* ---------------------------------------------------------------- */

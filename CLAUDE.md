@@ -471,6 +471,19 @@ page looks wrong while it happens.
   `SignupForm` navigates there on `ok: true`, after the event has fired, so a
   reload of the page is a pageview and never a second conversion. It is
   `noindex` and deliberately not in `STATIC_PATHS`.
+- **`form_submit` is the one conversion trigger for Tag Manager.** Every form
+  pushes it on success — `form_name` is `proefles`, `aanmelden`, `contact` or
+  `sollicitatie` — with a unique `event_id` (for deduplicating against a
+  future Conversions API) and `actie` when the visitor came in on a campaign.
+  Ad tags trigger on it, never on a URL; `sollicitatie` is a docent, not a
+  customer, and stays out of every ad conversion. `proefles` fires on the
+  click and `aanmelden` on the answer, so a visitor who does both sends two.
+- **`user_data` is the only identifying thing in the dataLayer.** On
+  `form_submit`, and only with the `accept` consent level (the one that grants
+  `ad_user_data`), the e-mail and phone go in SHA-256-hashed for Meta advanced
+  matching (`em`, `ph`) and Google enhanced conversions
+  (`sha256_email_address`, `sha256_phone_number`). Never unhashed, never into
+  PostHog, never without that consent.
 - **A filled honeypot suppresses the event.** The endpoints answer `{ ok: true }`
   to a bot on purpose, so the server's answer can't be used to tell them apart;
   the form can, because it holds the field.

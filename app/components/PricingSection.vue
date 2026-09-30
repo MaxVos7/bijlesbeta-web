@@ -16,6 +16,29 @@ import { looseLesson, pricingAssurances, pricingIntro, pricingPlans } from '~/da
  * the mint green over the same green at 10%.
  */
 
+const props = withDefaults(
+  defineProps<{
+    /** Overrides the heading block, e.g. the campaign copy on `/openingsactie-utrecht`. */
+    intro?: { kicker: string; title: string; body: string }
+    /** Where every CTA points. A `#hash` renders a plain in-page link. */
+    href?: string
+    /** Overrides the label on every CTA, the Losse lessen link's included. */
+    ctaLabel?: string
+    /** Overrides the Losse lessen line's blurb. */
+    looseBlurb?: string
+    /** Overrides the assurance row under the cards. */
+    assurances?: readonly string[]
+  }>(),
+  { intro: undefined, href: '/aanmelden', ctaLabel: undefined, looseBlurb: undefined, assurances: undefined },
+)
+
+const introCopy = computed(() => props.intro ?? pricingIntro)
+const assuranceItems = computed(() => props.assurances ?? pricingAssurances)
+// NuxtLink appends a trailing slash, which would turn `#proefles` into a
+// navigation; an anchor to the same page is a plain link.
+const linkIs = computed(() => (props.href.startsWith('#') ? 'a' : resolveComponent('NuxtLink')))
+const linkAttrs = computed(() => (props.href.startsWith('#') ? { href: props.href } : { to: props.href }))
+
 const formatPrice = (value: number) =>
   value % 1 === 0 ? `€${value}` : `€${value.toFixed(2).replace('.', ',')}`
 </script>
@@ -23,12 +46,12 @@ const formatPrice = (value: number) =>
 <template>
   <div>
     <div class="mx-auto mb-[clamp(30px,4vw,48px)] max-w-[1368px] text-center">
-      <p class="kicker mb-3 text-[19px]">{{ pricingIntro.kicker }}</p>
+      <p class="kicker mb-3 text-[19px]">{{ introCopy.kicker }}</p>
       <h2 class="mb-3 text-[clamp(24px,2.9vw,28px)] leading-[44px] tracking-[-0.025em]">
-        {{ pricingIntro.title }}
+        {{ introCopy.title }}
       </h2>
       <p class="mx-auto max-w-[800px] text-base leading-[28px] text-ink-800">
-        {{ pricingIntro.body }}
+        {{ introCopy.body }}
       </p>
     </div>
 
@@ -82,6 +105,9 @@ const formatPrice = (value: number) =>
           </span>
         </div>
 
+        <!-- Campaign pages hang an offer panel here, between price and list. -->
+        <slot name="extra" :plan="plan" />
+
         <ul class="mt-6 mb-[26px] flex list-none flex-col p-0">
           <li
             v-for="feature in plan.features"
@@ -106,9 +132,9 @@ const formatPrice = (value: number) =>
 
         <!-- Content-width, not full-bleed: the live CTA is an inline-block
              that ends short of the card's inner edge. -->
-        <NuxtLink to="/aanmelden" class="btn-primary btn-lg self-start">
-          Gratis proefles <BtnArrow />
-        </NuxtLink>
+        <component :is="linkIs" v-bind="linkAttrs" class="btn-primary btn-lg self-start">
+          {{ ctaLabel ?? 'Gratis proefles' }} <BtnArrow />
+        </component>
         <CtaNote class="mt-3.5" />
       </div>
     </div>
@@ -125,24 +151,25 @@ const formatPrice = (value: number) =>
       >
         <div class="min-w-0">
           <h3 class="text-[17px] leading-[26px] tracking-[-0.02em]">{{ looseLesson.name }}</h3>
-          <p class="text-sm leading-[22px] text-ink-700">{{ looseLesson.blurb }}</p>
+          <p class="text-sm leading-[22px] text-ink-700">{{ looseBlurb ?? looseLesson.blurb }}</p>
         </div>
         <div class="flex items-center gap-5">
           <p class="flex items-baseline gap-1.5">
             <span class="text-[19px] leading-[28.5px] font-bold text-ink-800">{{ formatPrice(looseLesson.price) }}</span>
             <span class="text-[13px] text-ink-700">/uur</span>
           </p>
-          <NuxtLink
-            to="/aanmelden"
+          <component
+            :is="linkIs"
+            v-bind="linkAttrs"
             class="inline-flex items-center gap-2 border-b-[1.5px] border-ink-900/25 font-display text-sm font-bold text-ink-800"
           >
-            {{ looseLesson.cta }}
+            {{ ctaLabel ?? looseLesson.cta }}
             <svg class="h-3 w-[13px] flex-none" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true">
               <path
                 d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"
               />
             </svg>
-          </NuxtLink>
+          </component>
         </div>
       </div>
     </div>
@@ -150,7 +177,7 @@ const formatPrice = (value: number) =>
     <div
       class="mt-[clamp(30px,4vw,46px)] flex flex-wrap justify-center gap-x-[clamp(20px,3vw,36px)] gap-y-3.5 text-[15px] leading-[22.5px] font-semibold text-ink-800"
     >
-      <span v-for="item in pricingAssurances" :key="item" class="flex items-center gap-2.5">
+      <span v-for="item in assuranceItems" :key="item" class="flex items-center gap-2.5">
         <svg
           class="h-3.5 w-3.5 flex-none text-success-500"
           viewBox="0 0 24 24"

@@ -29,8 +29,13 @@ const props = withDefaults(
      * the closed set the funnel breaks down on.
      */
     positie?: Positie
+    /**
+     * A campaign key passed on to the wizard as `?actie=…`, so `/aanmelden`
+     * can greet the visitor in the campaign's words — see `signupActieCopy`.
+     */
+    actie?: string
   }>(),
-  { source: '', positie: 'trial_cta' },
+  { source: '', positie: 'trial_cta', actie: undefined },
 )
 
 const uid = useId()
@@ -70,9 +75,11 @@ const payload = () => ({
 function submit() {
   if (status.value === 'pending') return
 
-  if (!form.name.trim() || !form.phone.trim() || !form.consent) {
+  // The privacy box is optional: it is shown, not required. Name and phone
+  // are the only answers a submit can't go without.
+  if (!form.name.trim() || !form.phone.trim()) {
     status.value = 'error'
-    message.value = 'Vul je naam en telefoonnummer in en ga akkoord met het privacybeleid.'
+    message.value = 'Vul je naam en telefoonnummer in.'
     return
   }
 
@@ -125,6 +132,8 @@ async function handOff() {
     bron: props.positie,
     emailIngevuld: form.email.trim() !== '',
     honeypot: form.website,
+    actie: props.actie,
+    contact: { email: form.email, phone: form.phone },
   })
 
   /*
@@ -138,6 +147,7 @@ async function handOff() {
       naam: form.name.trim(),
       telefoon: normalisePhone(form.phone) ?? form.phone.trim(),
       ...(form.email.trim() ? { 'e-mailadres': form.email.trim() } : {}),
+      ...(props.actie ? { actie: props.actie } : {}),
     },
   })
 }
@@ -183,7 +193,7 @@ async function handOff() {
         </span>
         <!-- "privacybeleid" is set plain here, not as a link, matching the live
              form. The linked version still stands in the longer SignupForm. -->
-        <span>Ik ga akkoord met het privacybeleid.<span class="text-danger">(Vereist)</span></span>
+        <span>Ik ga akkoord met het privacybeleid.</span>
       </label>
 
       <div aria-hidden="true" class="absolute left-[-9999px]">

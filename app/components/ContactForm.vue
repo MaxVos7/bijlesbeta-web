@@ -151,6 +151,7 @@ async function submit() {
       onderwerp: props.subject,
       variant: props.variant,
       honeypot: form.website,
+      contact: { email: form.email, phone: form.phone },
     })
   } catch (error: any) {
     status.value = 'error'

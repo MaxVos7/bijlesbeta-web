@@ -569,6 +569,20 @@ export const signupSteps: SignupStep[] = [
   },
 ]
 
+/**
+ * The wizard's heading for a visitor handed over by a campaign's proefles
+ * block, keyed by the `actie` query parameter `LeadForm` adds to its
+ * redirect. They have already given their name and number, so the wizard
+ * greets them as nearly done rather than as a fresh start. An unknown key
+ * falls back to `signupCopy`.
+ */
+export const signupActieCopy: Record<string, { title: string; intro: string }> = {
+  utrecht: {
+    title: 'Bijna klaar!',
+    intro: 'We hebben nog wat gegevens nodig om een passende docent te vinden.',
+  },
+}
+
 export const signupCopy = {
   kicker: 'Start altijd met een gratis proefles',
   title: 'Aanmelden',

@@ -21,7 +21,7 @@ import { comparison } from '~/data/site'
       </div>
 
       <div
-        class="relative mx-auto grid max-w-[800px] gap-[clamp(14px,2vw,22px)] [grid-template-columns:repeat(auto-fit,minmax(280px,1fr))] max-desk:max-w-[600px] max-md:max-w-none"
+        class="relative mx-auto flex max-w-[800px] flex-col md:grid md:grid-cols-2 md:gap-[clamp(14px,2vw,22px)] max-desk:max-w-[600px] max-md:max-w-none"
       >
         <div class="overflow-hidden rounded-tile border border-line-200 bg-white">
           <div class="bg-sand px-6 py-[26px] text-center">
@@ -56,6 +56,17 @@ import { comparison } from '~/data/site'
             </li>
           </ul>
         </div>
+
+        <!--
+          Side by side, the badge straddles the gutter at 38% of the height.
+          Stacked, it sits in the flow between the two cards instead: its
+          negative margins leave 14px between them and let it overlap both
+          edges, where an absolute 38% would land on the first card's text.
+        -->
+        <span
+          class="pointer-events-none relative z-10 -my-[17px] flex h-12 w-12 flex-none items-center justify-center self-center rounded-full bg-brand-500 text-[15px] font-extrabold shadow-float md:absolute md:top-[38%] md:left-1/2 md:my-0 md:-translate-x-1/2 md:-translate-y-1/2"
+          aria-hidden="true"
+        >VS</span>
 
         <div class="overflow-hidden rounded-tile border border-line-200 bg-white">
           <div class="bg-sand px-6 py-[26px] text-center">
@@ -100,10 +111,6 @@ import { comparison } from '~/data/site'
           </ul>
         </div>
 
-        <span
-          class="pointer-events-none absolute top-[38%] left-1/2 flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-brand-500 text-[15px] font-extrabold shadow-float"
-          aria-hidden="true"
-        >VS</span>
       </div>
     </div>
   </section>

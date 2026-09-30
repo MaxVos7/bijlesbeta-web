@@ -7,6 +7,7 @@ import {
   TOTAL_HOURS_OPTIONS,
   emptySignupValues,
   optionLabel,
+  signupActieCopy,
   signupCopy,
   signupSteps,
   type SignupField,
@@ -57,6 +58,11 @@ const cameFromLeadForm = Boolean(
 )
 
 onMounted(() => analytics.aanmeldingGestart({ prefill: cameFromLeadForm }))
+
+/* A campaign's own heading, when its proefles block sent the visitor here.
+   Read once, like the prefill; an unknown `actie` keeps the usual heading. */
+const actieParam = Array.isArray(query.actie) ? query.actie[0] : query.actie
+const actieCopy = actieParam ? signupActieCopy[String(actieParam)] : undefined
 const status = ref<'idle' | 'pending' | 'success' | 'error'>('idle')
 const showError = ref(false)
 const errorMessage = ref('')
@@ -414,6 +420,8 @@ async function submit() {
       prefill: cameFromLeadForm,
       stapTotaal: totalSteps,
       honeypot: values.website,
+      actie: actieParam ? String(actieParam) : undefined,
+      contact: { email: values.email, phone: values.studentPhone || values.contactPhone },
     })
   } catch (error: any) {
     status.value = 'error'
@@ -449,8 +457,11 @@ async function submit() {
       {{ signupCopy.kicker }}
     </p>
     <h2 class="text-center text-[22px] leading-[44px] tracking-normal text-ink-900">
-      {{ signupCopy.title }}
+      {{ actieCopy?.title ?? signupCopy.title }}
     </h2>
+    <p v-if="actieCopy" class="-mt-2 text-center text-[15px] leading-[22.5px] text-ink-700">
+      {{ actieCopy.intro }}
+    </p>
 
     <!-- Blocked from session replay — see `LeadForm.vue` for the reasoning.
          The four steps are still followable from `aanmelding_stap_voltooid`,

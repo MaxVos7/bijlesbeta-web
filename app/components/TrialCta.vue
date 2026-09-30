@@ -14,17 +14,30 @@ const analytics = useAnalytics()
  * 36px of padding, 48px of white above and below it, and its kicker in plain
  * white rather than the `on-brand` amber-ink the handoff used.
  */
-withDefaults(
+const props = withDefaults(
   defineProps<{
+    /** Overrides the pitch on the left, e.g. the campaign copy on `/openingsactie-utrecht`. */
+    copy?: {
+      kicker: string
+      title: string
+      body: string
+      promises: readonly string[]
+      /** A heading over the form, telling the visitor what to fill in. */
+      formTitle?: string
+    }
     /**
      * Which band the panel sits in. Most pages run it on white; on
      * `/zo-werkt-het` the live container is transparent, so it sits on the
      * page's own parchment instead.
      */
     ground?: 'white' | 'page'
+    /** Passed through to `LeadForm` — a campaign key for the wizard. */
+    actie?: string
   }>(),
-  { ground: 'white' },
+  { ground: 'white', copy: undefined, actie: undefined },
 )
+
+const pitch = computed(() => props.copy ?? trialCta)
 </script>
 
 <template>
@@ -36,15 +49,15 @@ withDefaults(
       class="mx-auto grid max-w-[1100px] items-start gap-3 rounded-block bg-brand-500 p-[clamp(20px,3vw,36px)] [grid-template-columns:repeat(auto-fit,minmax(260px,1fr))]"
     >
       <div class="min-w-0">
-        <p class="kicker mb-1 text-white">{{ trialCta.kicker }}</p>
+        <p class="kicker mb-1 text-white">{{ pitch.kicker }}</p>
         <h2 class="mb-3.5 text-[28px] leading-[44px] tracking-[-0.025em]">
-          {{ trialCta.title }}
+          {{ pitch.title }}
         </h2>
         <p class="mb-6 max-w-[44ch] text-[15px] leading-[22.5px] text-ink-700">
-          {{ trialCta.body }}
+          {{ pitch.body }}
         </p>
 
-        <CheckList :items="trialCta.promises" class="mb-7" />
+        <CheckList :items="pitch.promises" class="mb-7" />
 
         <!-- Translucent white rather than a solid neutral: the amber has to
              read through it, as it does on the live block. -->
@@ -79,7 +92,12 @@ withDefaults(
         </div>
       </div>
 
-      <LeadForm class="min-w-0 rounded-tile bg-linen px-6 py-3.5" />
+      <div class="min-w-0 rounded-tile bg-linen px-6 py-3.5">
+        <h3 v-if="copy?.formTitle" class="mt-2 mb-3.5 text-[19px] leading-[26px] tracking-[-0.01em]">
+          {{ copy.formTitle }}
+        </h3>
+        <LeadForm :actie="actie" />
+      </div>
     </div>
   </section>
 </template>
