@@ -228,9 +228,9 @@ watch(
 )
 
 /**
- * The last step warns about travel costs and reachability. Both depend on the
- * address codes, which only exist once the lookup has resolved — so neither
- * warning shows while the address is still being filled in.
+ * The last step warns about travel costs. That depends on the address codes,
+ * which only exist once the lookup has resolved — so the warning doesn't show
+ * while the address is still being filled in.
  */
 const showTravelWarning = computed(
   () =>
@@ -239,14 +239,6 @@ const showTravelWarning = computed(
     values.cityCode !== '' &&
     values.cityCode !== GRONINGEN_CITY_CODE &&
     values.municipalityCode === GRONINGEN_MUNICIPALITY_CODE,
-)
-
-const showRegionWarning = computed(
-  () =>
-    isLastStep.value &&
-    values.location === 'at_home' &&
-    values.municipalityCode !== '' &&
-    values.municipalityCode !== GRONINGEN_MUNICIPALITY_CODE,
 )
 
 // Address lookup — postcode + huisnummer fill street, city and the two codes.
@@ -669,9 +661,6 @@ async function submit() {
 
         <p v-if="showTravelWarning" class="text-[13px] leading-[18.6px] text-danger">
           {{ signupCopy.travelWarning }}
-        </p>
-        <p v-if="showRegionWarning" class="text-[13px] leading-[18.6px] text-danger">
-          {{ signupCopy.regionWarning }}
         </p>
 
         <div v-if="isLastStep">
