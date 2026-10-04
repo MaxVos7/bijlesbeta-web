@@ -9,8 +9,9 @@ import { z } from 'zod'
  * it. Gravity Forms form 1, "Gratis proefles kort":
  *
  *   - notifies `{admin_email}` with `{all_fields}` on every submission, and
- *   - **redirects** to `/aanmelden/?naam=…&telefoon=…&e-mailadres=…`, where
- *     the long form is prefilled from those three parameters.
+ *   - **redirects** to `/aanmelden/`, where the long form is prefilled with
+ *     the name, phone number and e-mail (live passed them in the query
+ *     string; we don't — see `useLeadHandoff`).
  *
  * The redirect is the point — the block is the top of the funnel, not the end
  * of it — and the mail is the safety net for the visitor who never finishes

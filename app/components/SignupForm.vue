@@ -21,41 +21,33 @@ const step = ref(1)
 const values = reactive<SignupValues>(emptySignupValues())
 
 /*
-  Prefilled from the query string, which is how the short proefles block hands
-  a visitor over: its confirmation is a redirect to
-  `/aanmelden/?naam=…&telefoon=…&e-mailadres=…`. The three parameter names are
-  bijlesbeta.nl's own — they map onto Gravity Forms' fields 1.3, 4 and 3, which
-  are this wizard's `contactFirstName`, `studentPhone` and `email` — so a link
-  built against the live site prefills here too. See `LeadForm.vue`.
+  Prefilled from the proefles block, which hands a visitor over by redirecting
+  here with their name, phone number and e-mail in shared state — see
+  `useLeadHandoff` for why not in the query string, as bijlesbeta.nl did.
 
-  Read once at setup rather than watched: this seeds the form, it doesn't own
-  it, and a visitor who edits a field must not have it overwritten by a
-  navigation that leaves the query string in place.
+  Read once at setup and then cleared: this seeds the form, it doesn't own it,
+  and a later visit to the wizard in the same session must start empty.
 */
 const query = useRoute().query
+const leadHandoff = useLeadHandoff()
+const handoff = leadHandoff.value
+leadHandoff.value = null
 
-function prefill(param: string, key: 'contactFirstName' | 'studentPhone' | 'email') {
-  const raw = query[param]
-  const value = (Array.isArray(raw) ? raw[0] : raw) ?? ''
-  if (value) values[key] = String(value).slice(0, SIGNUP_MAX[key])
+if (handoff) {
+  values.contactFirstName = handoff.name.slice(0, SIGNUP_MAX.contactFirstName)
+  values.studentPhone = handoff.phone.slice(0, SIGNUP_MAX.studentPhone)
+  values.email = handoff.email.slice(0, SIGNUP_MAX.email)
 }
-
-prefill('naam', 'contactFirstName')
-prefill('telefoon', 'studentPhone')
-prefill('e-mailadres', 'email')
 
 const analytics = useAnalytics()
 
 /*
   Whether the proefles block handed this visitor over, read once at setup for
   the same reason the prefill itself is: it describes how they arrived, and it
-  must not change when they edit a field or when a navigation leaves the query
-  string in place. Every wizard event carries it, so the funnel can be split
-  by entry route without a second event.
+  must not change when they edit a field. Every wizard event carries it, so
+  the funnel can be split by entry route without a second event.
 */
-const cameFromLeadForm = Boolean(
-  query.naam || query.telefoon || query['e-mailadres'],
-)
+const cameFromLeadForm = handoff !== null
 
 onMounted(() => analytics.aanmeldingGestart({ prefill: cameFromLeadForm }))
 

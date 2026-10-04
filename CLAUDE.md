@@ -213,17 +213,22 @@ Our version, and what shouldn't be undone:
   work queue with work nobody has to do.
 - **The POST is not awaited and cannot stop the redirect.** The visitor's next
   step is the wizard; a mail that didn't leave is our problem, and their
-  answers travel in the URL either way.
+  answers reach the wizard either way.
 - **Name and phone are required, e-mail is not.** That is the reverse of what
   this form asked for at first, and it is live form 1's own rule
   (`gfield_contains_required` on fields 1 and 4, not on 3). The number is what
   the office rings when somebody drops out, so it is the field that must not
   be missing. The number is normalised through `shared/utils/phone.ts` before
-  it goes in the query string, so the wizard accepts what it is handed.
-- **The query parameter names are bijlesbeta.nl's**, not ours — `naam`,
-  `telefoon`, `e-mailadres`, hyphen and all. Keeping them means a link built
-  against the live site prefills here too. `SignupForm` reads them once at
-  setup, not in a watcher: it seeds the form, it doesn't own it.
+  it is handed over, so the wizard accepts what it is given.
+- **The answers do not travel in the URL.** bijlesbeta.nl put them in the
+  query string (`naam`, `telefoon`, `e-mailadres`) and so did this app at
+  first, which put a name, phone number and e-mail into GA4's
+  `page_location`, PostHog's `$current_url`, every ad tag on `/aanmelden/`,
+  the nginx log and the browser history — and Google's terms forbid PII in
+  Analytics and Ads. `LeadForm` now writes them to `useLeadHandoff` (shared
+  Nuxt state, which survives the client-side redirect) and `SignupForm` reads
+  and clears it once at setup: it seeds the form, it doesn't own it. Only
+  `actie` stays in the URL. Don't put the three back in the query string.
 
 Live also runs a Cloudflare Turnstile on this form (`field_1_7`). We have the
 honeypot and the per-IP rate limit instead.

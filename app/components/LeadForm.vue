@@ -6,10 +6,11 @@
  * field ids are namespaced with `useId()` rather than hard-coded.
  *
  * **It does not end in a thank-you.** On the live site this is Gravity Forms
- * form 1, whose confirmation is a redirect to
- * `/aanmelden/?naam=…&telefoon=…&e-mailadres=…` — the block collects the three
- * fields that are most likely to be abandoned halfway through the wizard, and
- * then hands the visitor to the wizard with them already filled in. Turning
+ * form 1, whose confirmation is a redirect to `/aanmelden/` — the block
+ * collects the three fields that are most likely to be abandoned halfway
+ * through the wizard, and then hands the visitor to the wizard with them
+ * already filled in. The answers travel in shared state, not in the query
+ * string; see `useLeadHandoff`. Turning
  * that back into a success message would strand every visitor one step short
  * of an actual registration.
  *
@@ -111,7 +112,7 @@ async function handOff() {
   /*
     Deliberately not awaited before the redirect, and deliberately not allowed
     to stop it. The visitor's next step is the wizard; a mail that didn't leave
-    is our problem, and their details travel in the URL either way. `catch`
+    is our problem, and their details reach the wizard either way. `catch`
     swallows rather than reports for the same reason — there is nothing the
     visitor could do about it, and they are already on the next page.
   */
@@ -137,18 +138,20 @@ async function handOff() {
   })
 
   /*
-    The same three parameter names the live confirmation uses, so links and
-    bookmarks that were built against bijlesbeta.nl still prefill here. The
-    trailing slash is the canonical form — see the SEO section in CLAUDE.md.
+    The answers go through shared state, never the query string: a URL with a
+    name, phone number and e-mail in it is PII in every analytics and ad tag on
+    the next page. Only `actie`, a campaign key, rides in the URL. The trailing
+    slash is the canonical form — see the SEO section in CLAUDE.md.
   */
+  useLeadHandoff().value = {
+    name: form.name.trim(),
+    phone: normalisePhone(form.phone) ?? form.phone.trim(),
+    email: form.email.trim(),
+  }
+
   await navigateTo({
     path: '/aanmelden/',
-    query: {
-      naam: form.name.trim(),
-      telefoon: normalisePhone(form.phone) ?? form.phone.trim(),
-      ...(form.email.trim() ? { 'e-mailadres': form.email.trim() } : {}),
-      ...(props.actie ? { actie: props.actie } : {}),
-    },
+    query: props.actie ? { actie: props.actie } : {},
   })
 }
 </script>
