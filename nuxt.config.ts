@@ -1,5 +1,5 @@
 import tailwindcss from '@tailwindcss/vite'
-import { legacyRedirects } from './redirects'
+import { campaignRedirects, legacyRedirects } from './redirects'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
@@ -158,6 +158,9 @@ export default defineNuxtConfig({
   routeRules: {
     // 301s from the WordPress URLs this app replaces. See `redirects.ts`.
     ...legacyRedirects,
+
+    // 302s for the QR codes on posters. See `redirects.ts`.
+    ...campaignRedirects,
 
     /*
       Everything in `public/` is served by Nitro, which sends an `ETag` and a

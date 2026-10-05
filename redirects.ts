@@ -90,3 +90,32 @@ export const legacyRedirects: Record<string, Redirect> = Object.fromEntries(
         ],
   ),
 )
+
+/**
+ * Short links printed on offline material — posters, flyers — whose QR codes
+ * can't be changed once they're on a wall.
+ *
+ * 302, not 301: a browser caches a 301 indefinitely, so a phone that scanned
+ * the code once would keep going to the old target after the campaign moves.
+ * The UTM parameters are baked into the target because a QR scan arrives with
+ * no referrer at all — without them this traffic is indistinguishable from
+ * somebody typing the URL. Nitro merges any query the scan itself carries into
+ * the target, so nothing is dropped.
+ *
+ * Targets carry the trailing slash so the scan lands in one hop. None of these
+ * paths is a page, so none belongs in the sitemap.
+ */
+const campaigns: Record<string, string> = {
+  '/qr-utrecht':
+    '/openingsactie-utrecht/?utm_source=qr&utm_medium=poster&utm_campaign=opening-utrecht',
+}
+
+type TemporaryRedirect = { redirect: { to: string, statusCode: 302 } }
+
+/** Route rules for `nuxt.config.ts`, registered with and without the slash. */
+export const campaignRedirects: Record<string, TemporaryRedirect> = Object.fromEntries(
+  Object.entries(campaigns).flatMap(([from, to]) => {
+    const rule: TemporaryRedirect = { redirect: { to, statusCode: 302 } }
+    return [[from, rule], [`${from}/`, rule]]
+  }),
+)
