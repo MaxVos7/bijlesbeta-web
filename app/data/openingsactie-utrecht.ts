@@ -79,7 +79,7 @@ export const openingsactieUtrecht = {
   team: {
     kicker: 'Wie wij zijn',
     title: 'Ontmoet je toekomstige docent',
-    body: `Sinds 2017 geven wij bijles in wiskunde, natuurkunde en scheikunde in Groningen. Ons team van ${tutorCount} docenten — allemaal universitaire bèta-studenten — heeft al meer dan ${pupilCount} leerlingen geholpen. Die ervaring nemen we nu mee naar Utrecht.`,
+    body: `Sinds 2017 geven wij bijles in wiskunde, natuurkunde en scheikunde in Groningen. Ons team van ${tutorCount} universitaire bèta-studenten heeft al meer dan ${pupilCount} leerlingen geholpen. Die ervaring nemen we nu mee naar Utrecht.`,
   },
 
   pricingIntro: {
