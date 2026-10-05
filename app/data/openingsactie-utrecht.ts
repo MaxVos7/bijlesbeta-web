@@ -39,12 +39,12 @@ export const openingsactieUtrecht = {
 
   hero: {
     badge: `Nieuw in Utrecht · nog ${spotsLeft} plekken`,
-    title: 'Bijles aan huis in Utrecht: start nu met een gratis week',
-    body: `Plan je gratis proefles. Kies je daarna een pakket, dan is de eerste week bijles van ons. We hebben plek voor ${spotsLeft} nieuwe leerlingen in Utrecht.`,
+    title: 'Bijles wiskunde, natuurkunde en scheikunde in Utrecht',
+    body: `Start nu met een gratis week. Plan je gratis proefles. Kies je daarna een pakket, dan is de eerste week bijles van ons. We hebben plek voor ${spotsLeft} nieuwe leerlingen in Utrecht.`,
     promises: [
       'Gratis proefles, altijd 100% vrijblijvend',
       'Eerste week bijles gratis bij elk pakket',
-      'Wis-, natuur- en scheikunde door universitaire bèta-studenten',
+      'Bij jou thuis, door universitaire bèta-studenten',
     ],
   },
 
