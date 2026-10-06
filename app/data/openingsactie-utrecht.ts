@@ -37,6 +37,12 @@ export const openingsactieUtrecht = {
   banner: 'Openingsactie Utrecht: eerste week bijles gratis · geldig t/m 31 oktober',
   headerSpots: `Nog ${spotsLeft} plekken`,
 
+  /** The bar pinned to the foot of a phone screen once the hero is gone. */
+  stickyBar: {
+    lead: `Nog maar ${spotsLeft} plekken`,
+    tail: 'voor de openingsactie',
+  },
+
   hero: {
     badge: `Nieuw in Utrecht · nog ${spotsLeft} plekken`,
     title: 'Bijles wiskunde, natuurkunde en scheikunde in Utrecht',

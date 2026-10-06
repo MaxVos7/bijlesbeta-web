@@ -26,7 +26,37 @@ useSeo({
 useHead({ meta: [{ name: 'robots', content: 'noindex, follow' }] })
 
 const analytics = useAnalytics()
-const { reopen } = useCookieConsent()
+const { reopen, level, open: consentOpen } = useCookieConsent()
+
+/*
+  The phone-only bar at the foot of the screen. It waits until the hero has
+  scrolled away — the hero carries its own CTA — and steps aside while the
+  proefles block is on screen, where it would only cover the form it points
+  at. It never shares the screen with the cookie banner, which also sits on
+  the bottom edge: until the visitor has made a choice, there is no bar.
+*/
+const hero = ref<HTMLElement>()
+const heroInView = ref(true)
+const proeflesInView = ref(false)
+const showBar = computed(
+  () => level.value !== null && !consentOpen.value && !heroInView.value && !proeflesInView.value,
+)
+
+let observer: IntersectionObserver | undefined
+onMounted(() => {
+  const proefles = document.getElementById('proefles')
+  if (!hero.value || !('IntersectionObserver' in window)) return
+
+  observer = new IntersectionObserver((entries) => {
+    for (const entry of entries) {
+      if (entry.target === hero.value) heroInView.value = entry.isIntersecting
+      else proeflesInView.value = entry.isIntersecting
+    }
+  })
+  observer.observe(hero.value)
+  if (proefles) observer.observe(proefles)
+})
+onBeforeUnmount(() => observer?.disconnect())
 
 const formatPrice = (value: number) => `€${value}`
 </script>
@@ -39,7 +69,7 @@ const formatPrice = (value: number) => `€${value}`
 
     <!-- The hero runs on a photograph with an ink wash that is heaviest under
          the copy, and carries the page's own header inside it. -->
-    <section class="relative isolate overflow-hidden bg-ink-900 pb-[clamp(48px,7vw,88px)]">
+    <section ref="hero" class="relative isolate overflow-hidden bg-ink-900 pb-[clamp(48px,7vw,88px)]">
       <img
         src="/img/studenten.webp"
         alt=""
@@ -268,5 +298,28 @@ const formatPrice = (value: number) => `€${value}`
         </p>
       </div>
     </footer>
+
+    <!-- Room for the bar below, so it never covers the end of the footer. -->
+    <div class="h-[76px] md:hidden" aria-hidden="true" />
+
+    <Transition
+      enter-from-class="translate-y-full"
+      enter-active-class="transition-transform duration-300 ease-out"
+      leave-active-class="transition-transform duration-200 ease-in"
+      leave-to-class="translate-y-full"
+    >
+      <div
+        v-if="showBar"
+        class="fixed inset-x-0 bottom-0 z-[900] flex items-center justify-between gap-3 border-t border-line-ink bg-white px-4 pt-3 pb-[max(12px,env(safe-area-inset-bottom))] shadow-float md:hidden"
+      >
+        <p class="min-w-0 font-display text-[13px] leading-[18px]">
+          <strong class="block font-bold">{{ page.stickyBar.lead }}</strong>
+          <span class="text-ink-700">{{ page.stickyBar.tail }}</span>
+        </p>
+        <a href="#proefles" class="btn-primary shrink-0">
+          {{ page.ctaLabel }} <BtnArrow />
+        </a>
+      </div>
+    </Transition>
   </div>
 </template>
