@@ -312,9 +312,8 @@ const formatPrice = (value: number) => `€${value}`
         v-if="showBar"
         class="fixed inset-x-0 bottom-0 z-[900] flex items-center justify-between gap-3 border-t border-line-ink bg-white px-4 pt-3 pb-[max(12px,env(safe-area-inset-bottom))] shadow-float md:hidden"
       >
-        <p class="min-w-0 font-display text-[13px] leading-[18px]">
-          <strong class="block font-bold">{{ page.stickyBar.lead }}</strong>
-          <span class="text-ink-700">{{ page.stickyBar.tail }}</span>
+        <p class="min-w-0 font-display text-[14px] leading-[18px] font-bold">
+          {{ page.stickyBar }}
         </p>
         <a href="#proefles" class="btn-primary shrink-0">
           {{ page.ctaLabel }} <BtnArrow />

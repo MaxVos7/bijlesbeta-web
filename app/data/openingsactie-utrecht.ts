@@ -38,10 +38,7 @@ export const openingsactieUtrecht = {
   headerSpots: `Nog ${spotsLeft} plekken`,
 
   /** The bar pinned to the foot of a phone screen once the hero is gone. */
-  stickyBar: {
-    lead: `Nog maar ${spotsLeft} plekken`,
-    tail: 'voor de openingsactie',
-  },
+  stickyBar: `Nog maar ${spotsLeft} plekken in Utrecht`,
 
   hero: {
     badge: `Nieuw in Utrecht · nog ${spotsLeft} plekken`,
