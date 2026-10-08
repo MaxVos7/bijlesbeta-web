@@ -57,11 +57,20 @@ function omgeving(hostname: string): 'productie' | 'staging' | 'lokaal' {
 export default defineNuxtPlugin(() => {
   const { posthogKey, posthogApiHost, posthogUiHost } = useRuntimeConfig().public
 
-  // No key, no PostHog — and no error either. This is the state the repo ships
-  // in, and the state every environment stays in until the GTM tag is removed.
-  // Because the import below is dynamic, this also means the SDK is never
-  // downloaded at all on an unconfigured deploy.
-  if (!posthogKey) return
+  // No key, no SDK of our own — and no error either. This is the state the
+  // repo ships in, and the state every environment stays in until the GTM tag
+  // is removed. Because the import below is dynamic, this also means the SDK
+  // is never downloaded at all on an unconfigured deploy.
+  //
+  // It does not mean no events, though. Production runs exactly like this, with
+  // the container's PostHog tag still in place, and for months every event in
+  // `useAnalytics` sat in the queue of an SDK that was never going to arrive —
+  // PostHog saw pageviews and clicks from the tag and not one conversion. So
+  // with no key we adopt the tag's instance instead of starting a second one.
+  if (!posthogKey) {
+    adoptTagInstance()
+    return
+  }
 
   /*
     Read here, synchronously, and not inside the `then` below.
@@ -293,3 +302,48 @@ export default defineNuxtPlugin(() => {
     }, { immediate: true })
   }
 })
+
+/**
+ * Hands the GTM tag's `window.posthog` to `useAnalytics`, once it exists.
+ *
+ * Used only when `NUXT_PUBLIC_POSTHOG_KEY` is unset, so there is never a
+ * second instance: either ours runs and the tag must go, or the tag runs and
+ * this borrows it. Consent is then the container's business — its tag fires
+ * on `cookie_consent_update` and only with analytics consent, so until a
+ * visitor has said yes there is no `window.posthog` and events wait in the
+ * bounded queue in `posthog-client.ts`, exactly as they would for our own SDK.
+ *
+ * Polled rather than hooked, because the tag can load at any point — on the
+ * first page load for a returning visitor, or minutes in when somebody finally
+ * answers the banner. Once a second is nothing next to a pageview; the poll
+ * stops when the instance turns up, and gives up after ten minutes so a
+ * visitor who never consents isn't carrying a timer around forever.
+ *
+ * The tag's snippet installs a stub whose `capture` queues until its own
+ * library has loaded, so adopting the stub early loses nothing. Events sent
+ * this way miss `omgeving`, which is stamped by our `before_send` only.
+ */
+function adoptTagInstance() {
+  const found = () => {
+    const ph = (window as unknown as { posthog?: PostHog }).posthog
+    return ph && typeof ph.capture === 'function' ? ph : null
+  }
+
+  const now = found()
+  if (now) {
+    setPosthogInstance(now)
+    return
+  }
+
+  const started = Date.now()
+  const timer = window.setInterval(() => {
+    try {
+      const ph = found()
+      if (ph) setPosthogInstance(ph)
+      if (ph || Date.now() - started > 10 * 60_000) window.clearInterval(timer)
+    }
+    catch {
+      window.clearInterval(timer)
+    }
+  }, 1000)
+}

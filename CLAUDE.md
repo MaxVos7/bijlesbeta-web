@@ -427,6 +427,15 @@ page looks wrong while it happens.
   runs — no capture, no replay, no cookie. That is the same rule `gtmId`
   follows and it is what makes the repo safe to deploy at any moment. GTM is
   still loaded for GA4; only PostHog moved.
+- **Empty key does not mean no events, though.** Production still runs with
+  the key unset and the container's PostHog tag in place, and for months every
+  `useAnalytics` event sat in the queue of an SDK that never loaded — PostHog
+  had pageviews and autocaptured clicks from the tag and not one conversion.
+  With no key, the plugin now adopts the tag's `window.posthog`
+  (`adoptTagInstance`) instead of starting its own, so there is still only
+  one instance. Consent is then the tag's: it loads on
+  `cookie_consent_update` with analytics consent only. Setting the key means
+  removing the tag in the same change.
 - **The import is dynamic and the plugin is not `async`.** The SDK is ~250 KB;
   awaiting it in a plugin would hold hydration on a site that measures its own
   Core Web Vitals. Events raised before the chunk lands are queued in

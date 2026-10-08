@@ -356,6 +356,7 @@ export function useAnalytics() {
         bron: opts.bron,
         email_ingevuld: opts.emailIngevuld,
         pagina: pagina(),
+        actie: opts.actie,
       })
 
       // The shared conversion trigger for Tag Manager — see `formSubmit`.
@@ -447,6 +448,7 @@ export function useAnalytics() {
         prefill: opts.prefill,
         stap_totaal: opts.stapTotaal,
         pagina: pagina(),
+        actie: opts.actie,
       }
 
       capture('aanmelding_voltooid', props)
