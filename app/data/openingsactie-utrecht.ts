@@ -134,7 +134,7 @@ export const openingsactieUtrecht = {
     formTitle: 'Vul je gegevens in en claim je gratis proefles',
     kicker: 'Gratis proefles in Utrecht?',
     title: 'Claim je eerste gratis proefles.',
-    body: 'Zet de eerste stap in de investering voor jezelf, of je kind. De eerste proefles is altijd 100% gratis — en bij een pakket krijg je nu de eerste week bijles erbij.',
+    body: 'Zet de eerste stap in de investering voor jezelf, of je kind. De eerste proefles is altijd 100% gratis. Bij een pakket krijg je nu de eerste week bijles erbij.',
     promises: [
       'Enthousiaste docenten',
       'Snel een proefles ingepland',

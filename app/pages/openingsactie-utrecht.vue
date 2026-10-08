@@ -137,8 +137,73 @@ const formatPrice = (value: number) => `€${value}`
       </div>
     </section>
 
+    <section class="bg-sand px-[clamp(16px,4vw,24px)] pt-[clamp(40px,5vw,64px)] pb-[clamp(56px,7vw,90px)]">
+      <div class="mx-auto max-w-[1400px]">
+        <div class="mb-[clamp(30px,4vw,46px)] text-center">
+          <p class="kicker mb-2.5">{{ page.features.kicker }}</p>
+          <h2 class="text-[28px] leading-[44px] tracking-[-0.025em] text-balance">{{ page.features.title }}</h2>
+        </div>
+
+        <div class="grid gap-[clamp(14px,1.8vw,22px)] [grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr))]">
+          <div
+            v-for="feature in page.features.items"
+            :key="feature.title"
+            class="flex flex-col gap-3 rounded-card border border-line-ink bg-white px-3.5 pt-3.5 pb-[26px]"
+          >
+            <img
+              :src="feature.image"
+              :alt="feature.alt"
+              loading="lazy"
+              class="block aspect-[4/3] w-full rounded-card object-cover"
+            >
+            <h3 class="mt-2 text-[19px] leading-[26px] tracking-[-0.01em]">{{ feature.title }}</h3>
+            <p class="text-[13px] leading-normal text-ink-700">{{ feature.body }}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <ComparisonTable />
+
+    <TrialCta id="proefles" :copy="page.trialCta" actie="utrecht" class="scroll-mt-6 pt-0" />
+
+    <section class="bg-white px-[clamp(16px,4vw,24px)] py-[clamp(56px,7vw,88px)]">
+      <div class="mx-auto max-w-[1000px]">
+        <div class="mb-[clamp(26px,3.5vw,38px)] text-center">
+          <RatingLine centered class="mb-3" />
+          <h2 class="text-[clamp(23px,2.6vw,28px)] tracking-[-0.025em]">Wat vinden onze leerlingen?</h2>
+        </div>
+
+        <ReviewCarousel card-ground="sand" />
+      </div>
+    </section>
+
+    <section class="bg-white px-[clamp(16px,4vw,24px)] pt-[clamp(24px,3vw,40px)] pb-[clamp(56px,7vw,90px)]">
+      <div class="mx-auto max-w-[1400px]">
+        <PricingSection
+          :intro="page.pricingIntro"
+          href="#proefles"
+          :cta-label="page.ctaLabel"
+          :loose-blurb="page.looseLessonBlurb"
+          :assurances="page.pricingAssurances"
+        >
+          <template #extra="{ plan }">
+            <div class="mt-5 rounded-card bg-brand-500/15 px-4 py-3.5">
+              <p class="mb-1.5 font-display text-[13px] font-bold text-brand-700">{{ page.pricingOffer }}</p>
+              <p class="flex flex-wrap items-baseline gap-2">
+                <span class="font-display text-[19px] leading-[28.5px] font-bold text-mint">
+                  {{ formatPrice(freeWeekBenefit[plan.slug] ?? 0) }}
+                </span>
+                <span class="text-[13px]">besparing</span>
+              </p>
+            </div>
+          </template>
+        </PricingSection>
+      </div>
+    </section>
+
     <!-- Stappenplan: the `/zo-werkt-het` cards, with the campaign's copy. -->
-    <section class="bg-white px-[clamp(16px,4vw,40px)] pt-[clamp(48px,6vw,80px)] pb-20">
+    <section class="bg-white px-[clamp(16px,4vw,40px)] pb-20">
       <div class="mx-auto max-w-[1400px] md:px-9">
         <p class="kicker mb-3 text-center text-[19px]">{{ page.steps.kicker }}</p>
         <h2 class="mb-8 text-center text-[28px] leading-[44px] tracking-[-0.025em]">{{ page.steps.title }}</h2>
@@ -186,71 +251,6 @@ const formatPrice = (value: number) => `€${value}`
         </div>
       </div>
     </section>
-
-    <ComparisonTable />
-
-    <section class="bg-sand px-[clamp(16px,4vw,24px)] pt-[clamp(40px,5vw,64px)] pb-[clamp(56px,7vw,90px)]">
-      <div class="mx-auto max-w-[1400px]">
-        <div class="mb-[clamp(30px,4vw,46px)] text-center">
-          <p class="kicker mb-2.5">{{ page.features.kicker }}</p>
-          <h2 class="text-[28px] leading-[44px] tracking-[-0.025em] text-balance">{{ page.features.title }}</h2>
-        </div>
-
-        <div class="grid gap-[clamp(14px,1.8vw,22px)] [grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr))]">
-          <div
-            v-for="feature in page.features.items"
-            :key="feature.title"
-            class="flex flex-col gap-3 rounded-card border border-line-ink bg-white px-3.5 pt-3.5 pb-[26px]"
-          >
-            <img
-              :src="feature.image"
-              :alt="feature.alt"
-              loading="lazy"
-              class="block aspect-[4/3] w-full rounded-card object-cover"
-            >
-            <h3 class="mt-2 text-[19px] leading-[26px] tracking-[-0.01em]">{{ feature.title }}</h3>
-            <p class="text-[13px] leading-normal text-ink-700">{{ feature.body }}</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="bg-white px-[clamp(16px,4vw,24px)] py-[clamp(56px,7vw,88px)]">
-      <div class="mx-auto max-w-[1000px]">
-        <div class="mb-[clamp(26px,3.5vw,38px)] text-center">
-          <RatingLine centered class="mb-3" />
-          <h2 class="text-[clamp(23px,2.6vw,28px)] tracking-[-0.025em]">Wat vinden onze leerlingen?</h2>
-        </div>
-
-        <ReviewCarousel card-ground="sand" />
-      </div>
-    </section>
-
-    <section class="bg-white px-[clamp(16px,4vw,24px)] pt-[clamp(24px,3vw,40px)] pb-[clamp(56px,7vw,90px)]">
-      <div class="mx-auto max-w-[1400px]">
-        <PricingSection
-          :intro="page.pricingIntro"
-          href="#proefles"
-          :cta-label="page.ctaLabel"
-          :loose-blurb="page.looseLessonBlurb"
-          :assurances="page.pricingAssurances"
-        >
-          <template #extra="{ plan }">
-            <div class="mt-5 rounded-card bg-brand-500/15 px-4 py-3.5">
-              <p class="mb-1.5 font-display text-[13px] font-bold text-brand-700">{{ page.pricingOffer }}</p>
-              <p class="flex flex-wrap items-baseline gap-2">
-                <span class="font-display text-[19px] leading-[28.5px] font-bold text-mint">
-                  {{ formatPrice(freeWeekBenefit[plan.slug] ?? 0) }}
-                </span>
-                <span class="text-[13px]">besparing</span>
-              </p>
-            </div>
-          </template>
-        </PricingSection>
-      </div>
-    </section>
-
-    <TrialCta id="proefles" :copy="page.trialCta" actie="utrecht" class="scroll-mt-6 pt-0" />
 
     <FaqSection :items="page.faqs" contact-link="whatsapp" />
 
