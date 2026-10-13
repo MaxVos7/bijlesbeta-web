@@ -43,12 +43,25 @@ export const openingsactieUtrecht = {
   hero: {
     badge: `Nieuw in Utrecht · nog ${spotsLeft} plekken`,
     title: 'Bijles wiskunde, natuurkunde en scheikunde in Utrecht',
+    /** The title for a visitor who came in on one subject's ad (`?vak=`). */
+    titleFor: {
+      wiskunde: 'Bijles wiskunde in Utrecht',
+      natuurkunde: 'Bijles natuurkunde in Utrecht',
+      scheikunde: 'Bijles scheikunde in Utrecht',
+    },
     body: `Start nu met een gratis week. Plan je gratis proefles. Kies je daarna een pakket, dan is de eerste week bijles van ons. We hebben plek voor ${spotsLeft} nieuwe leerlingen in Utrecht.`,
     promises: [
       'Gratis proefles, altijd 100% vrijblijvend',
       'Eerste week bijles gratis bij elk pakket',
       'Bij jou thuis, door universitaire bèta-studenten',
     ],
+  },
+
+  /** The amber form panel beside the hero copy, as on the landings. */
+  heroForm: {
+    kicker: 'Gratis proefles in Utrecht?',
+    title: 'Claim je gratis proefles.',
+    body: `Vul je gegevens in en claim een van de laatste ${spotsLeft} plekken. Bij een pakket krijg je de eerste week bijles gratis.`,
   },
 
   steps: {

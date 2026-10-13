@@ -9,8 +9,9 @@ import { contact, cookieConsent, tagline } from '~/data/site'
  * A landing page for ad traffic, so it runs on the `bare` layout and brings
  * its own chrome: a header with the logo and one CTA, and a footer with the
  * contact details — no navigation in either, so there is nowhere to wander
- * off to. Every CTA scrolls to the proefles block, whose form hands the
- * visitor to the wizard like everywhere else; `LeadForm` mails the office
+ * off to. The hero carries the proefles form itself, as the landings do, and
+ * every other CTA scrolls to the proefles block at the foot. Both forms hand
+ * the visitor to the wizard like everywhere else; `LeadForm` mails the office
  * with this page's path, which is how the office knows the lead came in on
  * the campaign.
  *
@@ -26,6 +27,8 @@ useSeo({
 useHead({ meta: [{ name: 'robots', content: 'noindex, follow' }] })
 
 const analytics = useAnalytics()
+const route = useRoute()
+const vak = useVak()
 const { reopen, level, open: consentOpen } = useCookieConsent()
 
 /*
@@ -74,8 +77,16 @@ const formatPrice = (value: number) => `€${value}`
         src="/img/studenten.webp"
         alt=""
         fetchpriority="high"
-        class="absolute inset-0 -z-20 h-full w-full object-cover"
+        class="absolute inset-x-0 top-0 -z-20 h-[480px] w-full object-cover md:inset-y-0 md:h-full"
       >
+      <!-- On a phone the hero stacks the copy and the form into a column
+           well over a thousand pixels tall, and a landscape photo stretched
+           over all of it is blown up past its resolution. So there it covers
+           the top only and fades into the ink below. -->
+      <div
+        class="pointer-events-none absolute inset-x-0 top-[280px] -z-20 h-[200px] bg-linear-to-b from-transparent to-ink-900 md:hidden"
+        aria-hidden="true"
+      />
       <div
         class="pointer-events-none absolute inset-0 -z-10 bg-linear-100 from-ink-900/80 from-0% via-ink-900/55 via-50% to-ink-900/18"
         aria-hidden="true"
@@ -109,7 +120,9 @@ const formatPrice = (value: number) => `€${value}`
       </div>
 
       <div class="px-[clamp(12px,3vw,24px)] pt-[clamp(36px,5vw,72px)]">
-        <div class="mx-auto max-w-[1200px]">
+        <div
+          class="mx-auto grid max-w-[1200px] items-center gap-[clamp(32px,5vw,60px)] [grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr))]"
+        >
           <div class="max-w-[640px] min-w-0">
             <RatingLine tone="inverse" class="mb-[18px]" />
 
@@ -120,18 +133,39 @@ const formatPrice = (value: number) => `€${value}`
             <h1
               class="mb-[18px] max-w-[18ch] text-[clamp(30px,4.2vw,36px)] leading-[1.12] tracking-[-0.025em] text-pretty text-white"
             >
-              {{ page.hero.title }}
+              {{ vak ? page.hero.titleFor[vak] : page.hero.title }}
             </h1>
             <p class="mb-7 max-w-[46ch] text-[clamp(15px,1.2vw,16px)] leading-[1.625] text-white/85">
               {{ page.hero.body }}
             </p>
 
-            <CheckList :items="page.hero.promises" tone="inverse" class="mb-8" />
+            <CheckList :items="page.hero.promises" tone="inverse" class="md:mb-8" />
 
-            <a href="#proefles" class="btn-primary btn-lg">
-              {{ page.ctaLabel }} <BtnArrow />
-            </a>
-            <CtaNote tone="inverse" class="mt-3.5" />
+            <!-- Not on a phone: there the form follows straight after, and this
+                 would only push it further down. -->
+            <div class="hidden md:block">
+              <a href="#proefles" class="btn-primary btn-lg">
+                {{ page.ctaLabel }} <BtnArrow />
+              </a>
+              <CtaNote tone="inverse" class="mt-3.5" />
+            </div>
+          </div>
+
+          <!-- The proefles form in the hero itself, as on the landings, so an
+               ad click lands one step from the wizard. The closing block keeps
+               its own copy further down. -->
+          <div class="w-full max-w-[470px] min-w-0 justify-self-end rounded-card bg-brand-500 p-[clamp(20px,2.4vw,30px)]">
+            <p class="mb-1.5 text-[15px] font-semibold text-on-brand">{{ page.heroForm.kicker }}</p>
+            <h2 class="mb-2.5 text-[clamp(21px,2.2vw,27px)] tracking-[-0.025em]">{{ page.heroForm.title }}</h2>
+            <p class="mb-[18px] text-sm leading-relaxed text-on-brand-muted">{{ page.heroForm.body }}</p>
+
+            <!-- Mounted twice on this page, so it names itself in the office mail. -->
+            <LeadForm
+              :source="`${route.path} (hero)`"
+              positie="hero"
+              actie="utrecht"
+              class="rounded-tile bg-linen p-[clamp(14px,1.6vw,18px)]"
+            />
           </div>
         </div>
       </div>
@@ -163,10 +197,6 @@ const formatPrice = (value: number) => `€${value}`
       </div>
     </section>
 
-    <ComparisonTable />
-
-    <TrialCta id="proefles" :copy="page.trialCta" actie="utrecht" class="scroll-mt-6 pt-0" />
-
     <section class="bg-white px-[clamp(16px,4vw,24px)] py-[clamp(56px,7vw,88px)]">
       <div class="mx-auto max-w-[1000px]">
         <div class="mb-[clamp(26px,3.5vw,38px)] text-center">
@@ -177,6 +207,8 @@ const formatPrice = (value: number) => `€${value}`
         <ReviewCarousel card-ground="sand" />
       </div>
     </section>
+
+    <TrialCta id="proefles" :copy="page.trialCta" actie="utrecht" class="scroll-mt-6 pt-0" />
 
     <section class="bg-white px-[clamp(16px,4vw,24px)] pt-[clamp(24px,3vw,40px)] pb-[clamp(56px,7vw,90px)]">
       <div class="mx-auto max-w-[1400px]">
@@ -229,6 +261,8 @@ const formatPrice = (value: number) => `€${value}`
         </p>
       </div>
     </section>
+
+    <ComparisonTable />
 
     <!-- The homepage's team block, with the campaign's own introduction. -->
     <section class="bg-white px-[clamp(16px,4vw,24px)] pb-[clamp(64px,8vw,100px)]">
