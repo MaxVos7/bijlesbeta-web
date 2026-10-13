@@ -7,18 +7,46 @@
  * in `nuxt.config.ts` so they land in <head> ahead of anything that reads them;
  * this composable only ever sends updates.
  *
- * Three levels, as on the live banner:
+ * Four levels. The banner asks per category — statistieken and marketing,
+ * each on or off — and every combination of the two is one level:
  *
- *   deny       nothing but what the site needs to function
- *   analytics  analytics only, no advertising or personalisation
- *   accept     everything
+ *   deny       neither: nothing but what the site needs to function
+ *   analytics  statistieken only, no advertising or personalisation
+ *   marketing  marketing only: advertising without analytics
+ *   accept     both
+ *
+ * The first three and `accept` are the live banner's own values; `marketing`
+ * was added with the per-category settings, since two switches give four
+ * answers. Storing a level rather than the two flags keeps the cookie readable
+ * by everything that already reads it, including the live container's
+ * `cookie_consent_level` variable. `categoriesOf` and `levelOf` translate.
  *
  * The choice is remembered for 180 days in a `cookie_consent` cookie, which is
  * the same name and lifetime the live site uses — a visitor who already chose
  * on bijlesbeta.nl keeps that choice when these pages replace it.
  */
 
-export type ConsentLevel = 'deny' | 'analytics' | 'accept'
+export type ConsentLevel = 'deny' | 'analytics' | 'marketing' | 'accept'
+
+/** The two categories a visitor can switch; `noodzakelijk` is always on. */
+export interface ConsentCategories {
+  statistieken: boolean
+  marketing: boolean
+}
+
+export function levelOf({ statistieken, marketing }: ConsentCategories): ConsentLevel {
+  if (statistieken && marketing) return 'accept'
+  if (statistieken) return 'analytics'
+  if (marketing) return 'marketing'
+  return 'deny'
+}
+
+export function categoriesOf(level: ConsentLevel | null): ConsentCategories {
+  return {
+    statistieken: level === 'analytics' || level === 'accept',
+    marketing: level === 'marketing' || level === 'accept',
+  }
+}
 
 export const COOKIE_NAME = 'cookie_consent'
 export const COOKIE_MAX_AGE = 60 * 60 * 24 * 180
@@ -30,6 +58,13 @@ export const SIGNALS: Record<ConsentLevel, Record<string, 'granted' | 'denied'>>
     ad_user_data: 'granted',
     ad_personalization: 'granted',
     analytics_storage: 'granted',
+    personalization_storage: 'granted',
+  },
+  marketing: {
+    ad_storage: 'granted',
+    ad_user_data: 'granted',
+    ad_personalization: 'granted',
+    analytics_storage: 'denied',
     personalization_storage: 'granted',
   },
   analytics: {
@@ -50,9 +85,10 @@ export const SIGNALS: Record<ConsentLevel, Record<string, 'granted' | 'denied'>>
 
 /**
  * Cookies that survive a downgrade. Everything else is cleared when the
- * visitor picks anything short of `accept`, so a choice made after Tag Manager
+ * visitor picks `deny` or `analytics`, so a choice made after Tag Manager
  * has already set `_ga` actually takes effect rather than only stopping future
- * writes.
+ * writes. `marketing` clears only the analytics cookies — see
+ * `ANALYTICS_COOKIES`.
  */
 const KEEP = [COOKIE_NAME]
 
@@ -70,8 +106,15 @@ const KEEP = [COOKIE_NAME]
  */
 const KEEP_WITH_ANALYTICS = ['ph_']
 
+/**
+ * What `marketing` clears: the analytics cookies and nothing else. The ad
+ * cookies (`_fbp`, `_gcl_*` and whatever a later tag adds) are what that level
+ * consents to, so the purge has to name what goes rather than what stays.
+ */
+const ANALYTICS_COOKIES = ['_ga', 'ph_']
+
 export function isLevel(value: unknown): value is ConsentLevel {
-  return value === 'deny' || value === 'analytics' || value === 'accept'
+  return value === 'deny' || value === 'analytics' || value === 'marketing' || value === 'accept'
 }
 
 /**
@@ -109,10 +152,14 @@ function push(...args: unknown[]) {
 /** Clears every cookie the visitor hasn't consented to, on both host forms. */
 function purge(level: ConsentLevel) {
   const keep = level === 'analytics' ? [...KEEP, ...KEEP_WITH_ANALYTICS] : KEEP
+  const doomed = (name: string) =>
+    level === 'marketing'
+      ? ANALYTICS_COOKIES.some((prefix) => name.startsWith(prefix))
+      : !keep.some((prefix) => name.startsWith(prefix))
 
   for (const entry of document.cookie.split(';')) {
     const name = entry.split('=')[0]?.trim()
-    if (!name || keep.some((prefix) => name.startsWith(prefix))) continue
+    if (!name || !doomed(name)) continue
 
     const expiry = 'expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/'
     document.cookie = `${name}=;${expiry}`

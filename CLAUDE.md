@@ -387,12 +387,17 @@ all until it is set, so staging never reports into the live property. The live
 container is `GTM-MJCC44HR`; set it only on the domain that should own that
 data. There is deliberately no fallback when it is unset.
 
-`useCookieConsent` holds the three levels the live banner offers — `deny`,
-`analytics`, `accept` — and stores the choice in a `cookie_consent` cookie for
+`useCookieConsent` holds four levels — the live banner's `deny`, `analytics`
+and `accept`, plus `marketing` (ads without analytics), because the banner's
+settings view has a switch each for Statistieken and Marketing and two switches
+give four answers. `levelOf`/`categoriesOf` translate between the two; the
+cookie still stores a level, so the container's `cookie_consent_level` keeps
+working. The choice lives in a `cookie_consent` cookie for
 180 days. The name and lifetime match bijlesbeta.nl's, so a visitor who already
-chose there keeps that choice when these pages replace it. Picking anything
-short of `accept` also purges non-allowlisted cookies, so a downgrade clears
-`_ga` rather than only stopping future writes.
+chose there keeps that choice when these pages replace it. Picking `deny`
+or `analytics` also purges non-allowlisted cookies, so a downgrade clears
+`_ga` rather than only stopping future writes; `marketing` clears only the
+analytics cookies (`_ga`, `ph_`) and leaves the ad cookies it consents to.
 
 Two deliberate departures from the live implementation:
 
@@ -493,8 +498,8 @@ page looks wrong while it happens.
   customer, and stays out of every ad conversion. `proefles` fires on the
   click and `aanmelden` on the answer, so a visitor who does both sends two.
 - **`user_data` is the only identifying thing in the dataLayer.** On
-  `form_submit`, and only with the `accept` consent level (the one that grants
-  `ad_user_data`), the e-mail and phone go in SHA-256-hashed for Meta advanced
+  `form_submit`, and only with a level that grants `ad_user_data`
+  (`accept` or `marketing`), the e-mail and phone go in SHA-256-hashed for Meta advanced
   matching (`em`, `ph`) and Google enhanced conversions
   (`sha256_email_address`, `sha256_phone_number`). Never unhashed, never into
   PostHog, never without that consent.

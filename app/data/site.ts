@@ -56,25 +56,45 @@ export const legalLinks = [
 ] as const
 
 /**
- * Cookie banner copy, taken from bijlesbeta.nl's own banner.
- *
- * The three choices map onto the consent levels in `useCookieConsent` — the
- * order is the live site's, with the least permissive first.
+ * Cookie banner copy. The banner opens on three buttons and a settings view
+ * with a switch per category; `useCookieConsent` turns the switches into a
+ * level. Each category's `key` matches a field of `ConsentCategories`.
  */
 export const cookieConsent = {
-  title: 'Wij waarderen je privacy',
+  title: 'Cookie-instellingen',
   body:
-    'Wij gebruiken cookies om je surfervaring te verbeteren en ons verkeer te analyseren. '
-    + 'Door op "Alles accepteren" te klikken, stem je in met ons gebruik van cookies.',
-  policyLabel: 'Privacybeleid',
+    'We gebruiken cookies om deze site te laten werken, het gebruik te meten '
+    + 'en je relevante advertenties te tonen. Lees ons',
+  policyLabel: 'privacy statement',
   policyTo: '/privacy',
   /** Reopens the banner; sits in the footer's navigation column. */
   manageLabel: 'Beheer cookies',
-  deny: 'Alles weigeren',
-  analytics: 'Alleen analytics',
-  accept: 'Alles accepteren',
+  customise: 'Cookie-instellingen aanpassen',
+  deny: 'Alle cookies weigeren',
+  accept: 'Alle cookies accepteren',
+  back: 'Terug',
+  save: 'Voorkeuren opslaan',
+  required: 'Vereist',
+  on: 'Aan',
+  off: 'Uit',
+  necessary: {
+    title: 'Noodzakelijk',
+    body: 'Nodig voor beveiliging en de basisfuncties van de site.',
+  },
+  categories: [
+    {
+      key: 'statistieken',
+      title: 'Statistieken',
+      body: 'Meet hoe de site gebruikt wordt, zodat we hem kunnen verbeteren.',
+    },
+    {
+      key: 'marketing',
+      title: 'Marketing',
+      body: 'Maakt advertenties persoonlijker en meet het resultaat ervan.',
+    },
+  ],
   /** Names the dialog for screen readers. */
-  ariaLabel: 'Cookie instellingen',
+  ariaLabel: 'Cookie-instellingen',
 } as const
 
 /**

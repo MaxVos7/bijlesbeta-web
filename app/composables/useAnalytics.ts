@@ -30,7 +30,7 @@
  * The one exception is not a property and does not go to PostHog: the
  * `user_data` on the dataLayer's `form_submit`, which carries the e-mail and
  * phone number SHA-256-hashed for the ad platforms' matching — and only when
- * the visitor chose *Alles accepteren*. See `formSubmit`.
+ * the visitor allowed marketing cookies. See `formSubmit`.
  *
  * ## Timing
  *
@@ -175,13 +175,13 @@ type Contact = { email?: string; phone?: string }
 type UserData = Partial<Record<'sha256_email_address' | 'sha256_phone_number' | 'em' | 'ph', string>>
 
 /**
- * Whether the visitor chose *Alles accepteren*, read off the consent cookie at
- * the moment of the event. Only that level grants `ad_user_data`, and without
- * it no identifier may go to an ad platform, hashed or not.
+ * Whether the visitor allowed marketing, read off the consent cookie at the
+ * moment of the event. Only `accept` and `marketing` grant `ad_user_data`, and
+ * without it no identifier may go to an ad platform, hashed or not.
  */
 function adsConsented(): boolean {
   if (!import.meta.client) return false
-  return /(?:^|;\s*)cookie_consent=accept(?:;|$)/.test(document.cookie)
+  return /(?:^|;\s*)cookie_consent=(?:accept|marketing)(?:;|$)/.test(document.cookie)
 }
 
 async function sha256(value: string): Promise<string> {
