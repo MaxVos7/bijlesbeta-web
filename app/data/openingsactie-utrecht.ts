@@ -1,4 +1,4 @@
-import { pricingPlans, stats } from './site'
+import { pricingPlans, stats, type Review } from './site'
 
 /** From the site's own figures, so the two can't disagree. */
 const tutorCount = stats.find((s) => s.label === 'Docenten in ons team')?.value
@@ -13,7 +13,7 @@ const pupilCount = stats.find((s) => s.label === 'Leerlingen geholpen')?.value
  */
 
 /** How many new pupils the offer is open to. Shown in four places. */
-export const spotsLeft = 4
+export const spotsLeft = 2
 
 /**
  * The free week, in hours, per package: a quarter of the monthly minimum.
@@ -34,22 +34,28 @@ export const openingsactieUtrecht = {
   /** The label on every CTA on the page, the form's own button included. */
   ctaLabel: 'Proefles claimen',
 
-  banner: 'Openingsactie Utrecht: eerste week bijles gratis · geldig t/m 31 oktober',
+  banner: 'Tijdelijke actie: eerste week bijles gratis · geldig t/m 31 oktober',
   headerSpots: `Nog ${spotsLeft} plekken`,
 
   /** The bar pinned to the foot of a phone screen once the hero is gone. */
   stickyBar: `Nog maar ${spotsLeft} plekken in Utrecht`,
 
   hero: {
-    badge: `Nieuw in Utrecht · nog ${spotsLeft} plekken`,
-    title: 'Bijles wiskunde, natuurkunde en scheikunde in Utrecht',
-    /** The title for a visitor who came in on one subject's ad (`?vak=`). */
-    titleFor: {
-      wiskunde: 'Bijles wiskunde in Utrecht',
-      natuurkunde: 'Bijles natuurkunde in Utrecht',
-      scheikunde: 'Bijles scheikunde in Utrecht',
+    badge: `In Utrecht hebben we nog ${spotsLeft} plekken`,
+    /**
+     * Split so the subjects can be set in amber; an ad's `?vak=` narrows them
+     * to the one it was for. `/actie-utrecht` shows the same title.
+     */
+    title: {
+      before: 'Eindelijk weer voldoendes in ',
+      highlight: 'wiskunde, scheikunde of natuurkunde',
+      highlightFor: {
+        wiskunde: 'wiskunde',
+        natuurkunde: 'natuurkunde',
+        scheikunde: 'scheikunde',
+      },
     },
-    body: `Start nu met een gratis week. Plan je gratis proefles. Kies je daarna een pakket, dan is de eerste week bijles van ons. We hebben plek voor ${spotsLeft} nieuwe leerlingen in Utrecht.`,
+    body: 'Bijles op de middelbare school van docenten die de tijd nemen die er in de klas niet is. Zodat je kind niet alleen betere cijfers haalt, maar het ook écht snapt en er niet meer tegenop ziet.',
     promises: [
       'Gratis proefles, altijd 100% vrijblijvend',
       'Eerste week bijles gratis bij elk pakket',
@@ -57,11 +63,36 @@ export const openingsactieUtrecht = {
     ],
   },
 
+  /** The white review card in the hero: under the form on desktop, under the promises on a phone. */
+  heroReview: {
+    stars: 5,
+    quote: '“Van zware onvoldoendes naar een 7 op zijn eindexamen Wiskunde B.”',
+    author: 'Marianne, moeder',
+  },
+
+  /**
+   * The band straight under the hero form: the problem in the parents' own
+   * words, then the turn. The reviews' common thread is not "better grades"
+   * but the moment it clicks — grades, motivation and calm at home follow it.
+   */
+  pain: {
+    image: '/img/studenten.webp',
+    alt: 'Een docent van Bijles Bèta legt een leerling iets uit aan tafel',
+    kicker: 'Herken je dit?',
+    title: 'Je kind snapt het niet meer en ziet er steeds meer tegenop',
+    body: 'In de klas is geen tijd om iets drie keer uit te leggen. Wie één keer de draad kwijt is, raakt bij elk volgend hoofdstuk verder achter. De cijfers zakken, het huiswerk wordt uitgesteld en het vak wordt iets om tegenop te zien.',
+    turnTitle: 'We leggen het uit tot het klikt.',
+    turnBody: 'Onze docenten nemen de tijd die er in de klas niet is. Ze leggen het uit tot het kwartje valt. Dat is het moment waarop alles verandert: je kind snapt het weer en krijgt zelfvertrouwen terug.',
+  },
+
   /** The amber form panel beside the hero copy, as on the landings. */
   heroForm: {
     kicker: 'Gratis proefles in Utrecht?',
     title: 'Claim je gratis proefles.',
-    body: `Vul je gegevens in en claim een van de laatste ${spotsLeft} plekken. Bij een pakket krijg je de eerste week bijles gratis.`,
+    body: 'Plan vrijblijvend een gratis proefles in. Je maakt kennis met je docent en zit nergens aan vast. Kies je daarna een pakket, dan is de eerste week bijles gratis.',
+    /** Under the body, behind a pulsing dot. */
+    /** Split so the count can take its own colour, like a live counter. */
+    spots: { before: 'Nog ', count: spotsLeft, after: ' plekken beschikbaar in Utrecht' },
   },
 
   steps: {
@@ -112,9 +143,56 @@ export const openingsactieUtrecht = {
     'Geen inschrijf- of bemiddelingskosten',
   ],
 
+  reviewsTitle: 'Wat ouders over ons zeggen',
+  /** This page's own reviews: parents only, in their own words. */
+  reviews: [
+    {
+      rating: 5,
+      title: 'Een 7 op zijn eindexamen Wiskunde B',
+      body: 'Ontzettend blij met de bijlessen wiskunde van Henk voor onze zoon. Onze zoon is van zware onvoldoendes naar voldoendes en zelfs een 7 op zijn eindexamen Wiskunde B gegaan. Hij vond de uitleg van Henk erg duidelijk en Henk nam ook alle tijd voor hem. Heel erg bedankt Henk. Jij hebt een groot aandeel in die 7 op zijn eindexamen gehad!',
+      author: 'Marianne',
+      affiliation: 'Ouder van een middelbare scholier',
+    },
+    {
+      rating: 5,
+      title: 'Haar cijfers zijn gestegen',
+      body: 'Onze dochter krijgt 1x per week bijles wiskunde van Sander van Bijles Beta. Wij zijn zeer tevreden. Sander legt goed uit, op een manier die onze dochter begrijpt. Haar cijfers zijn gestegen. Ook is de docent altijd op tijd en communiceert goed. Wij raden Bijles Beta zeker aan.',
+      author: 'Roel',
+      affiliation: 'Ouder van een middelbare scholier',
+    },
+    {
+      rating: 5,
+      title: 'Ze ziet er niet langer tegenop',
+      body: 'Mijn dochter heeft wekelijks bijles wiskunde gehad van Sander. Naast haar betere cijfers merken we vooral dat ze veel meer inzicht in de stof heeft gekregen en met meer zelfvertrouwen aan wiskunde werkt. Ze ziet er niet langer tegenop en heeft inmiddels een mooi voldoende gehaald.\n\nWe zijn Sander ontzettend dankbaar. Dankzij zijn rustige, geduldige en duidelijke manier van lesgeven heeft onze dochter niet alleen goede resultaten behaald, maar ook meer zelfvertrouwen ontwikkeld. We kunnen hem van harte aanbevelen!',
+      author: 'Johanna',
+      affiliation: 'Ouder van een middelbare scholier',
+    },
+    {
+      rating: 5,
+      title: 'Het is weer leuk om huiswerk te maken',
+      body: 'Sinds mijn dochter via Beta bijles krijgt is het weer leuk om huiswerk te maken. Hij kan goed uitleggen en is daarnaast ook nog eens een aardige vent waar ze zich bij op haar gemak voelt. Deze club houden we er nog wel even bij :)',
+      author: 'Ouder van een leerling',
+      affiliation: 'Ouder van een middelbare scholier',
+    },
+    {
+      rating: 5,
+      title: 'Ze heeft er duidelijk profijt van',
+      body: 'Sinds een tijdje volgt onze dochter nu bijles voor al haar Beta vakken, en ze heeft er duidelijk profijt van. Met hard werken en de juiste begeleiding helpen ze haar echt verder, waar de reguliere lessen ophouden. Erg tevreden!',
+      author: 'Reinier',
+      affiliation: 'Ouder van een middelbare scholier',
+    },
+    {
+      rating: 5,
+      title: 'Haar motivatie komt terug',
+      body: 'Hoi, ik heb voor mijn dochter bijlessen geregeld via Bijles Beta. Zij zit in 5V. Het gaat goed; haar motivatie komt terug door de lessen. De docent legt de stof goed uit.',
+      author: 'Ouder van een leerling uit 5V',
+      affiliation: 'Ouder van een middelbare scholier',
+    },
+  ] satisfies Review[],
+
   features: {
     kicker: 'De B van Bijles, Bèta, Bekwaamheid en Begrip',
-    title: 'Waarom onze leerlingen zo tevreden zijn?',
+    title: 'Waarom ouders zo tevreden zijn?',
     items: [
       {
         image: '/img/proefles.webp',

@@ -1,4 +1,4 @@
-import { freeWeekBenefit, spotsLeft } from './openingsactie-utrecht'
+import { freeWeekBenefit, openingsactieUtrecht, spotsLeft } from './openingsactie-utrecht'
 
 /**
  * `/actie-utrecht` — the compact, single-column version of the Utrecht
@@ -30,19 +30,9 @@ export const actieUtrecht = {
   headerSpots: `Nog ${spotsLeft} plekken`,
   badge: `Nieuw in Utrecht · nog ${spotsLeft} plekken`,
 
-  /** The title is split so the middle can be set in amber. */
-  title: {
-    before: 'Plan een gratis proefles en krijg je ',
-    highlight: 'eerste week bijles gratis',
-  },
-  /** The subjects that open the intro; narrowed to one by an ad's `?vak=`. */
-  subjects: 'Wiskunde, natuurkunde en scheikunde',
-  subjectsFor: {
-    wiskunde: 'Wiskundebijles',
-    natuurkunde: 'Natuurkundebijles',
-    scheikunde: 'Scheikundebijles',
-  },
-  body: `bij jou thuis in Utrecht, door universitaire bèta-studenten. Alleen voor de eerste ${totalSpots} leerlingen, t/m 31 oktober.`,
+  /** The hero's title and subtitle are `/openingsactie-utrecht`'s, so they can't drift. */
+  title: openingsactieUtrecht.hero.title,
+  subtitle: openingsactieUtrecht.hero.body,
 
   claim: {
     kicker: 'Gratis proefles in Utrecht?',

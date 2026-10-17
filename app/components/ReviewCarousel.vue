@@ -1,25 +1,28 @@
 <script setup lang="ts">
-import { reviews } from '~/data/site'
+import { reviews as siteReviews, type Review } from '~/data/site'
 
 /**
  * Three reviews at a time, wrapping in both directions. Below 768px it shows
  * one, with the arrows and a row of dots underneath it and a swipe to step.
  */
-withDefaults(
+const props = withDefaults(
   defineProps<{
     /** The cards' own ground: white on a sand band, sand on a white one. */
     cardGround?: 'white' | 'sand'
+    /** A page's own reviews instead of the sitewide set, shown from the first. */
+    items?: Review[]
   }>(),
-  { cardGround: 'white' },
+  { cardGround: 'white', items: undefined },
 )
 
-const start = ref(2)
+const reviews = computed(() => props.items ?? siteReviews)
+const start = ref(props.items ? 0 : 2)
 const visible = computed(() =>
-  [0, 1, 2].map((offset) => reviews[(start.value + offset) % reviews.length]!),
+  [0, 1, 2].map((offset) => reviews.value[(start.value + offset) % reviews.value.length]!),
 )
 
 function step(direction: number) {
-  start.value = (start.value + direction + reviews.length) % reviews.length
+  start.value = (start.value + direction + reviews.value.length) % reviews.value.length
 }
 
 /* A horizontal swipe of 40px or more steps once; anything shorter, or more

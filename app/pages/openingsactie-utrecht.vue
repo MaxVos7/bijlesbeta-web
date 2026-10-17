@@ -74,21 +74,15 @@ const formatPrice = (value: number) => `€${value}`
          the copy, and carries the page's own header inside it. -->
     <section ref="hero" class="relative isolate overflow-hidden bg-ink-900 pb-[clamp(48px,7vw,88px)]">
       <img
-        src="/img/studenten.webp"
+        src="/img/home-hero.jpg"
         alt=""
+        width="2400"
+        height="1350"
         fetchpriority="high"
-        class="absolute inset-x-0 top-0 -z-20 h-[480px] w-full object-cover md:inset-y-0 md:h-full"
+        class="absolute inset-0 -z-20 h-full w-full object-cover object-[70%_center]"
       >
-      <!-- On a phone the hero stacks the copy and the form into a column
-           well over a thousand pixels tall, and a landscape photo stretched
-           over all of it is blown up past its resolution. So there it covers
-           the top only and fades into the ink below. -->
       <div
-        class="pointer-events-none absolute inset-x-0 top-[280px] -z-20 h-[200px] bg-linear-to-b from-transparent to-ink-900 md:hidden"
-        aria-hidden="true"
-      />
-      <div
-        class="pointer-events-none absolute inset-0 -z-10 bg-linear-100 from-ink-900/80 from-0% via-ink-900/55 via-50% to-ink-900/18"
+        class="pointer-events-none absolute inset-0 -z-10 bg-linear-100 from-ink-900/65 from-0% via-ink-900/40 via-50% to-ink-900/10"
         aria-hidden="true"
       />
 
@@ -120,8 +114,13 @@ const formatPrice = (value: number) => `€${value}`
       </div>
 
       <div class="px-[clamp(12px,3vw,24px)] pt-[clamp(36px,5vw,72px)]">
+        <!-- On a phone the form panel is left out of the hero — it follows
+             straight after it — so the column stays short enough for the
+             landscape photo to cover without being blown up past its
+             resolution. The review closes the copy column at every width;
+             from md the form sits beside it on the right. -->
         <div
-          class="mx-auto grid max-w-[1200px] items-center gap-[clamp(32px,5vw,60px)] [grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr))]"
+          class="mx-auto grid max-w-[1200px] items-center gap-[clamp(32px,5vw,60px)] md:grid-cols-2"
         >
           <div class="max-w-[640px] min-w-0">
             <RatingLine tone="inverse" class="mb-[18px]" />
@@ -133,33 +132,42 @@ const formatPrice = (value: number) => `€${value}`
             <h1
               class="mb-[18px] max-w-[18ch] text-[clamp(30px,4.2vw,36px)] leading-[1.12] tracking-[-0.025em] text-pretty text-white"
             >
-              {{ vak ? page.hero.titleFor[vak] : page.hero.title }}
+              {{ page.hero.title.before }}<span class="text-brand-500">{{ vak ? page.hero.title.highlightFor[vak] : page.hero.title.highlight }}</span>
             </h1>
             <p class="mb-7 max-w-[46ch] text-[clamp(15px,1.2vw,16px)] leading-[1.625] text-white/85">
               {{ page.hero.body }}
             </p>
 
-            <CheckList :items="page.hero.promises" tone="inverse" class="md:mb-8" />
+            <CheckList :items="page.hero.promises" tone="inverse" class="mb-7" />
 
-            <!-- Not on a phone: there the form follows straight after, and this
-                 would only push it further down. -->
-            <div class="hidden md:block">
-              <a href="#proefles" class="btn-primary btn-lg">
-                {{ page.ctaLabel }} <BtnArrow />
-              </a>
-              <CtaNote tone="inverse" class="mt-3.5" />
-            </div>
+            <figure class="max-w-[470px] rounded-card bg-white px-5 py-4 shadow-float">
+              <StarRating :value="page.heroReview.stars" />
+              <span class="sr-only">{{ page.heroReview.stars }} van 5 sterren</span>
+              <blockquote class="mt-2 font-display text-[15px] leading-[1.5] font-bold text-ink-800">
+                {{ page.heroReview.quote }}
+              </blockquote>
+              <figcaption class="mt-1.5 text-[13px] text-ink-700">– {{ page.heroReview.author }}</figcaption>
+            </figure>
           </div>
 
           <!-- The proefles form in the hero itself, as on the landings, so an
-               ad click lands one step from the wizard. The closing block keeps
-               its own copy further down. -->
-          <div class="w-full max-w-[470px] min-w-0 justify-self-end rounded-card bg-brand-500 p-[clamp(20px,2.4vw,30px)]">
+               ad click lands one step from the wizard. Desktop only; a phone
+               gets the same panel straight under the hero. The closing block
+               keeps its own copy further down. -->
+          <div class="hidden w-full max-w-[470px] min-w-0 justify-self-end rounded-card bg-brand-500 p-[clamp(20px,2.4vw,30px)] md:col-start-2 md:block">
             <p class="mb-1.5 text-[15px] font-semibold text-on-brand">{{ page.heroForm.kicker }}</p>
             <h2 class="mb-2.5 text-[clamp(21px,2.2vw,27px)] tracking-[-0.025em]">{{ page.heroForm.title }}</h2>
-            <p class="mb-[18px] text-sm leading-relaxed text-on-brand-muted">{{ page.heroForm.body }}</p>
+            <p class="mb-3 text-sm leading-relaxed text-on-brand-muted">{{ page.heroForm.body }}</p>
+            <p class="mb-[18px] flex items-center gap-2 text-sm font-bold text-ink-900">
+              <span class="relative flex h-2.5 w-2.5 flex-none" aria-hidden="true">
+                <span class="absolute inline-flex h-full w-full rounded-full bg-success-500 opacity-75 motion-safe:animate-ping" />
+                <span class="relative inline-flex h-2.5 w-2.5 rounded-full bg-success-500" />
+              </span>
+              <span>{{ page.heroForm.spots.before }}<span class="text-danger tabular-nums">{{ page.heroForm.spots.count }}</span>{{ page.heroForm.spots.after }}</span>
+            </p>
 
-            <!-- Mounted twice on this page, so it names itself in the office mail. -->
+            <!-- Mounted three times on this page (one per breakpoint here,
+                 plus the closing block), so it names itself in the office mail. -->
             <LeadForm
               :source="`${route.path} (hero)`"
               positie="hero"
@@ -171,7 +179,76 @@ const formatPrice = (value: number) => `€${value}`
       </div>
     </section>
 
-    <section class="bg-sand px-[clamp(16px,4vw,24px)] pt-[clamp(40px,5vw,64px)] pb-[clamp(56px,7vw,90px)]">
+    <!-- The hero's form panel, on a phone only: straight under the hero
+         rather than inside it, so the photo there doesn't have to stretch. -->
+    <section class="bg-sand px-[clamp(12px,3vw,24px)] pt-6 pb-[clamp(40px,5vw,64px)] md:hidden">
+      <div class="mx-auto w-full max-w-[470px] rounded-card bg-brand-500 p-[clamp(20px,2.4vw,30px)]">
+        <p class="mb-1.5 text-[15px] font-semibold text-on-brand">{{ page.heroForm.kicker }}</p>
+        <h2 class="mb-2.5 text-[clamp(21px,2.2vw,27px)] tracking-[-0.025em]">{{ page.heroForm.title }}</h2>
+        <p class="mb-3 text-sm leading-relaxed text-on-brand-muted">{{ page.heroForm.body }}</p>
+            <p class="mb-[18px] flex items-center gap-2 text-sm font-bold text-ink-900">
+              <span class="relative flex h-2.5 w-2.5 flex-none" aria-hidden="true">
+                <span class="absolute inline-flex h-full w-full rounded-full bg-success-500 opacity-75 motion-safe:animate-ping" />
+                <span class="relative inline-flex h-2.5 w-2.5 rounded-full bg-success-500" />
+              </span>
+              <span>{{ page.heroForm.spots.before }}<span class="text-danger tabular-nums">{{ page.heroForm.spots.count }}</span>{{ page.heroForm.spots.after }}</span>
+            </p>
+
+        <LeadForm
+          :source="`${route.path} (onder hero, mobiel)`"
+          positie="hero"
+          actie="utrecht"
+          class="rounded-tile bg-linen p-[clamp(14px,1.6vw,18px)]"
+        />
+      </div>
+    </section>
+
+    <!-- The pain, then the turn: under the form panel on a phone, straight
+         under the hero on desktop. -->
+    <section class="bg-white px-[clamp(16px,4vw,40px)] py-[clamp(56px,7vw,88px)]">
+      <div
+        class="mx-auto grid max-w-[1200px] items-center gap-[clamp(32px,5vw,64px)] md:grid-cols-2"
+      >
+        <img
+          :src="page.pain.image"
+          :alt="page.pain.alt"
+          width="1200"
+          height="675"
+          loading="lazy"
+          class="block aspect-[4/3] w-full rounded-card object-cover object-[35%_center]"
+        >
+
+        <div class="min-w-0">
+          <p class="kicker mb-2.5">{{ page.pain.kicker }}</p>
+          <h2 class="mb-4 text-[clamp(23px,2.6vw,28px)] leading-[1.3] tracking-[-0.025em] text-balance">
+            {{ page.pain.title }}
+          </h2>
+          <p class="mb-7 text-[15px] leading-[28px]">{{ page.pain.body }}</p>
+
+          <div class="mb-7 rounded-card bg-sand px-5 py-4">
+            <p class="mb-1.5 font-display text-[19px] leading-[26px] font-bold">{{ page.pain.turnTitle }}</p>
+            <p class="text-[15px] leading-[28px]">{{ page.pain.turnBody }}</p>
+          </div>
+
+          <a href="#proefles" class="btn-primary btn-lg">
+            {{ page.ctaLabel }} <BtnArrow />
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="bg-sand px-[clamp(16px,4vw,24px)] py-[clamp(56px,7vw,88px)]">
+      <div class="mx-auto max-w-[1000px]">
+        <div class="mb-[clamp(26px,3.5vw,38px)] text-center">
+          <RatingLine centered class="mb-3" />
+          <h2 class="text-[clamp(23px,2.6vw,28px)] tracking-[-0.025em]">{{ page.reviewsTitle }}</h2>
+        </div>
+
+        <ReviewCarousel :items="page.reviews" />
+      </div>
+    </section>
+
+    <section class="bg-white px-[clamp(16px,4vw,24px)] pt-[clamp(56px,7vw,88px)] pb-[clamp(56px,7vw,90px)]">
       <div class="mx-auto max-w-[1400px]">
         <div class="mb-[clamp(30px,4vw,46px)] text-center">
           <p class="kicker mb-2.5">{{ page.features.kicker }}</p>
@@ -194,17 +271,6 @@ const formatPrice = (value: number) => `€${value}`
             <p class="text-[13px] leading-normal text-ink-700">{{ feature.body }}</p>
           </div>
         </div>
-      </div>
-    </section>
-
-    <section class="bg-white px-[clamp(16px,4vw,24px)] py-[clamp(56px,7vw,88px)]">
-      <div class="mx-auto max-w-[1000px]">
-        <div class="mb-[clamp(26px,3.5vw,38px)] text-center">
-          <RatingLine centered class="mb-3" />
-          <h2 class="text-[clamp(23px,2.6vw,28px)] tracking-[-0.025em]">Wat vinden onze leerlingen?</h2>
-        </div>
-
-        <ReviewCarousel card-ground="sand" />
       </div>
     </section>
 

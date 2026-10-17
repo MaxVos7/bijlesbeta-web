@@ -126,9 +126,9 @@ onBeforeUnmount(() => {
       <!-- Wider than the 640px column it sits in: at this size the title needs
          the room, and the flex parent centres the overflow. -->
       <h1 class="w-[calc(100vw-40px)] max-w-[760px] text-center text-[clamp(36px,7.5vw,56px)] leading-[1.1] tracking-[-0.025em] text-balance">
-        {{ page.title.before }}<span class="text-brand-700">{{ page.title.highlight }}</span>
+        {{ page.title.before }}<span class="text-brand-700">{{ vak ? page.title.highlightFor[vak] : page.title.highlight }}</span>
       </h1>
-      <p class="max-w-[46ch] text-center text-base leading-[1.625] text-pretty text-ink-700">{{ vak ? page.subjectsFor[vak] : page.subjects }} {{ page.body }}</p>
+      <p class="max-w-[46ch] text-center text-base leading-[1.625] text-pretty text-ink-700">{{ page.subtitle }}</p>
 
       <div class="mt-14 flex flex-col items-center gap-2">
         <p class="kicker">{{ page.claim.kicker }}</p>
