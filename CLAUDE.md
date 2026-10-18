@@ -1272,6 +1272,34 @@ Watch flex children that hold an `auto-fit` grid — they need `min-w-0` or the
 grid refuses to shrink and the page overflows on a phone. Check new pages at
 360px wide.
 
+## /mijn/ — the logged-in part
+
+Tutors log in here and work on the Laravel app's JSON API — the same
+`/api/...` routes the mobile app (`../bijlesbeta/mobile`) uses. Customers will
+follow on the same prefix, so nothing here is named after tutors except the
+login call itself (`api/tutor/login`, which refuses everyone else).
+
+- **The browser never holds the token.** `POST /api/mijn/login` stores it in
+  the httpOnly `bb_mijn` cookie; pages call `/api/mijn/<path>`, and
+  `server/api/mijn/[...path].ts` forwards to `<portal>/api/<path>` with
+  `Authorization: Bearer`. Don't add a client-side token, a Pinia store for
+  it, or a direct call to the portal from the browser.
+- **The forwarder is an allowlist.** A page that needs another endpoint adds
+  its method and path to `ROUTES` there. Never widen it to "any path".
+- **Mutating calls must come from this origin** (`assertSameOrigin`), on top
+  of SameSite=Lax on the cookie.
+- **Laravel 5xx never reaches the browser** — `callLaravel` turns it into a
+  502 with a generic message. 4xx is passed through: a 422 carries Laravel's
+  per-field `errors`, which the page shows next to the field.
+- **Client-only, noindex, no-store** (`routeRules['/mijn/**']`), and no GTM
+  (`app/plugins/gtm.ts`). The layout's `data-ph-mask` masks all text in
+  PostHog replays, because these pages show students' names.
+- **Session state** is `useMijnSession()`; the `mijn` route middleware guards
+  pages, `mijn-guest` the login form. Copy lives in `app/data/mijn.ts`.
+- **Laravel needs `TRUSTED_PROXIES`** set to this server's IP, or every
+  visitor shares one login throttle (6/min) — `X-Forwarded-For` is sent, but
+  Laravel only believes it from a trusted proxy.
+
 ## Deployment
 
 Laravel Forge, as a Node SSR daemon behind an nginx proxy. See README.md for the

@@ -190,6 +190,17 @@ export default defineNuxtConfig({
       filename, so there is no stale-photograph problem to bound here.
     */
     '/fonts/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } },
+
+    /*
+      The logged-in part of the site. Rendered in the browser only: nothing
+      here is for search engines, and the session is an httpOnly cookie the
+      SSR render would otherwise have to forward on every call. Never indexed,
+      never cached — each response is one visitor's own.
+    */
+    '/mijn/**': {
+      ssr: false,
+      headers: { 'x-robots-tag': 'noindex, nofollow', 'cache-control': 'no-store' },
+    },
   },
 
   nitro: {
