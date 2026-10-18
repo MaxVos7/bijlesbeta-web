@@ -13,7 +13,6 @@ withDefaults(
 )
 
 const route = useRoute()
-const config = useRuntimeConfig()
 
 /*
   The strip around the floating bar carries no ground of its own: on the live
@@ -144,9 +143,9 @@ watch(() => route.fullPath, () => {
           Gratis proefles
         </NuxtLink>
 
-        <!-- Portal login. Desktop only, as on the live site. -->
-        <a
-          :href="`${config.public.portalUrl}/login`"
+        <!-- Login to /mijn/. Desktop only, as on the live site. -->
+        <NuxtLink
+          to="/mijn/inloggen/"
           class="hidden flex-none desk:block"
           aria-label="Inloggen op Mijn Bijles Bèta"
         >
@@ -168,7 +167,7 @@ watch(() => route.fullPath, () => {
               stroke-linecap="round"
             />
           </svg>
-        </a>
+        </NuxtLink>
       </div>
 
       <!--
