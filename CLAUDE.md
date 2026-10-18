@@ -1317,7 +1317,8 @@ actually gets back — never rely on hiding a link.
 - **Session state** is `useMijnSession()`; the `mijn` route middleware guards
   pages, `mijn-guest` the login form, `mijn-customer` the customer-only pages.
   `/mijn/` itself sends customers to `/mijn/overzicht/` and tutors to
-  `/mijn/lessen/`. Copy lives in `app/data/mijn.ts`, shared API shapes in
+  `/mijn/lessen/`. An account with `must_change_password` is held on
+  `/mijn/wachtwoord/` by the `mijn` middleware until it has set one. Copy lives in `app/data/mijn.ts`, shared API shapes in
   `app/utils/mijn-types.ts`, and lessons and shared notes render through
   `MijnLessonRow` / `MijnRecordList` on every page that shows them.
 - **Notes arrive as plain text** (Laravel strips the editor's HTML). Render
