@@ -1,6 +1,5 @@
 import { articles, kennisbankCategories } from '~/data/kennisbank'
 import { landings, landingPath } from '~/data/landings'
-import { tutors } from '~/data/tutors'
 
 /**
  * The sitemap, built from the same data the pages render from, so it can't
@@ -44,7 +43,7 @@ function priorityFor(path: string) {
   return '0.8'
 }
 
-export default defineEventHandler((event) => {
+export default defineEventHandler(async (event) => {
   const { siteUrl } = useRuntimeConfig(event).public
   const origin = String(siteUrl).replace(/\/$/, '')
 
@@ -53,7 +52,7 @@ export default defineEventHandler((event) => {
     ...landings.map((landing) => landingPath(landing.slug)),
     ...articles.map((article) => `/kennisbank/${article.slug}`),
     ...kennisbankCategories.map((category) => `/kennisbank/category/${category.slug}`),
-    ...tutors.map((tutor) => `/docenten/${tutor.slug}`),
+    ...(await getTutors()).map((tutor) => `/docenten/${tutor.slug}`),
   ]
 
   const urls = paths

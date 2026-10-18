@@ -1258,6 +1258,17 @@ amber closing block, with its own short form), `FaqSection`, `StatsBand`,
 
 ### The docenten grid on /over-ons
 
+**The roster is live, not a snapshot.** `server/utils/tutors.ts` reads the
+portal's public `api/tutors` (`PersonController::tutors`: every provider with
+`visible_on_website`) and caches it in memory for a day, stale-while-revalidate,
+so a new docent appears on `/over-ons/`, `/docenten/<slug>/` and the sitemap
+without a deploy. Pages reach it through `/api/docenten`. `app/data/tutors.ts`
+is now only the fallback when the portal can't be reached, and it fixes the
+order of the docenten in it — new ones follow them, so the fixed breaks in the
+grid don't reshuffle. Slugs are derived from the name; that reproduces all 28
+indexed URLs, so don't change `tutorSlug`. A docent hidden in the portal drops
+out, and their profile URL 404s.
+
 The live roster is one Elementor loop grid (`ce60d92`) with a **fixed column
 count**, not a fluid track: **4** columns on desktop, **2** on Elementor's
 tablet step and **1** on a phone, on a flat 24px gap both ways. Don't put it

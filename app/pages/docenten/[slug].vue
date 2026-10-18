@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { findTutor } from '~/data/tutors'
-
 const route = useRoute()
 const slug = computed(() => String(route.params.slug))
 
-const tutor = computed(() => findTutor(slug.value))
+// From the portal's roster, refreshed daily (`server/utils/tutors.ts`).
+const { data: tutor } = await useFetch(() => `/api/docenten/${slug.value}`)
 
 if (!tutor.value) {
   throw createError({ statusCode: 404, statusMessage: 'Docent niet gevonden', fatal: true })

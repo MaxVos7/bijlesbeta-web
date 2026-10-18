@@ -1,8 +1,10 @@
 /**
  * Tutor profiles, mirrored from https://mijn.bijlesbeta.nl/api/tutors.
  *
- * Snapshotted rather than fetched at runtime so the pages render without a
- * round-trip to the portal. Regenerate when the roster changes.
+ * The pages don't read this directly any more: `server/utils/tutors.ts`
+ * fetches the live roster and refreshes it daily, so a new docent appears
+ * without a deploy. This snapshot is what stands in while the portal can't be
+ * reached, and it fixes the order the docenten in it are shown in.
  *
  * Photos are still served by the portal — there is no local copy.
  */
@@ -489,17 +491,3 @@ export const tutors: Tutor[] = [
     ]
   }
 ]
-
-
-export function findTutor(slug: string): Tutor | undefined {
-  return tutors.find((tutor) => tutor.slug === slug)
-}
-
-/** `count` other tutors, starting after the given one, wrapping around. */
-export function otherTutors(slug: string, count: number): Tutor[] {
-  const index = tutors.findIndex((tutor) => tutor.slug === slug)
-  const start = index === -1 ? 0 : index + 1
-  return Array.from({ length: Math.min(count, tutors.length - 1) }, (_, i) =>
-    tutors[(start + i) % tutors.length]!,
-  )
-}
