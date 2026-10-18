@@ -19,6 +19,7 @@ export const mijnNav = {
   overview: 'Overzicht',
   lessons: 'Lessen',
   children: 'Leerlingen',
+  package: 'Pakket',
   invoices: 'Facturen',
   logout: 'Uitloggen',
 }
@@ -69,6 +70,67 @@ export const mijnOverview = {
   lessonsEmpty: 'Nog geen lessen.',
 
   recordsTitle: 'Berichten van de docent',
+}
+
+/** The package page. Where the portal already words something, this says it the same way. */
+export const mijnPackage = {
+  title: 'Pakket',
+  kicker: 'Mijn Bijles Bèta',
+  loading: 'Pakket laden…',
+
+  // No package yet
+  chooseTitle: 'Kies een pakket',
+  searching: 'We zijn op zoek naar een passende bijlesdocent. Zodra we die hebben gevonden, nemen we contact met je op.',
+  noLessonsYet: 'Bespreek tijdens de proefles met je docent welk pakket bij je past.',
+  sharedHours: 'Uren worden gedeeld tussen alle leerlingen onder dit account.',
+  perMonth: (hours: number) => `${hours} uur per maand`,
+  perHour: (price: string) => `${price}/uur`,
+  monthly: (price: string) => `${price}/maand`,
+  looseTitle: 'Losse lessen',
+  looseSubtitle: 'Geen abonnement',
+  loosePerLesson: 'betaal per les',
+
+  startTitle: 'Startdatum',
+  startToday: 'Start vandaag',
+  startNextMonth: (date: string) => `Start per ${date}`,
+  firstMonthTitle: (month: string) => `Eerste maand (${month})`,
+  firstMonthBody: (amount: string, hours: string, weeks: number) =>
+    `Omdat je vandaag start, betaal je voor deze maand ${amount} voor ${hours} uur (${weeks} van 4 weken).`,
+
+  termsTitle: 'Voorwaarden',
+  terms: ['Ongebruikte uren zijn 1 maand geldig', 'Bij ziekte is een uitzondering te maken'],
+  agreeBefore: 'Ik ga akkoord met de',
+  agreeLink: 'algemene voorwaarden',
+  agreeFallback: 'regels',
+  agreeRequired: 'Ga akkoord met de voorwaarden om verder te gaan.',
+
+  submitStart: 'Pakket starten',
+  submitLoose: 'Losse lessen kiezen',
+
+  // A tutor's suggestion
+  pendingTitle: (name: string | null) => `${name ?? 'Je begeleider'} heeft dit pakket voor je voorgesteld`,
+  submitConfirm: 'Pakket bevestigen',
+  reject: 'Afwijzen',
+  rejectConfirm: 'Weet je zeker dat je dit pakket wilt afwijzen?',
+
+  // The running package
+  activeTitle: 'Je pakket',
+  cancelledUntil: (date: string) => `Opgezegd, loopt tot en met ${date}`,
+  endsAfter: (description: string) => `Eindigt na ${description}`,
+  cancel: 'Opzeggen',
+  changeEnd: 'Einddatum wijzigen',
+  change: 'Pakket wijzigen',
+  cancelTitle: 'Pakket opzeggen',
+  cancelBody: (description: string) => `Weet je zeker dat je het pakket wilt opzeggen? Het pakket eindigt na ${description}.`,
+  cancelSubmit: 'Ja, opzeggen',
+  changeTitle: 'Pakket wijzigen',
+  changeLabel: 'Nieuw pakket',
+  changePlaceholder: 'Kies een pakket',
+  changeBody: (end: string, start: string) => `Je huidige pakket eindigt na ${end}. Het nieuwe pakket start op ${start}.`,
+  changeSubmit: 'Opslaan',
+  back: 'Annuleren',
+
+  futureTitle: (name: string, date: string) => `${name} start op ${date}`,
 }
 
 export const mijnChildren = {

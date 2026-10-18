@@ -19,6 +19,7 @@ const nav = computed(() => {
       { to: '/mijn/overzicht/', label: mijnNav.overview },
       { to: '/mijn/lessen/', label: mijnNav.lessons },
       { to: '/mijn/leerlingen/', label: mijnNav.children },
+      { to: '/mijn/pakket/', label: mijnNav.package },
       { to: '/mijn/facturen/', label: mijnNav.invoices },
     ]
   }
