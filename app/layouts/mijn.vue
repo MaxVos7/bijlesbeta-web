@@ -10,7 +10,15 @@ import { mijnNav } from '~/data/mijn'
 const { user, logout } = useMijnSession()
 const pending = ref(false)
 
-const nav = computed(() => (user.value ? [{ to: '/mijn/lessen/', label: mijnNav.lessons }] : []))
+/** Each account sees the pages its role has; customers get their invoices too. */
+const nav = computed(() => {
+  if (!user.value) return []
+
+  const items = [{ to: '/mijn/lessen/', label: mijnNav.lessons }]
+  if (user.value.is_customer) items.push({ to: '/mijn/facturen/', label: mijnNav.invoices })
+
+  return items
+})
 
 async function onLogout() {
   pending.value = true

@@ -1288,10 +1288,13 @@ grid refuses to shrink and the page overflows on a phone. Check new pages at
 
 ## /mijn/ — the logged-in part
 
-Tutors log in here and work on the Laravel app's JSON API — the same
-`/api/...` routes the mobile app (`../bijlesbeta/mobile`) uses. Customers will
-follow on the same prefix, so nothing here is named after tutors except the
-login call itself (`api/tutor/login`, which refuses everyone else).
+Tutors, supervisors and customers log in here and work on the Laravel app's
+JSON API — the same `/api/...` routes the mobile app (`../bijlesbeta/mobile`)
+uses, plus customer endpoints added for this site. The login calls
+`api/web/login`, which refuses admins and applicants; admins stay on
+mijn.bijlesbeta.nl. Pages and menu items are per role (`is_customer`,
+`is_provider`, … from `me`), and Laravel's policies decide what each role
+actually gets back — never rely on hiding a link.
 
 - **The browser never holds the token.** `POST /api/mijn/login` stores it in
   the httpOnly `bb_mijn` cookie; pages call `/api/mijn/<path>`, and
@@ -1302,6 +1305,9 @@ login call itself (`api/tutor/login`, which refuses everyone else).
   its method and path to `ROUTES` there. Never widen it to "any path".
 - **Mutating calls must come from this origin** (`assertSameOrigin`), on top
   of SameSite=Lax on the cookie.
+- **Invoice PDFs are not JSON.** `invoices/<id>/pdf` goes through
+  `callLaravelRaw`: a streamed PDF is passed on as bytes, a redirect to the
+  billing provider's PDF is handed to the browser.
 - **Laravel 5xx never reaches the browser** — `callLaravel` turns it into a
   502 with a generic message. 4xx is passed through: a 422 carries Laravel's
   per-field `errors`, which the page shows next to the field.

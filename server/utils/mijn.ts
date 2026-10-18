@@ -79,6 +79,14 @@ type ApiResponse = { status: number, data: any }
 
 const UNAVAILABLE = 'Er ging iets mis. Probeer het over een paar minuten opnieuw.'
 
+function laravelHeaders(event: H3Event, token?: string | null) {
+  const headers: Record<string, string> = { Accept: 'application/json' }
+  const ip = clientIp(event)
+  if (ip) headers['X-Forwarded-For'] = ip
+  if (token) headers.Authorization = `Bearer ${token}`
+  return headers
+}
+
 /**
  * One call to `<portal>/api/<path>`. A 4xx comes back to the caller to pass
  * on; a 5xx or an unreachable Laravel throws a 502 with a generic message, so
@@ -90,11 +98,7 @@ export async function callLaravel(
   path: string,
   options: { method?: string, body?: unknown, query?: Record<string, any>, token?: string | null } = {},
 ): Promise<ApiResponse> {
-  const headers: Record<string, string> = { Accept: 'application/json' }
-  const ip = clientIp(event)
-  if (ip) headers['X-Forwarded-For'] = ip
-  if (options.token) headers.Authorization = `Bearer ${options.token}`
-
+  const headers = laravelHeaders(event, options.token)
   const url = `${apiBase(event)}/api/${path}`
   const label = `[mijn] ${options.method ?? 'GET'} /api/${path}`
 
@@ -119,6 +123,34 @@ export async function callLaravel(
   }
 
   return { status: response.status, data: response._data ?? null }
+}
+
+/**
+ * A GET whose answer is not JSON — an invoice PDF. The response comes back
+ * untouched and a redirect is not followed, so the caller can hand it to the
+ * browser. Same error rule as `callLaravel`: a 5xx or no answer is a 502.
+ */
+export async function callLaravelRaw(event: H3Event, path: string, token: string): Promise<Response> {
+  const label = `[mijn] GET /api/${path}`
+
+  let response: Response
+  try {
+    response = await fetch(`${apiBase(event)}/api/${path}`, {
+      headers: laravelHeaders(event, token),
+      redirect: 'manual',
+    })
+  }
+  catch (error: any) {
+    console.error(`${label} failed`, error?.message ?? error)
+    throw createError({ statusCode: 502, statusMessage: 'Portal unreachable', data: { message: UNAVAILABLE } })
+  }
+
+  if (response.status >= 500) {
+    console.error(`${label} answered ${response.status}`)
+    throw createError({ statusCode: 502, statusMessage: 'Portal error', data: { message: UNAVAILABLE } })
+  }
+
+  return response
 }
 
 /**

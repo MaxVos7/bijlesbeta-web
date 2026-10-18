@@ -38,7 +38,7 @@ const loading = ref(true)
 const loadingMore = ref(false)
 const error = ref('')
 
-// Supervisors see their tutors' lessons too, so for them the row names the tutor.
+// A tutor's own lessons need no tutor's name; a customer's or a supervisor's do.
 const showProvider = computed(() => !user.value?.is_provider)
 
 async function load(nextPage = 1) {
