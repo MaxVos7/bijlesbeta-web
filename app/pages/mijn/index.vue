@@ -2,9 +2,10 @@
 import { mijnChangePassword } from '~/data/mijn'
 
 /*
-  No overview of its own yet: like the app, `/mijn/` opens on the lessons.
-  The one exception is an account still on its invitation password, which has
-  to set its own on the portal first — there is no API route for that yet.
+  Not a page of its own: customers open on their overview, tutors on their
+  lessons, as in the app. The exception is an account still on its invitation
+  password, which has to set its own on the portal first — there is no API
+  route for that yet.
 */
 definePageMeta({
   layout: 'mijn',
@@ -13,7 +14,7 @@ definePageMeta({
     () => {
       const { user } = useMijnSession()
       if (user.value && !user.value.must_change_password) {
-        return navigateTo('/mijn/lessen/', { replace: true })
+        return navigateTo(user.value.is_customer ? '/mijn/overzicht/' : '/mijn/lessen/', { replace: true })
       }
     },
   ],

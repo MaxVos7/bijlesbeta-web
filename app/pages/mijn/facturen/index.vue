@@ -6,16 +6,7 @@ import { mijnInvoices } from '~/data/mijn'
   customer, from `GET api/invoices`. Paying happens on the billing provider's
   own page; the PDF comes through `/api/mijn/invoices/<id>/pdf`.
 */
-definePageMeta({
-  layout: 'mijn',
-  middleware: [
-    'mijn',
-    () => {
-      const { user } = useMijnSession()
-      if (user.value && !user.value.is_customer) return navigateTo('/mijn/', { replace: true })
-    },
-  ],
-})
+definePageMeta({ layout: 'mijn', middleware: ['mijn', 'mijn-customer'] })
 useHead({ title: mijnInvoices.title })
 
 type Invoice = {
@@ -38,11 +29,6 @@ function invoiceMonth(month: string | null) {
   if (!month) return ''
   const [y, m] = month.split('-').map(Number)
   return new Date(y!, m! - 1, 1).toLocaleDateString('nl-NL', { month: 'long', year: 'numeric' })
-}
-
-/** "€ 123,45" from cents. */
-function euros(cents: number) {
-  return (cents / 100).toLocaleString('nl-NL', { style: 'currency', currency: 'EUR' })
 }
 
 onMounted(async () => {
