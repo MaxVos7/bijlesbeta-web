@@ -4,8 +4,7 @@ import type { MijnLesson, MijnRecord } from '~/utils/mijn-types'
 
 /*
   A customer's start page: what the dashboard on mijn.bijlesbeta.nl shows a
-  customer, from `GET api/dashboard`. Starting or changing a package is not in
-  the API yet, so those buttons still lead to the portal.
+  customer, from `GET api/dashboard`. Package actions live on /mijn/pakket/.
 */
 definePageMeta({ layout: 'mijn', middleware: ['mijn', 'mijn-customer'] })
 useHead({ title: mijnOverview.title })
@@ -31,11 +30,9 @@ type Overview = {
       monthly_price: number
       hours_per_month: number
       suggested_by_name: string
-      confirm_url: string
     }
     future: null | { package_name: string, started_at: string }
     can_start: boolean
-    manage_url: string
   }
   strip_remaining_minutes: number | null
   records: MijnRecord[]
@@ -91,7 +88,7 @@ onMounted(async () => {
               {{ subscription.pending.package_name }} · {{ euros(subscription.pending.monthly_price) }}/maand ·
               {{ mijnOverview.perMonth(subscription.pending.hours_per_month) }}
             </p>
-            <a :href="subscription.pending.confirm_url" class="btn-primary mt-4">{{ mijnOverview.pendingCta }}</a>
+            <NuxtLink to="/mijn/pakket/" class="btn-primary mt-4">{{ mijnOverview.pendingCta }}</NuxtLink>
           </div>
 
           <template v-if="subscription.active">
@@ -133,14 +130,14 @@ onMounted(async () => {
             {{ mijnOverview.packageNone }}
           </p>
 
-          <a
+          <NuxtLink
             v-if="subscription.can_start || subscription.active"
-            :href="subscription.manage_url"
+            to="/mijn/pakket/"
             :class="subscription.can_start ? 'btn-primary' : 'btn-secondary'"
             class="mt-5"
           >
             {{ subscription.can_start ? mijnOverview.packageStart : mijnOverview.packageManage }}
-          </a>
+          </NuxtLink>
         </section>
 
         <!-- Strips -->
