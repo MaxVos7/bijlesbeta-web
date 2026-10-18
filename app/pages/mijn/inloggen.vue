@@ -103,13 +103,6 @@ async function onSubmit() {
           {{ mijnLogin.forgotPassword }}
         </a>
       </form>
-
-      <p class="mt-6 border-t border-line-200 pt-5 text-[13.5px] text-ink-700">
-        {{ mijnLogin.customersNote }}
-        <a :href="`${config.public.portalUrl}/login`" class="font-semibold text-ink-800 underline">
-          mijn.bijlesbeta.nl
-        </a>
-      </p>
     </div>
   </div>
 </template>

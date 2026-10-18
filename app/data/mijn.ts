@@ -1,12 +1,11 @@
 /**
- * Copy for `/mijn/`, the logged-in part of the site. Tutors only for now;
- * customers follow later on the same prefix.
+ * Copy for `/mijn/`, the logged-in part of the site, for tutors and customers.
  */
 
 export const mijnLogin = {
   title: 'Inloggen',
   kicker: 'Mijn Bijles Bèta',
-  intro: 'Log in met het e-mailadres en wachtwoord van je docentenaccount.',
+  intro: 'Log in met het e-mailadres en wachtwoord van je Bijles Bèta-account.',
   email: 'E-mailadres',
   password: 'Wachtwoord',
   submit: 'Inloggen',
@@ -14,11 +13,11 @@ export const mijnLogin = {
   forgotPassword: 'Wachtwoord vergeten?',
   failed: 'Inloggen lukte niet. Probeer het opnieuw.',
   throttled: 'Te veel pogingen. Wacht een minuut en probeer het opnieuw.',
-  customersNote: 'Ouder of leerling? Log in via',
 }
 
 export const mijnNav = {
   lessons: 'Lessen',
+  invoices: 'Facturen',
   logout: 'Uitloggen',
 }
 
@@ -36,6 +35,22 @@ export const mijnLessons = {
   travel: 'Reiskosten',
   provider: 'Docent',
   record: 'Verslag',
+}
+
+export const mijnInvoices = {
+  title: 'Facturen',
+  kicker: 'Mijn Bijles Bèta',
+  loading: 'Facturen laden…',
+  empty: 'Je hebt nog geen facturen.',
+  number: 'Factuur',
+  pay: 'Betalen',
+  pdf: 'Bekijk pdf',
+  status: {
+    open: 'Openstaand',
+    paid: 'Betaald',
+    uncollectible: 'Vervallen',
+    void: 'Vervallen',
+  } as Record<string, string>,
 }
 
 /**

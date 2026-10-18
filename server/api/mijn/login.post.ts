@@ -1,10 +1,9 @@
 import { z } from 'zod'
 
 /**
- * Logs a visitor in to `/mijn/`. Only tutors and supervisors for now: this
- * posts to Laravel's `api/tutor/login`, which refuses everyone else with a
- * 422 on `email`. When customers get screens here too, this is the one call
- * that changes.
+ * Logs a visitor in to `/mijn/`. Posts to Laravel's `api/web/login`, which
+ * lets in tutors, supervisors and customers and refuses everyone else (admins,
+ * applicants) with a 422 on `email`.
  *
  * The token goes into the httpOnly cookie and never into the response.
  */
@@ -28,7 +27,7 @@ export default defineEventHandler(async (event) => {
 
   const userAgent = getRequestHeader(event, 'user-agent') ?? 'unknown'
 
-  const { status, data } = await callLaravel(event, 'tutor/login', {
+  const { status, data } = await callLaravel(event, 'web/login', {
     method: 'POST',
     body: {
       ...body.data,

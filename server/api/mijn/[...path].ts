@@ -1,3 +1,5 @@
+import type { H3Event } from 'h3'
+
 /**
  * Everything `/mijn/` pages ask of Laravel, forwarded with the visitor's
  * token. `/api/mijn/lessons?page=2` becomes `<portal>/api/lessons?page=2`.
@@ -7,6 +9,9 @@
  * all of it. A page that needs another endpoint adds it here.
  */
 const ID = '\\d+'
+
+/** Invoice ids are Moneybird's digits or Stripe's `in_…`. */
+const PDF = /^invoices\/[A-Za-z0-9_]+\/pdf$/
 
 const ROUTES: Array<[method: string, pattern: RegExp]> = [
   ['GET', /^me$/],
@@ -26,6 +31,9 @@ const ROUTES: Array<[method: string, pattern: RegExp]> = [
 
   ['GET', /^close-month\/options$/],
   ['POST', /^close-month$/],
+
+  ['GET', /^invoices$/],
+  ['GET', PDF],
 ]
 
 export default defineEventHandler(async (event) => {
@@ -42,6 +50,8 @@ export default defineEventHandler(async (event) => {
   if (!token) {
     throw createError({ statusCode: 401, statusMessage: 'Unauthenticated' })
   }
+
+  if (PDF.test(path)) return forwardPdf(event, path, token)
 
   const hasBody = !['GET', 'HEAD', 'DELETE'].includes(event.method)
 
@@ -61,3 +71,30 @@ export default defineEventHandler(async (event) => {
 
   return data
 })
+
+/**
+ * An invoice PDF isn't JSON: Laravel either streams it (Moneybird
+ * attachments) or redirects to the billing provider's own PDF URL. The bytes
+ * are passed on as they are, and a redirect is handed to the browser rather
+ * than followed here.
+ */
+async function forwardPdf(event: H3Event, path: string, token: string) {
+  const response = await callLaravelRaw(event, path, token)
+
+  const location = response.headers.get('location')
+  if (response.status >= 300 && response.status < 400 && location) {
+    return sendRedirect(event, location, 302)
+  }
+
+  if (response.status === 401) clearMijnToken(event)
+
+  if (!response.ok) {
+    throw createError({ statusCode: response.status === 401 ? 401 : 404, statusMessage: 'PDF not available' })
+  }
+
+  setHeader(event, 'content-type', response.headers.get('content-type') ?? 'application/pdf')
+  setHeader(event, 'content-disposition', response.headers.get('content-disposition') ?? 'inline')
+  setHeader(event, 'cache-control', 'no-store')
+
+  return Buffer.from(await response.arrayBuffer())
+}
