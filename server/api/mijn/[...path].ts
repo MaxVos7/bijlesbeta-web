@@ -43,6 +43,9 @@ const ROUTES: Array<[method: string, pattern: RegExp]> = [
   ['POST', /^subscription\/loose-lessons$/],
   ['POST', new RegExp(`^subscriptions/${ID}/(confirm|reject|cancel|change)$`)],
 
+  ['GET', /^schedule$/],
+  ['POST', /^schedule\/(requests|no-match)$/],
+
   ['GET', /^invoices$/],
   ['GET', PDF],
 ]
