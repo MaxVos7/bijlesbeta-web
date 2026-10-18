@@ -1315,7 +1315,13 @@ actually gets back — never rely on hiding a link.
   (`app/plugins/gtm.ts`). The layout's `data-ph-mask` masks all text in
   PostHog replays, because these pages show students' names.
 - **Session state** is `useMijnSession()`; the `mijn` route middleware guards
-  pages, `mijn-guest` the login form. Copy lives in `app/data/mijn.ts`.
+  pages, `mijn-guest` the login form, `mijn-customer` the customer-only pages.
+  `/mijn/` itself sends customers to `/mijn/overzicht/` and tutors to
+  `/mijn/lessen/`. Copy lives in `app/data/mijn.ts`, shared API shapes in
+  `app/utils/mijn-types.ts`, and lessons and shared notes render through
+  `MijnLessonRow` / `MijnRecordList` on every page that shows them.
+- **Notes arrive as plain text** (Laravel strips the editor's HTML). Render
+  them as text — never `v-html`.
 - **Laravel needs `TRUSTED_PROXIES`** set to this server's IP, or every
   visitor shares one login throttle (6/min) — `X-Forwarded-For` is sent, but
   Laravel only believes it from a trusted proxy.

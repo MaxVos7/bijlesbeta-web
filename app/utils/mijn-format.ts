@@ -31,3 +31,14 @@ export function hoursAndMinutes(minutes: number) {
 
   return parts.length ? parts.join(' ') : '0 uur'
 }
+
+/** "€ 140,00" from the API's cents. */
+export function euros(cents: number) {
+  return (cents / 100).toLocaleString('nl-NL', { style: 'currency', currency: 'EUR' })
+}
+
+/** "14 oktober 2026" from the API's `Y-m-d`. */
+export function longDate(date: string) {
+  const [y, m, d] = date.split('-').map(Number)
+  return new Date(y!, m! - 1, d!).toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' })
+}

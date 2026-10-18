@@ -16,7 +16,9 @@ export const mijnLogin = {
 }
 
 export const mijnNav = {
+  overview: 'Overzicht',
   lessons: 'Lessen',
+  children: 'Leerlingen',
   invoices: 'Facturen',
   logout: 'Uitloggen',
 }
@@ -35,6 +37,53 @@ export const mijnLessons = {
   travel: 'Reiskosten',
   provider: 'Docent',
   record: 'Verslag',
+}
+
+export const mijnOverview = {
+  title: 'Overzicht',
+  greeting: (name: string) => `Hoi ${name.split(' ')[0]}!`,
+  loading: 'Overzicht laden…',
+
+  packageTitle: 'Je pakket',
+  packageNone: 'Je hebt nog geen pakket.',
+  packageStart: 'Pakket kiezen',
+  packageManage: 'Pakket wijzigen',
+  packageMonth: (month: string) => `Uren in ${month}`,
+  hoursUsed: 'Gebruikt',
+  hoursRemaining: 'Nog over',
+  hoursExtra: 'Extra uren',
+  perMonth: (hours: number) => `${hours} uur per maand`,
+  pendingTitle: (name: string) => `${name} stelt een pakket voor`,
+  pendingCta: 'Bekijken en bevestigen',
+  futureTitle: (name: string, date: string) => `${name} start op ${date}`,
+
+  stripTitle: 'Strippenkaart',
+  stripRemaining: (time: string) => `Nog ${time} over`,
+
+  scheduleTitle: 'Plan je lessen in',
+  scheduleBody: (date: string) => `Je bent uitgenodigd om een vast lesmoment te kiezen. De uitnodiging is geldig tot ${date}.`,
+  scheduleCta: 'Lesmoment kiezen',
+
+  lessonsTitle: 'Laatste lessen',
+  lessonsAll: 'Alle lessen',
+  lessonsEmpty: 'Nog geen lessen.',
+
+  recordsTitle: 'Berichten van de docent',
+}
+
+export const mijnChildren = {
+  title: 'Leerlingen',
+  kicker: 'Mijn Bijles Bèta',
+  loading: 'Leerlingen laden…',
+  empty: 'Er staan nog geen leerlingen op je account.',
+  tutors: 'Docent',
+  noTutor: 'Nog geen docent gekoppeld',
+  inactive: 'Gestopt',
+  back: 'Alle leerlingen',
+  lessonsTitle: 'Lessen',
+  lessonsEmpty: 'Nog geen lessen.',
+  recordsTitle: 'Berichten van de docent',
+  notFound: 'Deze leerling bestaat niet of hoort niet bij je account.',
 }
 
 export const mijnInvoices = {
