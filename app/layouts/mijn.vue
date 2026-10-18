@@ -12,7 +12,8 @@ const pending = ref(false)
 
 /** Each account sees the pages its role has. */
 const nav = computed(() => {
-  if (!user.value) return []
+  // Until the temporary password is replaced there is nowhere else to go.
+  if (!user.value || user.value.must_change_password) return []
 
   if (user.value.is_customer) {
     return [
@@ -21,10 +22,14 @@ const nav = computed(() => {
       { to: '/mijn/leerlingen/', label: mijnNav.children },
       { to: '/mijn/pakket/', label: mijnNav.package },
       { to: '/mijn/facturen/', label: mijnNav.invoices },
+      { to: '/mijn/profiel/', label: mijnNav.profile },
     ]
   }
 
-  return [{ to: '/mijn/lessen/', label: mijnNav.lessons }]
+  return [
+    { to: '/mijn/lessen/', label: mijnNav.lessons },
+    { to: '/mijn/profiel/', label: mijnNav.profile },
+  ]
 })
 
 async function onLogout() {

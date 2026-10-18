@@ -21,6 +21,7 @@ export const mijnNav = {
   children: 'Leerlingen',
   package: 'Pakket',
   invoices: 'Facturen',
+  profile: 'Profiel',
   logout: 'Uitloggen',
 }
 
@@ -164,13 +165,44 @@ export const mijnInvoices = {
   } as Record<string, string>,
 }
 
+export const mijnProfile = {
+  title: 'Profiel',
+  kicker: 'Mijn Bijles Bèta',
+  loading: 'Profiel laden…',
+  detailsTitle: 'Je gegevens',
+  name: 'Naam',
+  email: 'E-mailadres',
+  phone: 'Telefoonnummer',
+  address: 'Adres',
+  addressComment: 'Opmerking bij het adres',
+  children: 'Leerlingen',
+  empty: '—',
+  changeNote: 'Klopt er iets niet? Neem contact met ons op, dan passen we het aan.',
+  contact: 'Contact opnemen',
+  stripsTitle: 'Strippenkaart',
+  stripsRemaining: (time: string) => `Nog ${time} over`,
+  stripsMinutes: 'Uren',
+  stripsEndsAt: 'Geldig tot',
+  stripsNegative: 'in de min',
+  passwordTitle: 'Wachtwoord',
+  passwordCta: 'Wachtwoord wijzigen',
+}
+
 /**
- * Accounts that still carry the generated password from their invitation.
- * There is no API route to set a new one yet, so they finish that on the
- * Laravel portal first.
+ * Changing the password. `forced` is the first change of an account that still
+ * has the temporary password from its invitation: the current one isn't asked
+ * for, and nothing else on `/mijn/` opens until it's done.
  */
-export const mijnChangePassword = {
-  title: 'Kies eerst een nieuw wachtwoord',
-  body: 'Je account gebruikt nog het tijdelijke wachtwoord. Stel een eigen wachtwoord in via het portaal en log daarna hier opnieuw in.',
-  cta: 'Wachtwoord instellen',
+export const mijnPassword = {
+  title: 'Wachtwoord wijzigen',
+  forcedTitle: 'Kies een eigen wachtwoord',
+  forcedIntro: 'Je account gebruikt nog een tijdelijk wachtwoord. Kies eerst een eigen wachtwoord om verder te gaan.',
+  current: 'Huidig wachtwoord',
+  new: 'Nieuw wachtwoord',
+  confirm: 'Herhaal het nieuwe wachtwoord',
+  hint: 'Minimaal 8 tekens.',
+  submit: 'Wachtwoord opslaan',
+  pending: 'Bezig met opslaan…',
+  mismatch: 'De wachtwoorden zijn niet hetzelfde.',
+  back: 'Terug naar je profiel',
 }

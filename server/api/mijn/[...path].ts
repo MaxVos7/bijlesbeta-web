@@ -15,6 +15,8 @@ const PDF = /^invoices\/[A-Za-z0-9_]+\/pdf$/
 
 const ROUTES: Array<[method: string, pattern: RegExp]> = [
   ['GET', /^me$/],
+  ['GET', /^account$/],
+  ['POST', /^account\/password$/],
 
   ['GET', /^lessons$/],
   ['POST', /^lessons$/],
