@@ -43,11 +43,14 @@ export const socials = [
   { label: 'X', href: 'https://x.com/bijles_beta' },
 ] as const
 
-/** Footer column of portal links — these point at the Laravel portal. */
+/**
+ * Footer column of login links. Students, parents and tutors all log in on
+ * `/mijn/`; admins keep using the Laravel portal directly.
+ */
 export const portalLinks = [
-  { label: 'Studenten', path: '/login' },
-  { label: 'Ouders', path: '/login' },
-  { label: 'Docenten', path: '/login' },
+  { label: 'Studenten', to: '/mijn/inloggen/' },
+  { label: 'Ouders', to: '/mijn/inloggen/' },
+  { label: 'Docenten', to: '/mijn/inloggen/' },
 ] as const
 
 export const legalLinks = [
