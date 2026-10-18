@@ -15,6 +15,8 @@ export type MijnLesson = {
   receiver: { id: number, name: string }
   provider: { id: number, name: string }
   record_body: string | null
+  /** The note without the editor's HTML — what the site shows. */
+  record_text: string | null
 }
 
 /** A note shared with the guardian, as plain text. */

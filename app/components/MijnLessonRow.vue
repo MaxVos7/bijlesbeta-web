@@ -47,11 +47,11 @@ withDefaults(
       </p>
 
       <p
-        v-if="lesson.record_body"
+        v-if="lesson.record_text"
         class="mt-2 line-clamp-2 text-[14px] leading-relaxed text-ink-700"
-        :title="lesson.record_body"
+        :title="lesson.record_text"
       >
-        <span class="font-semibold text-ink-800">{{ mijnLessons.record }}:</span> {{ lesson.record_body }}
+        <span class="font-semibold text-ink-800">{{ mijnLessons.record }}:</span> {{ lesson.record_text }}
       </p>
     </div>
   </li>
