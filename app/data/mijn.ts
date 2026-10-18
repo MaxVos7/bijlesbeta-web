@@ -134,6 +134,52 @@ export const mijnPackage = {
   futureTitle: (name: string, date: string) => `${name} start op ${date}`,
 }
 
+/** Choosing a weekly lesson slot after an invitation. Worded as the portal words it. */
+export const mijnSchedule = {
+  title: 'Kies een tijdslot voor je bijles',
+  loading: 'Rooster laden…',
+  none: 'Je hebt op dit moment geen uitnodiging om een tijdslot te kiezen.',
+
+  howTitle: 'Zo werkt het',
+  howIntro: 'In vier eenvoudige stappen kies je een tijdslot voor je bijles.',
+  steps: [
+    { title: 'Kies een tijdslot', body: 'Bekijk de beschikbare tijden en kies een tijdslot van 1 uur dat jou uitkomt.' },
+    { title: 'Word gekoppeld aan een docent', body: 'We sturen je verzoek naar de docent en zorgen voor de koppeling.' },
+    { title: 'Plan een gratis proefles', body: 'Je ontvangt informatie over de exacte datum. Aan de proefles zijn geen kosten verbonden.' },
+    { title: 'Ga verder met de bijles', body: 'Was het een goede match? Dan zet je de bijles in dit tijdslot voort.' },
+  ],
+  keepSearching: 'Vind je geen geschikt tijdslot? Geen zorgen — we blijven voor je zoeken naar andere geschikte docenten. Dit kan even duren.',
+  validUntil: (date: string) => `Je uitnodiging is geldig tot ${date}.`,
+  noChildren: 'Je hebt nog geen leerlingen aan je account gekoppeld. Neem contact met ons op om dit in orde te maken.',
+  forWhom: 'Voor wie is deze bijles?',
+  next: 'Verder',
+
+  back: 'Terug',
+  forChild: (name: string) => `Voor: ${name}`,
+  pickTitle: 'Hoe kies je een tijdslot?',
+  pickBody: 'Bekijk per dag welke docenten beschikbaar zijn en klik op een vrij uur om het aan te vragen. Wil je eerst meer weten over een docent? Klik dan op Details.',
+  blocksCount: (n: number) => `${n} ${n === 1 ? 'blok' : 'blokken'}`,
+  noBlocks: 'Geen blokken',
+  noHours: 'Geen vrije uren in dit blok',
+  details: 'Details',
+  hideDetails: 'Minder',
+  aboutTutor: 'Over de docent',
+  location: 'Locatie',
+  maps: 'Open in Google Maps',
+  website: 'Website',
+
+  noMatchTitle: 'Geen geschikt tijdslot gevonden?',
+  noMatchBody: 'Geen probleem — laat het ons weten en we gaan voor je op zoek naar andere geschikte docenten of momenten. Dit kan even duren.',
+  noMatchCta: 'Geen geschikt tijdslot voor mij',
+
+  bookedTitle: 'Verzoek verzonden!',
+  bookedBody: 'We hebben je verzoek doorgestuurd. Je ontvangt binnenkort meer informatie van ons over de exacte datum van de proefles.',
+  usedBookedTitle: 'Je hebt je tijdslot al gekozen',
+  searchingTitle: 'We gaan voor je op zoek',
+  searchingBody: 'Bedankt voor je bericht. We gaan op zoek naar andere geschikte docenten of momenten en nemen contact met je op zodra we een match hebben gevonden.',
+  toOverview: 'Naar je overzicht',
+}
+
 export const mijnChildren = {
   title: 'Leerlingen',
   kicker: 'Mijn Bijles Bèta',

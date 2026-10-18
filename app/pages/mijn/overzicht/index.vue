@@ -154,7 +154,7 @@ onMounted(async () => {
           <p class="mt-3 text-[14px] leading-relaxed text-ink-700">
             {{ mijnOverview.scheduleBody(longDate(overview.schedule_invite.expires_at)) }}
           </p>
-          <a :href="overview.schedule_invite.url" class="btn-primary mt-5">{{ mijnOverview.scheduleCta }}</a>
+          <NuxtLink to="/mijn/rooster/" class="btn-primary mt-5">{{ mijnOverview.scheduleCta }}</NuxtLink>
         </section>
       </div>
 
