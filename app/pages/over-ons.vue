@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { heroPromises, overOnsBlocks } from '~/data/site'
-import { findTutor, tutors } from '~/data/tutors'
 
 useSeo({
   title: 'Over ons',
@@ -8,16 +7,26 @@ useSeo({
     'Opgericht door een groep ambitieuze studenten met een duidelijke visie: onze passie voor Bèta vakken delen met Groningen.',
 })
 
+// The roster comes from the portal, refreshed daily (`server/utils/tutors.ts`).
+// Only what the cards render goes into the payload — the bios stay behind.
+const { data: tutors } = await useFetch('/api/docenten', {
+  transform: (list) =>
+    list.map(({ slug, name, study, photo, bio }) => ({ slug, name, study, photo, intro: bio[0] ?? '' })),
+  default: () => [],
+})
+
 // The grid is broken up by a story card and a full-width photo, so the roster
 // is split into three runs rather than rendered as one list.
-const firstRun = computed(() => tutors.slice(0, 6))
-const secondRun = computed(() => tutors.slice(6, 10))
-const rest = computed(() => tutors.slice(10))
+const firstRun = computed(() => tutors.value.slice(0, 6))
+const secondRun = computed(() => tutors.value.slice(6, 10))
+const rest = computed(() => tutors.value.slice(10))
 
-const storyTutor = computed(() => findTutor('jelmer-spoor') ?? tutors[0]!)
+const storyTutor = computed(
+  () => tutors.value.find((tutor) => tutor.slug === 'jelmer-spoor') ?? tutors.value[0],
+)
 
 const storyQuote = computed(() => {
-  const intro = storyTutor.value.bio[0] ?? ''
+  const intro = storyTutor.value?.intro ?? ''
   return intro.length > 160 ? `${intro.slice(0, 160).trimEnd()}…` : intro
 })
 </script>
@@ -73,6 +82,7 @@ const storyQuote = computed(() => {
         <TutorCard v-for="tutor in firstRun" :key="tutor.slug" :tutor="tutor" />
 
         <figure
+          v-if="storyTutor"
           class="flex flex-col items-center rounded-tile bg-sand p-[clamp(24px,3vw,34px)] text-center md:col-span-2"
         >
           <figcaption class="mb-4 text-sm font-semibold">

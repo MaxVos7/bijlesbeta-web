@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Tutor } from '~/data/tutors'
 
-withDefaults(defineProps<{ tutor: Tutor; showArrow?: boolean }>(), { showArrow: true })
+withDefaults(defineProps<{ tutor: Pick<Tutor, 'slug' | 'name' | 'study' | 'photo'>; showArrow?: boolean }>(), { showArrow: true })
 </script>
 
 <!--
