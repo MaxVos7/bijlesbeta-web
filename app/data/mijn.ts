@@ -18,14 +18,24 @@ export const mijnLogin = {
 }
 
 export const mijnNav = {
-  home: 'Overzicht',
+  lessons: 'Lessen',
   logout: 'Uitloggen',
 }
 
-export const mijnHome = {
-  title: 'Overzicht',
-  greeting: (name: string) => `Hoi ${name.split(' ')[0]}!`,
-  intro: 'Hier komen je lessen, leerlingen, koppelverzoeken en het afsluiten van de maand.',
+export const mijnLessons = {
+  title: 'Lessen',
+  kicker: 'Mijn Bijles Bèta',
+  count: (n: number) => `${n} ${n === 1 ? 'les' : 'lessen'}`,
+  searchLabel: 'Zoek op leerling',
+  searchPlaceholder: 'Naam van de leerling',
+  empty: 'Nog geen lessen.',
+  emptySearch: 'Geen lessen gevonden.',
+  loading: 'Lessen laden…',
+  more: 'Meer lessen laden',
+  trial: 'Proefles',
+  travel: 'Reiskosten',
+  provider: 'Docent',
+  record: 'Verslag',
 }
 
 /**
