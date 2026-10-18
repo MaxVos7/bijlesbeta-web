@@ -20,6 +20,12 @@ export default defineNuxtPlugin(() => {
 
   if (!gtmId) return
 
+  // Not on the logged-in pages: they show students' names and lessons, and
+  // the container's tags have no business near either. A visitor who
+  // navigates there from a marketing page keeps the container that page
+  // already loaded; one who lands on `/mijn/` directly never gets it.
+  if (useRequestURL().pathname.startsWith('/mijn')) return
+
   useHead({
     script: [
       {
