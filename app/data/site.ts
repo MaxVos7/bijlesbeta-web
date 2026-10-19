@@ -44,14 +44,14 @@ export const socials = [
 ] as const
 
 /**
- * Footer column of login links. Students, parents and tutors all log in on
- * `/mijn/`; admins keep using the Laravel portal directly.
+ * Footer column of login links. Students and parents log in on `/mijn/`;
+ * tutors still go to the Laravel portal, so theirs is a path on `portalUrl`.
  */
-export const portalLinks = [
+export const portalLinks: { label: string; to?: string; portalPath?: string }[] = [
   { label: 'Studenten', to: '/mijn/inloggen/' },
   { label: 'Ouders', to: '/mijn/inloggen/' },
-  { label: 'Docenten', to: '/mijn/inloggen/' },
-] as const
+  { label: 'Docenten', portalPath: '/login' },
+]
 
 export const legalLinks = [
   { label: 'Algemene voorwaarden', to: '/algemene-voorwaarden' },

@@ -7,6 +7,7 @@ import { contact, cookieConsent, legalLinks, nav, portalLinks, socials, tagline 
 // visitor reads as a bounce. See `useAnalytics.ts`.
 const analytics = useAnalytics()
 
+const config = useRuntimeConfig()
 
 // The only way back to the banner once a choice is stored.
 const { reopen } = useCookieConsent()
@@ -155,7 +156,8 @@ const subjectLinks = [
             <nav class="fb-menu">
               <ul>
                 <li v-for="link in portalLinks" :key="link.label">
-                  <NuxtLink :to="link.to">{{ link.label }}</NuxtLink>
+                  <a v-if="link.portalPath" :href="`${config.public.portalUrl}${link.portalPath}`">{{ link.label }}</a>
+                  <NuxtLink v-else :to="link.to">{{ link.label }}</NuxtLink>
                 </li>
               </ul>
             </nav>
