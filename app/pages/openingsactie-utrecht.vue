@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { freeWeekBenefit, openingsactieUtrecht as page } from '~/data/openingsactie-utrecht'
+import { openingsactieUtrecht as page } from '~/data/openingsactie-utrecht'
 import { contact, cookieConsent, tagline } from '~/data/site'
 
 /**
@@ -60,8 +60,6 @@ onMounted(() => {
   if (proefles) observer.observe(proefles)
 })
 onBeforeUnmount(() => observer?.disconnect())
-
-const formatPrice = (value: number) => `€${value}`
 </script>
 
 <template>
@@ -277,27 +275,7 @@ const formatPrice = (value: number) => `€${value}`
     <TrialCta id="proefles" :copy="page.trialCta" actie="utrecht" class="scroll-mt-6 pt-0" />
 
     <section class="bg-white px-[clamp(16px,4vw,24px)] pt-[clamp(24px,3vw,40px)] pb-[clamp(56px,7vw,90px)]">
-      <div class="mx-auto max-w-[1400px]">
-        <PricingSection
-          :intro="page.pricingIntro"
-          href="#proefles"
-          :cta-label="page.ctaLabel"
-          :loose-blurb="page.looseLessonBlurb"
-          :assurances="page.pricingAssurances"
-        >
-          <template #extra="{ plan }">
-            <div class="mt-5 rounded-card bg-brand-500/15 px-4 py-3.5">
-              <p class="mb-1.5 font-display text-[13px] font-bold text-brand-700">{{ page.pricingOffer }}</p>
-              <p class="flex flex-wrap items-baseline gap-2">
-                <span class="font-display text-[19px] leading-[28.5px] font-bold text-mint">
-                  {{ formatPrice(freeWeekBenefit[plan.slug] ?? 0) }}
-                </span>
-                <span class="text-[13px]">besparing</span>
-              </p>
-            </div>
-          </template>
-        </PricingSection>
-      </div>
+      <PriceLadder :copy="page.priceLadder" href="#proefles" actie="utrecht" class="mx-auto max-w-[1008px]" />
     </section>
 
     <!-- Stappenplan: the `/zo-werkt-het` cards, with the campaign's copy. -->

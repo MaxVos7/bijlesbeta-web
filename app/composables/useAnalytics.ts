@@ -342,6 +342,7 @@ export type Positie =
   | 'examentraining'
   | 'werken_bij'
   | 'faq'
+  | 'tarieven'
 
 export function useAnalytics() {
   const route = useRoute()

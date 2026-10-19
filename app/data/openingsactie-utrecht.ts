@@ -1,4 +1,7 @@
+import { actieGroningen } from './actie-groningen'
 import { pricingPlans, stats, type Review } from './site'
+
+const ladder = actieGroningen.priceLadder
 
 /** From the site's own figures, so the two can't disagree. */
 const tutorCount = stats.find((s) => s.label === 'Docenten in ons team')?.value
@@ -127,6 +130,26 @@ export const openingsactieUtrecht = {
     kicker: 'Wie wij zijn',
     title: 'Ontmoet je toekomstige docent',
     body: `Sinds 2017 geven wij bijles in wiskunde, natuurkunde en scheikunde in Groningen. Ons team van ${tutorCount} universitaire bèta-studenten heeft al meer dan ${pupilCount} leerlingen geholpen. Die ervaring nemen we nu mee naar Utrecht.`,
+  },
+
+  /**
+   * The price ladder `/actie-groningen` runs, worded for the opening offer.
+   * Everything but the offer's name is shared, so the two campaigns can't
+   * describe the same packages differently. The `pricing*` keys below are
+   * still read by `/actie-utrecht`, which keeps the old block.
+   */
+  priceLadder: {
+    ...ladder,
+    kicker: 'Tarieven · Openingsactie Utrecht',
+    body: {
+      long: ladder.body.long.replace('En nu met de herfstactie', 'En nu met de openingsactie'),
+      short: ladder.body.short.replace('Herfstactie:', 'Openingsactie:'),
+    },
+    offer: {
+      ...ladder.offer,
+      title: 'Openingsactie · {dagen}',
+      none: 'De openingsactie geldt alleen bij een pakket.',
+    },
   },
 
   pricingIntro: {
