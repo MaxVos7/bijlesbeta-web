@@ -78,7 +78,7 @@ const pitch = computed(() => props.copy ?? trialCta)
             <a
               :href="contact.whatsappHref"
               rel="noopener"
-              @click="analytics.whatsappGeklikt({ positie: 'trial_cta' })"
+              @click="analytics.whatsappGeklikt({ positie: 'trial_cta', actie })"
               class="inline-flex items-center gap-1.5 border-b-[1.5px] border-ink-900 text-[15px] leading-[15px] font-bold whitespace-nowrap text-ink-800"
             >
               <svg class="h-3.5 w-3.5 text-[#25D366]" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">

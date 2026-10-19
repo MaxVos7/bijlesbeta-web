@@ -497,6 +497,14 @@ page looks wrong while it happens.
   Ad tags trigger on it, never on a URL; `sollicitatie` is a docent, not a
   customer, and stays out of every ad conversion. `proefles` fires on the
   click and `aanmelden` on the answer, so a visitor who does both sends two.
+- **`contact_click` is the intent signal.** Every WhatsApp and `tel:` link
+  pushes it through `whatsappGeklikt`/`telefoonGeklikt`, with `kanaal`,
+  `form_location`, `actie` and an `event_id`. Meta's Lead tag fires on it and
+  on `form_submit` with `form_name: proefles` — none of the three is frequent
+  enough alone to steer a Lead-optimised ad set, and the Utrecht ad set ran
+  for weeks on a Lead event that never fired. CompleteRegistration stays on
+  `aanmelding_voltooid`. A new contact link must call one of the two, or it
+  is invisible to the ads as well as to PostHog.
 - **`user_data` is the only identifying thing in the dataLayer.** On
   `form_submit`, and only with a level that grants `ad_user_data`
   (`accept` or `marketing`), the e-mail and phone go in SHA-256-hashed for Meta advanced

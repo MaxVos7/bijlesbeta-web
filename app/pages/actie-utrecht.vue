@@ -163,7 +163,7 @@ onBeforeUnmount(() => {
         <a
           :href="contact.whatsappHref"
           class="font-display font-semibold text-ink-900 underline decoration-[1.5px] underline-offset-[3px]"
-          @click="analytics.whatsappGeklikt({ positie: 'hero' })"
+          @click="analytics.whatsappGeklikt({ positie: 'hero', actie: 'utrecht' })"
         >{{ contact.phone }}</a>
       </p>
     </div>
@@ -242,7 +242,7 @@ onBeforeUnmount(() => {
       <ActieClaimCard :source="`${route.path} (onder)`" positie="trial_cta" />
     </section>
 
-    <FaqSection :items="openingsactieUtrecht.faqs" contact-link="whatsapp" class="w-full" />
+    <FaqSection :items="openingsactieUtrecht.faqs" contact-link="whatsapp" actie="utrecht" class="w-full" />
 
     <!-- No sitewide footer on this layout, so the way back to the cookie
          banner has to live here. -->

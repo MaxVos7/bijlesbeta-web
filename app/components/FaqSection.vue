@@ -10,9 +10,13 @@ const props = withDefaults(
      * chrome, where sending a visitor to `/contact` would lead them off the page.
      */
     contactLink?: 'page' | 'whatsapp'
+    /** The campaign key the page carries, passed on with the WhatsApp click. */
+    actie?: string
   }>(),
-  { items: undefined, contactLink: 'page' },
+  { items: undefined, contactLink: 'page', actie: undefined },
 )
+
+const analytics = useAnalytics()
 
 /*
   The FAQ rich result comes from here rather than from each page, so the
@@ -40,6 +44,7 @@ useFaqJsonLd(props.items ?? faqs)
             :href="contact.whatsappHref"
             rel="noopener"
             class="border-b-[1.5px] border-ink-900"
+            @click="analytics.whatsappGeklikt({ positie: 'faq', actie })"
           >{{ faqIntro.link }}</a>
           <NuxtLink v-else to="/contact" class="border-b-[1.5px] border-ink-900">{{ faqIntro.link }}</NuxtLink>
         </p>

@@ -218,6 +218,11 @@ async function hashedUserData(contact: Contact): Promise<UserData | undefined> {
   return Object.keys(data).length ? data : undefined
 }
 
+/** Unique per push, for deduplicating against a future Conversions API. */
+function eventId(): string {
+  return globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`
+}
+
 /** The forms that send `form_submit`. */
 export type FormName = 'proefles' | 'aanmelden' | 'contact' | 'sollicitatie'
 
@@ -261,7 +266,7 @@ function formSubmit(opts: {
     form_location: opts.formLocation,
     pagina: opts.page,
     actie: opts.actie,
-    event_id: globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`,
+    event_id: eventId(),
   }
 
   if (!opts.contact || !adsConsented()) {
@@ -273,6 +278,32 @@ function formSubmit(opts: {
     (userData) => pushDataLayer('form_submit', props, userData),
     () => pushDataLayer('form_submit', props),
   )
+}
+
+/**
+ * One `contact_click` in the dataLayer for every WhatsApp or `tel:` link used —
+ * the Tag Manager trigger for the ad platforms' intent signal.
+ *
+ * Meta's Lead tag fires on this and on `form_submit` with `form_name:
+ * proefles`, so the campaigns optimising for Lead learn from everybody who
+ * reached for the phone, not only the few who filled in the short form. None
+ * of the three is frequent enough on its own to steer delivery. The real
+ * conversion stays apart, as CompleteRegistration on `aanmelding_voltooid`.
+ *
+ * Before this, the container caught WhatsApp clicks with a link-click trigger
+ * of its own, which saw no campaign, no position and no `event_id`, and
+ * missed any link the trigger's pattern didn't match.
+ *
+ * No `user_data`: a click carries nothing the visitor typed.
+ */
+function contactClick(opts: { kanaal: 'whatsapp' | 'telefoon'; positie: Positie; page: string; actie?: string }) {
+  pushDataLayer('contact_click', {
+    kanaal: opts.kanaal,
+    form_location: opts.positie,
+    pagina: opts.page,
+    actie: opts.actie,
+    event_id: eventId(),
+  })
 }
 
 /* -------------------------------------------------------------------------- */
@@ -310,6 +341,7 @@ export type Positie =
   | 'aanmelden'
   | 'examentraining'
   | 'werken_bij'
+  | 'faq'
 
 export function useAnalytics() {
   const route = useRoute()
@@ -544,13 +576,15 @@ export function useAnalytics() {
      * intent, like `proefles_aangevraagd`, and should be read as "reached for
      * the phone", not "called".
      */
-    telefoonGeklikt(opts: { positie: Positie }) {
-      capture('telefoon_geklikt', { positie: opts.positie, pagina: pagina() })
+    telefoonGeklikt(opts: { positie: Positie; actie?: string }) {
+      capture('telefoon_geklikt', { positie: opts.positie, pagina: pagina(), actie: opts.actie })
+      contactClick({ kanaal: 'telefoon', positie: opts.positie, page: pagina(), actie: opts.actie })
     },
 
     /** A `wa.me` link was used. Same caveat as `telefoonGeklikt`. */
-    whatsappGeklikt(opts: { positie: Positie }) {
-      capture('whatsapp_geklikt', { positie: opts.positie, pagina: pagina() })
+    whatsappGeklikt(opts: { positie: Positie; actie?: string }) {
+      capture('whatsapp_geklikt', { positie: opts.positie, pagina: pagina(), actie: opts.actie })
+      contactClick({ kanaal: 'whatsapp', positie: opts.positie, page: pagina(), actie: opts.actie })
     },
 
     /* ---------------------------------------------------------------- */
