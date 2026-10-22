@@ -25,6 +25,9 @@ useHead({ meta: [{ name: 'robots', content: 'noindex, follow' }] })
 
 // Stap 1 is the aanmelding the visitor just finished.
 const nextSteps = zoWerktHet.steps.slice(1)
+
+// Set by `SignupForm` when the aanmelding also logged the visitor in.
+const loggedIn = useState('aanmelding-ingelogd', () => false)
 </script>
 
 <template>
@@ -74,9 +77,17 @@ const nextSteps = zoWerktHet.steps.slice(1)
         <a :href="contact.emailHref" class="font-semibold underline">{{ contact.email }}</a>.
       </p>
 
-      <NuxtLink to="/" class="btn-primary btn-lg mt-3">
+      <template v-if="loggedIn">
+        <p class="text-[15px] leading-7">{{ page.loggedIn }}</p>
+        <NuxtLink to="/mijn/" class="btn-primary btn-lg mt-3">
+          {{ page.account }}
+          <BtnArrow />
+        </NuxtLink>
+      </template>
+
+      <NuxtLink to="/" :class="loggedIn ? 'font-semibold underline' : 'btn-primary btn-lg mt-3'">
         {{ page.home }}
-        <BtnArrow />
+        <BtnArrow v-if="!loggedIn" />
       </NuxtLink>
     </div>
   </section>
