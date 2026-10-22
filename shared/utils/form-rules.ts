@@ -205,7 +205,7 @@ export function maxLengths<T extends Record<string, FieldRule>>(
  * over a question nobody was shown would strand the visitor.
  */
 export const SIGNUP_RULES = {
-  // Step 1 — Bijles
+  // Step 2 — Bijles
   lessonKind: { required: true, maxLength: 40 },
   lessonKindNote: { maxLength: 2000 },
   weeklyHours: { maxLength: 40 },
@@ -216,7 +216,7 @@ export const SIGNUP_RULES = {
   school: { maxLength: 200 },
 
   /*
-    Step 2 — Vak en niveau. The portal validates `student_year` as
+    Step 3 — Leerling en vak. The portal validates `student_year` as
     `integer|min:1|max:6` and refuses the *whole* submission outside it, so
     "abc", "3.5", "0" and "-5" have to fail here rather than there.
   */
@@ -225,12 +225,11 @@ export const SIGNUP_RULES = {
   levelOther: { maxLength: 120 },
   subjectOther: { maxLength: 200 },
 
-  // Step 3 — Kennismaking en proefles
   studentFirstName: { required: true, maxLength: 120 },
   studentPhone: { required: true, maxLength: 40, format: 'phone' },
   contactMethod: { required: true, maxLength: 60 },
 
-  // Step 4 — Factuurgegevens
+  // Step 1 — Gegevens (name, phone, e-mail) and step 4 — Factuurgegevens
   contactFirstName: { required: true, maxLength: 120 },
   contactLastName: { required: true, maxLength: 120 },
   email: { required: true, maxLength: 180, format: 'email' },

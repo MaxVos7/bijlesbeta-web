@@ -244,6 +244,51 @@ export function optionLabel(options: Option[], value: string): string {
 
 export const signupSteps: SignupStep[] = [
   {
+    /*
+      The proefles block's three fields, as the wizard's own first step. A
+      visitor who came through `LeadForm` has already answered it and is put
+      on step 2; one who came straight here answers it now. Either way the
+      draft starts with a name and a number the office can ring.
+
+      The e-mail is optional *here* and required on the last step, as on the
+      block itself (live form 1). `contactFirstName` is the one "Naam" field
+      on this step and the Voornaam of the split name on the last.
+    */
+    id: 'gegevens',
+    title: 'Gegevens',
+    intro:
+      'Laat je naam en telefoonnummer achter, dan nemen we contact met je op over je gratis proefles.',
+    fields: () => [
+      {
+        kind: 'text',
+        name: 'contactFirstName',
+        label: 'Naam',
+        required: true,
+        placeholder: 'Naam',
+        autocomplete: 'name',
+      },
+      {
+        kind: 'text',
+        name: 'studentPhone',
+        label: 'Telefoonnummer',
+        required: true,
+        placeholder: 'Telefoonnummer',
+        inputType: 'tel',
+        autocomplete: 'tel',
+      },
+      {
+        kind: 'text',
+        name: 'email',
+        label: 'E-mailadres',
+        required: false,
+        placeholder: 'E-mailadres',
+        inputType: 'email',
+        autocomplete: 'email',
+      },
+    ],
+  },
+
+  {
     id: 'bijles',
     title: 'Bijles',
     intro:
@@ -357,34 +402,18 @@ export const signupSteps: SignupStep[] = [
   },
 
   {
-    id: 'vak_en_niveau',
-    title: 'Vak en niveau',
-    intro: 'Vertel ons met welk vak we je kunnen helpen.',
+    id: 'leerling_en_vak',
+    title: 'Leerling en vak',
+    intro:
+      'Vertel ons voor wie de bijles is en met welk vak we kunnen helpen. Daarna neemt de docent contact op om de proefles in te plannen.',
     fields: (v) => {
       const fields: SignupField[] = [
         {
           kind: 'text',
-          name: 'schoolYear',
-          label: 'Schooljaar',
-          /*
-            The live Gravity Form allows 8, but the portal validates
-            `student_year` as `max:6` and rejects the whole submission above
-            that — so on bijlesbeta.nl a 7 or 8 silently fails. Capped here so
-            the visitor is told before submitting rather than after.
-          */
-          hint: 'Voer een getal tussen 1 en 6 in.',
+          name: 'studentFirstName',
+          label: 'Voornaam leerling',
           required: true,
-          placeholder: 'Schooljaar',
-          inputType: 'number',
-          /*
-            `student_year` is `min:1` as well as `max:6` on the portal, and a 0
-            fails the whole submission just as an 8 does. These two are the
-            control's own attributes; the range that is *enforced* — for the
-            wizard and the endpoint alike — is `SIGNUP_RULES.schoolYear`, so
-            change it there as well if it ever moves.
-          */
-          min: 1,
-          max: 6,
+          placeholder: 'Voornaam leerling',
         },
         {
           kind: 'select',
@@ -403,6 +432,31 @@ export const signupSteps: SignupStep[] = [
           required: false,
         })
       }
+
+      fields.push({
+        kind: 'text',
+        name: 'schoolYear',
+        label: 'Schooljaar',
+        /*
+          The live Gravity Form allows 8, but the portal validates
+          `student_year` as `max:6` and rejects the whole submission above
+          that — so on bijlesbeta.nl a 7 or 8 silently fails. Capped here so
+          the visitor is told before submitting rather than after.
+        */
+        hint: 'Voer een getal tussen 1 en 6 in.',
+        required: true,
+        placeholder: 'Schooljaar',
+        inputType: 'number',
+        /*
+          `student_year` is `min:1` as well as `max:6` on the portal, and a 0
+          fails the whole submission just as an 8 does. These two are the
+          control's own attributes; the range that is *enforced* — for the
+          wizard and the endpoint alike — is `SIGNUP_RULES.schoolYear`, so
+          change it there as well if it ever moves.
+        */
+        min: 1,
+        max: 6,
+      })
 
       const subjects = subjectOptions(v)
       if (subjects) {
@@ -424,45 +478,32 @@ export const signupSteps: SignupStep[] = [
         })
       }
 
+      fields.push(
+        {
+          kind: 'text',
+          name: 'studentPhone',
+          label: 'Telefoonnummer leerling',
+          hint: 'Op dit nummer neemt de bijlesdocent contact met je op om een proefles in te plannen.',
+          required: true,
+          placeholder: 'Telefoonnummer',
+          inputType: 'tel',
+          autocomplete: 'tel',
+        },
+        {
+          kind: 'radio',
+          name: 'contactMethod',
+          label: 'Hoe kan de bijlesdocent contact opnemen?',
+          required: true,
+          options: [
+            { label: 'Whatsapp (aanbevolen)', value: 'Whatsapp (aanbevolen)' },
+            { label: 'Sms', value: 'Sms' },
+            { label: 'Bellen', value: 'Bellen' },
+          ],
+        },
+      )
+
       return fields
     },
-  },
-
-  {
-    id: 'kennismaking',
-    title: 'Kennismaking en proefles',
-    intro:
-      'Na je aanmelding neemt een van onze docenten contact met je op om een proefles in te plannen.',
-    fields: () => [
-      {
-        kind: 'text',
-        name: 'studentFirstName',
-        label: 'Voornaam leerling',
-        required: true,
-        placeholder: 'Voornaam leerling',
-      },
-      {
-        kind: 'text',
-        name: 'studentPhone',
-        label: 'Telefoonnummer leerling',
-        hint: 'Op dit nummer neemt de bijlesdocent contact met je op om een proefles in te plannen.',
-        required: true,
-        placeholder: 'Telefoonnummer',
-        inputType: 'tel',
-        autocomplete: 'tel',
-      },
-      {
-        kind: 'radio',
-        name: 'contactMethod',
-        label: 'Hoe kan de bijlesdocent contact opnemen?',
-        required: true,
-        options: [
-          { label: 'Whatsapp (aanbevolen)', value: 'Whatsapp (aanbevolen)' },
-          { label: 'Sms', value: 'Sms' },
-          { label: 'Bellen', value: 'Bellen' },
-        ],
-      },
-    ],
   },
 
   {
