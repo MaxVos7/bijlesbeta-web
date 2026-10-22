@@ -15,6 +15,8 @@ export type MijnUser = {
   is_customer: boolean
   is_admin: boolean
   must_change_password: boolean
+  /** False for an account the aanmelding made, until they choose one. */
+  has_password: boolean
 }
 
 export function useMijnSession() {

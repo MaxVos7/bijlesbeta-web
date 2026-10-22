@@ -46,6 +46,11 @@ export const mijnOverview = {
   greeting: (name: string) => `Hoi ${name.split(' ')[0]}!`,
   loading: 'Overzicht laden…',
 
+  /** Shown to an account without a password, i.e. one made by the aanmelding. */
+  passwordTitle: 'Wil je makkelijk terug in dit account?',
+  passwordBody: 'Maak een wachtwoord aan, dan kun je later altijd zelf weer inloggen.',
+  passwordCta: 'Wachtwoord aanmaken',
+
   /** Shown until a tutor is connected to one of the children. */
   welcomeTitle: 'Welkom bij Bijles Bèta!',
   welcomeBody:
@@ -261,6 +266,8 @@ export const mijnProfile = {
  */
 export const mijnPassword = {
   title: 'Wachtwoord wijzigen',
+  firstTitle: 'Maak een wachtwoord aan',
+  firstIntro: 'Met een wachtwoord log je later makkelijk weer in op je account, zonder dat we je een link hoeven te mailen.',
   forcedTitle: 'Kies een eigen wachtwoord',
   forcedIntro: 'Je account gebruikt nog een tijdelijk wachtwoord. Kies eerst een eigen wachtwoord om verder te gaan.',
   current: 'Huidig wachtwoord',
