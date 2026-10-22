@@ -429,6 +429,13 @@ async function submit() {
 
     status.value = 'success'
 
+    // The route logged the visitor in when the aanmelding made a new account.
+    // The session cache may hold an earlier "nobody", so make /mijn/ ask again.
+    if (result.loggedIn) {
+      useState('mijn-user-loaded').value = false
+      useState('aanmelding-ingelogd').value = true
+    }
+
     // This draft is finished. A later aanmelding in the same session (a second
     // child, say) is a new one, and would otherwise be saved into this one.
     draft.reset()

@@ -322,6 +322,8 @@ export const aanmeldenBedanktPage = {
   contactPrefix: 'Vragen in de tussentijd? App ons op',
   contactOr: 'of mail naar',
   home: 'Terug naar de homepage',
+  loggedIn: 'Je bent meteen ingelogd, dus je kunt direct in je account kijken.',
+  account: 'Naar mijn account',
 } as const
 
 /** Shown by both variants of ContactForm once a message is through. */

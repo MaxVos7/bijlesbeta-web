@@ -44,7 +44,7 @@ export default defineEventHandler(async (event) => {
   if (isSpam({ website })) {
     // `as const`, or `ok` widens to boolean and the result stops being a
     // discriminated union the forms can branch on.
-    return { ok: true as const }
+    return { ok: true as const, loggedIn: false }
   }
 
   const handoff = await postToPortal(
@@ -52,6 +52,15 @@ export default defineEventHandler(async (event) => {
     '/register-external-full',
     { ...signupPayload(answers), draft_token: draftToken ?? null },
   )
+
+  /*
+    The portal hands a login token only for an account this submission created
+    (never for an email it already knew, which would let anyone into someone
+    else's account), so its presence is the whole condition. Same httpOnly
+    cookie as /mijn/inloggen; the token never reaches the browser.
+  */
+  const loginToken = handoff.ok ? handoff.data?.login_token : null
+  if (typeof loginToken === 'string' && loginToken) setMijnToken(event, loginToken)
 
   const { officeEmail } = useRuntimeConfig(event)
 
@@ -66,9 +75,11 @@ export default defineEventHandler(async (event) => {
     rows: signupRows(answers),
   })
 
-  return deliveryResult(handoff, delivered,
+  const result = deliveryResult(handoff, delivered,
     'We konden je aanmelding niet versturen. Bel of app ons even, dan plannen we je proefles direct in.',
   )
+
+  return result.ok ? { ...result, loggedIn: Boolean(loginToken) } : result
 })
 
 type Answers = SignupAnswers

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { mijnOverview } from '~/data/mijn'
-import type { MijnLesson, MijnRecord } from '~/utils/mijn-types'
+import type { MijnChild, MijnLesson, MijnRecord } from '~/utils/mijn-types'
 
 /*
   A customer's start page: what the dashboard on mijn.bijlesbeta.nl shows a
@@ -46,6 +46,11 @@ const overview = ref<Overview | null>(null)
 const loading = ref(true)
 const error = ref('')
 
+// Until a tutor is connected to one of the children there is nothing else to
+// look at yet, so the page says what happens next. A failed lookup shows
+// nothing rather than a welcome to somebody who may already have a tutor.
+const waitingForTutor = ref(false)
+
 const subscription = computed(() => overview.value?.subscription ?? null)
 
 /** Hours as the dashboard gives them (decimal) in the site's "1 uur 30 min". */
@@ -55,7 +60,12 @@ function hours(value: number) {
 
 onMounted(async () => {
   try {
-    overview.value = (await api<{ data: Overview }>('dashboard')).data
+    const [dashboard, children] = await Promise.all([
+      api<{ data: Overview }>('dashboard'),
+      api<{ data: MijnChild[] }>('children').catch(() => null),
+    ])
+    overview.value = dashboard.data
+    waitingForTutor.value = !!children && !children.data.some((child) => child.tutors.length)
   }
   catch (e) {
     error.value = mijnErrorMessage(e)
@@ -74,6 +84,22 @@ onMounted(async () => {
     <p v-if="loading" class="mt-8 text-[15px] text-ink-700">{{ mijnOverview.loading }}</p>
 
     <template v-else-if="overview">
+      <section v-if="waitingForTutor" class="panel mt-6 p-6 sm:p-7">
+        <h2 class="font-display text-[22px] font-bold text-ink-900">{{ mijnOverview.welcomeTitle }}</h2>
+        <p class="mt-3 text-[15px] leading-relaxed text-ink-800">{{ mijnOverview.welcomeBody }}</p>
+        <ol class="mt-5 grid gap-3">
+          <li
+            v-for="step in mijnOverview.welcomeSteps"
+            :key="step.title"
+            class="rounded-card bg-linen p-4"
+          >
+            <p class="font-display text-[15px] font-bold text-ink-900">{{ step.title }}</p>
+            <p class="mt-1 text-[14px] leading-relaxed text-ink-700">{{ step.body }}</p>
+          </li>
+        </ol>
+        <p class="mt-5 text-[14px] text-ink-700">{{ mijnOverview.welcomeContact }}</p>
+      </section>
+
       <div class="mt-6 grid gap-4 md:grid-cols-2">
         <!-- Package -->
         <section v-if="subscription" class="panel p-6 sm:p-7">

@@ -46,6 +46,26 @@ export const mijnOverview = {
   greeting: (name: string) => `Hoi ${name.split(' ')[0]}!`,
   loading: 'Overzicht laden…',
 
+  /** Shown until a tutor is connected to one of the children. */
+  welcomeTitle: 'Welkom bij Bijles Bèta!',
+  welcomeBody:
+    'Fijn dat je er bent. Je aanmelding is binnen en je account staat klaar. Zodra we een docent aan je hebben gekoppeld, vind je hier je lessen, je pakket en de berichten van de docent.',
+  welcomeSteps: [
+    {
+      title: '1. We zoeken een docent bij je',
+      body: 'We kijken welke docent het beste past bij het vak, het niveau en de momenten die je hebt opgegeven. Je hoeft hier niets voor te doen.',
+    },
+    {
+      title: '2. De docent neemt contact op',
+      body: 'Zodra er een match is, neemt de docent contact met je op om de gratis proefles in te plannen.',
+    },
+    {
+      title: '3. Proefles en daarna bijles',
+      body: 'Tijdens de proefles maken jullie kennis en maken jullie een plan. Daarna kies je een pakket en start de bijles.',
+    },
+  ],
+  welcomeContact: 'Vragen of wil je iets aanpassen aan je aanmelding? App of mail ons gerust, dan helpen we je meteen.',
+
   packageTitle: 'Je pakket',
   packageNone: 'Je hebt nog geen pakket.',
   packageStart: 'Pakket kiezen',
