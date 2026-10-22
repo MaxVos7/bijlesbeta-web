@@ -47,8 +47,8 @@ Both must pass. There is no test suite yet.
 
 All three form routes validate with zod, silently accept honeypot hits, and
 forward to the Laravel side. A fourth, `/api/lead`, is the odd one out: it
-mails the office and posts nothing to the portal — see "The proefles block"
-below for why.
+mails the office and saves a *draft* in the portal, but registers nobody — see
+"The proefles block" and "Drafts" below for why.
 
 **Nothing in the hand-off throws any more, and a failed hand-off is no longer
 the visitor's problem.** Every submission is also mailed to the office, and the
@@ -199,7 +199,8 @@ Both halves have to stay, and neither may block the other.
 
 Our version, and what shouldn't be undone:
 
-- **`/api/lead`, not `/api/contact`.** Nothing goes to the portal from here. A
+- **`/api/lead`, not `/api/contact`.** No registration or contact request is
+  made from here; the portal gets a draft (see "Drafts"). A
   lead is not a `ContactRequest`, and `register-external-contact` would fire
   `CONTACT_REQUEST_TO_SENDER` at somebody we are in the middle of sending to
   the aanmeldformulier — a confirmation for a conversation they didn't start —
@@ -232,6 +233,39 @@ Our version, and what shouldn't be undone:
 
 Live also runs a Cloudflare Turnstile on this form (`field_1_7`). We have the
 honeypot and the per-IP rate limit instead.
+
+### Drafts
+
+The proefles block and every step of the wizard save what the visitor has
+answered so far to the portal, so someone who leaves halfway is still in the
+system. `POST /external-signup-draft` on the Laravel side (`SignupDraft`)
+stores them; `/api/lead` is step 0 and `/api/aanmelding-concept` is each wizard
+step.
+
+- **A draft is not an account.** The account is keyed on an e-mail address, and
+  the wizard is free to ask for it on any step — or never get it. A half-answered
+  registration also has no business firing the password-set mail, the Moneybird
+  contact or a connection request. So nothing is a user or a student until the
+  form is finished (`register-external-full` with the `draft_token`) or an
+  admin converts the draft in the portal ("Onvolledige aanmeldingen"). Don't
+  make the wizard depend on the order of its questions.
+- **The token is the visitor's handle**, returned by the first save and carried
+  by every later one and by the final submission, which is what marks the draft
+  finished. It lives in `useSignupDraft` (shared state), never in the URL, and
+  is cleared when a submission succeeds so the next aanmelding starts a new one.
+- **Saves never block and never fail the visitor.** They are queued one behind
+  another so the token from the first is on the second, and the final submit
+  awaits the queue. A draft that wasn't saved costs a row in a list; the
+  finished form is still the real submission.
+- **`answers` are cumulative.** The portal overwrites only the keys it is sent,
+  and `draftPayload` (`server/utils/signup-payload.ts`) sends a key when any
+  answer it is made from is present — so a later step sent alone would blank
+  what an earlier one contributed. `PAYLOAD_SOURCES` there is the map of which
+  answers make which key; change it with `signupPayload`.
+- **Drafts are lenient on purpose.** The portal keeps the answers that pass its
+  rules and drops the rest, and takes a phone number in any shape. The rules
+  of a finished form are enforced when a draft is converted, not when saved.
+- **Drafts are kept.** Finished and dismissed ones stay as a record.
 
 ### The office copy
 

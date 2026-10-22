@@ -6,6 +6,7 @@ import type { H3Event } from 'h3'
  *
  *   POST /register-external-full       the aanmeld wizard
  *   POST /register-external-applicant  the docent application
+ *   POST /external-signup-draft        a half-finished aanmelding, saved per step
  *
  * These are not the `/api/...` routes `forwardToLaravel` talks to. They
  * authenticate with a shared `X-Secret-Key` header rather than a bearer token,
@@ -30,7 +31,7 @@ type PortalConfig = { url: string, key: string }
  * for the office and the log — it is never shown to the visitor.
  */
 export type PortalResult =
-  | { ok: true, forwarded: boolean }
+  | { ok: true, forwarded: boolean, data?: any }
   | { ok: false, reason: string }
 
 /** The config, or the reason there isn't one. */
@@ -151,7 +152,7 @@ export async function postToPortal(
       return { ok: false, reason: describeResponse(response) }
     }
 
-    return { ok: true, forwarded: true }
+    return { ok: true, forwarded: true, data: response._data }
   }
   catch (error: any) {
     console.error(`[form] posting ${path} to the portal failed`, {
