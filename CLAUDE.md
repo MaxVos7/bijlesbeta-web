@@ -266,8 +266,13 @@ step.
   rules and drops the rest, and takes a phone number in any shape. The rules
   of a finished form are enforced when a draft is converted, not when saved.
 - **Drafts are kept.** Finished and dismissed ones stay as a record.
-- **A bad token never costs a registration.** If `register-external-full`
-  refuses, `/api/aanmelden` tries once more without the `draft_token`.
+- **A bad token never costs a registration.** The portal doesn't validate
+  `draft_token` against anything, so an unknown or finished one can't make
+  `register-external-full` refuse. There is deliberately no retry without it: a
+  retry after a timeout would register the student twice.
+- **A late save never leaks into the next draft.** `useSignupDraft` counts
+  generations; a save only sets the token if no draft was finished or opened
+  since it was queued.
 - **The draft payload is the one exception to "every key goes out".** The
   rule above exists because `register-external-full` reads keys with no `??`
   behind them. `draftPayload` leaves a key out until an answer it is made

@@ -29,6 +29,15 @@ import type { SignupValues } from '~/data/signup'
 let tail: Promise<void> = Promise.resolve()
 
 /*
+  Which draft the token belongs to. A save that was queued for an earlier one
+  and answers late must not hand its token to the next aanmelding: the portal
+  would take that token for a finished draft and ignore every step saved under
+  it. Bumped whenever a draft is finished (`reset`) or a new one is opened
+  (`saveLead`).
+*/
+let generation = 0
+
+/*
   Longer than the server's own ceiling: `postToPortal` gives the portal 15s, and
   the lead route waits for its mail as well. A client that gives up first drops
   the token of a draft the server then goes on to create, and the next step
@@ -41,10 +50,12 @@ export function useSignupDraft() {
 
   /** Runs after everything already queued, and resolves whatever happens. */
   function enqueue(call: () => Promise<{ token: string | null } | void>): Promise<void> {
+    const mine = generation
+
     tail = tail.then(async () => {
       try {
         const result = await call()
-        if (result?.token) token.value = result.token
+        if (result?.token && mine === generation) token.value = result.token
       }
       catch {
         // See the note above: nothing the visitor could do about it.
@@ -56,6 +67,8 @@ export function useSignupDraft() {
 
   /** The proefles block's answers: step 0, and the first thing in a draft. */
   function saveLead(body: Record<string, unknown>) {
+    generation++
+
     return enqueue(() => {
       /*
         The block opens a draft; it never continues one. A token still in
@@ -108,5 +121,11 @@ export function useSignupDraft() {
     ])
   }
 
-  return { token, saveLead, saveStep, settled }
+  /** The draft is finished: the next aanmelding starts a new one. */
+  function reset() {
+    generation++
+    token.value = null
+  }
+
+  return { token, saveLead, saveStep, settled, reset }
 }

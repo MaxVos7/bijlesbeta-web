@@ -431,7 +431,7 @@ async function submit() {
 
     // This draft is finished. A later aanmelding in the same session (a second
     // child, say) is a new one, and would otherwise be saved into this one.
-    draft.token.value = null
+    draft.reset()
 
     /*
       On the answer, never on the click. `ok: true` means the aanmelding

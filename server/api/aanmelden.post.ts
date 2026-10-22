@@ -47,27 +47,11 @@ export default defineEventHandler(async (event) => {
     return { ok: true as const }
   }
 
-  const payload = signupPayload(answers)
-
-  let handoff = await postToPortal(
+  const handoff = await postToPortal(
     event,
     '/register-external-full',
-    { ...payload, draft_token: draftToken ?? null },
+    { ...signupPayload(answers), draft_token: draftToken ?? null },
   )
-
-  /*
-    The draft is a best-effort extra, and the registration must not depend on
-    it. A token the portal no longer accepts (a draft an admin has since
-    converted or dismissed) would otherwise turn a good aanmelding into a
-    NIET VERWERKT mail, so it is tried once more without it.
-  */
-  if (!handoff.ok && draftToken) {
-    handoff = await postToPortal(
-      event,
-      '/register-external-full',
-      { ...payload, draft_token: null },
-    )
-  }
 
   const { officeEmail } = useRuntimeConfig(event)
 
