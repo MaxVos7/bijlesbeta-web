@@ -84,28 +84,50 @@ onMounted(async () => {
     <p v-if="loading" class="mt-8 text-[15px] text-ink-700">{{ mijnOverview.loading }}</p>
 
     <template v-else-if="overview">
+      <section v-if="waitingForTutor" class="panel mt-6 p-6 sm:p-9">
+        <div class="flex items-start gap-4">
+          <span class="inline-flex h-[44px] w-[44px] flex-none items-center justify-center rounded-full bg-success-50">
+            <svg
+              class="h-[22px] w-[22px] text-success-900"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M4 12l6 6L20 6" />
+            </svg>
+          </span>
+          <div>
+            <p class="font-display text-[15px] leading-[20px] font-bold text-accent-500">{{ mijnOverview.welcomeKicker }}</p>
+            <h2 class="mt-1 font-display text-[24px] leading-[32px] font-bold text-ink-900">{{ mijnOverview.welcomeTitle }}</h2>
+            <p class="mt-2 text-[15px] leading-relaxed text-ink-800">{{ mijnOverview.welcomeBody }}</p>
+          </div>
+        </div>
+
+        <h3 class="mt-7 font-display text-[18px] font-bold text-ink-900">{{ mijnOverview.welcomeNextTitle }}</h3>
+        <ol class="mt-3 grid gap-3 md:grid-cols-3">
+          <li
+            v-for="step in mijnOverview.welcomeSteps"
+            :key="step.title"
+            class="flex flex-col gap-2 rounded-card bg-linen p-4"
+          >
+            <img :src="step.icon" alt="" class="h-[64px] w-[64px] object-contain" width="64" height="64">
+            <p class="font-display text-[15px] font-bold text-ink-900">{{ step.title }}</p>
+            <p class="text-[14px] leading-relaxed text-ink-700">{{ step.body }}</p>
+          </li>
+        </ol>
+        <p class="mt-5 text-[14px] text-ink-700">{{ mijnOverview.welcomeContact }}</p>
+      </section>
+
       <section v-if="user?.has_password === false" class="panel mt-6 flex flex-col gap-3 p-6 sm:flex-row sm:items-center sm:justify-between sm:p-7">
         <div>
           <h2 class="font-display text-[18px] font-bold text-ink-900">{{ mijnOverview.passwordTitle }}</h2>
           <p class="mt-1 text-[14px] leading-relaxed text-ink-700">{{ mijnOverview.passwordBody }}</p>
         </div>
         <NuxtLink to="/mijn/wachtwoord/" class="btn-primary shrink-0">{{ mijnOverview.passwordCta }}</NuxtLink>
-      </section>
-
-      <section v-if="waitingForTutor" class="panel mt-6 p-6 sm:p-7">
-        <h2 class="font-display text-[22px] font-bold text-ink-900">{{ mijnOverview.welcomeTitle }}</h2>
-        <p class="mt-3 text-[15px] leading-relaxed text-ink-800">{{ mijnOverview.welcomeBody }}</p>
-        <ol class="mt-5 grid gap-3">
-          <li
-            v-for="step in mijnOverview.welcomeSteps"
-            :key="step.title"
-            class="rounded-card bg-linen p-4"
-          >
-            <p class="font-display text-[15px] font-bold text-ink-900">{{ step.title }}</p>
-            <p class="mt-1 text-[14px] leading-relaxed text-ink-700">{{ step.body }}</p>
-          </li>
-        </ol>
-        <p class="mt-5 text-[14px] text-ink-700">{{ mijnOverview.welcomeContact }}</p>
       </section>
 
       <div class="mt-6 grid gap-4 md:grid-cols-2">

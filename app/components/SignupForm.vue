@@ -403,6 +403,8 @@ async function submit() {
   status.value = 'pending'
   errorMessage.value = ''
 
+  let loggedIn = false
+
   try {
     /*
       The last step's draft save is queued behind the ones before it. Waiting
@@ -431,10 +433,8 @@ async function submit() {
 
     // The route logged the visitor in when the aanmelding made a new account.
     // The session cache may hold an earlier "nobody", so make /mijn/ ask again.
-    if (result.loggedIn) {
-      useState('mijn-user-loaded').value = false
-      useState('aanmelding-ingelogd').value = true
-    }
+    loggedIn = result.loggedIn
+    if (loggedIn) useState('mijn-user-loaded').value = false
 
     // This draft is finished. A later aanmelding in the same session (a second
     // child, say) is a new one, and would otherwise be saved into this one.
@@ -482,8 +482,12 @@ async function submit() {
     Outside the `try` so a failed navigation can't be reported as a failed
     submission. `replace`, so Back doesn't return to an emptied wizard that
     invites the aanmelding a second time.
+
+    A visitor the route logged in goes straight to their account instead,
+    where the overview opens with the same thanks and next steps. They skip
+    the page, but not the conversion: that is the event fired above.
   */
-  await navigateTo('/aanmelden/bedankt/', { replace: true })
+  await navigateTo(loggedIn ? '/mijn/overzicht/' : '/aanmelden/bedankt/', { replace: true })
 }
 </script>
 
