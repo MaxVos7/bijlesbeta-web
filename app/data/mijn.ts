@@ -56,8 +56,8 @@ export const mijnOverview = {
       body: 'We kijken welke docent het beste past bij het vak, het niveau en de momenten die je hebt opgegeven. Je hoeft hier niets voor te doen.',
     },
     {
-      title: '2. Je hoort van ons',
-      body: 'Zodra er een match is, nemen we contact met je op om de gratis proefles in te plannen.',
+      title: '2. De docent neemt contact op',
+      body: 'Zodra er een match is, neemt de docent contact met je op om de gratis proefles in te plannen.',
     },
     {
       title: '3. Proefles en daarna bijles',
