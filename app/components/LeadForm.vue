@@ -150,7 +150,7 @@ async function handOff() {
   }
 
   await navigateTo({
-    path: '/aanmelden/',
+    path: props.actie ? '/aanmelden/actie/' : '/aanmelden/',
     query: props.actie ? { actie: props.actie } : {},
   })
 }
