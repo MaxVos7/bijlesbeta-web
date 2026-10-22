@@ -408,8 +408,10 @@ async function submit() {
       The last step's draft save is queued behind the ones before it. Waiting
       for them means the token on this submission is the one the portal handed
       out, so it finishes that draft instead of leaving it open next to a
-      finished registration. The queue never rejects and each call has its own
-      timeout, so this can't hold the visitor up for long.
+      finished registration. It is only a short wait, though: the draft is a
+      best-effort extra, and a portal that is slow to answer must not delay the
+      real submission. Past the deadline the aanmelding goes without a token
+      and the draft is left open for the office.
     */
     await draft.settled()
 

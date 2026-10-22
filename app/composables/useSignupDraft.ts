@@ -28,6 +28,14 @@ import type { SignupValues } from '~/data/signup'
 */
 let tail: Promise<void> = Promise.resolve()
 
+/*
+  Longer than the server's own ceiling: `postToPortal` gives the portal 15s, and
+  the lead route waits for its mail as well. A client that gives up first drops
+  the token of a draft the server then goes on to create, and the next step
+  starts a second one.
+*/
+const SAVE_TIMEOUT = 25_000
+
 export function useSignupDraft() {
   const token = useState<string | null>('signup-draft-token', () => null)
 
@@ -48,11 +56,21 @@ export function useSignupDraft() {
 
   /** The proefles block's answers: step 0, and the first thing in a draft. */
   function saveLead(body: Record<string, unknown>) {
-    return enqueue(() => $fetch('/api/lead', {
-      method: 'POST',
-      timeout: 10_000,
-      body: { ...body, token: token.value ?? undefined },
-    }))
+    return enqueue(() => {
+      /*
+        The block opens a draft; it never continues one. A token still in
+        shared state belongs to an earlier lead (an abandoned wizard, or
+        somebody else at the same computer), and sending it would overwrite
+        that person's name and phone with this one's.
+      */
+      token.value = null
+
+      return $fetch('/api/lead', {
+        method: 'POST',
+        timeout: SAVE_TIMEOUT,
+        body,
+      })
+    })
   }
 
   /**
@@ -66,7 +84,7 @@ export function useSignupDraft() {
   function saveStep(step: number, stepName: string, answers: Partial<SignupValues>, source?: string) {
     return enqueue(() => $fetch('/api/aanmelding-concept', {
       method: 'POST',
-      timeout: 10_000,
+      timeout: SAVE_TIMEOUT,
       body: {
         token: token.value ?? undefined,
         step,
@@ -78,9 +96,16 @@ export function useSignupDraft() {
     }))
   }
 
-  /** Resolves once everything queued has been answered, so the token is current. */
-  function settled() {
-    return tail
+  /**
+   * Resolves once everything queued has been answered, so the token is current
+   * — or after `deadline` ms, whichever is first. The draft is a best-effort
+   * extra and must not hold up the real submission.
+   */
+  function settled(deadline = 3_000) {
+    return Promise.race([
+      tail,
+      new Promise<void>(resolve => setTimeout(resolve, deadline)),
+    ])
   }
 
   return { token, saveLead, saveStep, settled }

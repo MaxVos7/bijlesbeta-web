@@ -266,6 +266,14 @@ step.
   rules and drops the rest, and takes a phone number in any shape. The rules
   of a finished form are enforced when a draft is converted, not when saved.
 - **Drafts are kept.** Finished and dismissed ones stay as a record.
+- **A bad token never costs a registration.** If `register-external-full`
+  refuses, `/api/aanmelden` tries once more without the `draft_token`.
+- **The draft payload is the one exception to "every key goes out".** The
+  rule above exists because `register-external-full` reads keys with no `??`
+  behind them. `draftPayload` leaves a key out until an answer it is made
+  from is present, so `external-signup-draft` has to tolerate missing keys;
+  that has not been checked against the portal yet. If saves 500 there,
+  drafts never form and nothing on this side shows it.
 
 ### The office copy
 

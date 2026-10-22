@@ -127,7 +127,13 @@ export default defineEventHandler(async (event) => {
     Nothing identifying goes in it — no name, no number, no address. The page
     is enough to tell which block is failing.
   */
-  console.info('[lead] proefles hand-off', { delivered, draft: saved.ok, page: lead.page })
+  console.info('[lead] proefles hand-off', {
+    delivered,
+    draft: saved.ok,
+    // `ok` with nothing forwarded means the portal isn't configured.
+    forwarded: saved.ok && saved.forwarded,
+    page: lead.page,
+  })
 
   /*
     Reported, but never acted on by the caller: `LeadForm` sends the visitor
