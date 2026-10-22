@@ -13,7 +13,11 @@ const api = useMijnApi()
 const { user } = useMijnSession()
 
 const forced = computed(() => !!user.value?.must_change_password)
-useHead({ title: () => (forced.value ? copy.forcedTitle : copy.title) })
+// An account the aanmelding made has no password to confirm. Unlike `forced`,
+// nothing else is locked, so it still ends on the page it came from.
+const firstTime = computed(() => user.value?.has_password === false)
+const withoutCurrent = computed(() => forced.value || firstTime.value)
+useHead({ title: () => (firstTime.value ? copy.firstTitle : forced.value ? copy.forcedTitle : copy.title) })
 
 const form = reactive({ current_password: '', password: '', password_confirmation: '' })
 const pending = ref(false)
@@ -36,13 +40,16 @@ async function onSubmit() {
   try {
     const result = await api<{ message: string }>('account/password', {
       method: 'POST',
-      body: forced.value
+      body: withoutCurrent.value
         ? { password: form.password, password_confirmation: form.password_confirmation }
         : form,
     })
 
     const wasForced = forced.value
-    if (user.value) user.value.must_change_password = false
+    if (user.value) {
+      user.value.must_change_password = false
+      user.value.has_password = true
+    }
 
     // A forced change was what stood between the account and the rest of /mijn/.
     if (wasForced) return navigateTo('/mijn/', { replace: true })
@@ -69,13 +76,14 @@ async function onSubmit() {
 <template>
   <div class="container-page">
     <div class="panel mx-auto mt-6 max-w-[480px] p-6 sm:p-9">
-      <h1 class="text-[28px] leading-[38px]">{{ forced ? copy.forcedTitle : copy.title }}</h1>
-      <p v-if="forced" class="mt-2 text-[14px] leading-[21px] text-ink-700">{{ copy.forcedIntro }}</p>
+      <h1 class="text-[28px] leading-[38px]">{{ firstTime ? copy.firstTitle : forced ? copy.forcedTitle : copy.title }}</h1>
+      <p v-if="firstTime" class="mt-2 text-[14px] leading-[21px] text-ink-700">{{ copy.firstIntro }}</p>
+      <p v-else-if="forced" class="mt-2 text-[14px] leading-[21px] text-ink-700">{{ copy.forcedIntro }}</p>
 
       <p v-if="done" class="mt-5 rounded-card bg-success-50 p-4 text-[15px] text-success-900" role="status">{{ done }}</p>
 
       <form class="mt-6 flex flex-col gap-5" novalidate @submit.prevent="onSubmit">
-        <div v-if="!forced">
+        <div v-if="!withoutCurrent">
           <label for="mijn-current-password" class="field-label">{{ copy.current }}</label>
           <input
             id="mijn-current-password"

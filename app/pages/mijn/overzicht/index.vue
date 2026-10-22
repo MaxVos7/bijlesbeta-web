@@ -84,6 +84,14 @@ onMounted(async () => {
     <p v-if="loading" class="mt-8 text-[15px] text-ink-700">{{ mijnOverview.loading }}</p>
 
     <template v-else-if="overview">
+      <section v-if="user?.has_password === false" class="panel mt-6 flex flex-col gap-3 p-6 sm:flex-row sm:items-center sm:justify-between sm:p-7">
+        <div>
+          <h2 class="font-display text-[18px] font-bold text-ink-900">{{ mijnOverview.passwordTitle }}</h2>
+          <p class="mt-1 text-[14px] leading-relaxed text-ink-700">{{ mijnOverview.passwordBody }}</p>
+        </div>
+        <NuxtLink to="/mijn/wachtwoord/" class="btn-primary shrink-0">{{ mijnOverview.passwordCta }}</NuxtLink>
+      </section>
+
       <section v-if="waitingForTutor" class="panel mt-6 p-6 sm:p-7">
         <h2 class="font-display text-[22px] font-bold text-ink-900">{{ mijnOverview.welcomeTitle }}</h2>
         <p class="mt-3 text-[15px] leading-relaxed text-ink-800">{{ mijnOverview.welcomeBody }}</p>
