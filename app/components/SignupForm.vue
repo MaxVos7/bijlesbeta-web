@@ -37,6 +37,14 @@ if (handoff) {
   values.contactFirstName = handoff.name.slice(0, SIGNUP_MAX.contactFirstName)
   values.studentPhone = handoff.phone.slice(0, SIGNUP_MAX.studentPhone)
   values.email = handoff.email.slice(0, SIGNUP_MAX.email)
+
+  /*
+    The block *is* the first step: its three fields are the "Gegevens" step, and
+    `LeadForm` has checked them against the same rules. So the visitor lands on
+    the second step instead of being asked their name again, and "Vorige" still
+    leads back to the answers they gave.
+  */
+  step.value = 2
 }
 
 const analytics = useAnalytics()
@@ -156,6 +164,14 @@ function problemFor(field: SignupField): FieldProblem | null {
   }
 
   if (field.required && !filled(field.name)) return { kind: 'required' }
+
+  /*
+    A field this step doesn't insist on may be blank even though the endpoint
+    does: the e-mail is optional on "Gegevens" and required on the last step.
+    The submit guard (`outstanding`) still catches it before anything is sent.
+    A blank answer can fail nothing else, so only the required check is skipped.
+  */
+  if (!field.required && !filled(field.name)) return null
 
   return problems.value[field.name] ?? null
 }

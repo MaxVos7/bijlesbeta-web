@@ -231,6 +231,15 @@ Our version, and what shouldn't be undone:
   and clears it once at setup: it seeds the form, it doesn't own it. Only
   `actie` stays in the URL. Don't put the three back in the query string.
 
+- **The block is the wizard's first step.** `signupSteps` opens on `gegevens`
+  (naam, telefoon, e-mail — the same three fields), then `bijles`,
+  `leerling_en_vak` and `factuurgegevens`. A visitor handed over by `LeadForm`
+  starts on step 2; one who arrives directly answers step 1 and gets a draft
+  from it (no lead mail — that is the block's own). The e-mail is optional on
+  step 1 and required on the last, so `problemFor` skips the rules' `required`
+  for a blank field its step doesn't require. The `stap_naam` ids changed with
+  the merge (`vak_en_niveau` and `kennismaking` became `leerling_en_vak`).
+
 Live also runs a Cloudflare Turnstile on this form (`field_1_7`). We have the
 honeypot and the per-IP rate limit instead.
 
