@@ -116,7 +116,7 @@ async function handOff() {
     swallows rather than reports for the same reason — there is nothing the
     visitor could do about it, and they are already on the next page.
   */
-  $fetch('/api/lead', { method: 'POST', body: payload() }).catch(() => {})
+  useSignupDraft().saveLead(payload())
 
   /*
     Fired here rather than after the POST, for the same reason the POST isn't

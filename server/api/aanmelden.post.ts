@@ -20,6 +20,9 @@ const schema = z.object({
   ...ruleFields(SIGNUP_RULES),
   subjects: ruleList(SIGNUP_SUBJECTS_RULE),
   consent: z.literal(true),
+  // The draft this submission finishes, when the wizard saved one along the
+  // way. Not a question, so not in `SIGNUP_RULES`.
+  draftToken: z.string().max(64).optional(),
 })
 
 export default defineEventHandler(async (event) => {
@@ -35,7 +38,7 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const { website, ...answers } = body.data
+  const { website, draftToken, ...answers } = body.data
 
   // Silently accept honeypot hits so bots get no signal.
   if (isSpam({ website })) {
@@ -47,7 +50,7 @@ export default defineEventHandler(async (event) => {
   const handoff = await postToPortal(
     event,
     '/register-external-full',
-    signupPayload(answers),
+    { ...signupPayload(answers), draft_token: draftToken ?? null },
   )
 
   const { officeEmail } = useRuntimeConfig(event)
@@ -68,82 +71,7 @@ export default defineEventHandler(async (event) => {
   )
 })
 
-type Answers = Omit<z.infer<typeof schema>, 'website'>
-
-/**
- * Maps the wizard's answers onto `register-external-full`, which is the same
- * body the Gravity Forms webhook posts today — see the webhook's field list on
- * bijlesbeta.nl, and `RegisteredUserController::storeExternalFull` for what it
- * does with each key.
- *
- * Two shapes matter. `student_subjects_1` is a comma-separated list of numeric
- * subject ids, not names; the controller reads the first non-empty of the
- * three `_1.._3` keys, so only `_1` is sent. And the hours question arrives on
- * one of two mutually exclusive keys depending on the lesson kind — weekly as
- * a `basis`/`standard`/`premium` band, anything else as a plain count.
- *
- * Four answers the wizard asks for still have no field on the endpoint: the
- * preferred contact method, and the "Anders, namelijk…" wording behind lesson
- * kind, level and subject. They are appended to `location_indication` under
- * labels rather than dropped — it is the only free-text key with no length cap,
- * and it already carries the visitor's own notes about how the lessons should
- * work. They do not belong in `account_known_via`, which means "how did you
- * hear about us", so that key carries only the answer to that question.
- *
- * The school used to be squeezed in there too. It has its own column on the
- * portal and its own field on the endpoint now, so it is sent properly and the
- * office sees it where the admin person form shows it.
- *
- * The right fix is for the endpoint to grow fields for them, or for the wizard
- * to stop asking; see the note in CLAUDE.md.
- *
- * `street`, `city` and the two PDOK codes are deliberately not sent — the
- * portal re-derives the address from postcode and house number in its own job.
- */
-function signupPayload(v: Answers) {
-  const notes = [
-    // The label, not the code. `location_indication` is an editable field on
-    // the portal's person page, so an admin was reading `at_home` off a form
-    // meant for the visitor's own words.
-    label(LOCATIONS, v.location),
-    v.location === 'anders' && v.locationNote && `Toelichting: ${v.locationNote}`,
-    v.contactMethod && `Contact via: ${v.contactMethod}`,
-    v.level === 'different' && v.levelOther && `Niveau: ${v.levelOther}`,
-    v.subjectOther && `Ander vak: ${v.subjectOther}`,
-    v.lessonKind === 'different' && v.lessonKindNote && `Soort bijles: ${v.lessonKindNote}`,
-  ].filter(Boolean)
-
-  return portalPayload({
-    student_first_name: v.studentFirstName,
-    student_phone_number: normalisePhone(v.studentPhone) ?? v.studentPhone,
-    student_level: levelId(v.level),
-    student_subjects_1: subjectIds(v.subjects),
-    student_year: v.schoolYear,
-    /*
-      A real field on the endpoint since `register-external-full` learned about
-      `receiver_information.school`. Guarded on the answer it belongs to: the
-      question is only asked when the lessons happen at school, and switching
-      away from that answer used to leave a stale school name in the payload.
-    */
-    student_school: v.location === 'at_school' ? v.school : '',
-
-    student_interval_type: v.lessonKind,
-    // Only one of these two is ever asked, and the portal prefers the band.
-    student_weekly_amount_indication: v.lessonKind === 'weekly' ? v.weeklyHours : '',
-    student_incidental_amount_indication: v.lessonKind === 'weekly' ? '' : v.totalHours,
-
-    location_indication: notes.join(' — '),
-    date_time_indication: v.availability,
-
-    account_name: `${v.contactFirstName} ${v.contactLastName}`.trim(),
-    account_email: v.email,
-    account_phone_number: v.contactPhone ? normalisePhone(v.contactPhone) ?? v.contactPhone : '',
-    account_postcode: v.postalCode,
-    account_housenumber: v.houseNumber,
-    account_address_comment: v.addressNote,
-    account_known_via: v.heardAbout,
-  })
-}
+type Answers = SignupAnswers
 
 /*
   Readable versions of the wizard's coded answers, for the office copy only.
@@ -169,13 +97,6 @@ const TOTAL_HOURS: Record<string, string> = {
   2: 'tussen de 2 en 5 uur',
   3: 'meer dan 5 uur',
 }
-const LOCATIONS: Record<string, string> = {
-  at_home: 'Thuis',
-  library: 'Openbare locaties (zoals een bieb)',
-  at_school: 'Op school',
-  online: 'Online',
-  anders: 'Anders',
-}
 const LEVELS: Record<string, string> = {
   1: 'vmbo',
   2: 'havo',
@@ -183,11 +104,6 @@ const LEVELS: Record<string, string> = {
   4: 'basisschool',
   5: 'hbo',
   different: 'Anders',
-}
-
-/** Falls back to the raw value, so an unmapped code is shown rather than hidden. */
-function label(map: Record<string, string>, value: string): string {
-  return value ? map[value] ?? value : ''
 }
 
 /**
@@ -201,18 +117,18 @@ function label(map: Record<string, string>, value: string): string {
  */
 function signupRows(v: Answers): Row[] {
   return [
-    ['Soort bijles', label(LESSON_KINDS, v.lessonKind)],
+    ['Soort bijles', answerLabel(LESSON_KINDS, v.lessonKind)],
     ['Toelichting bijles', v.lessonKindNote],
     ['Aantal uur', v.lessonKind === 'weekly'
-      ? label(WEEKLY_HOURS, v.weeklyHours)
-      : label(TOTAL_HOURS, v.totalHours)],
+      ? answerLabel(WEEKLY_HOURS, v.weeklyHours)
+      : answerLabel(TOTAL_HOURS, v.totalHours)],
     ['Beschikbaarheid', v.availability],
-    ['Locatie', label(LOCATIONS, v.location)],
+    ['Locatie', answerLabel(LOCATIONS, v.location)],
     ['Toelichting locatie', v.locationNote],
     ['School', v.school],
 
     ['Schooljaar', v.schoolYear],
-    ['Niveau', label(LEVELS, v.level)],
+    ['Niveau', answerLabel(LEVELS, v.level)],
     ['Ander niveau', v.levelOther],
     ['Bijlesvakken', v.subjects],
     ['Ander vak', v.subjectOther],

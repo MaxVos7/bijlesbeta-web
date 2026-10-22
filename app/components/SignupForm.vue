@@ -40,6 +40,7 @@ if (handoff) {
 }
 
 const analytics = useAnalytics()
+const draft = useSignupDraft()
 
 /*
   Whether the proefles block handed this visitor over, read once at setup for
@@ -304,6 +305,8 @@ async function advance() {
       prefill: cameFromLeadForm,
     })
 
+    saveDraft()
+
     step.value += 1
     await nextTick()
     heading.value?.focus()
@@ -344,7 +347,37 @@ async function advance() {
     prefill: cameFromLeadForm,
   })
 
+  saveDraft()
   await submit()
+}
+
+/*
+  Saves everything answered so far to the portal as a draft, so a visitor who
+  leaves after any step is still somebody the office can ring back. Not
+  awaited: see `useSignupDraft`.
+
+  Only the answers of the steps cleared so far are sent, which is every field
+  those steps asked as the answers stand now. A field the answers have since
+  hidden (the school, once the lessons are no longer at school) is not asked,
+  so it is not sent, and `draftPayload` blanks what depends on the answer that
+  hid it.
+*/
+function saveDraft() {
+  const asked = signupSteps
+    .slice(0, step.value)
+    .flatMap(s => s.fields(values))
+    .flatMap(field => field.kind === 'name' ? field.parts.map(part => part.name) : [field.name])
+
+  const answers = Object.fromEntries(
+    asked.map(name => [name, name === 'subjects' ? [...values.subjects] : String(values[name] ?? '')]),
+  ) as Partial<SignupValues>
+
+  draft.saveStep(
+    step.value,
+    currentStep.value.id,
+    { ...answers, website: values.website },
+    actieParam ? `aanmelden:${actieParam}` : 'aanmelden',
+  )
 }
 
 async function focusFirstInvalid() {
@@ -371,7 +404,21 @@ async function submit() {
   errorMessage.value = ''
 
   try {
-    const result = await $fetch('/api/aanmelden', { method: 'POST', body: payload() })
+    /*
+      The last step's draft save is queued behind the ones before it. Waiting
+      for them means the token on this submission is the one the portal handed
+      out, so it finishes that draft instead of leaving it open next to a
+      finished registration. It is only a short wait, though: the draft is a
+      best-effort extra, and a portal that is slow to answer must not delay the
+      real submission. Past the deadline the aanmelding goes without a token
+      and the draft is left open for the office.
+    */
+    await draft.settled()
+
+    const result = await $fetch('/api/aanmelden', {
+      method: 'POST',
+      body: { ...payload(), draftToken: draft.token.value ?? undefined },
+    })
 
     // 200 with `ok: false` when it reached nobody — see `deliveryResult`.
     if (result.ok === false) {
@@ -381,6 +428,10 @@ async function submit() {
     }
 
     status.value = 'success'
+
+    // This draft is finished. A later aanmelding in the same session (a second
+    // child, say) is a new one, and would otherwise be saved into this one.
+    draft.reset()
 
     /*
       On the answer, never on the click. `ok: true` means the aanmelding

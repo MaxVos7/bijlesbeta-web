@@ -18,11 +18,17 @@ import { z } from 'zod'
  * the wizard. The redirect itself lives in `LeadForm.vue`; this route is the
  * mail. See "The proefles block" in CLAUDE.md.
  *
- * Nothing is sent to the portal from here. A lead is not a contact request,
- * and `register-external-contact` would fire `CONTACT_REQUEST_TO_SENDER` at
+ * No registration is made from here. A lead is not a contact request, and
+ * `register-external-contact` would fire `CONTACT_REQUEST_TO_SENDER` at
  * somebody we are in the middle of sending to the aanmeldformulier — a
  * confirmation for a conversation they didn't start. The real submission is
  * the wizard's, a minute later.
+ *
+ * What does go to the portal is a *draft* (`/external-signup-draft`): step 0
+ * of the aanmelding, which the wizard then keeps adding to after every step
+ * under the token this route hands back. A draft is not an account — nothing
+ * is mailed and no student exists until the form is finished or an admin
+ * converts it. See "Drafts" in CLAUDE.md.
  */
 /*
   `LEAD_RULES` in `shared/utils/form-rules.ts`, which `LeadForm` checks
@@ -40,7 +46,12 @@ import { z } from 'zod'
   simply never arrived. A blank e-mail is now blank, and a filled one is
   checked in the form first.
 */
-const schema = z.object(ruleFields(LEAD_RULES))
+const schema = z.object({
+  ...ruleFields(LEAD_RULES),
+  // The draft this lead belongs to, when the visitor has submitted one before.
+  // Not a visitor-facing answer, so not in `LEAD_RULES`.
+  token: z.string().max(64).optional(),
+})
 
 export default defineEventHandler(async (event) => {
   rateLimit(event)
@@ -55,10 +66,10 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const { website, ...lead } = body.data
+  const { website, token, ...lead } = body.data
 
   // Silently accept honeypot hits so bots get no signal.
-  if (isSpam({ website })) return { ok: true as const }
+  if (isSpam({ website })) return { ok: true as const, token: null }
 
   // Normalised the same way the other two forms do it, so the number the
   // office reads is the number that would go to the portal — and so the one
@@ -66,16 +77,37 @@ export default defineEventHandler(async (event) => {
   // form will accept. `null` can't happen: `LeadForm` checks first.
   const phone = normalisePhone(lead.phone) ?? lead.phone
 
-  const delivered = await sendLeadCopy(event, {
-    to: useRuntimeConfig(event).officeEmail,
-    from: { name: lead.name, email: lead.email },
-    rows: [
-      ['Naam', lead.name],
-      ['Telefoonnummer', phone],
-      ['E-mailadres', lead.email],
-      ['Pagina', lead.page],
-    ],
-  })
+  /*
+    Two independent hand-offs, in parallel and neither waiting on the other:
+    the draft in the portal, where the office can see this person and turn them
+    into a registration, and the mail, which is the safety net for when the
+    portal can't be reached. Either one failing leaves the other standing.
+
+    What the lead gives is mapped onto the keys the wizard will send later, so
+    the draft the wizard keeps filling in is this one: the name is the contact
+    person's, and the number goes where the wizard seeds it (`studentPhone`).
+  */
+  const [saved, delivered] = await Promise.all([
+    postToPortal(event, '/external-signup-draft', {
+      token,
+      step: 0,
+      step_name: 'proefles',
+      source: lead.page,
+      account_name: lead.name,
+      student_phone_number: phone,
+      ...(lead.email ? { account_email: lead.email } : {}),
+    }),
+    sendLeadCopy(event, {
+      to: useRuntimeConfig(event).officeEmail,
+      from: { name: lead.name, email: lead.email },
+      rows: [
+        ['Naam', lead.name],
+        ['Telefoonnummer', phone],
+        ['E-mailadres', lead.email],
+        ['Pagina', lead.page],
+      ],
+    }),
+  ])
 
   /*
     One line per hand-off, on success as well as on failure.
@@ -95,7 +127,13 @@ export default defineEventHandler(async (event) => {
     Nothing identifying goes in it — no name, no number, no address. The page
     is enough to tell which block is failing.
   */
-  console.info('[lead] proefles hand-off', { delivered, page: lead.page })
+  console.info('[lead] proefles hand-off', {
+    delivered,
+    draft: saved.ok,
+    // `ok` with nothing forwarded means the portal isn't configured.
+    forwarded: saved.ok && saved.forwarded,
+    page: lead.page,
+  })
 
   /*
     Reported, but never acted on by the caller: `LeadForm` sends the visitor
@@ -103,5 +141,10 @@ export default defineEventHandler(async (event) => {
     didn't leave would cost the submission this whole block exists to get,
     and their details are in the URL regardless. The failure is in the log.
   */
-  return { ok: true as const, delivered }
+  return {
+    ok: true as const,
+    delivered,
+    // Handed back so the wizard can carry on filling in the same draft.
+    token: saved.ok && typeof saved.data?.token === 'string' ? saved.data.token : null,
+  }
 })
