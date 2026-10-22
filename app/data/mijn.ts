@@ -51,21 +51,31 @@ export const mijnOverview = {
   passwordBody: 'Maak een wachtwoord aan, dan kun je later altijd zelf weer inloggen.',
   passwordCta: 'Wachtwoord aanmaken',
 
-  /** Shown until a tutor is connected to one of the children. */
+  /**
+   * Shown until a tutor is connected to one of the children. For somebody who
+   * has just finished the aanmelding this is also the confirmation, which is
+   * why it opens by thanking them. `icon` is the matching drawing of
+   * `zoWerktHet.steps`.
+   */
+  welcomeKicker: 'Aanmelding ontvangen',
   welcomeTitle: 'Welkom bij Bijles Bèta!',
   welcomeBody:
-    'Fijn dat je er bent. Je aanmelding is binnen en je account staat klaar. Zodra we een docent aan je hebben gekoppeld, vind je hier je lessen, je pakket en de berichten van de docent.',
+    'Bedankt voor je aanmelding. Je account staat klaar. Zodra we een docent aan je hebben gekoppeld, vind je hier je lessen, je pakket en de berichten van de docent.',
+  welcomeNextTitle: 'Zo gaat het verder',
   welcomeSteps: [
     {
-      title: '1. We zoeken een docent bij je',
+      icon: '/img/stappen/stap-2-match.svg',
+      title: 'We zoeken een docent bij je',
       body: 'We kijken welke docent het beste past bij het vak, het niveau en de momenten die je hebt opgegeven. Je hoeft hier niets voor te doen.',
     },
     {
-      title: '2. De docent neemt contact op',
+      icon: '/img/stappen/stap-3-proefles.svg',
+      title: 'De docent neemt contact op',
       body: 'Zodra er een match is, neemt de docent contact met je op om de gratis proefles in te plannen.',
     },
     {
-      title: '3. Proefles en daarna bijles',
+      icon: '/img/stappen/stap-4-bijles.svg',
+      title: 'Proefles en daarna bijles',
       body: 'Tijdens de proefles maken jullie kennis en maken jullie een plan. Daarna kies je een pakket en start de bijles.',
     },
   ],

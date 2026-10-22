@@ -537,6 +537,9 @@ page looks wrong while it happens.
   `SignupForm` navigates there on `ok: true`, after the event has fired, so a
   reload of the page is a pageview and never a second conversion. It is
   `noindex` and deliberately not in `STATIC_PATHS`.
+  A visitor whose aanmelding made a new account is logged in by the route and
+  sent to `/mijn/overzicht/` instead, whose welcome card says the same; they
+  never see this page, so do not count conversions from its URL.
 - **`form_submit` is the one conversion trigger for Tag Manager.** Every form
   pushes it on success — `form_name` is `proefles`, `aanmelden`, `contact` or
   `sollicitatie` — with a unique `event_id` (for deduplicating against a
