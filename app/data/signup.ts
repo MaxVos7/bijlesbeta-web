@@ -197,6 +197,16 @@ function subjectOptions(v: SignupValues): string[] | null {
   return null
 }
 
+/** "Ik ken jullie van" — the value is the label, as the portal stores it as text. */
+export const HEARD_ABOUT_OPTIONS: Option[] = [
+  'Vrienden of familie',
+  'Google',
+  'Instagram',
+  'LinkedIn',
+  'Mond tot mond',
+  'Be Quick sponsor',
+].map((label) => ({ label, value: label }))
+
 /**
  * The niveau options, hoisted out of the step so they can be read twice.
  *
@@ -597,11 +607,13 @@ export const signupSteps: SignupStep[] = [
           inputType: 'tel',
         },
         {
-          kind: 'text',
+          kind: 'radio',
           name: 'heardAbout',
           label: 'Ik ken jullie van',
           required: true,
-          placeholder: 'Ik ken jullie van',
+          // The value is the label: it goes to the portal's `account_known_via`
+          // and into the office copy as written.
+          options: HEARD_ABOUT_OPTIONS,
         },
       )
 
