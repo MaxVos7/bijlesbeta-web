@@ -253,18 +253,8 @@ onBeforeUnmount(() => observer?.disconnect())
       </div>
     </section>
 
-    <section class="bg-sand px-[clamp(16px,4vw,24px)] py-[clamp(56px,7vw,88px)]">
-      <div class="mx-auto max-w-[1000px]">
-        <div class="mb-[clamp(26px,3.5vw,38px)] text-center">
-          <RatingLine centered class="mb-3" />
-          <h2 class="text-[clamp(23px,2.6vw,28px)] tracking-[-0.025em]">{{ page.reviewsTitle }}</h2>
-        </div>
-
-        <ReviewCarousel :items="page.reviews" />
-      </div>
-    </section>
-
-    <section class="bg-white px-[clamp(16px,4vw,24px)] pt-[clamp(56px,7vw,88px)] pb-[clamp(56px,7vw,90px)]">
+    <!-- Straight under the white pain band, which brings the gap. -->
+    <section class="bg-white px-[clamp(16px,4vw,24px)] pt-0 pb-[clamp(56px,7vw,90px)]">
       <div class="mx-auto max-w-[1400px]">
         <div class="mb-[clamp(30px,4vw,46px)] text-center">
           <p class="kicker mb-2.5">{{ page.features.kicker }}</p>
@@ -331,6 +321,17 @@ onBeforeUnmount(() => observer?.disconnect())
             {{ page.steps.link }} <BtnArrow />
           </a>
         </p>
+      </div>
+    </section>
+
+    <section class="bg-sand px-[clamp(16px,4vw,24px)] py-[clamp(56px,7vw,88px)]">
+      <div class="mx-auto max-w-[1000px]">
+        <div class="mb-[clamp(26px,3.5vw,38px)] text-center">
+          <RatingLine centered class="mb-3" />
+          <h2 class="text-[clamp(23px,2.6vw,28px)] tracking-[-0.025em]">{{ page.reviewsTitle }}</h2>
+        </div>
+
+        <ReviewCarousel :items="page.reviews" />
       </div>
     </section>
 
