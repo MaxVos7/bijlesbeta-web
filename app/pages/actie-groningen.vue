@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { actieGroningen as page, lastDay } from '~/data/actie-groningen'
+import { actieEnd, actieGroningen as page, lastDay } from '~/data/actie-groningen'
 import { contact, cookieConsent, tagline } from '~/data/site'
 
 /**
@@ -30,6 +30,19 @@ const analytics = useAnalytics()
 const route = useRoute()
 const vak = useVak()
 const { fill } = useDaysLeft(lastDay)
+
+/*
+  The banner's live clock. Until it is mounted, and again once the offer is
+  over, the banner falls back to its static line with the days-left phrase.
+*/
+const { parts: left, ended } = useCountdown(actieEnd)
+const bannerText = computed(() => {
+  const p = left.value
+  if (!p || ended.value) return fill(page.banner)
+  const pad = (n: number) => String(n).padStart(2, '0')
+  const days = `${p.days} ${p.days === 1 ? page.countdown.units.days[0] : page.countdown.units.days[1]}`
+  return page.bannerTimer.replace('{timer}', `${days} ${pad(p.hours)}:${pad(p.minutes)}:${pad(p.seconds)}`)
+})
 const { reopen, level, open: consentOpen } = useCookieConsent()
 
 /*
@@ -65,8 +78,8 @@ onBeforeUnmount(() => observer?.disconnect())
 
 <template>
   <div>
-    <p class="bg-brand-500 px-[clamp(16px,4vw,40px)] py-2.5 text-center font-display text-sm leading-5 font-bold text-ink-900">
-      {{ fill(page.banner) }}
+    <p class="bg-brand-500 px-[clamp(16px,4vw,40px)] py-2.5 text-center font-display text-sm leading-5 font-bold text-pretty text-ink-900 tabular-nums">
+      {{ bannerText }}
     </p>
 
     <!-- The hero runs on a photograph with an ink wash that is heaviest under
@@ -165,6 +178,8 @@ onBeforeUnmount(() => observer?.disconnect())
               <span>{{ fill(page.heroForm.offer) }}</span>
             </p>
 
+            <ActieCountdown :end="actieEnd" :copy="page.countdown" class="mb-[18px]" />
+
             <!-- Mounted three times on this page (one per breakpoint here,
                  plus the closing block), so it names itself in the office mail. -->
             <LeadForm
@@ -192,6 +207,8 @@ onBeforeUnmount(() => observer?.disconnect())
               </span>
               <span>{{ fill(page.heroForm.offer) }}</span>
             </p>
+
+        <ActieCountdown :end="actieEnd" :copy="page.countdown" class="mb-[18px]" />
 
         <LeadForm
           :source="`${route.path} (onder hero, mobiel)`"
@@ -276,7 +293,17 @@ onBeforeUnmount(() => observer?.disconnect())
     <TrialCta id="proefles" :copy="page.trialCta" actie="groningen" class="scroll-mt-6 pt-0" />
 
     <section class="bg-white px-[clamp(16px,4vw,24px)] pt-[clamp(24px,3vw,40px)] pb-[clamp(56px,7vw,90px)]">
-      <PriceLadder :copy="page.priceLadder" href="#proefles" actie="groningen" class="mx-auto max-w-[1008px]" />
+      <PriceLadder :copy="page.priceLadder" href="#proefles" actie="groningen" class="mx-auto max-w-[1008px]">
+        <template #offer>
+          <div class="flex flex-col gap-4 rounded-card bg-brand-500 p-5 md:flex-row md:items-center md:justify-between md:gap-8">
+            <div class="min-w-0">
+              <p class="font-display text-[19px] leading-[26px] font-bold text-ink-900">{{ page.priceCountdown.title }}</p>
+              <p class="mt-1 text-[15px] leading-[24px] text-on-brand">{{ page.priceCountdown.body }}</p>
+            </div>
+            <ActieCountdown :end="actieEnd" :copy="page.countdown" class="w-full md:w-[340px] md:flex-none" />
+          </div>
+        </template>
+      </PriceLadder>
     </section>
 
     <!-- Stappenplan: the `/zo-werkt-het` cards, with the campaign's copy. -->

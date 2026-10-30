@@ -26,6 +26,12 @@ const freeWeekHours = { basis: 1, standaard: 2, uitgebreid: 3 }
  */
 export const lastDay = '2026-10-31'
 
+/**
+ * The moment the herfstactie ends: midnight going into 1 November, Dutch
+ * time. Summer time is over by then, so the offset is CET's +01:00.
+ */
+export const actieEnd = '2026-11-01T00:00:00+01:00'
+
 export const actieGroningen = {
   seoTitle: 'Herfstactie Groningen: eerste week bijles gratis',
   seoDescription:
@@ -34,7 +40,21 @@ export const actieGroningen = {
   /** The label on every CTA on the page, the form's own button included. */
   ctaLabel: 'Proefles claimen',
 
+  /** Shown until the clock is mounted, and again once the offer has ended. */
   banner: 'Herfstactie, {dagen}: eerste week bijles gratis bij elk pakket · alleen t/m 31 oktober',
+  /** The live banner; `{timer}` becomes "1 dag 05:12:33". */
+  bannerTimer: 'Herfstactie: eerste week bijles gratis bij elk pakket · nog {timer}',
+  /** The amber strip with the countdown over the price ladder's cards. */
+  priceCountdown: {
+    title: 'Herfstactie: eerste week gratis bij elk pakket',
+    body: 'Geldt bij aanmelding t/m 31 oktober.',
+  },
+  /** The tiles in the hero's form panel and over the prices, counting down to `actieEnd`. */
+  countdown: {
+    label: 'De herfstactie eindigt over',
+    ended: 'De herfstactie is afgelopen.',
+    units: { days: ['dag', 'dagen'] as [string, string], hours: 'uur', minutes: 'min', seconds: 'sec' },
+  },
   headerOffer: 'Eerste week gratis',
 
   /** The bar pinned to the foot of a phone screen once the hero is gone. */

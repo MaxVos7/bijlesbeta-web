@@ -102,6 +102,9 @@ const selected = computed(() => tiers.value.find((t) => t.slug === selectedSlug.
         <p class="text-[15px] leading-[28px]">{{ copy.body.long }}</p>
       </div>
 
+      <!-- A page's own banner between the header and the cards, such as a countdown. -->
+      <slot name="offer" />
+
       <div class="grid grid-cols-2 gap-3 desk:grid-cols-4">
         <div
           v-for="tier in tiers"
@@ -215,6 +218,10 @@ const selected = computed(() => tiers.value.find((t) => t.slug === selectedSlug.
         <p class="kicker mb-2.5">{{ copy.kicker }}</p>
         <h2 class="mb-2 text-[28px] leading-[44px] tracking-[-0.025em] text-balance">{{ copy.title.short }}</h2>
         <p class="text-[15px] leading-[28px]">{{ copy.body.short }}</p>
+      </div>
+
+      <div v-if="$slots.offer" class="pb-5">
+        <slot name="offer" />
       </div>
 
       <div>
