@@ -144,14 +144,7 @@ onBeforeUnmount(() => observer?.disconnect())
           <div class="hidden w-full max-w-[470px] min-w-0 justify-self-end rounded-card bg-brand-500 p-[clamp(20px,2.4vw,30px)] md:col-start-2 md:block">
             <p class="mb-1.5 text-[15px] font-semibold text-on-brand">{{ page.heroForm.kicker }}</p>
             <h2 class="mb-2.5 text-[clamp(21px,2.2vw,27px)] tracking-[-0.025em]">{{ page.heroForm.title }}</h2>
-            <p class="mb-3 text-sm leading-relaxed text-on-brand-muted">{{ page.heroForm.body }}</p>
-            <p class="mb-[18px] flex items-center gap-2 text-sm font-bold text-ink-900">
-              <span class="relative flex h-2.5 w-2.5 flex-none" aria-hidden="true">
-                <span class="absolute inline-flex h-full w-full rounded-full bg-success-500 opacity-75 motion-safe:animate-ping" />
-                <span class="relative inline-flex h-2.5 w-2.5 rounded-full bg-success-500" />
-              </span>
-              <span>{{ page.heroForm.offer }}</span>
-            </p>
+            <p class="mb-[18px] text-sm leading-relaxed text-on-brand-muted">{{ page.heroForm.body }}</p>
 
             <!-- Mounted three times on this page (one per breakpoint here,
                  plus the closing block), so it names itself in the office mail. -->
@@ -172,14 +165,7 @@ onBeforeUnmount(() => observer?.disconnect())
       <div class="mx-auto w-full max-w-[470px] rounded-card bg-brand-500 p-[clamp(20px,2.4vw,30px)]">
         <p class="mb-1.5 text-[15px] font-semibold text-on-brand">{{ page.heroForm.kicker }}</p>
         <h2 class="mb-2.5 text-[clamp(21px,2.2vw,27px)] tracking-[-0.025em]">{{ page.heroForm.title }}</h2>
-        <p class="mb-3 text-sm leading-relaxed text-on-brand-muted">{{ page.heroForm.body }}</p>
-            <p class="mb-[18px] flex items-center gap-2 text-sm font-bold text-ink-900">
-              <span class="relative flex h-2.5 w-2.5 flex-none" aria-hidden="true">
-                <span class="absolute inline-flex h-full w-full rounded-full bg-success-500 opacity-75 motion-safe:animate-ping" />
-                <span class="relative inline-flex h-2.5 w-2.5 rounded-full bg-success-500" />
-              </span>
-              <span>{{ page.heroForm.offer }}</span>
-            </p>
+        <p class="mb-[18px] text-sm leading-relaxed text-on-brand-muted">{{ page.heroForm.body }}</p>
 
         <LeadForm
           :source="`${route.path} (onder hero, mobiel)`"

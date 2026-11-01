@@ -78,8 +78,6 @@ export const actieGroningen = {
     kicker: 'Gratis proefles in Groningen?',
     title: 'Claim je gratis proefles.',
     body: 'Plan vrijblijvend een gratis proefles in. Je maakt kennis met je docent en zit nergens aan vast.',
-    /** Under the body, behind a pulsing dot. */
-    offer: 'Gemiddeld binnen vijf dagen je proefles.',
   },
 
   steps: {
