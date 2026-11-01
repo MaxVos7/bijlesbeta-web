@@ -42,3 +42,50 @@ export function longDate(date: string) {
   const [y, m, d] = date.split('-').map(Number)
   return new Date(y!, m! - 1, d!).toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' })
 }
+
+const SHORT_MONTHS = ['jan', 'feb', 'mrt', 'apr', 'mei', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'dec']
+
+/** "7 sep" from the API's `Y-m-d`. */
+export function shortDate(date: string) {
+  const [, m, d] = date.split('-').map(Number)
+  return `${d} ${SHORT_MONTHS[m! - 1]}`
+}
+
+/** "7 sep t/m 4 okt"; the year only appears when the two dates differ in it. */
+export function periodRange(from: string, to: string) {
+  const sameYear = from.slice(0, 4) === to.slice(0, 4)
+  return `${sameYear ? shortDate(from) : `${shortDate(from)} ${from.slice(0, 4)}`} t/m ${shortDate(to)}${sameYear ? '' : ` ${to.slice(0, 4)}`}`
+}
+
+/** "2,5 uur" or "1 uur 30 min" from the API's decimal hours. */
+export function hoursLabel(hours: number) {
+  return hoursAndMinutes(Math.round(hours * 60))
+}
+
+/** The ISO week number out of "2026-W37". */
+export function weekNumber(week: string) {
+  return Number(week.split('-W')[1])
+}
+
+/** `Y-m-d` plus a number of days, computed in UTC so a daylight-saving switch can't move it. */
+export function addDays(date: string, days: number) {
+  const [y, m, d] = date.split('-').map(Number)
+  return new Date(Date.UTC(y!, m! - 1, d! + days)).toISOString().slice(0, 10)
+}
+
+/** The Monday of an ISO week such as "2026-W37", as `Y-m-d`. */
+export function isoWeekStart(week: string) {
+  const [year, number] = week.split('-W').map(Number)
+  const jan4 = new Date(Date.UTC(year!, 0, 4))
+  const monday = jan4.getUTCDate() - ((jan4.getUTCDay() || 7) - 1) + (number! - 1) * 7
+  return new Date(Date.UTC(year!, 0, monday)).toISOString().slice(0, 10)
+}
+
+/** Whole days from today to a `Y-m-d`, negative when it has passed. */
+export function daysUntil(date: string) {
+  const [y, m, d] = date.split('-').map(Number)
+  const target = new Date(y!, m! - 1, d!).getTime()
+  const now = new Date()
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime()
+  return Math.round((target - today) / 86_400_000)
+}

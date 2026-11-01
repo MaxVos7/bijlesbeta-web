@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { mijnOverview } from '~/data/mijn'
-import type { MijnChild, MijnLesson, MijnRecord } from '~/utils/mijn-types'
+import { mijnPackages } from '~/data/mijn'
+import type { MijnChild, MijnLesson, MijnRecord, PackageDashboard } from '~/utils/mijn-types'
 
 /*
   A customer's start page: what the dashboard on mijn.bijlesbeta.nl shows a
@@ -34,6 +35,8 @@ type Overview = {
     future: null | { package_name: string, started_at: string }
     can_start: boolean
   }
+  /** Packages with periods; null while that feature is off. */
+  package: PackageDashboard | null
   strip_remaining_minutes: number | null
   records: MijnRecord[]
   schedule_invite: null | { expires_at: string, url: string }
@@ -52,6 +55,11 @@ const error = ref('')
 const waitingForTutor = ref(false)
 
 const subscription = computed(() => overview.value?.subscription ?? null)
+const pkg = computed(() => overview.value?.package ?? null)
+const pkgUsage = computed(() => pkg.value?.period?.usage ?? null)
+
+// A customer on the new system has no use for the old card's "choose a package" prompt.
+const showSubscription = computed(() => !!subscription.value && !pkg.value?.enrollment)
 
 /** Hours as the dashboard gives them (decimal) in the site's "1 uur 30 min". */
 function hours(value: number) {
@@ -110,7 +118,7 @@ onMounted(async () => {
 
       <div class="mt-6 grid gap-4 md:grid-cols-2">
         <!-- Package -->
-        <section v-if="subscription" class="panel p-6 sm:p-7">
+        <section v-if="showSubscription && subscription" class="panel p-6 sm:p-7">
           <h2 class="font-display text-[18px] font-bold text-ink-900">{{ mijnOverview.packageTitle }}</h2>
 
           <!-- A tutor's suggestion waiting for the customer comes first: it asks something of them. -->
@@ -171,6 +179,39 @@ onMounted(async () => {
             class="mt-5"
           >
             {{ subscription.can_start ? mijnOverview.packageStart : mijnOverview.packageManage }}
+          </NuxtLink>
+        </section>
+
+        <!-- Package with periods ("Pakket (nieuw)") -->
+        <section v-if="pkg && (pkg.enrollment || pkg.can_start)" class="panel flex flex-col gap-3.5 p-6 sm:p-7">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <p class="font-display text-[14px] font-bold uppercase leading-none tracking-[0.06em] text-brand-700">
+              {{ pkg.enrollment ? `${pkg.enrollment.plan.name} · ${pkg.enrollment.plan.hours_per_period} uur` : mijnOverview.packageNewKicker }}
+            </p>
+            <MijnPill v-if="pkg.period" :tone="paymentTone(pkg.period.payment)">{{ paymentPill(pkg.period.payment) }}</MijnPill>
+          </div>
+
+          <template v-if="pkg.enrollment">
+            <h2 class="font-display text-[20px] font-bold leading-[30px] text-ink-900">
+              <template v-if="pkg.period">{{ mijnPackages.periodTitle(pkg.period.position, periodRange(pkg.period.starts_on, pkg.period.ends_on)) }}</template>
+              <template v-else>{{ mijnPackages.pill.pending }}</template>
+            </h2>
+
+            <div v-if="pkg.period && pkgUsage && pkg.period.status === 'active'">
+              <div class="mb-2 flex justify-between gap-2 text-[14px]">
+                <b class="font-display text-ink-900">{{ mijnOverview.packageNewUsed(hours(pkgUsage.used)) }}</b>
+                <span class="text-ink-700">{{ pkgUsage.remaining > 0 ? `${hours(pkgUsage.remaining)} over` : '' }}</span>
+              </div>
+              <MijnHourBlocks :used="pkgUsage.used" :hours="pkgUsage.hours" :credit="pkgUsage.credit" :label="mijnOverview.packageNewUsed(hours(pkgUsage.used))" />
+            </div>
+            <p v-else-if="pkg.period" class="text-[14px] text-ink-800">{{ mijnPackages.futureTitle(longDate(pkg.period.starts_on)) }}</p>
+          </template>
+          <template v-else>
+            <h2 class="font-display text-[20px] font-bold leading-[30px] text-ink-900">{{ mijnOverview.packageNewNone }}</h2>
+          </template>
+
+          <NuxtLink :to="pkg.enrollment ? '/mijn/pakketten/' : '/mijn/pakketten/kiezen/'" class="btn-primary mt-auto self-start">
+            {{ pkg.enrollment ? mijnOverview.packageNewOpen : mijnOverview.packageNewStart }}
           </NuxtLink>
         </section>
 

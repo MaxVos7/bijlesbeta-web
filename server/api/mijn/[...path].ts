@@ -43,6 +43,12 @@ const ROUTES: Array<[method: string, pattern: RegExp]> = [
   ['POST', /^subscription\/loose-lessons$/],
   ['POST', new RegExp(`^subscriptions/${ID}/(confirm|reject|cancel|change)$`)],
 
+  // Packages with periods (the new system, next to the subscription routes above)
+  ['GET', /^package$/],
+  ['GET', /^package\/preview$/],
+  ['POST', /^package$/],
+  ['POST', new RegExp(`^package/${ID}/(confirm|reject|cancel)$`)],
+
   ['GET', /^schedule$/],
   ['POST', /^schedule\/(requests|no-match)$/],
 
