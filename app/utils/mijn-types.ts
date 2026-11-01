@@ -28,6 +28,16 @@ export type MijnRecord = {
   created_at: string | null
 }
 
+/** A tutor as their student's guardian meets them (`tutors` of `GET api/children`). */
+export type MijnTutor = {
+  id: number
+  name: string
+  picture_url?: string | null
+  subjects?: string[]
+  /** Plain text. */
+  bio?: string | null
+}
+
 /** One of a customer's children — `GET api/children`. */
 export type MijnChild = {
   id: number
@@ -35,7 +45,7 @@ export type MijnChild = {
   active: boolean
   level: string | null
   subjects: string[]
-  tutors: Array<{ id: number, name: string }>
+  tutors: MijnTutor[]
   /** What the edit form starts from. */
   first_name: string
   last_name: string | null

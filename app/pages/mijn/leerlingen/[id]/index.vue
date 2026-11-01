@@ -51,14 +51,34 @@ onMounted(async () => {
       <p v-if="child.level || child.subjects.length" class="mt-1 text-[15px] text-ink-700">
         {{ [child.level, child.subjects.join(', ')].filter(Boolean).join(' · ') }}
       </p>
-      <p class="mt-2 text-[15px] text-ink-800">
-        <span class="font-semibold">{{ mijnChildren.tutors }}:</span>
-        {{ child.tutors.length ? child.tutors.map(t => t.name).join(', ') : mijnChildren.noTutor }}
-      </p>
-
       <NuxtLink :to="`/mijn/leerlingen/${child.id}/bewerken/`" class="mt-3 inline-block text-[14px] font-semibold text-ink-800 underline">
         {{ mijnChildForm.editLink }}
       </NuxtLink>
+
+      <section class="mt-10">
+        <h2 class="font-display text-[22px] font-bold text-ink-900">
+          {{ child.tutors.length > 1 ? mijnChildren.tutorsTitlePlural : mijnChildren.tutorsTitle }}
+        </h2>
+        <p v-if="!child.tutors.length" class="mt-4 text-[15px] text-ink-700">{{ mijnChildren.noTutor }}</p>
+        <ul v-else class="mt-4 grid gap-4 md:grid-cols-2">
+          <li v-for="tutor in child.tutors" :key="tutor.id" class="panel flex flex-col gap-3 p-5">
+            <div class="flex items-center gap-4">
+              <img
+                v-if="tutor.picture_url"
+                :src="tutor.picture_url"
+                :alt="tutor.name"
+                class="h-16 w-16 flex-none rounded-card object-cover"
+                loading="lazy"
+              >
+              <div class="min-w-0">
+                <p class="font-display text-[16px] font-bold text-ink-900">{{ tutor.name }}</p>
+                <p v-if="tutor.subjects?.length" class="text-[13px] text-ink-700">{{ tutor.subjects.join(', ') }}</p>
+              </div>
+            </div>
+            <p v-if="tutor.bio" class="text-[14px] leading-relaxed whitespace-pre-line text-ink-800">{{ tutor.bio }}</p>
+          </li>
+        </ul>
+      </section>
 
       <section class="mt-10">
         <h2 class="font-display text-[22px] font-bold text-ink-900">{{ mijnChildren.lessonsTitle }}</h2>
