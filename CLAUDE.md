@@ -1398,6 +1398,27 @@ actually gets back — never rely on hiding a link.
   `MijnLessonRow` / `MijnRecordList` on every page that shows them.
 - **Notes arrive as plain text** (Laravel strips the editor's HTML). Render
   them as text — never `v-html`.
+- **Customers only use `/mijn/`.** Every link, login and signed invitation the
+  Laravel app sends a customer ends here (see "Links from the portal" below).
+  The portal only does this while its `WEB_URL` is set; until then it keeps
+  serving customers its own screens.
+- **Links from the portal.** The portal checks a signed link (package invite,
+  package suggestion, schedule invitation, training signup), a login or a magic
+  link, then redirects to `/mijn/open/?next=/mijn/<page>/#code=<one-time code>`.
+  `pages/mijn/open.vue` reads the code from the fragment, trades it through
+  `POST /api/mijn/exchange` (→ `api/web/exchange`) for the same httpOnly
+  cookie a password login sets, and navigates to `next` — which is only ever a
+  `/mijn/` path. The code lives 90 seconds and works once, so a failed attempt
+  sends the visitor to the login form with `?verlopen=1`.
+- **Passwords without a login.** `wachtwoord-vergeten`, `inloglink` and
+  `wachtwoord-herstellen` are public (`mijn-guest`) pages over
+  `server/api/mijn/password/*` and `magic-link.post.ts`, which go through
+  `publicMijnCall`. The portal answers the same for an unknown address. The
+  welcome mail after the aanmelding ("Maak wachtwoord aan") links to
+  `wachtwoord-herstellen`.
+- **Children and trainings.** `leerlingen/nieuw` and `leerlingen/<id>/bewerken`
+  share `MijnChildForm` (`POST`/`PATCH api/children`); `trainingen` lists the
+  invitations (`api/trainings`) and saves the chosen sessions.
 - **Laravel needs `TRUSTED_PROXIES`** set to this server's IP, or every
   visitor shares one login throttle (6/min) — `X-Forwarded-For` is sent, but
   Laravel only believes it from a trusted proxy.

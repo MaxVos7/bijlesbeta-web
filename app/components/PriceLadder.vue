@@ -32,7 +32,8 @@ const props = withDefaults(
       tiers: readonly { slug: string; toggle: string; label?: string; blurb: Copy }[]
       initialTier: string
       noDiscount: string
-      offer: {
+      /** A campaign's free week. Without one the ladder shows the plain prices. */
+      offer?: {
         lastDay: string
         title: string
         saving: string
@@ -55,7 +56,8 @@ const props = withDefaults(
 )
 
 const analytics = useAnalytics()
-const { fill } = useDaysLeft(props.copy.offer.lastDay)
+const offer = props.copy.offer
+const fill = offer ? useDaysLeft(offer.lastDay).fill : (text: string) => text
 
 /** The undiscounted rate every saving is measured against. */
 const baseRate = looseLesson.price
@@ -72,10 +74,10 @@ const tiers = computed(() =>
       price,
       hours,
       discount: baseRate - price,
-      monthLabel: hours ? `${props.copy.offer.hours[tier.slug] ? props.copy.offer.firstMonth : 'Per maand'} (${hours} uur)` : 'Per maand',
+      monthLabel: hours ? `${offer?.hours[tier.slug] ? offer.firstMonth : 'Per maand'} (${hours} uur)` : 'Per maand',
       /** What the free week takes off the first invoice, and what that invoice comes to. */
-      freeWeek: (props.copy.offer.hours[tier.slug] ?? 0) * price,
-      firstMonth: hours * price - (props.copy.offer.hours[tier.slug] ?? 0) * price,
+      freeWeek: (offer?.hours[tier.slug] ?? 0) * price,
+      firstMonth: hours * price - (offer?.hours[tier.slug] ?? 0) * price,
       month: hours ? `€${hours * price}` : props.copy.payPerLesson,
     }
   }),
@@ -137,15 +139,15 @@ const selected = computed(() => tiers.value.find((t) => t.slug === selectedSlug.
           </div>
 
           <div
-            v-if="tier.freeWeek"
+            v-if="offer && tier.freeWeek"
             class="rounded-btn px-3 py-2.5"
             :class="tier.slug === featuredSlug ? 'bg-ink-900 text-white' : 'bg-brand-500 text-ink-800'"
           >
-            <p class="font-display text-[13px] leading-[19.5px] font-bold">{{ fill(copy.offer.title) }}</p>
-            <p class="text-[13px] leading-[19.5px]">{{ copy.offer.saving }} <strong>€{{ tier.freeWeek }}</strong></p>
+            <p class="font-display text-[13px] leading-[19.5px] font-bold">{{ fill(offer.title) }}</p>
+            <p class="text-[13px] leading-[19.5px]">{{ offer.saving }} <strong>€{{ tier.freeWeek }}</strong></p>
           </div>
-          <p v-else class="rounded-btn border border-dashed border-line-ink px-3 py-2.5 text-[13px] leading-[19.5px] text-ink-700">
-            {{ copy.offer.none }}
+          <p v-else-if="offer" class="rounded-btn border border-dashed border-line-ink px-3 py-2.5 text-[13px] leading-[19.5px] text-ink-700">
+            {{ offer.none }}
           </p>
 
           <div class="border-t pt-4" :class="tier.slug === featuredSlug ? 'border-ink-900/15' : 'border-line-ink'">
@@ -250,11 +252,11 @@ const selected = computed(() => tiers.value.find((t) => t.slug === selectedSlug.
             <span class="text-[13px] text-white/70">/uur</span>
             <s v-if="selected.discount > 0" class="ml-1 text-[13px] text-white/70">€{{ baseRate }}</s>
           </p>
-          <div v-if="selected.freeWeek" class="rounded-btn bg-brand-500 px-3 py-2.5 text-ink-800">
-            <p class="font-display text-[13px] leading-[19.5px] font-bold">{{ fill(copy.offer.title) }}</p>
-            <p class="text-[13px] leading-[19.5px]">{{ copy.offer.saving }} <strong>€{{ selected.freeWeek }}</strong></p>
+          <div v-if="offer && selected.freeWeek" class="rounded-btn bg-brand-500 px-3 py-2.5 text-ink-800">
+            <p class="font-display text-[13px] leading-[19.5px] font-bold">{{ fill(offer.title) }}</p>
+            <p class="text-[13px] leading-[19.5px]">{{ offer.saving }} <strong>€{{ selected.freeWeek }}</strong></p>
           </div>
-          <p v-else class="text-[13px] leading-[19.5px] text-white/70">{{ copy.offer.none }}</p>
+          <p v-else-if="offer" class="text-[13px] leading-[19.5px] text-white/70">{{ offer.none }}</p>
           <div class="flex items-center justify-between gap-3 border-t pt-4 border-white/15">
             <span class="text-[13px] text-white/70">{{ selected.monthLabel }}</span>
             <span v-if="selected.freeWeek" class="flex items-baseline gap-2">

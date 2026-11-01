@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { mijnLogin } from '~/data/mijn'
+import { mijnLogin, mijnReset } from '~/data/mijn'
 
 definePageMeta({ layout: 'mijn', middleware: 'mijn-guest' })
 useHead({ title: mijnLogin.title })
 
-const config = useRuntimeConfig()
 const route = useRoute()
 const { login } = useMijnSession()
 
@@ -58,6 +57,12 @@ async function onSubmit() {
       <p class="kicker">{{ mijnLogin.kicker }}</p>
       <h1 class="mt-3 text-[32px] leading-[44px]">{{ mijnLogin.title }}</h1>
       <p class="mt-2 text-[14px] leading-[21px] text-ink-700">{{ mijnLogin.intro }}</p>
+      <p v-if="route.query.verlopen" class="mt-4 rounded-card bg-linen p-4 text-[14px] text-ink-900" role="status">
+        {{ mijnLogin.expired }}
+      </p>
+      <p v-else-if="route.query.wachtwoord" class="mt-4 rounded-card bg-success-50 p-4 text-[14px] text-success-900" role="status">
+        {{ mijnReset.done }}
+      </p>
 
       <form class="mt-6 flex flex-col gap-5" novalidate @submit.prevent="onSubmit">
         <div>
@@ -96,12 +101,12 @@ async function onSubmit() {
 
         <p v-if="errorMessage" class="field-error mt-0" role="alert">{{ errorMessage }}</p>
 
-        <a
-          :href="`${config.public.portalUrl}/forgot-password`"
-          class="text-[14px] font-semibold text-ink-800 underline"
-        >
+        <NuxtLink to="/mijn/wachtwoord-vergeten/" class="text-[14px] font-semibold text-ink-800 underline">
           {{ mijnLogin.forgotPassword }}
-        </a>
+        </NuxtLink>
+        <NuxtLink to="/mijn/inloglink/" class="text-[14px] font-semibold text-ink-800 underline">
+          {{ mijnLogin.magicLink }}
+        </NuxtLink>
       </form>
     </div>
   </div>

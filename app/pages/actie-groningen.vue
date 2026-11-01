@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { actieGroningen as page, lastDay } from '~/data/actie-groningen'
+import { actieGroningen as page } from '~/data/actie-groningen'
 import { contact, cookieConsent, tagline } from '~/data/site'
 
 /**
@@ -29,7 +29,6 @@ useHead({ meta: [{ name: 'robots', content: 'noindex, follow' }] })
 const analytics = useAnalytics()
 const route = useRoute()
 const vak = useVak()
-const { fill } = useDaysLeft(lastDay)
 const { reopen, level, open: consentOpen } = useCookieConsent()
 
 /*
@@ -65,10 +64,6 @@ onBeforeUnmount(() => observer?.disconnect())
 
 <template>
   <div>
-    <p class="bg-brand-500 px-[clamp(16px,4vw,40px)] py-2.5 text-center font-display text-sm leading-5 font-bold text-ink-900">
-      {{ fill(page.banner) }}
-    </p>
-
     <!-- The hero runs on a photograph with an ink wash that is heaviest under
          the copy, and carries the page's own header inside it. -->
     <section ref="hero" class="relative isolate overflow-hidden bg-ink-900 pb-[clamp(48px,7vw,88px)]">
@@ -99,9 +94,6 @@ onBeforeUnmount(() => observer?.disconnect())
             >
           </NuxtLink>
           <div class="flex items-center gap-3">
-            <span class="hidden font-display text-[13px] font-bold whitespace-nowrap text-ink-900 sm:inline">
-              {{ fill(page.headerOffer) }}
-            </span>
             <a
               href="#proefles"
               class="inline-block rounded-btn bg-brand-500 px-3 py-2.5 font-display text-[12px] leading-[11px] font-bold whitespace-nowrap text-ink-900 transition duration-300 hover:bg-ink-900 hover:text-white md:px-5 md:py-4 md:text-[15px]"
@@ -123,10 +115,6 @@ onBeforeUnmount(() => observer?.disconnect())
         >
           <div class="max-w-[640px] min-w-0">
             <RatingLine tone="inverse" class="mb-[18px]" />
-
-            <span class="mb-[18px] inline-block rounded-btn bg-brand-500 px-2.5 py-[5px] font-display text-[13px] font-bold text-ink-900">
-              {{ fill(page.hero.badge) }}
-            </span>
 
             <h1
               class="mb-[18px] max-w-[18ch] text-[clamp(30px,4.2vw,36px)] leading-[1.12] tracking-[-0.025em] text-pretty text-white"
@@ -156,14 +144,7 @@ onBeforeUnmount(() => observer?.disconnect())
           <div class="hidden w-full max-w-[470px] min-w-0 justify-self-end rounded-card bg-brand-500 p-[clamp(20px,2.4vw,30px)] md:col-start-2 md:block">
             <p class="mb-1.5 text-[15px] font-semibold text-on-brand">{{ page.heroForm.kicker }}</p>
             <h2 class="mb-2.5 text-[clamp(21px,2.2vw,27px)] tracking-[-0.025em]">{{ page.heroForm.title }}</h2>
-            <p class="mb-3 text-sm leading-relaxed text-on-brand-muted">{{ page.heroForm.body }}</p>
-            <p class="mb-[18px] flex items-center gap-2 text-sm font-bold text-ink-900">
-              <span class="relative flex h-2.5 w-2.5 flex-none" aria-hidden="true">
-                <span class="absolute inline-flex h-full w-full rounded-full bg-success-500 opacity-75 motion-safe:animate-ping" />
-                <span class="relative inline-flex h-2.5 w-2.5 rounded-full bg-success-500" />
-              </span>
-              <span>{{ fill(page.heroForm.offer) }}</span>
-            </p>
+            <p class="mb-[18px] text-sm leading-relaxed text-on-brand-muted">{{ page.heroForm.body }}</p>
 
             <!-- Mounted three times on this page (one per breakpoint here,
                  plus the closing block), so it names itself in the office mail. -->
@@ -184,14 +165,7 @@ onBeforeUnmount(() => observer?.disconnect())
       <div class="mx-auto w-full max-w-[470px] rounded-card bg-brand-500 p-[clamp(20px,2.4vw,30px)]">
         <p class="mb-1.5 text-[15px] font-semibold text-on-brand">{{ page.heroForm.kicker }}</p>
         <h2 class="mb-2.5 text-[clamp(21px,2.2vw,27px)] tracking-[-0.025em]">{{ page.heroForm.title }}</h2>
-        <p class="mb-3 text-sm leading-relaxed text-on-brand-muted">{{ page.heroForm.body }}</p>
-            <p class="mb-[18px] flex items-center gap-2 text-sm font-bold text-ink-900">
-              <span class="relative flex h-2.5 w-2.5 flex-none" aria-hidden="true">
-                <span class="absolute inline-flex h-full w-full rounded-full bg-success-500 opacity-75 motion-safe:animate-ping" />
-                <span class="relative inline-flex h-2.5 w-2.5 rounded-full bg-success-500" />
-              </span>
-              <span>{{ fill(page.heroForm.offer) }}</span>
-            </p>
+        <p class="mb-[18px] text-sm leading-relaxed text-on-brand-muted">{{ page.heroForm.body }}</p>
 
         <LeadForm
           :source="`${route.path} (onder hero, mobiel)`"
@@ -236,18 +210,8 @@ onBeforeUnmount(() => observer?.disconnect())
       </div>
     </section>
 
-    <section class="bg-sand px-[clamp(16px,4vw,24px)] py-[clamp(56px,7vw,88px)]">
-      <div class="mx-auto max-w-[1000px]">
-        <div class="mb-[clamp(26px,3.5vw,38px)] text-center">
-          <RatingLine centered class="mb-3" />
-          <h2 class="text-[clamp(23px,2.6vw,28px)] tracking-[-0.025em]">{{ page.reviewsTitle }}</h2>
-        </div>
-
-        <ReviewCarousel :items="page.reviews" />
-      </div>
-    </section>
-
-    <section class="bg-white px-[clamp(16px,4vw,24px)] pt-[clamp(56px,7vw,88px)] pb-[clamp(56px,7vw,90px)]">
+    <!-- Straight under the white pain band, which brings the gap. -->
+    <section class="bg-white px-[clamp(16px,4vw,24px)] pt-0 pb-[clamp(56px,7vw,90px)]">
       <div class="mx-auto max-w-[1400px]">
         <div class="mb-[clamp(30px,4vw,46px)] text-center">
           <p class="kicker mb-2.5">{{ page.features.kicker }}</p>
@@ -304,6 +268,17 @@ onBeforeUnmount(() => observer?.disconnect())
             {{ page.steps.link }} <BtnArrow />
           </a>
         </p>
+      </div>
+    </section>
+
+    <section class="bg-sand px-[clamp(16px,4vw,24px)] py-[clamp(56px,7vw,88px)]">
+      <div class="mx-auto max-w-[1000px]">
+        <div class="mb-[clamp(26px,3.5vw,38px)] text-center">
+          <RatingLine centered class="mb-3" />
+          <h2 class="text-[clamp(23px,2.6vw,28px)] tracking-[-0.025em]">{{ page.reviewsTitle }}</h2>
+        </div>
+
+        <ReviewCarousel :items="page.reviews" />
       </div>
     </section>
 
@@ -392,7 +367,7 @@ onBeforeUnmount(() => observer?.disconnect())
         class="fixed inset-x-0 bottom-0 z-[900] flex items-center justify-between gap-3 border-t border-line-ink bg-white px-4 pt-3 pb-[max(12px,env(safe-area-inset-bottom))] shadow-float md:hidden"
       >
         <p class="min-w-0 font-display text-[14px] leading-[18px] font-bold">
-          {{ fill(page.stickyBar) }}
+          {{ page.stickyBar }}
         </p>
         <a href="#proefles" class="btn-primary shrink-0">
           {{ page.ctaLabel }} <BtnArrow />

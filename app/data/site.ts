@@ -246,7 +246,7 @@ export const teamIntro = {
 export const trialCta = {
   kicker: 'Gratis proefles?',
   title: 'Claim je eerste gratis proefles.',
-  body: 'Zet de eerste stap in de investering voor jezelf, of je kind. De eerste proefles is altijd 100% gratis',
+  body: 'Zet de eerste stap in de investering voor jezelf, of je kind. De eerste proefles is altijd 100% gratis. Daarna kies je een pakket dat past.',
   promises: ['Enthousiaste docenten', 'Snel een proefles ingepland', 'Scherp geprijsd'],
 } as const
 
@@ -342,7 +342,7 @@ export const contactFormSuccess = {
 export const zoWerktHet = {
   title: 'Zo werkt het',
   intro:
-    'Krijg snel de juiste match met een professionele bijles docent. Leer elkaar kennen tijdens de proefles en maak een plan voor de bijlessen.',
+    'Krijg snel de juiste match met een professionele bijles docent. Leer elkaar kennen tijdens de proefles, maak een plan voor de bijlessen en kies een pakket dat past.',
   /** The second hero button, pointing at `/over-ons`. */
   secondaryCta: 'Over ons',
   stepsIntro: {
@@ -372,12 +372,29 @@ export const zoWerktHet = {
       body: 'Leer elkaar kennen en maak een plan voor de komende bijlessen.',
     },
     {
+      // Placeholder drawing until the real illustration lands.
+      icon: '/img/stappen/stap-4-pakket.svg',
+      title: 'Stap 4: Pakket kiezen',
+      body: 'Na de proefles kies je een pakket met een vast aantal uren per vier lesweken. Hoe meer uren, hoe lager het uurtarief.',
+      link: { label: 'Zo werken pakketten', to: '/pakketten' },
+    },
+    {
       icon: '/img/stappen/stap-4-bijles.svg',
-      title: 'Stap 4: Bijles',
+      title: 'Stap 5: Bijles',
       body: 'Met jouw bijlesdocent krijg je stap voor stap grip op die lastige bètavakken.',
     },
-  ],
+  ] as { icon: string; title: string; body: string; link?: { label: string; to: string } }[],
   stepsLink: { label: 'Meld je hier aan', to: '/aanmelden' },
+  /** The "Een pakket in het kort" block under the steps. */
+  packageSummary: {
+    title: 'Een pakket in het kort',
+    link: { label: 'Alle regels op een rij', to: '/pakketten' },
+    points: [
+      { title: 'Vier lesweken per periode', body: 'Jij kiest de startweek, de factuur komt vooraf.' },
+      { title: 'Vakanties tellen niet mee', body: 'Je krijgt altijd vier volle lesweken.' },
+      { title: 'Ongebruikte uren blijven staan', body: 'Als tegoed, zolang je pakket loopt.' },
+    ],
+  },
 } as const
 
 /** The Bijles Bèta / reguliere aanbieders comparison on Over ons and Zo werkt het. */
@@ -615,17 +632,27 @@ export const overOnsBlocks = [
 export const pricingIntro = {
   kicker: 'Tarieven en pakketten',
   title: 'Eerlijk geprijsd',
-  body: 'Met pakketten stimuleren we consistente bijles waardoor jij het vak echt leert begrijpen. Het uurtarief is afhankelijk van het gekozen pakket.',
+  body: 'Met pakketten stimuleren we consistente bijles waardoor jij het vak echt leert begrijpen. Een pakket loopt vier lesweken. Het uurtarief is afhankelijk van het gekozen pakket.',
 } as const
 
 /** How the pricing packages work — the list beside the photo on Tarieven. */
 export const pricingNotes = [
-  'Je kan altijd meer bijles afnemen dan in het pakket zit, je betaalt zelfde uurtarief.',
-  'De pakketten zijn elke maand eenvoudig aan te passen of op te zeggen.',
-  'Niet gebruikte uren neem je kosteloos één extra maand mee.',
+  'Een pakket loopt vier lesweken. Je kiest zelf je startweek.',
+  'Vakantieweken tellen niet mee. In de zomervakantie pauzeert je pakket.',
+  'Je kan altijd meer bijles afnemen dan in het pakket zit, je betaalt hetzelfde uurtarief.',
+  'Niet gebruikte uren worden tegoed, zolang je pakket loopt.',
+  'Opzeggen kan tot een week voor het einde van je periode.',
   'We rekenen geen inschrijf- of bemiddelingskosten.',
-  'Iedere maand sturen we een factuur.',
 ] as const
+
+/** The pointer under the package cards, shared by every page with `PricingSection`. */
+export const packageExplainer = {
+  title: 'Hoe werkt een pakket?',
+  body: 'Een periode duurt vier lesweken, vakanties tellen niet mee en ongebruikte uren worden tegoed.',
+  link: { label: 'Alle regels op een rij', to: '/pakketten' },
+  /** The button beside the "Zo werkt het" list on /tarieven. */
+  cta: 'Zo werken pakketten',
+} as const
 
 export const pricingAssurances = [
   'Wis-, natuur- en scheikunde',
@@ -903,7 +930,7 @@ export const pricingPlans: PricingPlan[] = [
   {
     slug: 'uitgebreid',
     name: 'Uitgebreid',
-    hoursLabel: 'Vanaf 12 uur / maand',
+    hoursLabel: 'Vanaf 12 uur per periode',
     price: 25,
     regularPrice: 36,
     savingsLabel: '-€11 euro korting',
@@ -919,7 +946,7 @@ export const pricingPlans: PricingPlan[] = [
   {
     slug: 'standaard',
     name: 'Standaard',
-    hoursLabel: 'Vanaf 8 uur / maand',
+    hoursLabel: 'Vanaf 8 uur per periode',
     price: 27,
     regularPrice: 36,
     savingsLabel: '-€9 euro korting',
@@ -935,7 +962,7 @@ export const pricingPlans: PricingPlan[] = [
   {
     slug: 'basis',
     name: 'Basis',
-    hoursLabel: 'Vanaf 4 uur / maand',
+    hoursLabel: 'Vanaf 4 uur per periode',
     price: 30,
     regularPrice: 36,
     savingsLabel: '-€6 euro korting',
@@ -958,7 +985,8 @@ export const pricingPlans: PricingPlan[] = [
  */
 export const looseLesson = {
   name: 'Losse lessen',
-  blurb: 'Flexibele bijles op maat, wanneer jij extra hulp nodig hebt.',
+  blurb:
+    'Flexibele bijles op maat, wanneer jij extra hulp nodig hebt. Je krijgt één keer per maand achteraf een factuur.',
   price: 36,
   cta: 'Gratis proefles',
 } as const
@@ -978,9 +1006,9 @@ export const faqs = [
   },
   {
     question: 'Wanneer en hoe betaal ik voor de bijles?',
-    lead: 'Na de bijlessen sturen wij een factuur.',
+    lead: 'Met een pakket krijg je de factuur aan het begin van je periode.',
     answer:
-      'Dit doen wij iedere maand. Je kan het factuur in de eerste twee week van de volgende maand verwachten. Deze is gemakkelijk online te betalen.',
+      'Je kunt al starten voordat je hebt betaald. Extra uren reken je kort na het einde van je periode af. Losse lessen factureren we achteraf, één keer per maand. Alle facturen zijn gemakkelijk online te betalen. Alle regels staan op de pagina Zo werken pakketten.',
   },
   {
     question: 'Ik zit niet op de middelbare school, kan ik ook bijles krijgen van jullie?',

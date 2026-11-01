@@ -11,6 +11,8 @@ export const mijnLogin = {
   submit: 'Inloggen',
   pending: 'Bezig met inloggen…',
   forgotPassword: 'Wachtwoord vergeten?',
+  magicLink: 'Mail me een inloglink',
+  expired: 'Die link is verlopen. Log in om door te gaan.',
   failed: 'Inloggen lukte niet. Probeer het opnieuw.',
   throttled: 'Te veel pogingen. Wacht een minuut en probeer het opnieuw.',
 }
@@ -562,4 +564,94 @@ export const mijnPackages = {
     closingTitle: 'Wil je iets aan je pakket veranderen?',
     closingBody: 'Je kunt je pakket opzeggen vanaf de pakketpagina. Vragen? Neem gerust contact met ons op.',
   },
+}
+
+/** Landing page of a link from a mail or WhatsApp message: logs the visitor in and moves on. */
+export const mijnOpen = {
+  title: 'Je wordt ingelogd',
+  pending: 'Een moment, we loggen je in…',
+  failed: 'Deze link is verlopen of al gebruikt. Log in om door te gaan.',
+}
+
+/** Asking for a password link or a login link. Both answer the same whether or not the address is known. */
+export const mijnForgot = {
+  kicker: 'Mijn Bijles Bèta',
+  title: 'Wachtwoord vergeten?',
+  intro: 'Vul je e-mailadres in. Dan mailen we je een link om een nieuw wachtwoord te kiezen.',
+  email: 'E-mailadres',
+  submit: 'Mail me de link',
+  pending: 'Bezig met versturen…',
+  back: 'Terug naar inloggen',
+}
+
+export const mijnMagicLink = {
+  kicker: 'Mijn Bijles Bèta',
+  title: 'Inloggen met een link',
+  intro: 'Vul je e-mailadres in. Dan mailen we je een link waarmee je direct inlogt, zonder wachtwoord. De link werkt 10 minuten.',
+  email: 'E-mailadres',
+  submit: 'Mail me de link',
+  pending: 'Bezig met versturen…',
+  back: 'Terug naar inloggen',
+}
+
+/** Choosing a password with the link from a mail: after the aanmelding, or after "wachtwoord vergeten". */
+export const mijnReset = {
+  kicker: 'Mijn Bijles Bèta',
+  title: 'Kies een wachtwoord',
+  intro: 'Kies een wachtwoord voor je account. Daarna log je in met je e-mailadres en dit wachtwoord.',
+  email: 'E-mailadres',
+  new: 'Nieuw wachtwoord',
+  confirm: 'Herhaal het nieuwe wachtwoord',
+  hint: 'Minimaal 8 tekens.',
+  submit: 'Wachtwoord opslaan',
+  pending: 'Bezig met opslaan…',
+  mismatch: 'De wachtwoorden zijn niet hetzelfde.',
+  invalidLink: 'Deze link is niet compleet. Vraag een nieuwe aan.',
+  newLink: 'Nieuwe link aanvragen',
+  done: 'Je wachtwoord is ingesteld. Je kunt nu inloggen.',
+}
+
+/** Adding and editing a child. */
+export const mijnChildForm = {
+  addTitle: 'Leerling toevoegen',
+  editTitle: 'Gegevens wijzigen',
+  addLink: 'Leerling toevoegen',
+  editLink: 'Gegevens wijzigen',
+  firstName: 'Voornaam',
+  lastName: 'Achternaam',
+  year: 'Klas',
+  yearHint: 'Het leerjaar waarin de leerling nu zit (1 t/m 8).',
+  level: 'Niveau',
+  levelNone: 'Kies een niveau',
+  subjects: 'Vakken',
+  subjectsHint: 'Waarvoor heeft de leerling bijles nodig?',
+  subjectsMax: (n: number) => `Kies maximaal ${n} vakken.`,
+  school: 'School',
+  location: 'Waar vindt de bijles plaats?',
+  locationHint: 'Bijvoorbeeld thuis bij de leerling, of dichtbij school.',
+  dateTime: 'Wanneer past bijles?',
+  dateTimeHint: 'Bijvoorbeeld: dinsdag- of donderdagmiddag.',
+  submit: 'Opslaan',
+  pending: 'Bezig met opslaan…',
+  cancel: 'Annuleren',
+  saved: 'De gegevens zijn opgeslagen.',
+  loading: 'Gegevens laden…',
+}
+
+/** Signing up for the sessions of a training, after an invitation. */
+export const mijnTrainings = {
+  title: 'Trainingen',
+  kicker: 'Mijn Bijles Bèta',
+  loading: 'Trainingen laden…',
+  empty: 'Je bent op dit moment voor geen enkele training uitgenodigd.',
+  sessions: 'Kies de momenten waarop je erbij wilt zijn.',
+  full: 'Vol',
+  save: 'Inschrijving opslaan',
+  pending: 'Bezig met opslaan…',
+  saved: 'Je inschrijving is opgeslagen. Je krijgt een bevestiging per e-mail.',
+  tutor: 'Docent',
+  location: 'Locatie',
+  overviewTitle: 'Training',
+  overviewBody: (n: number) => (n === 1 ? 'Je bent uitgenodigd voor een training.' : `Je bent uitgenodigd voor ${n} trainingen.`),
+  overviewCta: 'Kies je momenten',
 }

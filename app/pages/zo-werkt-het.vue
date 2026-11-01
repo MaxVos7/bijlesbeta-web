@@ -6,7 +6,7 @@ useSeo({
   // The live description here is the rating label ("Uitstekend") picked up by
   // Rank Math, not written copy, so ours is kept.
   description:
-    'Van aanmelding tot de eerste bijles in vier stappen: aanmelden, de juiste docent zoeken, kennismaken bij de gratis proefles en dan starten de bijlessen.',
+    'Van aanmelding tot de eerste bijles in vijf stappen: aanmelden, de juiste docent zoeken, kennismaken bij de gratis proefles, een pakket kiezen en dan starten de bijlessen.',
 })
 </script>
 
@@ -83,7 +83,7 @@ useSeo({
       - This page runs the 19px kicker rather than the sitewide 18px, and its
         section title is the 28px step — not the 32px `Zo werkt het` uses on
         `/tarieven`.
-      - The four cards are equal columns on a 12px gap, two-up from 1025px
+      - The five cards are equal columns on a 12px gap, two-up from 1025px
         down. They carry no hover state on the live page.
       - The two 32px spacers around the grid halve to 16px below 1025px.
     -->
@@ -94,17 +94,25 @@ useSeo({
           {{ zoWerktHet.stepsIntro.title }}
         </h2>
 
-        <div class="grid grid-cols-2 gap-3 desk:grid-cols-4">
+        <div class="grid gap-3 max-md:grid-cols-1 md:grid-cols-2 desk:grid-cols-5">
           <article
             v-for="step in zoWerktHet.steps"
             :key="step.title"
-            class="flex flex-col gap-5 rounded-tile border border-line-ink p-6 max-md:p-3"
+            class="flex flex-col gap-5 rounded-tile border p-6 max-md:p-4"
+            :class="step.link ? 'border-brand-500' : 'border-line-ink'"
           >
             <img :src="step.icon" alt="" class="h-[50px] w-[50px] object-contain object-left">
             <div>
               <h3 class="mb-2.5 text-[19px] leading-[26px] max-md:text-base">{{ step.title }}</h3>
               <p class="text-[13px]">{{ step.body }}</p>
             </div>
+            <NuxtLink
+              v-if="step.link"
+              :to="step.link.to"
+              class="mt-auto border-b-[1.5px] border-ink-900/25 self-start py-1 font-display text-sm font-bold text-ink-800"
+            >
+              {{ step.link.label }} →
+            </NuxtLink>
           </article>
         </div>
 
@@ -116,6 +124,29 @@ useSeo({
             {{ zoWerktHet.stepsLink.label }} <BtnArrow />
           </NuxtLink>
         </p>
+
+        <!-- A package in short: the rules on one line each, then the full page. -->
+        <div
+          class="mt-10 grid items-center gap-6 rounded-block border border-line-ink bg-white p-[22px] md:p-8 desk:grid-cols-[1fr_2fr] desk:gap-10 desk:px-9"
+        >
+          <div>
+            <h3 class="mb-2 text-xl leading-[1.3] desk:text-2xl">{{ zoWerktHet.packageSummary.title }}</h3>
+            <NuxtLink
+              :to="zoWerktHet.packageSummary.link.to"
+              class="inline-block border-b-[1.5px] border-ink-900/25 py-2 font-display text-[15px] font-bold text-ink-800"
+            >
+              {{ zoWerktHet.packageSummary.link.label }} →
+            </NuxtLink>
+          </div>
+          <div class="grid gap-4 md:grid-cols-3 md:gap-5">
+            <div v-for="point in zoWerktHet.packageSummary.points" :key="point.title">
+              <p class="mb-1 font-display text-base leading-[1.3] font-extrabold desk:text-[17px]">
+                {{ point.title }}
+              </p>
+              <p class="text-[15px] leading-6">{{ point.body }}</p>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 

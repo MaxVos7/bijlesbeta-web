@@ -36,6 +36,13 @@ export type MijnChild = {
   level: string | null
   subjects: string[]
   tutors: Array<{ id: number, name: string }>
+  /** What the edit form starts from. */
+  first_name: string
+  last_name: string | null
+  school: string | null
+  year: number | null
+  level_id: number | null
+  subject_ids: number[]
 }
 
 /** Packages with periods (`GET api/package`). Amounts are cents, hours decimals, dates `Y-m-d`. */
