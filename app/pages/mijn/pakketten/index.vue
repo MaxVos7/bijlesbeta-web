@@ -157,10 +157,7 @@ function closeOnEscape(event: KeyboardEvent) {
 const stopsOn = computed(() => state.value?.cancel?.stops_on ?? null)
 /** The package stops after a later period than the running one: the customer is past the notice date. */
 const lateCancel = computed(() => !!state.value?.cancel?.is_late)
-
-/** The portal's notice period: cancelling stops the package after a period that ends at least this many days from now. */
-const CANCEL_NOTICE_DAYS = 7
-const cancelDeadline = computed(() => (active.value ? addDays(active.value.ends_on, -CANCEL_NOTICE_DAYS) : null))
+const cancelDeadline = computed(() => state.value?.cancel?.deadline ?? null)
 const extraPeriod = computed(() => state.value?.cancel?.extra_period ?? null)
 
 // ── A suggestion ────────────────────────────────────────────────────

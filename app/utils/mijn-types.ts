@@ -101,6 +101,8 @@ export type PackageState = {
     stops_on: string
     /** Past the notice date: one more period starts and is paid. */
     is_late: boolean
+    /** The last day cancelling still stops the package after the running period; null once `is_late`. */
+    deadline: string | null
     extra_period: null | { starts_on: string, ends_on: string, lesson_weeks: number, price: number }
   }
   plans: PackagePlan[]
