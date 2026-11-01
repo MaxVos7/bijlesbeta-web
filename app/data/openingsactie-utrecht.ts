@@ -133,22 +133,28 @@ export const openingsactieUtrecht = {
   },
 
   /**
-   * The price ladder `/actie-groningen` runs, worded for the opening offer.
-   * Everything but the offer's name is shared, so the two campaigns can't
-   * describe the same packages differently. The `pricing*` keys below are
+   * The price ladder `/actie-groningen` runs, plus the opening offer's free
+   * week, which Groningen no longer has. Everything else is shared, so the
+   * two campaigns can't describe the same packages differently. The `pricing*` keys below are
    * still read by `/actie-utrecht`, which keeps the old block.
    */
   priceLadder: {
     ...ladder,
     kicker: 'Tarieven · Openingsactie Utrecht',
     body: {
-      long: ladder.body.long.replace('En nu met de herfstactie', 'En nu met de openingsactie'),
-      short: ladder.body.short.replace('Herfstactie:', 'Openingsactie:'),
+      long: `${ladder.body.long} En nu met de openingsactie: bij elk pakket is de eerste week bijles gratis.`,
+      short: `${ladder.body.short} Openingsactie: de eerste week is gratis.`,
     },
+    /** The free week, priced per package by `PriceLadder`. */
     offer: {
-      ...ladder.offer,
+      lastDay: '2026-10-31',
       title: 'Openingsactie · {dagen}',
+      saving: 'Eerste week gratis, je bespaart',
+      /** Over the struck-through monthly sum, in place of "Per maand". */
+      firstMonth: 'Eerste maand',
+      /** On Losse lessen, which the offer doesn't cover. */
       none: 'De openingsactie geldt alleen bij een pakket.',
+      hours: freeWeekHours,
     },
   },
 

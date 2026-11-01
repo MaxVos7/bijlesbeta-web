@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { actieEnd, actieGroningen as page, lastDay } from '~/data/actie-groningen'
+import { actieGroningen as page } from '~/data/actie-groningen'
 import { contact, cookieConsent, tagline } from '~/data/site'
 
 /**
@@ -29,20 +29,6 @@ useHead({ meta: [{ name: 'robots', content: 'noindex, follow' }] })
 const analytics = useAnalytics()
 const route = useRoute()
 const vak = useVak()
-const { fill } = useDaysLeft(lastDay)
-
-/*
-  The banner's live clock. Until it is mounted, and again once the offer is
-  over, the banner falls back to its static line with the days-left phrase.
-*/
-const { parts: left, ended } = useCountdown(actieEnd)
-const bannerText = computed(() => {
-  const p = left.value
-  if (!p || ended.value) return fill(page.banner)
-  const pad = (n: number) => String(n).padStart(2, '0')
-  const days = `${p.days} ${p.days === 1 ? page.countdown.units.days[0] : page.countdown.units.days[1]}`
-  return page.bannerTimer.replace('{timer}', `${days} ${pad(p.hours)}:${pad(p.minutes)}:${pad(p.seconds)}`)
-})
 const { reopen, level, open: consentOpen } = useCookieConsent()
 
 /*
@@ -78,10 +64,6 @@ onBeforeUnmount(() => observer?.disconnect())
 
 <template>
   <div>
-    <p class="bg-brand-500 px-[clamp(16px,4vw,40px)] py-2.5 text-center font-display text-sm leading-5 font-bold text-pretty text-ink-900 tabular-nums">
-      {{ bannerText }}
-    </p>
-
     <!-- The hero runs on a photograph with an ink wash that is heaviest under
          the copy, and carries the page's own header inside it. -->
     <section ref="hero" class="relative isolate overflow-hidden bg-ink-900 pb-[clamp(48px,7vw,88px)]">
@@ -112,9 +94,6 @@ onBeforeUnmount(() => observer?.disconnect())
             >
           </NuxtLink>
           <div class="flex items-center gap-3">
-            <span class="hidden font-display text-[13px] font-bold whitespace-nowrap text-ink-900 sm:inline">
-              {{ fill(page.headerOffer) }}
-            </span>
             <a
               href="#proefles"
               class="inline-block rounded-btn bg-brand-500 px-3 py-2.5 font-display text-[12px] leading-[11px] font-bold whitespace-nowrap text-ink-900 transition duration-300 hover:bg-ink-900 hover:text-white md:px-5 md:py-4 md:text-[15px]"
@@ -136,10 +115,6 @@ onBeforeUnmount(() => observer?.disconnect())
         >
           <div class="max-w-[640px] min-w-0">
             <RatingLine tone="inverse" class="mb-[18px]" />
-
-            <span class="mb-[18px] inline-block rounded-btn bg-brand-500 px-2.5 py-[5px] font-display text-[13px] font-bold text-ink-900">
-              {{ fill(page.hero.badge) }}
-            </span>
 
             <h1
               class="mb-[18px] max-w-[18ch] text-[clamp(30px,4.2vw,36px)] leading-[1.12] tracking-[-0.025em] text-pretty text-white"
@@ -175,10 +150,8 @@ onBeforeUnmount(() => observer?.disconnect())
                 <span class="absolute inline-flex h-full w-full rounded-full bg-success-500 opacity-75 motion-safe:animate-ping" />
                 <span class="relative inline-flex h-2.5 w-2.5 rounded-full bg-success-500" />
               </span>
-              <span>{{ fill(page.heroForm.offer) }}</span>
+              <span>{{ page.heroForm.offer }}</span>
             </p>
-
-            <ActieCountdown :end="actieEnd" :copy="page.countdown" class="mb-[18px]" />
 
             <!-- Mounted three times on this page (one per breakpoint here,
                  plus the closing block), so it names itself in the office mail. -->
@@ -205,10 +178,8 @@ onBeforeUnmount(() => observer?.disconnect())
                 <span class="absolute inline-flex h-full w-full rounded-full bg-success-500 opacity-75 motion-safe:animate-ping" />
                 <span class="relative inline-flex h-2.5 w-2.5 rounded-full bg-success-500" />
               </span>
-              <span>{{ fill(page.heroForm.offer) }}</span>
+              <span>{{ page.heroForm.offer }}</span>
             </p>
-
-        <ActieCountdown :end="actieEnd" :copy="page.countdown" class="mb-[18px]" />
 
         <LeadForm
           :source="`${route.path} (onder hero, mobiel)`"
@@ -283,17 +254,7 @@ onBeforeUnmount(() => observer?.disconnect())
     <TrialCta id="proefles" :copy="page.trialCta" actie="groningen" class="scroll-mt-6 pt-0" />
 
     <section class="bg-white px-[clamp(16px,4vw,24px)] pt-[clamp(24px,3vw,40px)] pb-[clamp(56px,7vw,90px)]">
-      <PriceLadder :copy="page.priceLadder" href="#proefles" actie="groningen" class="mx-auto max-w-[1008px]">
-        <template #offer>
-          <div class="flex flex-col gap-4 rounded-card bg-brand-500 p-5 md:flex-row md:items-center md:justify-between md:gap-8">
-            <div class="min-w-0">
-              <p class="font-display text-[19px] leading-[26px] font-bold text-ink-900">{{ page.priceCountdown.title }}</p>
-              <p class="mt-1 text-[15px] leading-[24px] text-on-brand">{{ page.priceCountdown.body }}</p>
-            </div>
-            <ActieCountdown :end="actieEnd" :copy="page.countdown" class="w-full md:w-[340px] md:flex-none" />
-          </div>
-        </template>
-      </PriceLadder>
+      <PriceLadder :copy="page.priceLadder" href="#proefles" actie="groningen" class="mx-auto max-w-[1008px]" />
     </section>
 
     <!-- Stappenplan: the `/zo-werkt-het` cards, with the campaign's copy. -->
@@ -420,7 +381,7 @@ onBeforeUnmount(() => observer?.disconnect())
         class="fixed inset-x-0 bottom-0 z-[900] flex items-center justify-between gap-3 border-t border-line-ink bg-white px-4 pt-3 pb-[max(12px,env(safe-area-inset-bottom))] shadow-float md:hidden"
       >
         <p class="min-w-0 font-display text-[14px] leading-[18px] font-bold">
-          {{ fill(page.stickyBar) }}
+          {{ page.stickyBar }}
         </p>
         <a href="#proefles" class="btn-primary shrink-0">
           {{ page.ctaLabel }} <BtnArrow />

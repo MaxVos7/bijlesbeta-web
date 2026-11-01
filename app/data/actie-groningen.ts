@@ -12,56 +12,24 @@ const pupilCount = stats.find((s) => s.label === 'Leerlingen geholpen')?.value
  * the footer, every CTA scrolling to the proefles block at the bottom.
  */
 
-/**
- * The free week, in hours, per package: a quarter of the monthly minimum.
- * `PriceLadder` prices these at the package's own rate, which is also what
- * the FAQ promises to take off the first invoice.
+/*
+ * The herfstactie — the first week free with every package, until
+ * 31 October 2026 — has ended and its copy is gone. The page stays up for ad
+ * traffic, offering the gratis proefles and nothing else.
  */
-const freeWeekHours = { basis: 1, standaard: 2, uitgebreid: 3 }
-
-/**
- * The herfstactie's last day, inclusive. `useDaysLeft` counts down to it and
- * fills every `{dagen}` slot below — "nog 12 dagen" — so the page reads as
- * temporary without a date anybody has to keep current by hand.
- */
-export const lastDay = '2026-10-31'
-
-/**
- * The moment the herfstactie ends: midnight going into 1 November, Dutch
- * time. Summer time is over by then, so the offset is CET's +01:00.
- */
-export const actieEnd = '2026-11-01T00:00:00+01:00'
 
 export const actieGroningen = {
-  seoTitle: 'Herfstactie Groningen: eerste week bijles gratis',
+  seoTitle: 'Bijles in Groningen: claim je gratis proefles',
   seoDescription:
-    'Herfstactie in Groningen: plan een gratis proefles en krijg bij elk pakket de eerste week bijles gratis. Geldig t/m 31 oktober.',
+    'Bijles in wiskunde, natuurkunde en scheikunde in Groningen, bij jou thuis door universitaire bèta-studenten. Plan vrijblijvend een gratis proefles.',
 
   /** The label on every CTA on the page, the form's own button included. */
   ctaLabel: 'Proefles claimen',
 
-  /** Shown until the clock is mounted, and again once the offer has ended. */
-  banner: 'Herfstactie, {dagen}: eerste week bijles gratis bij elk pakket · alleen t/m 31 oktober',
-  /** The live banner; `{timer}` becomes "1 dag 05:12:33". */
-  bannerTimer: 'Herfstactie: eerste week bijles gratis bij elk pakket · nog {timer}',
-  /** The amber strip with the countdown over the price ladder's cards. */
-  priceCountdown: {
-    title: 'Herfstactie: eerste week gratis bij elk pakket',
-    body: 'Geldt bij aanmelding t/m 31 oktober.',
-  },
-  /** The tiles in the hero's form panel and over the prices, counting down to `actieEnd`. */
-  countdown: {
-    label: 'De herfstactie eindigt over',
-    ended: 'De herfstactie is afgelopen.',
-    units: { days: ['dag', 'dagen'] as [string, string], hours: 'uur', minutes: 'min', seconds: 'sec' },
-  },
-  headerOffer: 'Eerste week gratis',
-
   /** The bar pinned to the foot of a phone screen once the hero is gone. */
-  stickyBar: 'Herfstactie – eerste week bijles gratis',
+  stickyBar: 'Gratis proefles, 100% vrijblijvend',
 
   hero: {
-    badge: 'Tijdelijk: eerste week bijles gratis',
     /**
      * Split so the subjects can be set in amber; an ad's `?vak=` narrows them
      * to the one it was for. `/openingsactie-utrecht` shows the same title.
@@ -78,7 +46,7 @@ export const actieGroningen = {
     body: 'Bijles op de middelbare school van docenten die de tijd nemen die er in de klas niet is. Zodat je kind niet alleen betere cijfers haalt, maar het ook écht snapt en er niet meer tegenop ziet.',
     promises: [
       'Gratis proefles, altijd 100% vrijblijvend',
-      'Eerste week bijles gratis bij elk pakket',
+      'Geen inschrijf- of servicekosten',
       'Bij jou thuis, door universitaire bèta-studenten',
     ],
   },
@@ -109,9 +77,9 @@ export const actieGroningen = {
   heroForm: {
     kicker: 'Gratis proefles in Groningen?',
     title: 'Claim je gratis proefles.',
-    body: 'Plan vrijblijvend een gratis proefles in. Je maakt kennis met je docent en zit nergens aan vast. Kies je daarna een pakket, dan is de eerste week bijles gratis.',
+    body: 'Plan vrijblijvend een gratis proefles in. Je maakt kennis met je docent en zit nergens aan vast.',
     /** Under the body, behind a pulsing dot. */
-    offer: 'Herfstactie: eerste week gratis bij elk pakket, alleen t/m 31 oktober.',
+    offer: 'Gemiddeld binnen vijf dagen je proefles.',
   },
 
   steps: {
@@ -136,7 +104,7 @@ export const actieGroningen = {
       {
         icon: '/img/stappen/stap-4-bijles.svg',
         title: 'Stap 4: Bijles',
-        body: 'Kies je pakket en start met een gratis week. Stap voor stap grip op die lastige bètavakken.',
+        body: 'Kies je pakket en start met je bijlessen. Stap voor stap grip op die lastige bètavakken.',
       },
     ],
     link: 'Meld je hier aan',
@@ -155,11 +123,11 @@ export const actieGroningen = {
    * design words a line differently on a phone, `short` is that wording.
    */
   priceLadder: {
-    kicker: 'Tarieven · Herfstactie',
+    kicker: 'Tarieven',
     title: { long: 'Hoe meer uur per maand,\nhoe lager het uurtarief.', short: 'Meer uur per maand, lager uurtarief.' },
     body: {
-      long: 'Eén uurtarief, vier pakketten. Elk pakket bevat precies hetzelfde: wis-, natuur- en scheikunde, geen servicekosten en een gratis proefles. Het enige verschil is het aantal uur dat je per maand afneemt. En nu met de herfstactie: bij elk pakket is de eerste week bijles gratis.',
-      short: 'Elk pakket bevat hetzelfde. Kies alleen hoeveel uur je per maand wilt. Herfstactie: de eerste week is gratis.',
+      long: 'Eén uurtarief, vier pakketten. Elk pakket bevat precies hetzelfde: wis-, natuur- en scheikunde, geen servicekosten en een gratis proefles. Het enige verschil is het aantal uur dat je per maand afneemt.',
+      short: 'Elk pakket bevat hetzelfde. Kies alleen hoeveel uur je per maand wilt.',
     },
     /** Cheapest-per-hour last, in the order the ladder climbs. */
     tiers: [
@@ -188,17 +156,6 @@ export const actieGroningen = {
     /** The tier the phone's selector opens on. */
     initialTier: 'standaard',
     noDiscount: 'Geen korting',
-    /** The free week, priced per package by `PriceLadder`. */
-    offer: {
-      lastDay,
-      title: 'Herfstactie · {dagen}',
-      saving: 'Eerste week gratis, je bespaart',
-      /** Over the struck-through monthly sum, in place of "Per maand". */
-      firstMonth: 'Eerste maand',
-      /** On Losse lessen, which the offer doesn't cover. */
-      none: 'De herfstactie geldt alleen bij een pakket.',
-      hours: freeWeekHours,
-    },
     payPerLesson: 'Je betaalt per les',
     featuredBadge: 'Laagste uurtarief',
     selectorLabel: 'Hoeveel uur bijles per maand?',
@@ -306,25 +263,20 @@ export const actieGroningen = {
     formTitle: 'Vul je gegevens in en claim je gratis proefles',
     kicker: 'Gratis proefles in Groningen?',
     title: 'Claim je eerste gratis proefles.',
-    body: 'Zet de eerste stap in de investering voor jezelf, of je kind. De eerste proefles is altijd 100% gratis. Bij een pakket krijg je nu de eerste week bijles erbij.',
+    body: 'Zet de eerste stap in de investering voor jezelf, of je kind. De eerste proefles is altijd 100% gratis.',
     promises: [
       'Enthousiaste docenten',
       'Snel een proefles ingepland',
-      'Eerste week gratis bij een pakket',
+      'Geen inschrijf- of servicekosten',
     ],
   },
 
   faqs: [
     {
-      question: 'Hoe werkt de gratis week bijles precies?',
-      lead: 'Simpel.',
-      answer: `Plan je gratis proefles en kies daarna een pakket. Van je eerste maand vergoeden wij één week: bij Uitgebreid 3 uur, bij Standaard 2 uur en bij Basis 1 uur. Die week trekken we van je eerste factuur af. De herfstactie geldt voor nieuwe leerlingen in Groningen en omgeving die zich uiterlijk 31 oktober aanmelden.`,
-    },
-    {
       question: 'Moet ik meteen een pakket kiezen na de proefles?',
       lead: 'Nee.',
       answer:
-        'De proefles is 100% vrijblijvend. Wil je daarna doorgaan, dan kies je een pakket. Heb je je vóór 1 november aangemeld, dan krijg je de gratis week.',
+        'De proefles is 100% vrijblijvend. Wil je daarna doorgaan, dan kies je een pakket.',
     },
     {
       question: 'Hebben jullie op de korte termijn docenten beschikbaar in Groningen?',
