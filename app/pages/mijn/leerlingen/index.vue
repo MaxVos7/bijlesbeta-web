@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { mijnChildren } from '~/data/mijn'
+import { mijnChildForm, mijnChildren } from '~/data/mijn'
 import type { MijnChild } from '~/utils/mijn-types'
 
 /* A customer's children — the students on their account — from `GET api/children`. */
@@ -28,7 +28,10 @@ onMounted(async () => {
 <template>
   <div class="container-page">
     <p class="kicker">{{ mijnChildren.kicker }}</p>
-    <h1 class="mt-3 text-[32px] leading-[44px]">{{ mijnChildren.title }}</h1>
+    <div class="mt-3 flex flex-wrap items-center justify-between gap-4">
+      <h1 class="text-[32px] leading-[44px]">{{ mijnChildren.title }}</h1>
+      <NuxtLink to="/mijn/leerlingen/nieuw/" class="btn-primary">{{ mijnChildForm.addLink }}</NuxtLink>
+    </div>
 
     <p v-if="error" class="field-error mt-6" role="alert">{{ error }}</p>
     <p v-if="loading" class="mt-8 text-[15px] text-ink-700">{{ mijnChildren.loading }}</p>

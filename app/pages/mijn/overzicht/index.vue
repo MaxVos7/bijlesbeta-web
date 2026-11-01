@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { mijnOverview } from '~/data/mijn'
+import { mijnOverview, mijnTrainings } from '~/data/mijn'
 import type { MijnChild, MijnLesson, MijnRecord } from '~/utils/mijn-types'
 
 /*
@@ -37,6 +37,7 @@ type Overview = {
   strip_remaining_minutes: number | null
   records: MijnRecord[]
   schedule_invite: null | { expires_at: string, url: string }
+  training_invitations?: number
 }
 
 const api = useMijnApi()
@@ -189,6 +190,15 @@ onMounted(async () => {
             {{ mijnOverview.scheduleBody(longDate(overview.schedule_invite.expires_at)) }}
           </p>
           <NuxtLink to="/mijn/rooster/" class="btn-primary mt-5">{{ mijnOverview.scheduleCta }}</NuxtLink>
+        </section>
+
+        <!-- Training invitations -->
+        <section v-if="overview.training_invitations" class="panel p-6 sm:p-7">
+          <h2 class="font-display text-[18px] font-bold text-ink-900">{{ mijnTrainings.overviewTitle }}</h2>
+          <p class="mt-3 text-[14px] leading-relaxed text-ink-700">
+            {{ mijnTrainings.overviewBody(overview.training_invitations) }}
+          </p>
+          <NuxtLink to="/mijn/trainingen/" class="btn-primary mt-5">{{ mijnTrainings.overviewCta }}</NuxtLink>
         </section>
       </div>
 

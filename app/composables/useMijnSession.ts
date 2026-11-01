@@ -38,6 +38,12 @@ export function useMijnSession() {
     return user.value
   }
 
+  /** Asks again who is logged in — after a login that happened outside the form (a link from a mail). */
+  async function refresh() {
+    loaded.value = false
+    return load()
+  }
+
   async function login(email: string, password: string) {
     const data = await $fetch<{ user: MijnUser }>('/api/mijn/login', {
       method: 'POST',
@@ -64,5 +70,5 @@ export function useMijnSession() {
     loaded.value = true
   }
 
-  return { user, load, login, logout, expire }
+  return { user, load, refresh, login, logout, expire }
 }

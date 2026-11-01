@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { mijnChildren } from '~/data/mijn'
+import { mijnChildForm, mijnChildren } from '~/data/mijn'
 import type { MijnChild, MijnLesson, MijnRecord } from '~/utils/mijn-types'
 
 /* One of a customer's children: details, lessons and shared notes, from `GET api/children/<id>`. */
@@ -55,6 +55,10 @@ onMounted(async () => {
         <span class="font-semibold">{{ mijnChildren.tutors }}:</span>
         {{ child.tutors.length ? child.tutors.map(t => t.name).join(', ') : mijnChildren.noTutor }}
       </p>
+
+      <NuxtLink :to="`/mijn/leerlingen/${child.id}/bewerken/`" class="mt-3 inline-block text-[14px] font-semibold text-ink-800 underline">
+        {{ mijnChildForm.editLink }}
+      </NuxtLink>
 
       <section class="mt-10">
         <h2 class="font-display text-[22px] font-bold text-ink-900">{{ mijnChildren.lessonsTitle }}</h2>

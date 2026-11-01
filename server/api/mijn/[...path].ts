@@ -36,7 +36,13 @@ const ROUTES: Array<[method: string, pattern: RegExp]> = [
 
   ['GET', /^dashboard$/],
   ['GET', /^children$/],
+  ['GET', /^children\/options$/],
+  ['POST', /^children$/],
   ['GET', new RegExp(`^children/${ID}$`)],
+  ['PATCH', new RegExp(`^children/${ID}$`)],
+
+  ['GET', /^trainings$/],
+  ['POST', new RegExp(`^trainings/${ID}/signup$`)],
 
   ['GET', /^subscription$/],
   ['POST', /^subscription$/],
