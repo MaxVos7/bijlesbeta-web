@@ -89,3 +89,18 @@ export function daysUntil(date: string) {
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime()
   return Math.round((target - today) / 86_400_000)
 }
+
+/** Today as `Y-m-d`, in the visitor's own time zone. */
+export function today() {
+  const now = new Date()
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
+}
+
+/** The ISO week a `Y-m-d` falls in, as "2026-W44". */
+export function isoWeekOf(date: string) {
+  const [y, m, d] = date.split('-').map(Number)
+  const thursday = new Date(Date.UTC(y!, m! - 1, d!))
+  thursday.setUTCDate(thursday.getUTCDate() + 4 - (thursday.getUTCDay() || 7))
+  const week = Math.ceil(((thursday.getTime() - Date.UTC(thursday.getUTCFullYear(), 0, 1)) / 86_400_000 + 1) / 7)
+  return `${thursday.getUTCFullYear()}-W${String(week).padStart(2, '0')}`
+}

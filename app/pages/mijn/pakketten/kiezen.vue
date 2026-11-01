@@ -32,7 +32,9 @@ onMounted(async () => {
   try {
     state.value = (await api<{ data: PackageState }>('package')).data
     planId.value = state.value.plans[0]?.id ?? null
-    week.value = state.value.start_weeks.find(w => !w.holiday)?.week ?? null
+    // Next Monday, not "this week": a period that began days ago is still paid in full.
+    const upcoming = state.value.start_weeks.filter(w => !w.holiday)
+    week.value = (upcoming.find(w => w.starts_on > today()) ?? upcoming[0])?.week ?? null
   }
   catch (e: any) {
     if ((e?.statusCode ?? e?.status) === 404) unavailable.value = true
@@ -62,6 +64,12 @@ watch([planId, week], async () => {
     preview.value = null
     previewError.value = mijnErrorMessage(e)
   }
+})
+
+/** The chosen week began already: the customer pays a whole period that started days ago. */
+const weekBegun = computed(() => {
+  const chosen = state.value?.start_weeks.find(w => w.week === week.value)
+  return chosen && chosen.starts_on <= today() ? chosen.starts_on : null
 })
 
 const weeks = computed(() => (state.value?.start_weeks ?? []).map((w, i) => ({
@@ -120,7 +128,7 @@ const planCard = (selected: boolean) => [
     <!-- Started -->
     <section v-else-if="started" class="panel max-w-[640px] p-8 sm:p-10">
       <p class="kicker">{{ copy.startedKicker }}</p>
-      <h1 class="mt-3 text-[32px] leading-[44px]">{{ copy.startedTitle(longDate(started.starts_on)) }}</h1>
+      <h1 class="mt-3 text-[32px] leading-[44px]">{{ (started.starts_on <= today() ? copy.startedTitleBegun : copy.startedTitle)(longDate(started.starts_on)) }}</h1>
       <p class="mt-2">{{ copy.startedBody(started.plan.name, started.hours) }}</p>
       <NuxtLink to="/mijn/pakketten/" class="btn-primary btn-lg mt-6">{{ copy.toPackage }}</NuxtLink>
     </section>
@@ -216,6 +224,7 @@ const planCard = (selected: boolean) => [
               <h3 class="mt-2 text-[24px] leading-9">{{ periodRange(preview.starts_on, preview.ends_on) }}</h3>
               <p class="text-ink-700">{{ copy.lessonWeeks(preview.lesson_weeks) }}</p>
               <p v-if="preview.starts_later_than_asked" class="mt-4 rounded-card bg-brand-500/15 p-4 text-[14px] ring-1 ring-brand-500/50" role="note">{{ copy.laterStart(longDate(preview.starts_on)) }}</p>
+              <p v-if="weekBegun" class="mt-4 rounded-card bg-brand-500/15 p-4 text-[14px] ring-1 ring-brand-500/50" role="note">{{ copy.weekBegun(longDate(weekBegun)) }}</p>
               <p v-if="preview.is_truncated" class="mt-4 rounded-card bg-brand-500/15 p-4 text-[14px] ring-1 ring-brand-500/50" role="note">{{ copy.shortPeriod(preview.lesson_weeks) }}</p>
               <div class="mt-4 flex flex-col">
                 <div v-for="row in summaryRows" :key="row.k" class="flex justify-between gap-4 border-t border-line-ink py-2.5">

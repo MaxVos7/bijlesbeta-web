@@ -141,13 +141,31 @@ const pay = computed(() => (active.value ? paymentOf(active.value) : null))
 
 // ── Cancelling ──────────────────────────────────────────────────────
 const cancelOpen = ref(false)
+const dialog = ref<HTMLElement | null>(null)
+
+// The dialog takes focus when it opens, and Escape closes it wherever the focus is.
+watch(cancelOpen, async (open) => {
+  if (!open) return
+  await nextTick()
+  dialog.value?.focus()
+})
+onMounted(() => window.addEventListener('keydown', closeOnEscape))
+onBeforeUnmount(() => window.removeEventListener('keydown', closeOnEscape))
+function closeOnEscape(event: KeyboardEvent) {
+  if (event.key === 'Escape') cancelOpen.value = false
+}
 const stopsOn = computed(() => state.value?.cancel?.stops_on ?? null)
 /** The package stops after a later period than the running one: the customer is past the notice date. */
 const lateCancel = computed(() => !!state.value?.cancel?.is_late)
+
+/** The portal's notice period: cancelling stops the package after a period that ends at least this many days from now. */
+const CANCEL_NOTICE_DAYS = 7
+const cancelDeadline = computed(() => (active.value ? addDays(active.value.ends_on, -CANCEL_NOTICE_DAYS) : null))
 const extraPeriod = computed(() => state.value?.cancel?.extra_period ?? null)
 
 // ── A suggestion ────────────────────────────────────────────────────
 const preview = ref<PackagePreview | null>(null)
+const weekPassed = computed(() => !!enrollment.value && isoWeekStart(enrollment.value.first_week) < isoWeekStart(isoWeekOf(today())))
 const agreed = ref(false)
 const showAgreeError = ref(false)
 
@@ -156,7 +174,9 @@ async function loadPreview() {
   if (!e || e.status !== 'pending') return
 
   try {
-    preview.value = (await api<{ data: PackagePreview }>('package/preview', { query: { package_plan_id: e.plan.id, first_week: e.first_week } })).data
+    // Confirming moves a week that has passed to the current one, so that is the period to show.
+    const week = weekPassed.value ? isoWeekOf(today()) : e.first_week
+    preview.value = (await api<{ data: PackagePreview }>('package/preview', { query: { package_plan_id: e.plan.id, first_week: week } })).data
   }
   catch {
     preview.value = null
@@ -177,12 +197,10 @@ const suggestRows = computed(() => {
 const suggestNote = computed(() => {
   const pv = preview.value
   const e = enrollment.value
-  if (!pv || !e || !pv.starts_later_than_asked) return ''
+  if (!pv || !e) return ''
 
-  const asked = isoWeekStart(e.first_week)
-  return asked < new Date().toLocaleDateString('sv-SE')
-    ? copy.suggestLate(longDate(asked), longDate(pv.starts_on))
-    : copy.laterStart(longDate(pv.starts_on))
+  if (weekPassed.value) return copy.suggestLate(longDate(isoWeekStart(e.first_week)), longDate(pv.starts_on))
+  return pv.starts_later_than_asked ? copy.laterStart(longDate(pv.starts_on)) : ''
 })
 
 // ── Actions ─────────────────────────────────────────────────────────
@@ -219,8 +237,10 @@ function confirmSuggestion() {
     result.data?.starts_on ? copy.confirmed(longDate(result.data.starts_on)) : '')
 }
 
+const rejecting = ref(false)
+
 function rejectSuggestion() {
-  if (!enrollment.value || !window.confirm(copy.rejectConfirm)) return
+  if (!enrollment.value) return
   return act(`package/${enrollment.value.id}/reject`, copy.rejected)
 }
 
@@ -303,7 +323,14 @@ const nextPay = computed(() => (next.value ? paymentOf(next.value) : null))
 
         <div class="mt-7 flex flex-wrap gap-3">
           <button type="button" class="btn-primary btn-lg" :disabled="busy" @click="confirmSuggestion">{{ copy.confirm }}</button>
-          <button type="button" class="btn-secondary btn-lg" :disabled="busy" @click="rejectSuggestion">{{ copy.reject }}</button>
+          <button v-if="!rejecting" type="button" class="btn-secondary btn-lg" :disabled="busy" @click="rejecting = true">{{ copy.reject }}</button>
+        </div>
+        <div v-if="rejecting" class="mt-4 rounded-card bg-linen p-4" role="alert">
+          <p class="text-[15px]">{{ copy.rejectConfirm }}</p>
+          <div class="mt-3 flex flex-wrap gap-3">
+            <button type="button" class="btn bg-ink-900 text-white" :disabled="busy" @click="rejectSuggestion">{{ copy.rejectYes }}</button>
+            <button type="button" class="btn-secondary" :disabled="busy" @click="rejecting = false">{{ copy.cancelBack }}</button>
+          </div>
         </div>
         <p class="mt-3 text-[12px] text-ink-700"><b class="text-ink-900">{{ copy.invoiceByMail }}</b></p>
       </section>
@@ -444,7 +471,7 @@ const nextPay = computed(() => (next.value ? paymentOf(next.value) : null))
         <!-- Cancel -->
         <div v-if="state.cancel && enrollment?.status === 'running'" class="mt-12 flex flex-wrap items-center justify-between gap-4 border-t border-line-ink pt-6">
           <p class="text-[14px] text-ink-700">
-            {{ lateCancel || !active ? copy.cancelTextPlain : copy.cancelText(longDate(active.ends_on)) }}
+            {{ lateCancel || !cancelDeadline ? copy.cancelTextPlain : copy.cancelText(longDate(cancelDeadline)) }}
           </p>
           <button type="button" class="font-display text-[14px] font-bold underline underline-offset-4" @click="cancelOpen = true; actionError = ''">{{ copy.cancelLink }}</button>
         </div>
@@ -454,9 +481,8 @@ const nextPay = computed(() => (next.value ? paymentOf(next.value) : null))
       <div
         v-if="cancelOpen && stopsOn"
         class="fixed inset-0 z-[100] grid place-items-center overflow-auto bg-ink-900/55 p-5"
-        @keydown.esc="cancelOpen = false"
       >
-        <div class="w-full max-w-[520px] rounded-block bg-white p-8 shadow-panel" role="dialog" aria-modal="true" aria-labelledby="cancel-title">
+        <div ref="dialog" class="w-full max-w-[520px] rounded-block bg-white p-8 shadow-panel outline-none" role="dialog" aria-modal="true" aria-labelledby="cancel-title" tabindex="-1">
           <h2 id="cancel-title" class="text-[24px] leading-[34px]">{{ copy.cancelTitle }}</h2>
           <p class="mt-3 text-[17px]">{{ copy.cancelBody(longDate(stopsOn)) }}</p>
 

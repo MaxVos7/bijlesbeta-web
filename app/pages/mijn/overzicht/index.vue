@@ -57,6 +57,9 @@ const waitingForTutor = ref(false)
 const subscription = computed(() => overview.value?.subscription ?? null)
 const pkg = computed(() => overview.value?.package ?? null)
 const pkgUsage = computed(() => pkg.value?.period?.usage ?? null)
+/** What is left of the package and the credit, as the package page counts it. */
+const pkgLeft = computed(() => (pkgUsage.value ? Math.max(0, pkgUsage.value.hours + pkgUsage.value.credit - pkgUsage.value.used) : 0))
+const pkgPending = computed(() => pkg.value?.enrollment?.status === 'pending' ? pkg.value.enrollment : null)
 
 // A customer on the new system has no use for the old card's "choose a package" prompt.
 const showSubscription = computed(() => !!subscription.value && !pkg.value?.enrollment)
@@ -188,10 +191,16 @@ onMounted(async () => {
             <p class="font-display text-[14px] font-bold uppercase leading-none tracking-[0.06em] text-brand-700">
               {{ pkg.enrollment ? `${pkg.enrollment.plan.name} · ${pkg.enrollment.plan.hours_per_period} uur` : mijnOverview.packageNewKicker }}
             </p>
-            <MijnPill v-if="pkg.period" :tone="paymentTone(pkg.period.payment)">{{ paymentPill(pkg.period.payment) }}</MijnPill>
+            <MijnPill v-if="pkgPending" tone="open">{{ mijnPackages.pill.pending }}</MijnPill>
+            <MijnPill v-else-if="pkg.period" :tone="paymentTone(pkg.period.payment)">{{ paymentPill(pkg.period.payment) }}</MijnPill>
           </div>
 
-          <template v-if="pkg.enrollment">
+          <!-- A tutor's suggestion waiting for the customer comes first: it asks something of them. -->
+          <template v-if="pkgPending">
+            <h2 class="font-display text-[20px] font-bold leading-[30px] text-ink-900">{{ mijnOverview.packageNewSuggest(pkgPending.suggested_by_name) }}</h2>
+            <p class="text-[14px] text-ink-700">{{ pkgPending.plan.name }} · {{ euros(pkgPending.plan.price) }}/periode · {{ mijnPackages.perPeriod(pkgPending.plan.hours_per_period) }}</p>
+          </template>
+          <template v-else-if="pkg.enrollment">
             <h2 class="font-display text-[20px] font-bold leading-[30px] text-ink-900">
               <template v-if="pkg.period">{{ mijnPackages.periodTitle(pkg.period.position, periodRange(pkg.period.starts_on, pkg.period.ends_on)) }}</template>
               <template v-else>{{ mijnPackages.pill.pending }}</template>
@@ -200,7 +209,7 @@ onMounted(async () => {
             <div v-if="pkg.period && pkgUsage && pkg.period.status === 'active'">
               <div class="mb-2 flex justify-between gap-2 text-[14px]">
                 <b class="font-display text-ink-900">{{ mijnOverview.packageNewUsed(hours(pkgUsage.used)) }}</b>
-                <span class="text-ink-700">{{ pkgUsage.remaining > 0 ? `${hours(pkgUsage.remaining)} over` : '' }}</span>
+                <span class="text-ink-700">{{ pkgLeft > 0 ? `${hours(pkgLeft)} over` : '' }}</span>
               </div>
               <MijnHourBlocks :used="pkgUsage.used" :hours="pkgUsage.hours" :credit="pkgUsage.credit" :label="mijnOverview.packageNewUsed(hours(pkgUsage.used))" />
             </div>
@@ -211,7 +220,7 @@ onMounted(async () => {
           </template>
 
           <NuxtLink :to="pkg.enrollment ? '/mijn/pakketten/' : '/mijn/pakketten/kiezen/'" class="btn-primary mt-auto self-start">
-            {{ pkg.enrollment ? mijnOverview.packageNewOpen : mijnOverview.packageNewStart }}
+            {{ pkgPending ? mijnOverview.pendingCta : pkg.enrollment ? mijnOverview.packageNewOpen : mijnOverview.packageNewStart }}
           </NuxtLink>
         </section>
 
