@@ -67,6 +67,12 @@ const actionError = ref('')
 async function load() {
   try {
     state.value = (await api<{ data: State }>('subscription')).data
+
+    // Nothing here fits a customer who has moved over to the packages with periods.
+    const s = state.value
+    if (useMijnSession().user.value?.package_periods && !s.active && !s.pending && !s.future && !s.can_start) {
+      await navigateTo('/mijn/pakketten/', { replace: true })
+    }
   }
   catch (e) {
     error.value = mijnErrorMessage(e)
