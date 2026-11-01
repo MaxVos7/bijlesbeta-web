@@ -22,7 +22,6 @@ export const mijnNav = {
   lessons: 'Lessen',
   children: 'Leerlingen',
   package: 'Pakket',
-  packageNew: 'Pakket (nieuw)',
   invoices: 'Facturen',
   profile: 'Profiel',
   logout: 'Uitloggen',
@@ -79,7 +78,7 @@ export const mijnOverview = {
   packageStart: 'Pakket kiezen',
   packageManage: 'Pakket wijzigen',
   packageMonth: (month: string) => `Uren in ${month}`,
-  packageNewKicker: 'Pakket (nieuw)',
+  packageNewKicker: 'Pakket',
   packageNewSuggest: (name: string | null) => `${name ?? 'Je begeleider'} stelt een pakket voor`,
   packageNewOpen: 'Bekijk mijn pakket',
   packageNewStart: 'Kies een pakket',
@@ -290,11 +289,11 @@ export const mijnPassword = {
 }
 
 /**
- * Packages with periods (the new system, shown as "Pakket (nieuw)" next to the
+ * Packages with periods (the new system, shown as plain "Pakket" instead of the
  * old subscriptions). Worded as in the Pakketten design.
  */
 export const mijnPackages = {
-  title: 'Pakket (nieuw)',
+  title: 'Pakket',
   kicker: 'Mijn Bijles Bèta',
   loading: 'Pakket laden…',
   unavailable: 'Pakketten met vaste periodes zijn voor jou nog niet beschikbaar.',
