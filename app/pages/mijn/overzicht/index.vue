@@ -61,8 +61,14 @@ const pkgUsage = computed(() => pkg.value?.period?.usage ?? null)
 const pkgLeft = computed(() => (pkgUsage.value ? Math.max(0, pkgUsage.value.hours + pkgUsage.value.credit - pkgUsage.value.used) : 0))
 const pkgPending = computed(() => pkg.value?.enrollment?.status === 'pending' ? pkg.value.enrollment : null)
 
-// A customer on the new system has no use for the old card's "choose a package" prompt.
-const showSubscription = computed(() => !!subscription.value && !pkg.value?.enrollment)
+// A customer on the new system has no use for the old card's "choose a package"
+// prompt, nor for an empty old card next to the new one. Only a live old
+// subscription keeps it on screen.
+const hasLegacy = computed(() => !!(subscription.value?.active || subscription.value?.pending || subscription.value?.future))
+const showSubscription = computed(() =>
+  !!subscription.value
+  && (user.value?.package_periods ? hasLegacy.value : !pkg.value?.enrollment),
+)
 
 /** Hours as the dashboard gives them (decimal) in the site's "1 uur 30 min". */
 function hours(value: number) {
