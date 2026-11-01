@@ -8,7 +8,7 @@ import type { PackagePreview, PackageState } from '~/utils/mijn-types'
   portal confirms it straight away; its refusals (an old subscription still
   running, a week in the past) come back as one sentence and are shown as is.
 */
-definePageMeta({ layout: 'mijn', middleware: ['mijn', 'mijn-customer'] })
+definePageMeta({ layout: 'mijn', middleware: ['mijn', 'mijn-customer', 'mijn-packages'] })
 useHead({ title: copy.chooseTitle })
 
 const api = useMijnApi()

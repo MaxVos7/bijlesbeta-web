@@ -183,7 +183,7 @@ onMounted(async () => {
         </section>
 
         <!-- Package with periods ("Pakket (nieuw)") -->
-        <section v-if="pkg && (pkg.enrollment || pkg.can_start)" class="panel flex flex-col gap-3.5 p-6 sm:p-7">
+        <section v-if="user?.package_periods && pkg && (pkg.enrollment || pkg.can_start)" class="panel flex flex-col gap-3.5 p-6 sm:p-7">
           <div class="flex flex-wrap items-center justify-between gap-3">
             <p class="font-display text-[14px] font-bold uppercase leading-none tracking-[0.06em] text-brand-700">
               {{ pkg.enrollment ? `${pkg.enrollment.plan.name} · ${pkg.enrollment.plan.hours_per_period} uur` : mijnOverview.packageNewKicker }}

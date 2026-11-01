@@ -8,7 +8,7 @@ import type { PackagePeriod, PackagePreview, PackageState } from '~/utils/mijn-t
   been used of it, the payment, the next period, cancelling, and a suggestion
   from a tutor waiting to be confirmed. Every action reloads the state.
 */
-definePageMeta({ layout: 'mijn', middleware: ['mijn', 'mijn-customer'] })
+definePageMeta({ layout: 'mijn', middleware: ['mijn', 'mijn-customer', 'mijn-packages'] })
 useHead({ title: copy.title })
 
 const api = useMijnApi()

@@ -7,7 +7,7 @@ import type { PackagePeriod, PackageState } from '~/utils/mijn-types'
   out of the credit, and why an invoice is as high as it is. Settled periods
   show their figures; the others say when they will.
 */
-definePageMeta({ layout: 'mijn', middleware: ['mijn', 'mijn-customer'] })
+definePageMeta({ layout: 'mijn', middleware: ['mijn', 'mijn-customer', 'mijn-packages'] })
 useHead({ title: copy.periodsTitle })
 
 const api = useMijnApi()

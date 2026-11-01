@@ -21,7 +21,8 @@ const nav = computed(() => {
       { to: '/mijn/lessen/', label: mijnNav.lessons },
       { to: '/mijn/leerlingen/', label: mijnNav.children },
       { to: '/mijn/pakket/', label: mijnNav.package },
-      { to: '/mijn/pakketten/', label: mijnNav.packageNew },
+      // Customers on an old-style subscription never see the new system.
+      ...(user.value.package_periods ? [{ to: '/mijn/pakketten/', label: mijnNav.packageNew }] : []),
       { to: '/mijn/facturen/', label: mijnNav.invoices },
       { to: '/mijn/profiel/', label: mijnNav.profile },
     ]

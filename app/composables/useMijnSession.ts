@@ -17,6 +17,11 @@ export type MijnUser = {
   must_change_password: boolean
   /** False for an account the aanmelding made, until they choose one. */
   has_password: boolean
+  /**
+   * May this customer see the packages with periods: the feature is on and they
+   * have no old-style subscription in the way. Absent (an older portal) means no.
+   */
+  package_periods?: boolean
 }
 
 export function useMijnSession() {

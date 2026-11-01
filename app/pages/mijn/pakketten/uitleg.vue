@@ -7,7 +7,7 @@ import type { PackageState } from '~/utils/mijn-types'
   only live part is the line about the customer's own package, when there is
   one, which is read from the same call as the package page.
 */
-definePageMeta({ layout: 'mijn', middleware: ['mijn', 'mijn-customer'] })
+definePageMeta({ layout: 'mijn', middleware: ['mijn', 'mijn-customer', 'mijn-packages'] })
 
 const text = copy.explain
 useHead({ title: text.title })
