@@ -220,6 +220,8 @@ export const mijnChildren = {
   empty: 'Er staan nog geen leerlingen op je account.',
   tutors: 'Docent',
   noTutor: 'Nog geen docent gekoppeld',
+  tutorsTitle: 'Docent',
+  tutorsTitlePlural: 'Docenten',
   inactive: 'Gestopt',
   back: 'Alle leerlingen',
   lessonsTitle: 'Lessen',
