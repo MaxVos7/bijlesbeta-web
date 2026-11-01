@@ -13,7 +13,11 @@ const config = useRuntimeConfig()
 const { reopen } = useCookieConsent()
 
 // The live site's footer omits Zo werkt het — it's a header-only link there.
-const footerNav = nav.filter((item) => item.label !== 'Zo werkt het')
+const footerNav = [
+  ...nav.filter((item) => item.label !== 'Zo werkt het'),
+  // Not in the header nav, which is already full; the footer is where /pakketten is linked.
+  { label: 'Pakketten', to: '/pakketten' },
+]
 
 /**
  * The "Vakken" column on bijlesbeta.nl is its own hand-built menu rather than

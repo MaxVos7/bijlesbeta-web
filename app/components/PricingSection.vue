@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { looseLesson, pricingAssurances, pricingIntro, pricingPlans } from '~/data/site'
+import { looseLesson, packageExplainer, pricingAssurances, pricingIntro, pricingPlans } from '~/data/site'
 
 /**
  * The three packages with their heading, the Losse lessen line and the
@@ -139,13 +139,30 @@ const formatPrice = (value: number) =>
       </div>
     </div>
 
+    <!-- Pointer to /pakketten, so every page with the cards explains the rules. -->
+    <div class="mx-auto mt-[clamp(20px,2.5vw,24px)] max-w-[1026px]">
+      <div
+        class="flex flex-wrap items-center gap-x-4 gap-y-2 rounded-card bg-sand px-4 py-4 outline-2 outline-offset-4 outline-brand-500 outline-dashed md:px-6"
+      >
+        <p class="min-w-0 flex-1 text-[15px] leading-6 text-ink-800 max-md:basis-full">
+          <b class="font-display">{{ packageExplainer.title }}</b> {{ packageExplainer.body }}
+        </p>
+        <NuxtLink
+          :to="packageExplainer.link.to"
+          class="border-b-[1.5px] border-ink-900/25 py-2 font-display text-[15px] font-bold whitespace-nowrap text-ink-800"
+        >
+          {{ packageExplainer.link.label }} →
+        </NuxtLink>
+      </div>
+    </div>
+
     <!--
       The line that replaced Losse lessen's card: same border and radius as
       the packages above it, price and CTA on the right, no button — added
       here rather than as a fourth `pricingPlans` entry so it can't rejoin
       the grid by accident.
     -->
-    <div class="mx-auto mt-[clamp(28px,3.5vw,40px)] max-w-[1026px]">
+    <div class="mx-auto mt-[clamp(20px,2.5vw,24px)] max-w-[1026px]">
       <div
         class="flex flex-wrap items-center justify-between gap-5 rounded-card border border-line-ink bg-white px-6 py-5"
       >

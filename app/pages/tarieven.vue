@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { heroPromises, pricingNotes } from '~/data/site'
+import { heroPromises, packageExplainer, pricingNotes } from '~/data/site'
 
 useSeo({
   title: 'Tarieven',
@@ -77,9 +77,17 @@ useSeo({
         <div class="min-w-0">
           <h2 class="mb-[22px] text-[32px] leading-[44px] tracking-[-0.025em]">Zo werkt het</h2>
           <CheckList :items="pricingNotes" class="mb-[30px]" />
-          <NuxtLink to="/contact" class="btn-primary btn-lg">
-            Neem contact op <BtnArrow />
-          </NuxtLink>
+          <div class="flex flex-wrap items-center gap-x-5 gap-y-3">
+            <NuxtLink :to="packageExplainer.link.to" class="btn-primary btn-lg">
+              {{ packageExplainer.cta }} <BtnArrow />
+            </NuxtLink>
+            <NuxtLink
+              to="/contact"
+              class="border-b-[1.5px] border-ink-900/25 py-2 font-display text-[15px] font-bold text-ink-800"
+            >
+              Neem contact op
+            </NuxtLink>
+          </div>
         </div>
       </div>
     </section>

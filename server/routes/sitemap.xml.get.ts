@@ -21,6 +21,7 @@ const STATIC_PATHS = [
   '/het-bedrijf',
   '/zo-werkt-het',
   '/tarieven',
+  '/pakketten',
   '/aanmelden',
   '/contact',
   '/werken-bij',
