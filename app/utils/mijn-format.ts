@@ -49,12 +49,27 @@ export function longDate(date: string) {
   return new Date(y!, m! - 1, d!).toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' })
 }
 
+const MONTHS = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'augustus', 'september', 'oktober', 'november', 'december']
 const SHORT_MONTHS = ['jan', 'feb', 'mrt', 'apr', 'mei', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'dec']
 
 /** "7 sep" from the API's `Y-m-d`. */
 export function shortDate(date: string) {
   const [, m, d] = date.split('-').map(Number)
   return `${d} ${SHORT_MONTHS[m! - 1]}`
+}
+
+/**
+  The week that starts on a Monday, as a span so it does not read as a lesson day:
+  "9–15 nov", "30 nov–6 dec", or with `long` "9–15 november 2026".
+*/
+export function weekSpan(monday: string, long = false) {
+  const sunday = addDays(monday, 6)
+  const [y1, m1, d1] = monday.split('-').map(Number)
+  const [y2, m2, d2] = sunday.split('-').map(Number)
+  const month = (m: number) => long ? MONTHS[m - 1] : SHORT_MONTHS[m - 1]
+  const year = long ? ` ${y2}` : ''
+  if (m1 === m2) return `${d1}–${d2} ${month(m2!)}${year}`
+  return `${d1} ${month(m1!)}${y1 !== y2 && long ? ` ${y1}` : ''}–${d2} ${month(m2!)}${year}`
 }
 
 /** "7 sep t/m 4 okt"; the year only appears when the two dates differ in it. */

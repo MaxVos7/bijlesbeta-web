@@ -241,7 +241,7 @@ const planCard = (selected: boolean) => [
                 <span class="font-display text-[12px] font-bold tracking-[0.04em] text-ink-700">{{ copy.weekLabel(w.number) }}</span>
                 <span v-if="w.label" class="rounded-full bg-ink-900 px-2.5 py-0.5 font-display text-[12px] font-bold text-white">{{ w.label }}</span>
               </span>
-              <span class="mt-1 block font-display text-[17px] font-bold text-ink-900">{{ longDate(w.starts_on) }}</span>
+              <span class="mt-1 block font-display text-[17px] font-bold text-ink-900">{{ weekSpan(w.starts_on, true) }}</span>
               <span v-if="w.holiday" class="block text-[13px] text-ink-700">{{ w.holiday }}</span>
             </button>
           </li>

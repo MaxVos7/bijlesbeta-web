@@ -27,7 +27,7 @@ const hasHoliday = computed(() => props.weeks.some(w => w.holiday))
       >
         <span class="font-display text-[11px] font-bold uppercase leading-none tracking-[0.04em]">{{ copy.week(b.number) }}</span>
         <span class="mt-1.5 font-display text-[14px] font-bold leading-5">{{ b.holiday ? copy.holiday : copy.lesson(b.lesson!) }}</span>
-        <span class="text-[12px] leading-4">{{ shortDate(b.starts_on) }}</span>
+        <span class="text-[12px] leading-4">{{ weekSpan(b.starts_on) }}</span>
         <span v-if="b.holiday" class="truncate text-[11px] leading-4" :title="b.holiday">{{ b.holiday }}</span>
       </li>
     </ol>
