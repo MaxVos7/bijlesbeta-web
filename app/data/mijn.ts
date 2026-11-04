@@ -451,6 +451,7 @@ export const mijnPackages = {
   step1: '1. Kies je pakket',
   step2: '2. Kies je startweek',
   step3: '3. Controleer en bevestig',
+  moreWeeks: 'Meer weken tonen',
   weeksIntro: 'In vakantieweken zijn er geen lessen. Die kun je niet kiezen.',
   hoursUnit: 'uur per periode',
   aboutPerWeek: (hours: number) => `ongeveer ${hours} uur per week`,

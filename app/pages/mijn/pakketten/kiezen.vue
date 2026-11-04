@@ -46,11 +46,14 @@ onMounted(async () => {
 })
 
 /** This week and the two after it; a run of holidays stretches it to the first week that can be chosen. */
+const showAllWeeks = ref(false)
 const offeredWeeks = computed(() => {
   const all = state.value?.start_weeks ?? []
+  if (showAllWeeks.value) return all
   const firstOpen = all.findIndex(w => !w.holiday)
   return all.slice(0, Math.max(3, firstOpen + 1))
 })
+const hasMoreWeeks = computed(() => !showAllWeeks.value && offeredWeeks.value.length < (state.value?.start_weeks.length ?? 0))
 
 const selectedPlan = computed(() => state.value?.plans.find(p => p.id === planId.value) ?? null)
 
@@ -225,6 +228,7 @@ const planCard = (selected: boolean) => [
             </button>
           </li>
         </ul>
+        <button v-if="hasMoreWeeks" type="button" class="mt-3 font-display text-[14px] font-bold underline" @click="showAllWeeks = true">{{ copy.moreWeeks }}</button>
       </section>
 
       <!-- 3. Check and confirm -->
