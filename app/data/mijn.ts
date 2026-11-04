@@ -452,6 +452,13 @@ export const mijnPackages = {
   step2: '2. Kies je startweek',
   step3: '3. Controleer en bevestig',
   moreWeeks: 'Meer weken tonen',
+  periodWeeks: {
+    label: 'De weken van je eerste periode',
+    week: (n: number) => `Wk ${n}`,
+    lesson: (n: number) => `Les ${n}`,
+    holiday: 'Vrij',
+    holidayNote: 'In vakantieweken zijn er geen lessen. Die tellen niet mee: je periode loopt er een week langer door, en je betaalt alleen voor de lesweken.',
+  },
   weeksIntro: 'In vakantieweken zijn er geen lessen. Die kun je niet kiezen.',
   hoursUnit: 'uur per periode',
   aboutPerWeek: (hours: number) => `ongeveer ${hours} uur per week`,

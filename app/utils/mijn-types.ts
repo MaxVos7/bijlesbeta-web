@@ -132,6 +132,8 @@ export type PackageState = {
 
 export type PackagePreview = {
   plan: PackagePlan
+  /** Every week the first period runs through, holidays included. */
+  weeks?: { week: string, starts_on: string, holiday: string | null }[]
   starts_on: string
   ends_on: string
   lesson_weeks: number

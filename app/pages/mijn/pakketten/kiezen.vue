@@ -241,6 +241,7 @@ const planCard = (selected: boolean) => [
             <template v-if="preview">
               <h3 class="mt-2 text-[24px] leading-9">{{ periodRange(preview.starts_on, preview.ends_on) }}</h3>
               <p class="text-ink-700">{{ copy.lessonWeeks(preview.lesson_weeks) }}</p>
+              <MijnPeriodWeeks v-if="preview.weeks?.length" :weeks="preview.weeks" class="mt-4" />
               <p v-if="preview.starts_later_than_asked" class="mt-4 rounded-card bg-brand-500/15 p-4 text-[14px] ring-1 ring-brand-500/50" role="note">{{ copy.laterStart(longDate(preview.starts_on)) }}</p>
               <p v-if="weekBegun" class="mt-4 rounded-card bg-brand-500/15 p-4 text-[14px] ring-1 ring-brand-500/50" role="note">{{ copy.weekBegun(longDate(weekBegun)) }}</p>
               <p v-if="preview.is_truncated" class="mt-4 rounded-card bg-brand-500/15 p-4 text-[14px] ring-1 ring-brand-500/50" role="note">{{ copy.shortPeriod(preview.lesson_weeks) }}</p>
