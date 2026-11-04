@@ -32,9 +32,15 @@ export function hoursAndMinutes(minutes: number) {
   return parts.length ? parts.join(' ') : '0 uur'
 }
 
-/** "€ 140,00" from the API's cents. */
+/** "€ 140" from the API's cents; "€ 12,50" when there are cents to show. */
 export function euros(cents: number) {
-  return (cents / 100).toLocaleString('nl-NL', { style: 'currency', currency: 'EUR' })
+  const whole = cents % 100 === 0
+  return (cents / 100).toLocaleString('nl-NL', {
+    style: 'currency',
+    currency: 'EUR',
+    minimumFractionDigits: whole ? 0 : 2,
+    maximumFractionDigits: 2,
+  })
 }
 
 /** "14 oktober 2026" from the API's `Y-m-d`. */
