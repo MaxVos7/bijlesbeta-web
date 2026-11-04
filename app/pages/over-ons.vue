@@ -36,7 +36,7 @@ const storyQuote = computed(() => {
     <!-- No ground of its own — the page's parchment runs up behind the
          header strip, as on the live page. -->
     <section
-      class="px-[clamp(16px,4vw,24px)] pt-[clamp(28px,4vw,48px)] pb-[clamp(48px,7vw,84px)]"
+      class="px-[clamp(16px,4vw,40px)] pt-[clamp(28px,4vw,48px)] pb-[clamp(48px,7vw,84px)]"
     >
       <div
         class="mx-auto grid max-w-[1100px] items-center gap-[clamp(32px,5vw,60px)] [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))]"
@@ -74,7 +74,7 @@ const storyQuote = computed(() => {
 
     <section
       id="team"
-      class="bg-white px-[clamp(16px,4vw,24px)] pt-[clamp(48px,6vw,80px)] pb-[clamp(30px,4vw,50px)]"
+      class="bg-white px-[clamp(16px,4vw,40px)] pt-[clamp(48px,6vw,80px)] pb-[clamp(30px,4vw,50px)]"
     >
       <div
         class="mx-auto grid max-w-[1400px] grid-cols-1 gap-6 md:grid-cols-2 desk:grid-cols-4"
@@ -117,7 +117,7 @@ const storyQuote = computed(() => {
       </div>
     </section>
 
-    <section class="bg-white px-[clamp(16px,4vw,24px)] pb-[clamp(24px,3vw,40px)]">
+    <section class="bg-white px-[clamp(16px,4vw,40px)] pb-[clamp(24px,3vw,40px)]">
       <div class="relative mx-auto max-w-[1400px] overflow-hidden rounded-tile">
         <!-- The 16/5 band cuts a strip out of a 4:3 photograph, so the crop is
              pulled up to where the team stands rather than centred on the
@@ -136,7 +136,7 @@ const storyQuote = computed(() => {
       </div>
     </section>
 
-    <section class="bg-white px-[clamp(16px,4vw,24px)] pt-[clamp(24px,3vw,40px)] pb-[clamp(56px,7vw,90px)]">
+    <section class="bg-white px-[clamp(16px,4vw,40px)] pt-[clamp(24px,3vw,40px)] pb-[clamp(56px,7vw,90px)]">
       <div
         class="mx-auto grid max-w-[1400px] grid-cols-1 gap-6 md:grid-cols-2 desk:grid-cols-4"
       >
@@ -149,7 +149,7 @@ const storyQuote = computed(() => {
     <section
       v-for="(block, index) in overOnsBlocks"
       :key="block.title"
-      class="bg-white px-[clamp(16px,4vw,24px)] pb-[clamp(40px,5vw,70px)]"
+      class="bg-white px-[clamp(16px,4vw,40px)] pb-[clamp(40px,5vw,70px)]"
     >
       <div
         class="mx-auto grid max-w-[1400px] items-center gap-[clamp(30px,4.5vw,56px)] [grid-template-columns:repeat(auto-fit,minmax(300px,1fr))]"

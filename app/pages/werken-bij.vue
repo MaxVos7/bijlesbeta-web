@@ -14,15 +14,15 @@ useSeo({
 <template>
   <div>
     <!--
-      Hero. Measured off post-45.css rather than designed: a 1200px band on the
+      Hero. Measured off post-45.css rather than designed: a 1100px band on the
       deep ink, split 50/50 with a 100px gutter, the text column padded 72px
       over 92px. The live band also carries 192px of top padding because its
       header floats over it; ours sits in flow, so that padding lives in the
       header strip instead.
     -->
-    <section id="top" class="bg-ink-900 px-5 md:px-10">
+    <section id="top" class="bg-ink-900 px-[clamp(16px,4vw,40px)]">
       <div
-        class="mx-auto grid max-w-[1200px] gap-5 pb-20 md:grid-cols-2 md:gap-[100px] md:pb-0"
+        class="mx-auto grid max-w-[1100px] gap-5 pb-20 md:grid-cols-2 md:gap-[100px] md:pb-0"
       >
         <div class="flex min-w-0 flex-col justify-center pt-[72px] md:pb-[92px]">
           <RatingLine tone="inverse" />
@@ -60,7 +60,7 @@ useSeo({
           <img
             :src="werkenBij.hero.image"
             :alt="werkenBij.hero.imageAlt"
-            class="block h-[350px] w-full object-cover object-center md:h-[450px]"
+            class="mx-auto block h-auto w-full max-w-[474px] md:max-h-[510px]"
             width="474"
             height="510"
           >
@@ -161,7 +161,7 @@ useSeo({
       class="scroll-mt-24 bg-parchment px-5 py-20 md:px-10"
     >
       <div
-        class="mx-auto grid max-w-[1200px] gap-10 md:grid-cols-[34fr_66fr] md:gap-[63px]"
+        class="mx-auto grid max-w-[1100px] gap-10 md:grid-cols-[34fr_66fr] md:gap-[63px]"
       >
         <div class="flex min-w-0 flex-col justify-center py-9">
           <p class="kicker text-[19px]">{{ werkenBij.apply.kicker }}</p>
