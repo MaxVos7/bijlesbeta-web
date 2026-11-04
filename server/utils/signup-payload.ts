@@ -38,6 +38,7 @@ export type SignupAnswers = {
   addressNote: string
   contactPhone: string
   heardAbout: string
+  heardAboutOther: string
 }
 
 export const LOCATIONS: Record<string, string> = {
@@ -124,7 +125,7 @@ export function signupPayload(v: SignupAnswers) {
     account_postcode: v.postalCode,
     account_housenumber: v.houseNumber,
     account_address_comment: v.addressNote,
-    account_known_via: v.heardAbout,
+    account_known_via: knownVia(v),
   })
 }
 
@@ -164,7 +165,7 @@ const PAYLOAD_SOURCES: Record<string, (keyof SignupAnswers)[]> = {
   account_postcode: ['postalCode'],
   account_housenumber: ['houseNumber'],
   account_address_comment: ['addressNote'],
-  account_known_via: ['heardAbout'],
+  account_known_via: ['heardAbout', 'heardAboutOther'],
 }
 
 /**
@@ -190,4 +191,11 @@ export function draftPayload(answers: Partial<SignupAnswers>) {
       PAYLOAD_SOURCES[key]?.some(source => given.has(source)),
     ),
   )
+}
+
+/** "Anders" travels with the visitor's own wording, so the portal stores what was said. */
+function knownVia(v: Pick<SignupAnswers, 'heardAbout' | 'heardAboutOther'>): string {
+  return v.heardAbout === 'Anders' && v.heardAboutOther
+    ? `Anders: ${v.heardAboutOther}`
+    : v.heardAbout
 }

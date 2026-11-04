@@ -39,6 +39,7 @@ export type SignupValues = {
   addressNote: string // 22
   contactPhone: string // 23
   heardAbout: string // 24
+  heardAboutOther: string // the wording behind "Anders"
   consent: boolean // 6
   website: string // honeypot, not a Gravity Forms field
 }
@@ -73,6 +74,7 @@ export function emptySignupValues(): SignupValues {
     addressNote: '',
     contactPhone: '',
     heardAbout: '',
+    heardAboutOther: '',
     consent: false,
     website: '',
   }
@@ -184,6 +186,11 @@ const SUBJECTS_LOWER = ['Wiskunde', 'Natuurkunde', 'Scheikunde', 'NaSk']
     wiskundes — kept in its order so the form reads the same. */
 const SUBJECTS_UPPER = ['Wiskunde A', 'Natuurkunde', 'Wiskunde B', 'Scheikunde']
 
+/** Basisschool (level 4) has groep 1–8; every other level 1–6. */
+export function maxSchoolYear(v: Pick<SignupValues, 'level'>): number {
+  return v.level === '4' ? 8 : 6
+}
+
 /** Which set of Bijlesvakken applies, or none if level/year don't say yet. */
 function subjectOptions(v: SignupValues): string[] | null {
   const year = Number.parseInt(v.schoolYear, 10)
@@ -205,6 +212,7 @@ export const HEARD_ABOUT_OPTIONS: Option[] = [
   'LinkedIn',
   'Mond tot mond',
   'Be Quick sponsor',
+  'Anders',
 ].map((label) => ({ label, value: label }))
 
 /**
@@ -224,7 +232,6 @@ export const LEVEL_OPTIONS: Option[] = [
   { label: 'havo', value: '2' },
   { label: 'vwo', value: '3' },
   { label: 'basisschool', value: '4' },
-  { label: 'hbo', value: '5' },
   { label: 'Anders', value: 'different' },
 ]
 
@@ -448,12 +455,11 @@ export const signupSteps: SignupStep[] = [
         name: 'schoolYear',
         label: 'Schooljaar',
         /*
-          The live Gravity Form allows 8, but the portal validates
-          `student_year` as `max:6` and rejects the whole submission above
-          that — so on bijlesbeta.nl a 7 or 8 silently fails. Capped here so
-          the visitor is told before submitting rather than after.
+          Basisschool runs to groep 8, every other level to 6. The portal's
+          `student_year` allows 1–8 and the shared rule is that outer bound;
+          the 6 for the other levels is held here and in `SignupForm`.
         */
-        hint: 'Voer een getal tussen 1 en 6 in.',
+        hint: `Voer een getal tussen 1 en ${maxSchoolYear(v)} in.`,
         required: true,
         placeholder: 'Schooljaar',
         inputType: 'number',
@@ -465,7 +471,7 @@ export const signupSteps: SignupStep[] = [
           change it there as well if it ever moves.
         */
         min: 1,
-        max: 6,
+        max: maxSchoolYear(v),
       })
 
       const subjects = subjectOptions(v)
@@ -616,6 +622,16 @@ export const signupSteps: SignupStep[] = [
           options: HEARD_ABOUT_OPTIONS,
         },
       )
+
+      if (v.heardAbout === 'Anders') {
+        fields.push({
+          kind: 'text',
+          name: 'heardAboutOther',
+          label: 'Waar ken je ons van?',
+          required: true,
+          placeholder: 'Vul in waar je ons van kent',
+        })
+      }
 
       return fields
     },

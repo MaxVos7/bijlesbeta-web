@@ -13,6 +13,7 @@ import {
   type SignupField,
   type SignupTextKey,
   type SignupValues,
+  maxSchoolYear,
 } from '~/data/signup'
 
 const totalSteps = signupSteps.length
@@ -122,7 +123,16 @@ function payload(): Record<string, unknown> {
  * accept an answer the endpoint won't. Fields the visitor hasn't reached yet
  * are in here too; only the ones on the current step are ever shown.
  */
-const problems = computed(() => checkForm(SIGNUP_RULES, payload()))
+const problems = computed(() => {
+  const found = checkForm(SIGNUP_RULES, payload())
+  // The shared rule allows groep 8; only basisschool may go past 6.
+  const limit = maxSchoolYear(values)
+  const year = Number(values.schoolYear)
+  if (!found.schoolYear && values.schoolYear.trim() !== '' && year > limit) {
+    found.schoolYear = { kind: 'numberMax', limit }
+  }
+  return found
+})
 const subjectsProblem = computed(() => checkList(SIGNUP_SUBJECTS_RULE, values.subjects))
 
 /** The wizard's own wording for a problem, where it has one. */

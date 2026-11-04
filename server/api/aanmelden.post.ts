@@ -157,5 +157,6 @@ function signupRows(v: Answers): Row[] {
     ['Postcode en plaats', [v.postalCode, v.city].filter(Boolean).join(' ')],
     ['Toelichting adres', v.addressNote],
     ['Ken ons van', v.heardAbout],
+    ['Ken ons van (anders)', v.heardAboutOther],
   ]
 }

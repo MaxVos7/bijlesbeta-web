@@ -217,10 +217,11 @@ export const SIGNUP_RULES = {
 
   /*
     Step 3 — Leerling en vak. The portal validates `student_year` as
-    `integer|min:1|max:6` and refuses the *whole* submission outside it, so
+    `integer|min:1|max:8` (8 for basisschool; the wizard holds every other
+    level to 6 itself) and refuses the *whole* submission outside it, so
     "abc", "3.5", "0" and "-5" have to fail here rather than there.
   */
-  schoolYear: { required: true, maxLength: 20, format: 'integer', min: 1, max: 6 },
+  schoolYear: { required: true, maxLength: 20, format: 'integer', min: 1, max: 8 },
   level: { required: true, maxLength: 40 },
   levelOther: { maxLength: 120 },
   subjectOther: { maxLength: 200 },
@@ -245,6 +246,7 @@ export const SIGNUP_RULES = {
   addressNote: { maxLength: 255 },
   contactPhone: { maxLength: 40, format: 'phone' },
   heardAbout: { required: true, maxLength: 200 },
+  heardAboutOther: { maxLength: 150 },
 
   // Honeypot — never filled by a human, so it carries no rules of its own.
   website: { maxLength: 200 },
