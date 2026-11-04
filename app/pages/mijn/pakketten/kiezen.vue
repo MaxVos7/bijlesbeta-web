@@ -206,7 +206,10 @@ const planCard = (selected: boolean) => [
       <!-- 2. Week -->
       <section class="mt-11" aria-labelledby="step-2">
         <h2 id="step-2" class="text-[22px] leading-[44px]">{{ copy.step2 }}</h2>
-        <p class="text-ink-700">{{ copy.weeksIntro }}</p>
+        <p class="text-ink-700">
+          {{ copy.weeksIntro }}
+          <NuxtLink to="/contact/" class="underline">{{ copy.weeksContact }}</NuxtLink>.
+        </p>
         <ul class="mt-3 grid gap-3 sm:grid-cols-3">
           <li v-for="w in weeks" :key="w.week">
             <button
