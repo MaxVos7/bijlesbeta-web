@@ -760,11 +760,11 @@ async function submit() {
             </span>
             <span class="ml-3 font-display text-[14px] leading-5 text-field-label">
               {{ signupCopy.consentPrefix }}
-              <NuxtLink to="/algemene-voorwaarden" class="border-b border-ink-900">
+              <NuxtLink to="/algemene-voorwaarden" target="_blank" rel="noopener" class="border-b border-ink-900">
                 {{ signupCopy.consentTerms }}
               </NuxtLink>
               {{ signupCopy.consentAnd }}
-              <NuxtLink to="/privacy" class="border-b border-ink-900">
+              <NuxtLink to="/privacy" target="_blank" rel="noopener" class="border-b border-ink-900">
                 {{ signupCopy.consentPrivacy }}
               </NuxtLink>.<span class="field-required">{{ signupCopy.requiredMark }}</span>
             </span>
