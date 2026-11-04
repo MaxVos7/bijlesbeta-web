@@ -89,6 +89,21 @@ const weeks = computed(() => offeredWeeks.value.map((w, i) => ({
   label: i === 0 ? copy.thisWeek : '',
 })))
 
+/** The portal lists them; until it does, they are counted off the dates, with holidays from the weeks we know. */
+const periodWeeks = computed(() => {
+  const pv = preview.value
+  if (!pv) return []
+  if (pv.weeks?.length) return pv.weeks
+
+  const holidays = new Map((state.value?.start_weeks ?? []).map(w => [w.week, w.holiday]))
+  const weeks: { week: string, starts_on: string, holiday: string | null }[] = []
+  for (let day = pv.starts_on; day <= pv.ends_on; day = addDays(day, 7)) {
+    const week = isoWeekKey(day)
+    weeks.push({ week, starts_on: day, holiday: holidays.get(week) ?? null })
+  }
+  return weeks
+})
+
 const summaryRows = computed(() => {
   const pv = preview.value
   const plan = selectedPlan.value
@@ -234,6 +249,14 @@ const planCard = (selected: boolean) => [
         <button v-if="hasMoreWeeks" type="button" class="mt-3 font-display text-[14px] font-bold underline" @click="showAllWeeks = true">{{ copy.moreWeeks }}</button>
       </section>
 
+      <!-- The weeks the chosen package runs through -->
+      <section v-if="preview && periodWeeks.length" class="panel mt-8 p-6 sm:p-7" aria-labelledby="period-weeks">
+        <p class="font-display text-[14px] font-bold uppercase leading-none tracking-[0.06em] text-ink-700">{{ copy.periodWeeks.title }}</p>
+        <h3 id="period-weeks" class="mt-2 text-[22px] leading-9">{{ periodRange(preview.starts_on, preview.ends_on) }}</h3>
+        <MijnPeriodWeeks :weeks="periodWeeks" class="mt-4" />
+        <p class="mt-3 text-[14px] text-ink-700">{{ copy.periodWeeks.then(longDate(preview.next_starts_on)) }}</p>
+      </section>
+
       <!-- 3. Check and confirm -->
       <section class="mt-11" aria-labelledby="step-3">
         <h2 id="step-3" class="text-[22px] leading-[44px]">{{ copy.step3 }}</h2>
@@ -244,7 +267,6 @@ const planCard = (selected: boolean) => [
             <template v-if="preview">
               <h3 class="mt-2 text-[24px] leading-9">{{ periodRange(preview.starts_on, preview.ends_on) }}</h3>
               <p class="text-ink-700">{{ copy.lessonWeeks(preview.lesson_weeks) }}</p>
-              <MijnPeriodWeeks v-if="preview.weeks?.length" :weeks="preview.weeks" class="mt-4" />
               <p v-if="preview.starts_later_than_asked" class="mt-4 rounded-card bg-brand-500/15 p-4 text-[14px] ring-1 ring-brand-500/50" role="note">{{ copy.laterStart(longDate(preview.starts_on)) }}</p>
               <p v-if="weekBegun" class="mt-4 rounded-card bg-brand-500/15 p-4 text-[14px] ring-1 ring-brand-500/50" role="note">{{ copy.weekBegun(longDate(weekBegun)) }}</p>
               <p v-if="preview.is_truncated" class="mt-4 rounded-card bg-brand-500/15 p-4 text-[14px] ring-1 ring-brand-500/50" role="note">{{ copy.shortPeriod(preview.lesson_weeks) }}</p>

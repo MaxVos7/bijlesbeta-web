@@ -73,6 +73,17 @@ export function weekNumber(week: string) {
   return Number(week.split('-W')[1])
 }
 
+/** The ISO week of a `Y-m-d`, as "2026-W37". */
+export function isoWeekKey(date: string) {
+  const [y, m, d] = date.split('-').map(Number)
+  const day = new Date(Date.UTC(y!, m! - 1, d!))
+  // The Thursday of this week decides which year the week belongs to.
+  day.setUTCDate(day.getUTCDate() + 4 - (day.getUTCDay() || 7))
+  const jan1 = Date.UTC(day.getUTCFullYear(), 0, 1)
+  const week = Math.ceil(((day.getTime() - jan1) / 86400000 + 1) / 7)
+  return `${day.getUTCFullYear()}-W${String(week).padStart(2, '0')}`
+}
+
 /** `Y-m-d` plus a number of days, computed in UTC so a daylight-saving switch can't move it. */
 export function addDays(date: string, days: number) {
   const [y, m, d] = date.split('-').map(Number)
