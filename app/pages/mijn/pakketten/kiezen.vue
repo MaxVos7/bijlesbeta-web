@@ -33,7 +33,7 @@ onMounted(async () => {
     state.value = (await api<{ data: PackageState }>('package')).data
     planId.value = state.value.plans[0]?.id ?? null
     // Next Monday, not "this week": a period that began days ago is still paid in full.
-    const upcoming = state.value.start_weeks.filter(w => !w.holiday)
+    const upcoming = offeredWeeks.value.filter(w => !w.holiday)
     week.value = (upcoming.find(w => w.starts_on > today()) ?? upcoming[0])?.week ?? null
   }
   catch (e: any) {
@@ -43,6 +43,13 @@ onMounted(async () => {
   finally {
     loading.value = false
   }
+})
+
+/** This week and the two after it; a run of holidays stretches it to the first week that can be chosen. */
+const offeredWeeks = computed(() => {
+  const all = state.value?.start_weeks ?? []
+  const firstOpen = all.findIndex(w => !w.holiday)
+  return all.slice(0, Math.max(3, firstOpen + 1))
 })
 
 const selectedPlan = computed(() => state.value?.plans.find(p => p.id === planId.value) ?? null)
@@ -68,11 +75,11 @@ watch([planId, week], async () => {
 
 /** The chosen week began already: the customer pays a whole period that started days ago. */
 const weekBegun = computed(() => {
-  const chosen = state.value?.start_weeks.find(w => w.week === week.value)
+  const chosen = offeredWeeks.value.find(w => w.week === week.value)
   return chosen && chosen.starts_on <= today() ? chosen.starts_on : null
 })
 
-const weeks = computed(() => (state.value?.start_weeks ?? []).map((w, i) => ({
+const weeks = computed(() => offeredWeeks.value.map((w, i) => ({
   ...w,
   number: weekNumber(w.week),
   disabled: !!w.holiday,
@@ -197,7 +204,7 @@ const planCard = (selected: boolean) => [
       <section class="mt-11" aria-labelledby="step-2">
         <h2 id="step-2" class="text-[22px] leading-[44px]">{{ copy.step2 }}</h2>
         <p class="text-ink-700">{{ copy.weeksIntro }}</p>
-        <ul class="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <ul class="mt-3 grid gap-3 sm:grid-cols-3">
           <li v-for="w in weeks" :key="w.week">
             <button
               type="button"
