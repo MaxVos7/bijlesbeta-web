@@ -428,6 +428,22 @@ export const mijnPackages = {
   rejected: 'Voorstel afgewezen. Er verandert niets.',
   invoiceByMail: 'Je factuur komt per e-mail zodra de periode begint.',
 
+  // Before the trial lesson: no package yet
+  trial: {
+    kicker: 'Eerst een proefles',
+    title: 'Eerst kennismaken, dan een pakket',
+    body: 'Een pakket kies je nadat je proefles heeft plaatsgevonden. Zo ontdek je eerst of de bijles en de docent bij je passen, zonder dat je ergens aan vastzit.',
+    steps: [
+      { title: 'Proefles', body: 'Je maakt kennis met je docent en vertelt waar je hulp bij nodig hebt.' },
+      { title: 'Samen een plan', body: 'Jullie bespreken hoeveel uur bijles er nodig is om je doel te halen.' },
+      { title: 'Pakket kiezen', body: 'Daarna kies je hier het pakket dat daarbij past. Dit scherm opent vanzelf.' },
+    ],
+    contactBefore: 'Nog geen proefles gepland?',
+    contactLink: 'Neem contact met ons op',
+    short: 'Een pakket kies je na je proefles. Zo kun je eerst rustig kennismaken.',
+    shortLink: 'Hoe het werkt',
+  },
+
   // Choosing
   chooseKicker: 'Pakket kiezen',
   chooseTitle: 'Kies je pakket en wanneer je start',

@@ -271,6 +271,7 @@ const nextPay = computed(() => (next.value ? paymentOf(next.value) : null))
           {{ copy.legacyNotice }}
           <NuxtLink to="/mijn/pakket/" class="font-semibold underline">{{ copy.legacyLink }}</NuxtLink>
         </p>
+        <div v-else-if="state.needs_trial_lesson" class="mt-6"><MijnTrialNotice /></div>
         <p v-else-if="!state.plans.length" class="panel mt-6 p-6 text-[15px] text-ink-800">{{ copy.noPlans }}</p>
         <section v-else class="mt-6 flex flex-wrap items-center gap-8 rounded-block bg-accent-500 p-8">
           <div class="min-w-[260px] flex-1">

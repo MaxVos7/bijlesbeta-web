@@ -225,8 +225,10 @@ onMounted(async () => {
             <h2 class="font-display text-[20px] font-bold leading-[30px] text-ink-900">{{ mijnOverview.packageNewNone }}</h2>
           </template>
 
-          <NuxtLink :to="pkg.enrollment ? '/mijn/pakketten/' : '/mijn/pakketten/kiezen/'" class="btn-primary mt-auto self-start">
-            {{ pkgPending ? mijnOverview.pendingCta : pkg.enrollment ? mijnOverview.packageNewOpen : mijnOverview.packageNewStart }}
+          <p v-if="!pkg.enrollment && pkg.needs_trial_lesson" class="text-[14px] text-ink-800">{{ mijnPackages.trial.short }}</p>
+
+          <NuxtLink :to="pkg.enrollment ? '/mijn/pakketten/' : '/mijn/pakketten/kiezen/'" :class="!pkg.enrollment && pkg.needs_trial_lesson ? 'btn-secondary' : 'btn-primary'" class="mt-auto self-start">
+            {{ pkgPending ? mijnOverview.pendingCta : pkg.enrollment ? mijnOverview.packageNewOpen : pkg.needs_trial_lesson ? mijnPackages.trial.shortLink : mijnOverview.packageNewStart }}
           </NuxtLink>
         </section>
 

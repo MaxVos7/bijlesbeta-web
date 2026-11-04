@@ -124,6 +124,8 @@ export type PackageState = {
   }
   plans: PackagePlan[]
   can_start: boolean
+  /** No trial lesson has taken place yet: a package cannot be chosen. */
+  needs_trial_lesson: boolean
   start_weeks: { week: string, starts_on: string, holiday: string | null, is_summer: boolean }[]
   terms_and_conditions_link: string | null
 }
@@ -146,4 +148,5 @@ export type PackageDashboard = {
   /** The running period, or else the next one. */
   period: PackagePeriod | null
   can_start: boolean
+  needs_trial_lesson: boolean
 }

@@ -149,6 +149,13 @@ const planCard = (selected: boolean) => [
       </p>
     </template>
 
+    <!-- No trial lesson yet: nothing to choose from -->
+    <template v-else-if="state?.needs_trial_lesson && !state.enrollment">
+      <p class="kicker">{{ copy.chooseKicker }}</p>
+      <h1 class="mt-3 text-[32px] leading-[44px]">{{ copy.chooseTitle }}</h1>
+      <div class="mt-6"><MijnTrialNotice /></div>
+    </template>
+
     <template v-else-if="state">
       <p class="kicker">{{ copy.chooseKicker }}</p>
       <h1 class="mt-3 text-[32px] leading-[44px]">{{ copy.chooseTitle }}</h1>
