@@ -279,6 +279,13 @@ export const APPLICATION_RULES = {
   postalCode: { required: true, maxLength: 10 },
   houseNumber: { required: true, maxLength: 10 },
   heardFrom: { maxLength: 255 },
+  /*
+    The kennismaking time, as the id of a session in the portal — see
+    `shared/utils/intake.ts`. Optional: the question is only asked while the
+    portal has times on offer, and an applicant may skip it. The portal takes
+    `nullable|integer` and never refuses an application over it.
+  */
+  intakeEventId: { maxLength: 10, format: 'integer', min: 1, max: 2147483647 },
   website: { maxLength: 200 },
 } as const satisfies Record<string, FieldRule>
 

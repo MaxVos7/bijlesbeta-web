@@ -668,22 +668,22 @@ export const pricingAssurances = [
  */
 export const werkenBij = {
   hero: {
-    title: 'Werken bij',
+    title: 'Docent worden',
     intro:
-      'Heb jij passie voor de bèta vakken en vind je het leuk om dit te delen met middelbare scholieren? Solliciteer dan direct!',
+      'Heb jij passie voor de bèta vakken en vind je het leuk om dit te delen met middelbare scholieren? Meld je dan aan als docent!',
     promises: [
       'Hecht team van Bèta docenten',
-      'Goede begeleiding door ervaren docenten',
+      'Ervaren docenten denken met je mee',
       'Wij waarderen een goede uitleg',
     ],
-    cta: 'Direct solliciteren',
+    cta: 'Aanmelden als docent',
     reassurance: 'We nemen zo snel mogelijk contact op.',
     image: '/img/werken-bij-hero.webp',
     imageAlt: 'Docent legt natuurkunde uit aan een leerling voor het schoolbord',
   },
   perksIntro: {
     kicker: 'Plezier, Passie en Kwaliteit',
-    title: 'Voor bijles bèta werken',
+    title: 'Bijles geven via Bijles Bèta',
   },
   /*
     `icon` names a drawing in `public/img/feature-<icon>.svg`, the same set the
@@ -695,13 +695,13 @@ export const werkenBij = {
   perks: [
     {
       icon: 'coins',
-      title: 'Compensatie',
-      body: 'Wij bieden jou een goede compensatie van €16/uur.',
+      title: 'Vergoeding',
+      body: 'Je ontvangt een goede vergoeding voor elke bijles die je geeft.',
     },
     {
       icon: 'team',
-      title: 'Geen tussenpersoon',
-      body: 'Wij ondersteunen waar nodig, maar zitten je niet in de weg.',
+      title: 'Zelfstandig',
+      body: 'Je geeft les als zelfstandige docent. Wij ondersteunen waar nodig, maar zitten je niet in de weg.',
     },
     {
       icon: 'clock',
@@ -742,11 +742,32 @@ export const werkenBij = {
     },
   ],
   apply: {
-    kicker: 'Solliciteren',
+    kicker: 'Aanmelden',
     title: 'Vul je gegevens in',
-    body: 'We leren je graag kennen! Vul je gegevens in en we nemen contact op voor het inplannen van een sollicitatiegesprek.',
+    body: 'We leren je graag kennen! Vul je gegevens in en we nemen contact op voor het inplannen van een kennismakingsgesprek.',
     formKicker: 'Wij zoeken docenten',
-    formTitle: 'Solliciteren',
+    formTitle: 'Aanmelden als docent',
+    /*
+      The kennismaking question in the form. Only asked while the portal has
+      times on offer — see `shared/utils/intake.ts` — so none of this names a
+      date: the days and hours are the portal's.
+    */
+    intake: {
+      label: 'Kennismaking',
+      intro: 'Kies een moment om kennis met ons te maken. Een kennismaking duurt ongeveer een uur.',
+      full: 'Bezet',
+      none: 'Geen van deze momenten past',
+      noneHint: 'Dan nemen we contact op om samen een ander moment te kiezen.',
+      allFull: 'Alle momenten zijn op dit moment bezet. We nemen contact op om een ander moment te kiezen.',
+    },
+    success: {
+      title: 'Bedankt voor je aanmelding',
+      body: 'We hebben je gegevens ontvangen en nemen contact op voor het inplannen van een kennismakingsgesprek.',
+      /** Followed by the time, e.g. "woensdag 16 december, 13:00 – 14:00". */
+      booked: 'We hebben je gegevens ontvangen. Je kennismaking staat gepland op',
+      bookedLocation: 'Locatie:',
+      notBooked: 'We hebben je gegevens ontvangen. Het moment dat je koos konden we helaas niet meer voor je vastleggen; we nemen contact op om een ander moment te kiezen.',
+    },
   },
   /** Checkbox options in the application form, in the order the live form lists them. */
   subjectOptions: [

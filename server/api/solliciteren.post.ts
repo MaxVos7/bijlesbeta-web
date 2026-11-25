@@ -1,5 +1,7 @@
 import { z } from 'zod'
+import type { H3Event } from 'h3'
 import type { Row } from '../utils/office-copy'
+import type { PortalResult } from '../utils/portal'
 
 /**
  * Docent applications, posted to the portal's `register-external-applicant` —
@@ -85,7 +87,7 @@ export default defineEventHandler(async (event) => {
     return { ok: true as const }
   }
 
-  if (!cv) invalid('Voeg je CV toe om te solliciteren.')
+  if (!cv) invalid('Voeg je CV toe om je aan te melden.')
   if (cv.data.length > MAX_CV_BYTES) invalid('Je CV is te groot. Gebruik een bestand van maximaal 10 MB.')
   if (!ALLOWED_CV_TYPES.includes(cv.type)) invalid('Gebruik een pdf- of Word-bestand voor je CV.')
 
@@ -115,9 +117,22 @@ export default defineEventHandler(async (event) => {
           postcode: v.postalCode,
           housenumber: v.houseNumber,
           known_via: v.heardFrom,
+          // Blank when no time was picked; the portal reads that as none.
+          intake_event_id: v.intakeEventId,
         }),
       )
     : upload
+
+  /*
+    The kennismaking time, when one was picked. The portal books it in the same
+    call that creates the applicant and says whether it did: a time somebody
+    else took a moment earlier is not a reason to refuse an application, so it
+    comes back as `booked: false` on a 201. Three outcomes, then — booked, not
+    booked, and a hand-off that failed so nothing was — and only the first is
+    an appointment. The office reads which one it was, because in the other two
+    somebody is waiting for a call.
+  */
+  const intake = v.intakeEventId ? await intakeOutcome(event, v.intakeEventId, handoff) : null
 
   const { applicationsEmail } = useRuntimeConfig(event)
 
@@ -135,6 +150,7 @@ export default defineEventHandler(async (event) => {
       ['Studie', v.study],
       ['Motivatie', v.motivation],
       ['Ken ons van', v.heardFrom],
+      ['Kennismaking', intake ? intake.forOffice : 'geen tijd gekozen'],
       ['CV', cv.filename],
     ] satisfies Row[],
     /*
@@ -146,7 +162,45 @@ export default defineEventHandler(async (event) => {
     attachments: [{ filename: cv.filename, content: cv.data, contentType: cv.type }],
   })
 
-  return deliveryResult(handoff, delivered,
-    'We konden je sollicitatie niet versturen. Mail je CV en motivatie naar ons, dan pakken we het direct op.',
+  const result = deliveryResult(handoff, delivered,
+    'We konden je aanmelding niet versturen. Mail je CV en motivatie naar ons, dan pakken we het direct op.',
   )
+
+  // Only on a submission that arrived: there is no appointment to talk about
+  // on one that reached nobody.
+  return result.ok && intake ? { ...result, intake: intake.forVisitor } : result
 })
+
+/** What the applicant is told about the time they picked. */
+type IntakeAnswer = { booked: true, label: string, location: string } | { booked: false }
+
+async function intakeOutcome(
+  event: H3Event,
+  chosen: string,
+  handoff: PortalResult,
+): Promise<{ forOffice: string, forVisitor: IntakeAnswer }> {
+  const answer = handoff.ok ? handoff.data?.intake : undefined
+  const booked = answer?.booked === true ? parseIntakeSlot(answer) : null
+
+  if (booked) {
+    const place = booked.location ? ` (${booked.location})` : ''
+
+    return {
+      forOffice: `${intakeLabel(booked)}${place} — ingepland in het portaal`,
+      forVisitor: { booked: true, label: intakeLabel(booked), location: booked.location },
+    }
+  }
+
+  // Not booked. Name the time anyway, so the office knows what was asked for —
+  // read back from the portal rather than taken from the form, which only
+  // knows an id.
+  const slot = (await fetchIntakeSlots(event)).find(slot => String(slot.id) === chosen)
+  const wanted = slot ? intakeLabel(slot) : `tijd ${chosen}`
+
+  return {
+    forOffice: handoff.ok
+      ? `koos ${wanted}, maar die tijd was niet meer vrij — NOG INPLANNEN`
+      : `koos ${wanted} — NIET INGEPLAND, de aanmelding is niet verwerkt`,
+    forVisitor: { booked: false },
+  }
+}

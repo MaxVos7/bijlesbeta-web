@@ -1,4 +1,5 @@
 import type { H3Event } from 'h3'
+import { parseIntakeSlot, type IntakeSlot } from '#shared/utils/intake'
 
 /**
  * Client for the portal's external-registration endpoints — the ones the
@@ -161,6 +162,37 @@ export async function postToPortal(
     })
 
     return { ok: false, reason: describe(error) }
+  }
+}
+
+/**
+ * The kennismaking times on offer, from the portal's `external-intake-slots`.
+ *
+ * Returns an empty list rather than throwing or reporting: there is nothing a
+ * visitor or the office can do about a list that didn't load, and the
+ * aanmeldformulier simply leaves the question out. See `shared/utils/intake.ts`.
+ */
+export async function fetchIntakeSlots(event: H3Event): Promise<IntakeSlot[]> {
+  const configured = portalConfig(event, '/external-intake-slots', {})
+  if (!configured.ok || !configured.config) return []
+
+  try {
+    const response = await $fetch<{ data?: unknown }>('/external-intake-slots', {
+      baseURL: configured.config.url,
+      headers: { Accept: 'application/json', 'X-Secret-Key': configured.config.key },
+      timeout: 5_000,
+    })
+
+    const rows = Array.isArray(response?.data) ? response.data : []
+
+    return rows.map(parseIntakeSlot).filter((slot): slot is IntakeSlot => slot !== null)
+  }
+  catch (error: any) {
+    console.error('[form] reading /external-intake-slots from the portal failed', {
+      status: error?.status ?? error?.statusCode,
+    })
+
+    return []
   }
 }
 

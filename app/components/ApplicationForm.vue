@@ -22,12 +22,55 @@ const form = reactive({
   postalCode: '',
   houseNumber: '',
   heardFrom: '',
+  // The id of the kennismaking time picked, or '' for none — see below.
+  intakeEventId: '',
   privacy: false,
   // Honeypot — bots fill this, humans never see it.
   website: '',
 })
 
 const analytics = useAnalytics()
+
+/*
+  The kennismaking times. They are the portal's — sessions of a training the
+  office marked "open voor aanmelders" — so the question appears when the
+  office adds a day there and goes again once the last hour has passed, with
+  no deploy either way.
+
+  Fetched in the browser only: a time somebody just took has to read as taken,
+  so the list can't be baked into cached or server-rendered HTML, and with no
+  answer (or no portal) there is simply no question. Applying never depends
+  on it.
+*/
+const { data: intake } = useLazyFetch('/api/kennismaking', {
+  server: false,
+  default: () => ({ slots: [] as IntakeSlot[] }),
+})
+
+/** The times grouped per day, in the order the portal lists them. */
+const intakeDays = computed(() => {
+  const days: { day: string, slots: IntakeSlot[] }[] = []
+
+  for (const slot of intake.value.slots) {
+    const day = intakeDay(slot)
+    const last = days[days.length - 1]
+    if (last?.day === day) last.slots.push(slot)
+    else days.push({ day, slots: [slot] })
+  }
+
+  return days
+})
+
+const intakeAllFull = computed(() => intake.value.slots.every(slot => slot.full))
+
+// A time that filled up while the form was open can't stay selected.
+watch(intake, (latest) => {
+  const chosen = latest.slots.find(slot => String(slot.id) === form.intakeEventId)
+  if (form.intakeEventId && (!chosen || chosen.full)) form.intakeEventId = ''
+})
+
+/** What the route said about the time that was picked, for the thank-you. */
+const booking = ref<{ booked: true, label: string, location: string } | { booked: false } | null>(null)
 
 const fileInput = ref<HTMLInputElement | null>(null)
 const cvFile = ref<File | null>(null)
@@ -126,7 +169,7 @@ function validate() {
   const subjects = checkList(APPLICATION_SUBJECTS_RULE, form.subjects)
   if (subjects) next.subjects = subjects.kind === 'tooFew' ? 'Kies minimaal één vak.' : describeProblem(subjects)
 
-  if (!cvFile.value) next.cv = 'Voeg je CV toe om te solliciteren.'
+  if (!cvFile.value) next.cv = 'Voeg je CV toe om je aan te melden.'
   else if (cvFile.value.size > MAX_CV_BYTES) {
     next.cv = 'Je CV is te groot. Gebruik een bestand van maximaal 10 MB.'
   }
@@ -164,6 +207,7 @@ async function submit() {
       return
     }
 
+    booking.value = 'intake' in result ? result.intake : null
     status.value = 'success'
 
     /*
@@ -207,10 +251,16 @@ async function submit() {
       class="rounded-field border border-success-500 bg-success-50 p-6"
       role="status"
     >
-      <h3 class="text-lg text-success-900">Bedankt voor je sollicitatie</h3>
-      <p class="mt-2 text-sm leading-relaxed text-success-900">
-        We hebben je gegevens ontvangen en nemen contact op voor het inplannen van een
-        sollicitatiegesprek.
+      <h3 class="text-lg text-success-900">{{ werkenBij.apply.success.title }}</h3>
+      <p v-if="booking?.booked" class="mt-2 text-sm leading-relaxed text-success-900">
+        {{ werkenBij.apply.success.booked }}
+        <strong class="font-semibold">{{ booking.label }}</strong>.
+        <template v-if="booking.location">
+          {{ werkenBij.apply.success.bookedLocation }} {{ booking.location }}.
+        </template>
+      </p>
+      <p v-else class="mt-2 text-sm leading-relaxed text-success-900">
+        {{ booking ? werkenBij.apply.success.notBooked : werkenBij.apply.success.body }}
       </p>
     </div>
 
@@ -488,6 +538,64 @@ async function submit() {
         >
         <p v-if="errors.heardFrom" class="field-error">{{ errors.heardFrom }}</p>
       </div>
+
+      <!--
+        Kennismaking. Only while the portal has times on offer. Radios rather
+        than a select, so a taken hour stays visible as taken instead of
+        silently missing from a list.
+      -->
+      <fieldset v-if="intake.slots.length">
+        <legend class="field-label mb-1.5">{{ werkenBij.apply.intake.label }}</legend>
+        <p class="mb-3 text-[12.5px] leading-relaxed text-ink-500">
+          {{ intakeAllFull ? werkenBij.apply.intake.allFull : werkenBij.apply.intake.intro }}
+        </p>
+
+        <div v-for="group in intakeDays" :key="group.day" class="mb-3">
+          <p class="mb-2 text-[13.5px] font-semibold first-letter:uppercase">{{ group.day }}</p>
+          <div class="grid gap-2 [grid-template-columns:repeat(auto-fit,minmax(150px,1fr))]">
+            <label
+              v-for="slot in group.slots"
+              :key="slot.id"
+              class="flex items-center gap-2.5 rounded-field border px-3 py-2.5 text-[13.5px]"
+              :class="
+                slot.full
+                  ? 'border-line-ink bg-linen text-ink-500'
+                  : form.intakeEventId === String(slot.id)
+                    ? 'border-accent-500 bg-white'
+                    : 'border-line-ink bg-white'
+              "
+            >
+              <input
+                v-model="form.intakeEventId"
+                type="radio"
+                name="kennismaking"
+                :value="String(slot.id)"
+                :disabled="slot.full"
+                class="h-5 w-5 flex-none accent-accent-500"
+              >
+              <span>
+                {{ intakeHours(slot) }}
+                <span v-if="slot.full" class="block text-[12px]">{{ werkenBij.apply.intake.full }}</span>
+              </span>
+            </label>
+          </div>
+        </div>
+
+        <label v-if="!intakeAllFull" class="flex items-start gap-2.5 text-[13.5px]">
+          <input
+            v-model="form.intakeEventId"
+            type="radio"
+            name="kennismaking"
+            value=""
+            class="h-5 w-5 flex-none accent-accent-500"
+          >
+          <span>
+            {{ werkenBij.apply.intake.none }}
+            <span class="block text-[12.5px] text-ink-500">{{ werkenBij.apply.intake.noneHint }}</span>
+          </span>
+        </label>
+        <p v-if="errors.intakeEventId" class="field-error">{{ errors.intakeEventId }}</p>
+      </fieldset>
 
       <div aria-hidden="true" class="absolute left-[-9999px]">
         <label for="sollicitatie-website">Laat dit veld leeg</label>

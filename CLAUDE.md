@@ -177,6 +177,31 @@ an attachment on the office copy instead. That is then the only copy of it in
 existence, which is why neither step may end the request: you cannot ask
 somebody for their CV twice.
 
+### Kennismaking times on the aanmeldformulier for docenten
+
+`ApplicationForm` asks a new docent to pick a kennismaking time, but only
+while the portal has any on offer. The times are not in this repo: they are
+the upcoming sessions of every portal training marked "open voor aanmelders"
+(`trainings.open_for_applicants`), so the office adds a day in the portal and
+the question appears, and it goes again once the last hour has passed. An hour
+for one person is a session with a maximum of 1 participant.
+
+- **`/api/kennismaking` reads them** from the portal's `external-intake-slots`
+  and never throws — no portal or no answer means no question. It is fetched
+  in the browser only and never cached, because a time somebody just took has
+  to read as taken.
+- **The choice travels as `intake_event_id` on `register-external-applicant`**,
+  which books it in the same call that creates the applicant. There is no
+  second request that could succeed or fail on its own.
+- **A time never costs an application.** The portal answers 201 with
+  `intake.booked: false` when the hour was taken in the meantime, and the
+  applicant is created either way. The visitor is then told we will call, and
+  the office copy's `Kennismaking` row says `NOG INPLANNEN` — or
+  `NIET INGEPLAND` when the hand-off itself failed. Only `booked: true` is an
+  appointment; don't thank anybody for a time on anything else.
+- **Times are formatted in `Europe/Amsterdam`**, in `shared/utils/intake.ts`,
+  for the form, the thank-you and the office copy alike.
+
 ### The proefles block
 
 The amber closing panel's short form (`LeadForm`, inside `TrialCta`, and again
