@@ -438,7 +438,7 @@
   It used to be written here as 20px of vertical padding on a 44px leading,
   which computes to 86px. That came from reading `getComputedStyle` off a
   hidden Gravity Forms page, where the height rule doesn't apply; every live
-  input on `/aanmelden` and `/werken-bij` measures 42px. Don't restore the
+  input on `/aanmelden` and `/docent-worden` measures 42px. Don't restore the
   padding.
 
   Carries no margin of its own — the label above it owns the gap.

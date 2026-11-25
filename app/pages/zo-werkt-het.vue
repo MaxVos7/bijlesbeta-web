@@ -14,7 +14,7 @@ useSeo({
   <div>
     <!--
       Measured against `post-42.css` rather than designed, like `/tarieven` and
-      `/werken-bij`. The numbers below are the live page's:
+      `/docent-worden`. The numbers below are the live page's:
 
       - The band has no ground of its own. It sits on the page's `parchment`;
         white only starts in the spacer strip below it.
@@ -50,7 +50,7 @@ useSeo({
             <!--
               Not `btn-secondary`: the live page's second button is the page
               ground with a black/20 hairline, the same treatment the hero CTA
-              on `/werken-bij` takes.
+              on `/docent-worden` takes.
             -->
             <NuxtLink to="/over-ons" class="btn btn-lg border border-black/20 bg-parchment hover:bg-linen">
               {{ zoWerktHet.secondaryCta }} <BtnArrow />

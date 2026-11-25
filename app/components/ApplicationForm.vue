@@ -2,7 +2,7 @@
 import { werkenBij } from '~/data/site'
 
 /*
-  The docent application form from /werken-bij.
+  The docent application form from /docent-worden.
 
   Posts multipart to `/api/solliciteren`, which uploads the CV and then hands
   the application to the portal's `register-external-applicant` — the endpoint

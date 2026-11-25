@@ -1,5 +1,5 @@
 /**
- * The kennismaking times the aanmeldformulier at `/werken-bij/` offers.
+ * The kennismaking times the aanmeldformulier at `/docent-worden/` offers.
  *
  * A read-only pass-through of the portal's `external-intake-slots`, which
  * lists the upcoming sessions of every training marked "open voor aanmelders".

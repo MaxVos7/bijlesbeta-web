@@ -282,7 +282,7 @@ export async function uploadResume(
  * submission still succeeds, just without the subjects on it.
  *
  * That is why the two split maths are keyed twice. The signup wizard labels
- * them `Wiskunde A` / `Wiskunde B`; `/werken-bij` uses the portal's own
+ * them `Wiskunde A` / `Wiskunde B`; `/docent-worden` uses the portal's own
  * `Wiskunde A/C` / `Wiskunde B/D`, which are the live site's labels on that
  * form and shouldn't be reworded for our convenience. Both spellings are
  * accepted here rather than either form being changed.

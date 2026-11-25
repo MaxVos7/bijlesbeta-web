@@ -24,7 +24,7 @@ const STATIC_PATHS = [
   '/pakketten',
   '/aanmelden',
   '/contact',
-  '/werken-bij',
+  '/docent-worden',
   '/examentraining',
   '/excel-training-groningen',
   '/kennisbank',

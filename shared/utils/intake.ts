@@ -1,6 +1,6 @@
 /**
  * The kennismaking times a new docent can pick on the aanmeldformulier at
- * `/werken-bij/`.
+ * `/docent-worden/`.
  *
  * They are sessions of a training the portal has marked "open voor
  * aanmelders" — the office makes and changes them there, and this app only

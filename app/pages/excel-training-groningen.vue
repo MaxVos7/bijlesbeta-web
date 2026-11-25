@@ -12,7 +12,7 @@ import { contact, excelTraining } from '~/data/site'
  * its FAQ is its own five questions rather than the sitewide set.
  *
  * Copy is the live page's, verbatim including its own typos ("Je betaald ons
- * per uur") — the same call made for /werken-bij's Dutch is *not* made here,
+ * per uur") — the same call made for /docent-worden's Dutch is *not* made here,
  * because these are answers customers have already read.
  */
 useSeo({

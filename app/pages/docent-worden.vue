@@ -5,7 +5,7 @@ import { contact, werkenBij } from '~/data/site'
 definePageMeta({ headerGround: 'ink' })
 
 useSeo({
-  title: 'Werken bij',
+  title: 'Docent worden',
   description:
     'Ben jij RUG student en wil je Bijles geven in Groningen? Bij Bijles Bèta geven we bijles in Wiskunde, Natuurkunde en Scheikunde.',
 })
@@ -48,7 +48,7 @@ useSeo({
             button exactly (20px/24px padding on `btn`'s 11px leading).
           -->
           <a
-            href="#solliciteren"
+            href="#aanmelden"
             class="btn self-start border border-black/20 bg-parchment px-6 py-5 text-ink-900 hover:bg-brand-500 hover:text-ink-900"
           >
             {{ werkenBij.hero.cta }} <span class="text-lg leading-[11px]" aria-hidden="true">→</span>
@@ -157,7 +157,7 @@ useSeo({
       gutter — the copy column is the narrow one.
     -->
     <section
-      id="solliciteren"
+      id="aanmelden"
       class="scroll-mt-24 bg-parchment px-5 py-20 md:px-10"
     >
       <div

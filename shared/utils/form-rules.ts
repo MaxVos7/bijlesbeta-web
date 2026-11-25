@@ -268,7 +268,7 @@ export const CONTACT_RULES = {
   website: { maxLength: 200 },
 } as const satisfies Record<string, FieldRule>
 
-/** `/solliciteren`, posted from `/werken-bij`. The CV has its own checks. */
+/** `/solliciteren`, posted from `/docent-worden`. The CV has its own checks. */
 export const APPLICATION_RULES = {
   firstName: { required: true, maxLength: 255 },
   lastName: { required: true, maxLength: 255 },

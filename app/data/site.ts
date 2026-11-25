@@ -20,7 +20,7 @@ export const contact = {
   whatsappHref: phone.whatsappHref,
   email: 'contact@bijlesbeta.nl',
   emailHref: 'mailto:contact@bijlesbeta.nl',
-  /** Sollicitaties go to a separate mailbox — shown beside the form on Werken bij. */
+  /** Sollicitaties go to a separate mailbox — shown beside the form on Docent worden. */
   applicationsEmail: 'info@bijlesbeta.nl',
   applicationsEmailHref: 'mailto:info@bijlesbeta.nl',
   address: {
@@ -661,7 +661,9 @@ export const pricingAssurances = [
 ] as const
 
 /**
- * Werken bij — the recruitment page.
+ * Docent worden — the page where new docenten sign up. The export keeps its
+ * old name; the route was `/werken-bij` until docenten stopped being described
+ * as employees.
  *
  * The hero opens on the dark ink band rather than the usual cream one, which is
  * why the page sets `headerGround: 'ink'` in its page meta.
@@ -908,7 +910,7 @@ export const nav = [
   { label: 'Over ons', to: '/over-ons' },
   { label: 'Tarieven', to: '/tarieven' },
   { label: 'Zo werkt het', to: '/zo-werkt-het' },
-  { label: 'Werken bij', to: '/werken-bij' },
+  { label: 'Docent worden', to: '/docent-worden' },
   { label: 'Contact', to: '/contact' },
 ] as const
 

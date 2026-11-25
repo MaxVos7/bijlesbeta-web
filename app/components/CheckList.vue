@@ -4,7 +4,7 @@ withDefaults(
     items: readonly string[]
     /** `tight` is the compact variant used inside the yellow trial block. */
     variant?: 'default' | 'tight'
-    /** `inverse` is the list on a dark band — `/werken-bij`'s hero and the
+    /** `inverse` is the list on a dark band — `/docent-worden`'s hero and the
         landings'. The label colour sits on the `<li>`, so a `text-white` on
         the wrapper can't reach it; this is how it is set. */
     tone?: 'default' | 'inverse'
