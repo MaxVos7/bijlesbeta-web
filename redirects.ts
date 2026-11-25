@@ -4,7 +4,7 @@
  *
  * Only paths that actually change are listed. Most don't: every
  * `/bijles-<vak>-<stad>` landing, `/over-ons`, `/tarieven`, `/contact`,
- * `/werken-bij`, `/het-bedrijf`, `/zo-werkt-het`, `/aanmelden` and
+ * `/het-bedrijf`, `/zo-werkt-het`, `/aanmelden` and
  * `/algemene-voorwaarden` keep their slug, and all 28 docenten keep theirs.
  *
  * Verified against the live site's sitemaps, not guessed — see the
@@ -15,6 +15,13 @@
 const pages: Record<string, string> = {
   '/examentraining-groningen': '/examentraining',
   '/privacy-statement': '/privacy',
+  /*
+    Not a WordPress slug that changed at cutover, but one we changed ourselves
+    afterwards: docenten are not employed by Bijles Bèta, so the page stopped
+    calling itself "werken bij". The old URL is the indexed one and the one
+    every external link points at.
+  */
+  '/werken-bij': '/docent-worden',
 }
 
 /**

@@ -124,7 +124,7 @@ Things the portal's contract forces, which look arbitrary otherwise:
   and *silently discard* anything non-numeric, so a label missing from the map
   is dropped without an error and the submission still succeeds — add new
   subjects to both sides. The two split maths are keyed twice for this reason:
-  the wizard says `Wiskunde A`/`Wiskunde B` and `/werken-bij` says the portal's
+  the wizard says `Wiskunde A`/`Wiskunde B` and `/docent-worden` says the portal's
   own `Wiskunde A/C`/`Wiskunde B/D` (the live site's labels on that form), and
   for a while the second pair matched nothing, so an applicant who ticked only
   those was recorded with no subjects at all.
@@ -608,7 +608,7 @@ the day `/api/aanmelden` passes back the account id the portal creates.
 ## Design work
 
 The design is applied to `/`, `/over-ons`, `/tarieven`, `/aanmelden`,
-`/contact`, `/werken-bij`, `/zo-werkt-het`, `/bijles-[vak]-[stad]`,
+`/contact`, `/docent-worden`, `/zo-werkt-het`, `/bijles-[vak]-[stad]`,
 `/docenten/[slug]`, `/examentraining`, `/het-bedrijf` and the shared chrome,
 from a Claude Design handoff.
 `app/assets/css/main.css` carries the real palette — an amber brand on linen
@@ -857,7 +857,7 @@ guess. `elementor-page-<id>` in a page's HTML gives you its post id:
 | `/contact` | `/contact/` | 46 |
 | `/over-ons` | `/over-ons/` | 239 |
 | `/tarieven` | `/tarieven/` | 44 |
-| `/werken-bij` | `/werken-bij/` | 45 |
+| `/docent-worden` | `/werken-bij/` | 45 |
 | `/het-bedrijf` | `/het-bedrijf/` | 1567 |
 | `/zo-werkt-het` | `/zo-werkt-het/` | 42 |
 | `/examentraining` | `/examentraining-groningen/` | 2180 |
@@ -882,6 +882,16 @@ nests those under a category segment we don't use; ten were shortened too).
 Each path is registered with *and* without its trailing slash — the live URLs
 all carry one and Nitro matches the two separately. If you add a kennisbank
 article that existed on WordPress, add its old path here as well.
+
+`/werken-bij` → `/docent-worden` is the one redirect that is not a WordPress
+leftover. Docenten are not employed by Bijles Bèta, so the page, its title
+("Docent worden"), its menu item and its copy stopped speaking of werken bij,
+solliciteren, a sollicitatiegesprek or an hourly rate — a deliberate break
+with the "titles are the live site's, verbatim" rule above, made knowing what
+it costs. Don't reintroduce that vocabulary in visitor-facing text. The
+internal names kept theirs (`werkenBij` in `site.ts`, `/api/solliciteren`,
+the `sollicitatie` analytics events and `form_location: werken_bij`), because
+renaming those would break measurement for nothing a visitor sees.
 
 Two live pages deliberately have no redirect: `/aanmelden-test/` is a WordPress
 scratch page, and `/excel-training-groningen/` is a real service this app
@@ -938,7 +948,7 @@ them. The full set:
 
 | band | id | width | ours |
 |---|---|---|---|
-| hero | per page | 1100 (1200 on `/werken-bij` and the landings) | page file |
+| hero | per page | 1100 (1200 on `/docent-worden` and the landings) | page file |
 | packages grid | `5d48e98b` | 1368 live, **1026** here — a later `Tarieven.dc.html` handoff cut Losse lessen from a fourth card to 3 packages and narrowed the band so the cards keep their live width | `PricingSection` |
 | stats | `125bf870` | 900 | `StatsBand` |
 | closing CTA | `73f40b97` | 1100 | `TrialCta` |
@@ -948,7 +958,7 @@ them. The full set:
 | comparison cards | `4121888b` | 800, 600 at 768–1024 | `ComparisonTable` |
 | home story | `af0e6c4` | 1100 | `/` |
 | landing intro | `aeeb51e` | 1100 | `/bijles-[vak]-[stad]` |
-| `/werken-bij` apply | `dd3e9f4` | 1200 | `/werken-bij` |
+| `/docent-worden` apply | `dd3e9f4` | 1200 | `/docent-worden` |
 | everything else | — | **1400** | — |
 
 Band gutters are 40px, tapering to 16px on a phone
@@ -1009,7 +1019,7 @@ live page's numbers and shouldn't be tidied:
   split on 12px, the message box is a flat 192px, and the submit button is
   full-width at 16px padding on a 15px leading, so it reads 49px.
 
-`/werken-bij` opens on a dark `ink-900` hero band rather than the usual cream
+`/docent-worden` opens on a dark `ink-900` hero band rather than the usual cream
 one, so `SiteHeader` reads a `headerGround` route meta (set via
 `definePageMeta`) to darken the sticky strip instead of leaving it clear —
 see `app/types/route-meta.d.ts`. `RatingLine` has a matching `inverse` tone
@@ -1036,7 +1046,7 @@ things there are the live site's and shouldn't be tidied:
   Jakarta Sans, 20px of horizontal padding, a black/10 hairline and the
   plugin's 1px lift, on a **42px** control. It was written here as 86px once,
   from `getComputedStyle` on a Gravity Forms page that was still
-  `display: none`; every visible input on `/werken-bij` and `/aanmelden`
+  `display: none`; every visible input on `/docent-worden` and `/aanmelden`
   measures 42px. Selects get their own `field-select-lg` at 44px. Neither
   carries a margin — the label above owns the gap.
 - The four perk icons reuse `FeatureGrid`'s drawings. Three are the live
@@ -1099,7 +1109,7 @@ the live page's numbers:
   where the 16/24/36px gaps come from. The band splits 50/50 on a **100px**
   gutter inside the usual 1100px column.
 - **The second hero button is not `btn-secondary`.** It is `parchment` with a
-  `black/20` hairline, the same inversion `/werken-bij`'s hero CTA takes. The
+  `black/20` hairline, the same inversion `/docent-worden`'s hero CTA takes. The
   row needs `items-start`, or the bordered button's 56px stretches the amber
   one past its 54px.
 - **The photograph is a flat 550px crop from the top on the 8px surface
@@ -1148,7 +1158,7 @@ these as empty image slots with no artwork; drop real icon graphics into
 wired up (click reveals the embed area) but has no video yet either — set
 `YOUTUBE_URL` at the top of that page once there's a real link. All CTAs and
 the FAQ's "Neem contact op!" point at `#aanmelden` on the same page (plain
-`<a href>`, matching the pattern in `tarieven.vue`/`werken-bij.vue`), not the
+`<a href>`, matching the pattern in `tarieven.vue`/`docent-worden.vue`), not the
 `/contact` route.
 
 **It was left out of the band-width pass**, deliberately. Every other page was
@@ -1161,7 +1171,7 @@ dat?!`, the docenten band and `Ga direct naar de juiste pagina`, and 1200 for
 `Meld je direct aan`, with 1400 wrappers between.
 
 `/kennisbank` and `/kennisbank/[slug]` are measured against `post-204.css` and
-`post-169.css` rather than designed, like the header and `/werken-bij`. The
+`post-169.css` rather than designed, like the header and `/docent-worden`. The
 overview and the article share `ArticleCard`, `AuthorBadge` and
 `ArticleCoverPlaceholder`; both cover art and author avatars are wired to
 local paths under `public/img` and fall back to the placeholder when a file is

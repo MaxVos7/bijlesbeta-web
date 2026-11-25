@@ -79,7 +79,7 @@ hidden.
 ### Routes
 
 `/` · `/over-ons` · `/tarieven` · `/kennisbank` · `/kennisbank/[slug]` ·
-`/werken-bij` · `/contact` · `/aanmelden` · `/docenten/[slug]`
+`/docent-worden` · `/contact` · `/aanmelden` · `/docenten/[slug]`
 
 `/docenten/[slug]` renders one tutor from `app/data/tutors.ts`; an unknown slug
 404s. There is no `/docenten` index — `/over-ons#team` is the listing.
@@ -259,7 +259,7 @@ so the forms would have to post to Laravel directly (and CORS gets involved).
   consent link is the urgent one.
 - Spam protection on signup is the honeypot only. The Gravity Form also runs
   Cloudflare Turnstile; adding it here needs a site key and a secret.
-- `/contact`, `/werken-bij` and `/kennisbank` have no design in the handoff, so
+- `/contact`, `/docent-worden` and `/kennisbank` have no design in the handoff, so
   they still use the scaffold's slate greys. They wear the new header, footer and
   type, but their page bodies want the same treatment as the rest.
 - Several photos are stand-ins. The design left three image slots empty (the
