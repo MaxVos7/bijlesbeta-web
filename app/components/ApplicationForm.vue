@@ -70,7 +70,7 @@ watch(intake, (latest) => {
 })
 
 /** What the route said about the time that was picked, for the thank-you. */
-const booking = ref<{ booked: true, label: string, location: string } | { booked: false } | null>(null)
+const handoff = useApplicationHandoff()
 
 const fileInput = ref<HTMLInputElement | null>(null)
 const cvFile = ref<File | null>(null)
@@ -182,7 +182,7 @@ function validate() {
 }
 
 async function submit() {
-  if (status.value === 'pending' || !validate()) return
+  if (status.value === 'pending' || status.value === 'success' || !validate()) return
 
   status.value = 'pending'
   errorMessage.value = ''
@@ -207,7 +207,6 @@ async function submit() {
       return
     }
 
-    booking.value = 'intake' in result ? result.intake : null
     status.value = 'success'
 
     /*
@@ -222,13 +221,26 @@ async function submit() {
       cvMeegestuurd: Boolean(cvFile.value),
       honeypot: form.website,
     })
+
+    handoff.value = { intake: 'intake' in result ? result.intake : null }
   }
   catch (error: any) {
     status.value = 'error'
     errorMessage.value
       = error?.data?.data?.message
         ?? 'Er ging iets mis bij het versturen. Probeer het later opnieuw of mail ons.'
+    return
   }
+
+  /*
+    The confirmation is a page, so the conversion has a URL a funnel or an ad
+    platform can point at — the same arrangement as `/aanmelden/bedankt/`. The
+    event above has already gone out, so a reload of that page is a pageview
+    and never a second application. Outside the `try`, so a navigation that
+    fails can't tell the applicant their sent application wasn't; `replace`
+    keeps the back button from landing on a spent form.
+  */
+  await navigateTo('/docent-worden/bedankt/', { replace: true })
 }
 </script>
 
@@ -246,31 +258,13 @@ async function submit() {
       <h3 class="text-[22px] leading-[44px] tracking-[-0.02em]">{{ werkenBij.apply.formTitle }}</h3>
     </div>
 
-    <div
-      v-if="status === 'success'"
-      class="rounded-field border border-success-500 bg-success-50 p-6"
-      role="status"
-    >
-      <h3 class="text-lg text-success-900">{{ werkenBij.apply.success.title }}</h3>
-      <p v-if="booking?.booked" class="mt-2 text-sm leading-relaxed text-success-900">
-        {{ werkenBij.apply.success.booked }}
-        <strong class="font-semibold">{{ booking.label }}</strong>.
-        <template v-if="booking.location">
-          {{ werkenBij.apply.success.bookedLocation }} {{ booking.location }}.
-        </template>
-      </p>
-      <p v-else class="mt-2 text-sm leading-relaxed text-success-900">
-        {{ booking ? werkenBij.apply.success.notBooked : werkenBij.apply.success.body }}
-      </p>
-    </div>
-
     <!--
       Blocked from session replay — see `LeadForm.vue`. This one also renders
       the chosen CV's *filename*, which is regularly somebody's own name, and
       that is plain text rather than an input so `maskAllInputs` would not
       touch it.
     -->
-    <form v-else class="ph-no-capture flex flex-col gap-5" novalidate @submit.prevent="submit">
+    <form class="ph-no-capture flex flex-col gap-5" novalidate @submit.prevent="submit">
       <div>
         <span class="field-label mb-1.5">
           Naam <span class="text-brand-700">(Vereist)</span>
@@ -628,8 +622,8 @@ async function submit() {
 
       <p v-if="status === 'error'" class="field-error" role="alert">{{ errorMessage }}</p>
 
-      <button type="submit" class="btn-primary w-full py-4 hover:bg-ink-900 hover:text-white" :disabled="status === 'pending'">
-        {{ status === 'pending' ? 'Versturen…' : 'Aanmelden' }}
+      <button type="submit" class="btn-primary w-full py-4 hover:bg-ink-900 hover:text-white" :disabled="status === 'pending' || status === 'success'">
+        {{ status === 'pending' || status === 'success' ? 'Versturen…' : 'Aanmelden' }}
       </button>
     </form>
   </div>

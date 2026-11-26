@@ -326,6 +326,26 @@ export const aanmeldenBedanktPage = {
   account: 'Naar mijn account',
 } as const
 
+/**
+ * `/docent-worden/bedankt/`, where `ApplicationForm` sends an applicant once
+ * the aanmelding has reached us. Which of `body`, `booked` and `notBooked`
+ * shows depends on the kennismaking — see `useApplicationHandoff`.
+ */
+export const docentWordenBedanktPage = {
+  seoTitle: 'Bedankt voor je aanmelding als docent',
+  seoDescription:
+    'Je aanmelding als docent is binnen. We nemen contact met je op voor een kennismakingsgesprek.',
+  kicker: 'Aanmelding ontvangen',
+  title: 'Bedankt voor je aanmelding!',
+  body: 'We hebben je gegevens ontvangen en nemen contact op voor het inplannen van een kennismakingsgesprek.',
+  /** Followed by the time, e.g. "woensdag 16 december, 13:00 – 14:00". */
+  booked: 'We hebben je gegevens ontvangen. Je kennismaking staat gepland op',
+  bookedLocation: 'Locatie:',
+  notBooked: 'We hebben je gegevens ontvangen. Het moment dat je koos konden we helaas niet meer voor je vastleggen; we nemen contact op om een ander moment te kiezen.',
+  contactPrefix: 'Vragen in de tussentijd? Mail ons op',
+  home: 'Terug naar de homepage',
+} as const
+
 /** Shown by both variants of ContactForm once a message is through. */
 export const contactFormSuccess = {
   title: 'Bedankt voor je bericht',
@@ -761,14 +781,6 @@ export const werkenBij = {
       none: 'Geen van deze momenten past',
       noneHint: 'Dan nemen we contact op om samen een ander moment te kiezen.',
       allFull: 'Alle momenten zijn op dit moment bezet. We nemen contact op om een ander moment te kiezen.',
-    },
-    success: {
-      title: 'Bedankt voor je aanmelding',
-      body: 'We hebben je gegevens ontvangen en nemen contact op voor het inplannen van een kennismakingsgesprek.',
-      /** Followed by the time, e.g. "woensdag 16 december, 13:00 – 14:00". */
-      booked: 'We hebben je gegevens ontvangen. Je kennismaking staat gepland op',
-      bookedLocation: 'Locatie:',
-      notBooked: 'We hebben je gegevens ontvangen. Het moment dat je koos konden we helaas niet meer voor je vastleggen; we nemen contact op om een ander moment te kiezen.',
     },
   },
   /** Checkbox options in the application form, in the order the live form lists them. */

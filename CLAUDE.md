@@ -1027,6 +1027,13 @@ for use on that band. The application form is its own `ApplicationForm`
 component, not a `ContactForm` variant, since it collects a different shape
 of answers; it still posts through `/api/contact` with a fixed subject.
 
+On success the form navigates to `/docent-worden/bedankt/` — a page, like
+`/aanmelden/bedankt/`, so the conversion has a URL, and `noindex` and out of
+`STATIC_PATHS` for the same reasons. Whether the chosen kennismaking was booked
+travels there in `useApplicationHandoff` (shared state, never the URL). It
+offers only the e-mail address: a WhatsApp or phone link would push
+`contact_click`, and Meta's Lead tag would count the applicant as a customer.
+
 Its layout is measured against `post-45.css` rather than designed, so a few
 things there are the live site's and shouldn't be tidied:
 
@@ -1158,7 +1165,7 @@ these as empty image slots with no artwork; drop real icon graphics into
 wired up (click reveals the embed area) but has no video yet either — set
 `YOUTUBE_URL` at the top of that page once there's a real link. All CTAs and
 the FAQ's "Neem contact op!" point at `#aanmelden` on the same page (plain
-`<a href>`, matching the pattern in `tarieven.vue`/`docent-worden.vue`), not the
+`<a href>`, matching the pattern in `tarieven.vue`/`docent-worden/index.vue`), not the
 `/contact` route.
 
 **It was left out of the band-width pass**, deliberately. Every other page was
